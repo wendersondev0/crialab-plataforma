@@ -170,7 +170,7 @@ th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--lin
 .sugestoes a { min-height: 44px; display: flex; align-items: center; padding: 0 12px; text-decoration: none; color: var(--tinta); }
 .sugestoes a:hover { background: var(--creme); }
 .ficha { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px; }
-.galeria { display: grid; gap: 8px; }
+.galeria { display: grid; gap: 12px; align-content: start; }
 .galeria-principal { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 18px; background: #efe8da; cursor: zoom-in; }
 .miniaturas { display: flex; gap: 8px; overflow-x: auto; max-width: 100%; min-width: 0; }
 .miniaturas button { padding: 0; border: 3px solid transparent; border-radius: 12px; background: transparent; min-height: 72px; min-width: 44px; flex: 0 0 auto; }

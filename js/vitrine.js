@@ -15,6 +15,9 @@
   function precoVista(valor) {
     return valor * (1 - config().descontoAVista);
   }
+  function ico(nome) {
+    return '<span class="ico">' + ui.icone(nome) + "</span>";
+  }
   function personalizado(produto) {
     return produto.tipo === "personalizado";
   }
@@ -233,15 +236,18 @@
     var relacionados = produtosVisiveis().filter(function (item) { return item.categoria === produto.categoria && item.id !== produto.id; }).slice(0, 4);
     var sobMedida = personalizado(produto);
     var esgotado = !sobMedida && (produto.situacao === "esgotado" || produto.estoque <= 0);
-    var compraPeca = sobMedida ? "" : '<button class="botao" type="button" id="comprar-peca"' + (esgotado ? " disabled" : "") + ">" + (esgotado ? "Esgotado" : "Comprar") + "</button>";
+    var compraPeca = sobMedida ? "" : '<button class="botao" type="button" id="comprar-peca"' + (esgotado ? " disabled" : "") + ">" + ico("carrinho") + (esgotado ? "Esgotado" : "Comprar") + "</button>";
     var whats = estado().identidade.whatsapp + "?text=" + encodeURIComponent("Olá, quero saber sobre " + produto.titulo);
     var tag = sobMedida ? '<span class="tag tag-pers">Personalizado</span>' : '<span class="tag">Produto</span>';
     var precoBloco = sobMedida
       ? '<p class="preco">' + dinheiro.real(produto.preco) + '</p><p class="vista">Preço médio. O valor final sai depois do orçamento.</p>'
-      : '<p class="preco">' + dinheiro.real(produto.preco) + '</p><p class="vista">À vista ' + dinheiro.real(precoVista(produto.preco)) + " no PIX ou boleto</p><p>" + config().parcelas + "x de " + dinheiro.real(produto.preco / config().parcelas) + " no cartão, sem o desconto à vista</p>";
+      : '<p class="preco">' + dinheiro.real(produto.preco) + '</p><p class="vista">À vista ' + dinheiro.real(precoVista(produto.preco)) + " no PIX ou boleto</p><p class=\"discreto\">" + config().parcelas + "x de " + dinheiro.real(produto.preco / config().parcelas) + " no cartão, sem o desconto à vista</p>";
     var estoqueLinha = sobMedida ? "Sob encomenda" : (esgotado ? "Sem unidade pronta" : ui.esc(String(produto.estoque)) + " em estoque");
-    var lojas = '<div class="linha"><a class="botao-linha" href="' + ui.esc(estado().identidade.shopee) + '" target="_blank" rel="noopener">Shopee</a><a class="botao-linha" href="' + ui.esc(estado().identidade.mercadoLivre) + '" target="_blank" rel="noopener">Mercado Livre</a></div>';
-    raiz.innerHTML = '<div class="ficha"><div class="galeria"><img class="galeria-principal" id="foto-principal" src="' + ui.url(fotoInicial.arquivo) + '" alt="' + ui.esc(fotoInicial.legenda) + '"><div class="miniaturas">' + miniaturas + '</div><p class="discreto" id="legenda-foto">' + ui.esc(fotoInicial.legenda) + " · sessão " + ui.esc(dinheiro.dataBR(produto.sessao)) + '</p></div><div class="cartao">' + tag + '<p class="discreto">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h1>" + ui.esc(produto.titulo) + "</h1>" + precoBloco + "<p>" + estoqueLinha + " · " + ui.esc(produto.peso) + " g · " + ui.esc(produto.medidas) + "</p><p>" + ui.esc(produto.descricao) + "</p>" + lojas + '<h2>Filamento</h2><div class="amostras" id="amostras">' + amostras + '</div><p id="cor-nome">' + ui.esc(produto.cores[0].nome) + '</p><div class="linha" id="tamanhos">' + tamanhos + "</div>" + (etapas ? "<h2>Personalização</h2>" + etapas : "") + '<label>Quantidade<input id="qtd" type="number" min="1" value="1"></label><div class="linha">' + compraPeca + '<button class="botao-linha" type="button" id="favorito">Favoritar</button></div>' + (produto.personalizavel || sobMedida ? '<button class="botao-teal" type="button" id="pedir-orcamento">Pedir orçamento</button>' : "") + '<a class="botao-linha" href="' + ui.esc(whats) + '" target="_blank" rel="noopener">Chamar no WhatsApp</a><h2 id="frete-titulo">Calcular frete</h2><form id="frete-ficha" class="linha"><input name="cep" inputmode="numeric" placeholder="CEP" maxlength="9"><button class="botao-linha" type="submit">Cotar</button></form><div id="frete-resultado"></div></div></div><section class="grade-3"><article class="cartao"><h2>Perguntas</h2>' + perguntas + '<form id="nova-pergunta" class="formulario"><label>Sua pergunta<input name="texto" required></label><button class="botao-linha" type="submit">Enviar</button></form></article><article class="cartao"><h2>Avaliações</h2>' + avaliacoes + "</article></section>" + trilho("Relacionados", relacionados);
+    var favoritoAtivo = estado().favoritos.indexOf(produto.id) >= 0;
+    var lojas = '<div class="lojas-ficha"><a class="botao-linha" href="' + ui.esc(estado().identidade.shopee) + '" target="_blank" rel="noopener">' + ico("shopee") + 'Shopee</a><a class="botao-linha" href="' + ui.esc(estado().identidade.mercadoLivre) + '" target="_blank" rel="noopener">' + ico("mercadolivre") + "Mercado Livre</a></div>";
+    var orcamento = (produto.personalizavel || sobMedida) ? '<button class="botao-teal" type="button" id="pedir-orcamento">' + ico("documento") + "Pedir orçamento</button>" : "";
+    var acoes = '<div class="acoes-ficha">' + compraPeca + '<div class="acoes-dupla"><button class="botao-linha" type="button" id="favorito">' + ico("coracao") + '<span id="favorito-rotulo">' + (favoritoAtivo ? "Favorito" : "Favoritar") + '</span></button><a class="botao-linha" href="' + ui.esc(whats) + '" target="_blank" rel="noopener">' + ico("whatsapp") + "WhatsApp</a></div>" + orcamento + "</div>";
+    raiz.innerHTML = '<div class="ficha"><div class="galeria"><img class="galeria-principal" id="foto-principal" src="' + ui.url(fotoInicial.arquivo) + '" alt="' + ui.esc(fotoInicial.legenda) + '"><div class="miniaturas">' + miniaturas + '</div><p class="discreto" id="legenda-foto">' + ui.esc(fotoInicial.legenda) + " · sessão " + ui.esc(dinheiro.dataBR(produto.sessao)) + '</p></div><div class="cartao ficha-info">' + tag + '<p class="discreto">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h1>" + ui.esc(produto.titulo) + "</h1>" + precoBloco + '<p class="meta-peca"><span>' + estoqueLinha + "</span><span>" + ui.esc(produto.peso) + " g</span><span>" + ui.esc(produto.medidas) + "</span></p><p>" + ui.esc(produto.descricao) + "</p>" + lojas + '<section class="bloco-ficha"><h2>Filamento</h2><div class="amostras" id="amostras">' + amostras + '</div><p id="cor-nome">' + ui.esc(produto.cores[0].nome) + '</p><div class="linha" id="tamanhos">' + tamanhos + "</div></section>" + (etapas ? '<section class="bloco-ficha"><h2>Personalização</h2><div class="formulario">' + etapas + "</div></section>" : "") + '<label class="qtd-ficha">Quantidade<input id="qtd" type="number" min="1" value="1"></label>' + acoes + '<section class="frete-caixa"><h2 id="frete-titulo">Calcular frete</h2><form id="frete-ficha" class="frete-form"><input name="cep" inputmode="numeric" placeholder="CEP" maxlength="9" aria-label="CEP"><button class="botao" type="submit">' + ico("caminhao") + 'Cotar</button></form><div id="frete-resultado"></div></section></div></div><section class="grade-3 painel-ficha"><article class="cartao"><h2>Perguntas</h2>' + perguntas + '<form id="nova-pergunta" class="formulario"><label>Sua pergunta<input name="texto" required></label><button class="botao" type="submit">' + ico("contato") + "Enviar</button></form></article><article class=\"cartao\"><h2>Avaliações</h2>" + avaliacoes + "</article></section>" + trilho("Relacionados", relacionados);
     var cor = produto.cores[0].nome;
     var tamanho = produto.tamanhos[0];
     document.getElementById("amostras").addEventListener("click", function (evento) {
@@ -318,7 +324,7 @@
         if (atual.favoritos.indexOf(produto.id) >= 0) atual.favoritos = atual.favoritos.filter(function (item) { return item !== produto.id; });
         else atual.favoritos.push(produto.id);
       });
-      document.getElementById("favorito").textContent = estado().favoritos.indexOf(produto.id) >= 0 ? "Favorito" : "Favoritar";
+      document.getElementById("favorito-rotulo").textContent = estado().favoritos.indexOf(produto.id) >= 0 ? "Favorito" : "Favoritar";
     });
     var pedir = document.getElementById("pedir-orcamento");
     if (pedir) pedir.addEventListener("click", function () {

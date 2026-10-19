@@ -22,6 +22,24 @@
   .slide { grid-template-columns: 1fr; padding: 24px 56px 40px; }
   .slide img { display: none; }
 }
+.ficha { align-items: start; }
+.ficha-info { display: grid; gap: 14px; align-content: start; }
+.ficha-info > h1, .ficha-info > h2, .ficha-info > p, .bloco-ficha h2, .frete-caixa h2 { margin: 0; }
+.ficha-info > h1 { font-size: 1.7rem; line-height: 1.2; }
+.preco-bloco, .bloco-ficha, .frete-caixa, .acoes-ficha { display: grid; gap: 10px; }
+.meta-peca { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
+.meta-peca span { background: var(--creme); border-radius: 999px; min-height: 36px; padding: 6px 12px; display: inline-flex; align-items: center; }
+.lojas-ficha, .acoes-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.lojas-ficha .botao-linha, .acoes-dupla .botao-linha, .acoes-ficha .botao, .acoes-ficha .botao-teal { width: 100%; justify-content: center; }
+.qtd-ficha { max-width: 160px; }
+.frete-caixa { padding: 14px; border: 2px solid var(--linha); border-radius: 16px; }
+.frete-form { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+.frete-form input { width: 100%; margin: 0; }
+.painel-ficha { margin-top: 20px; }
+.ficha-info .botao:hover, .ficha-info .botao-linha:hover, .ficha-info .botao-teal:hover { transform: none; }
+@media (max-width: 720px) {
+  .lojas-ficha, .acoes-dupla, .frete-form { grid-template-columns: 1fr; }
+}
 .trilho { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 1fr); gap: 14px; overflow-x: auto; padding-bottom: 8px; max-width: 100%; }
 .mesa { display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: center; transition: transform 0.18s ease; }
 .mesa:hover { transform: translateY(-3px); }

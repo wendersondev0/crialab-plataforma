@@ -41,7 +41,10 @@
     mercadolivre: svg('<path' + traco + ' d="M4 10 12 4l8 6"/><path' + traco + ' d="M6 10v8h12v-8"/><path' + traco + ' d="M10 18v-4h4v4"/>'),
     email: svg('<rect' + traco + ' x="3" y="5" width="18" height="14" rx="2"/><path' + traco + ' d="m4 7 8 6 8-6"/>'),
     telefone: svg('<path' + traco + ' d="M8 4h3l1 4-2 1a12 12 0 0 0 5 5l1-2 4 1v3c0 .6-.4 1-1 1A15 15 0 0 1 5 6c0-.6.4-1 1-1z"/>'),
-    sino: svg('<path' + traco + ' d="M6 16h12l-1.2-2.2V10a4.8 4.8 0 0 0-9.6 0v3.8z"/><path' + traco + ' d="M10 16a2 2 0 0 0 4 0"/>')
+    sino: svg('<path' + traco + ' d="M6 16h12l-1.2-2.2V10a4.8 4.8 0 0 0-9.6 0v3.8z"/><path' + traco + ' d="M10 16a2 2 0 0 0 4 0"/>'),
+    coracao: svg('<path' + traco + ' d="M12 19s-7-4.4-7-8.2A3.8 3.8 0 0 1 12 8a3.8 3.8 0 0 1 7 2.8C19 14.6 12 19 12 19z"/>'),
+    caminhao: svg('<path' + traco + ' d="M3 7h11v8H3z"/><path' + traco + ' d="M14 10h4l3 3v2h-7z"/><circle' + traco + ' cx="7" cy="17.5" r="1.5"/><circle' + traco + ' cx="17" cy="17.5" r="1.5"/>'),
+    documento: svg('<path' + traco + ' d="M7 3h7l5 5v13H7z"/><path' + traco + ' d="M14 3v5h5"/><path' + traco + ' d="M10 13h6M10 17h6"/>')
   };
 
   function ativo(href) {
@@ -187,7 +190,7 @@
     return categoria ? categoria.nome : id;
   }
 
-  root.CriaUi = { url: url, esc: esc, vazio: vazio, nomeCategoria: nomeCategoria, redes: function () { return redes(root.Cria.estado.identidade, false); } };
+  root.CriaUi = { url: url, esc: esc, vazio: vazio, nomeCategoria: nomeCategoria, icone: function (nome) { return icones[nome] || ""; }, redes: function () { return redes(root.Cria.estado.identidade, false); } };
   root.CriaCasca = { montar: montar, atualizar: montar, ehAdmin: ehAdmin };
   montar();
 })(window);
