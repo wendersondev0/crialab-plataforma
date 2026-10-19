@@ -124,7 +124,7 @@ Arquivos: `index.html`, `paginas/sobre.html`, `css/base.css`, `js/casca.js`, `ma
 
 `js/casca.js` monta o mesmo cabeçalho e o mesmo rodapé em todas as páginas que vierem depois.
 
-A home mostra logo, letreiro, mascote, nome Cria Lab DM e um bloco “Na mesa agora” com dois trabalhos de exemplo (máquina, peça provisória, horário). O bloco ocupa o lugar de vitrine da oficina. Busca, categorias e ofertas ficam para a fase 2; o campo de busca pode aparecer desenhado, com o destino ainda vazio.
+A home mostra logo, letreiro, mascote, nome Cria Lab DM e um bloco “Na mesa agora” com dois trabalhos de exemplo (peça provisória e horário). O nome da impressora não aparece para o cliente. O bloco ocupa o lugar de vitrine da oficina. Busca, categorias e ofertas ficam para a fase 2; o campo de busca pode aparecer desenhado, com o destino ainda vazio.
 
 O rodapé e a página Sobre mostram CNPJ, e-mail, telefone, WhatsApp, Instagram, TikTok, YouTube, Shopee e o link de exemplo do Mercado Livre. Endereço e horário aparecem como “a definir”.
 
@@ -221,7 +221,7 @@ A configuração edita frete grátis, desconto à vista, faixas de CEP, cupom, p
 
 Critério:
 
-- [ ] Pausar a peça 24/05 tira ela da busca e a ficha direta explica que está pausada.
+- [x] Pausar a peça 24/05 tira ela da busca e a ficha direta explica que está pausada.
 - [ ] Esgotar zera a compra da peça pronta e mantém a ficha visível.
 - [ ] Trocar o frete grátis para R$ 50 muda o checkout de um carrinho novo. O pedido já pago continua com o frete que tinha.
 - [ ] Depoimento com o interruptor desligado não aparece no site. Ligado, aparece.
@@ -488,7 +488,7 @@ Critério:
 
 ## Ideias novas adotadas
 
-- **Na mesa agora.** A home mostra a fila curta do que está imprimindo. Substitui qualquer bloco de outras lojas e liga a vitrine ao dia da oficina.
+- **Na mesa agora.** A home mostra a fila curta do que está imprimindo, sem o nome da máquina. As impressoras ficam só no patrimônio da administração.
 - **Amostras de filamento.** A cor na ficha é uma fileira de amostras. A pessoa vê o tom antes de ler o nome.
 - **Venda de balcão.** Data, item, quantidade e valor já nascem como receita do mês, no mesmo caderno das vendas da planilha.
 - **Caderno, não ERP.** O financeiro repete os blocos que o dono já usa: gastos fixos, energia, filamentos e outros insumos.

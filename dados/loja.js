@@ -47,6 +47,6 @@ window.CriaDados.depoimentos = [
   { id: "dep-2", autor: "Oficina vizinha", texto: "Texto guardado, ainda sem publicação.", podeAparecer: false }
 ];
 window.CriaDados.parceiros = [
-  { id: "par-1", nome: "Ateliê da rua", podeAparecer: true },
-  { id: "par-2", nome: "Parceiro em conversa", podeAparecer: false }
+  { id: "par-1", nome: "Mercearia Vila Verde", podeAparecer: true },
+  { id: "par-2", nome: "GoFit", podeAparecer: true }
 ];

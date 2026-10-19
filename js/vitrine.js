@@ -28,8 +28,7 @@
     var trabalhos = estado().impressoes.filter(function (item) { return item.status === "imprimindo"; });
     if (!trabalhos.length) return ui.vazio("A mesa está livre agora.");
     return trabalhos.map(function (item) {
-      var maquina = estado().maquinas.find(function (maq) { return maq.id === item.maquinaId; });
-      return '<article class="mesa cartao"><img src="' + ui.url("marca/mascote.png") + '" alt=""><div><strong>' + ui.esc(item.titulo) + "</strong><p>" + ui.esc(maquina ? maquina.nome : "Máquina") + "</p><p class=\"discreto\">" + ui.esc(dinheiro.dataBR(item.inicio)) + " · " + ui.esc(String(item.inicio).slice(11, 16)) + " às " + ui.esc(String(item.fim).slice(11, 16)) + "</p></div></article>";
+      return '<article class="mesa cartao"><img src="' + ui.url("marca/mascote.png") + '" alt=""><div><strong>' + ui.esc(item.titulo) + "</strong><p class=\"discreto\">" + ui.esc(dinheiro.dataBR(item.inicio)) + " · " + ui.esc(String(item.inicio).slice(11, 16)) + " às " + ui.esc(String(item.fim).slice(11, 16)) + "</p></div></article>";
     }).join("");
   }
   function redes() {
@@ -63,14 +62,11 @@
     var categorias = estado().categorias.map(function (categoria) {
       return '<a class="chip" href="' + ui.url("paginas/busca.html?categoria=" + encodeURIComponent(categoria.id)) + '">' + ui.esc(categoria.nome) + "</a>";
     }).join("");
-    var depoimentos = estado().depoimentos.filter(function (item) { return item.podeAparecer; }).map(function (item) {
-      return "<blockquote><p>" + ui.esc(item.texto) + "</p><strong>" + ui.esc(item.autor) + "</strong></blockquote>";
-    }).join("");
     var parceiros = estado().parceiros.filter(function (item) { return item.podeAparecer; }).map(function (item) {
       return "<span class=\"chip\">" + ui.esc(item.nome) + "</span>";
     }).join("");
     var vistos = estado().vistos.map(achar).filter(Boolean);
-    raiz.innerHTML = '<section class="hero"><div><p class="selo"><img src="' + ui.url("marca/mascote.png") + '" alt="">Oficina da Cria Lab</p><img class="letreiro" src="' + ui.url("marca/logo-completa.jpeg") + '" alt="Cria Lab DM"><h1>Peças impressas na nossa mesa</h1><p>Decoração, chaveiros, utilidades, moldes e encomendas. Quando a peça tem arquivo, você escolhe comprar a peça ou o arquivo.</p>' + buscaCampo("") + '</div><img class="mascote" src="' + ui.url("marca/mascote.png") + '" alt="Pássaro laranja de óculos com mochila de impressora"></section><section><h2>Na mesa agora</h2>' + mesa() + '</section><section><h2>Categorias</h2><div class="chips">' + categorias + "</div></section>" + trilho("Ofertas", produtosVisiveis().filter(function (produto) { return produto.oferta; })) + trilho("Mais vendidos", produtosVisiveis().filter(function (produto) { return produto.maisVendido; })) + trilho("Personalizados", produtosVisiveis().filter(function (produto) { return produto.personalizavel; })) + trilho("Também vendem o arquivo", produtosVisiveis().filter(function (produto) { return produto.comArquivo; })) + trilho("Vistos recentemente", vistos) + '<section class="cartao"><h2>Redes da oficina</h2>' + redes() + (depoimentos ? "<h3>Quem já levou</h3>" + depoimentos : "") + (parceiros ? "<h3>Parceiros</h3><div class=\"chips\">" + parceiros + "</div>" : "") + "</section>";
+    raiz.innerHTML = '<section class="hero"><div><p class="selo"><img src="' + ui.url("marca/mascote.png") + '" alt="">Oficina da Cria Lab</p><img class="letreiro" src="' + ui.url("marca/logo-completa.jpeg") + '" alt="Cria Lab DM"><h1>Peças impressas na nossa mesa</h1><p>Decoração, chaveiros, utilidades, moldes e encomendas. Quando a peça tem arquivo, você escolhe comprar a peça ou o arquivo.</p>' + buscaCampo("") + '</div><img class="mascote" src="' + ui.url("marca/mascote.png") + '" alt="Pássaro laranja de óculos com mochila de impressora"></section><section><h2>Na mesa agora</h2>' + mesa() + '</section><section><h2>Categorias</h2><div class="chips">' + categorias + "</div></section>" + trilho("Ofertas", produtosVisiveis().filter(function (produto) { return produto.oferta; })) + trilho("Mais vendidos", produtosVisiveis().filter(function (produto) { return produto.maisVendido; })) + trilho("Personalizados", produtosVisiveis().filter(function (produto) { return produto.personalizavel; })) + trilho("Também vendem o arquivo", produtosVisiveis().filter(function (produto) { return produto.comArquivo; })) + trilho("Vistos recentemente", vistos) + '<section class="cartao"><h2>Redes da oficina</h2>' + redes() + (parceiros ? "<h3>Parceiros</h3><div class=\"chips\">" + parceiros + "</div>" : "") + "</section>";
     ligarSugestoes();
   }
   function lerConsulta() {
@@ -330,7 +326,10 @@
     var depoimentos = estado().depoimentos.filter(function (item) { return item.podeAparecer; }).map(function (item) {
       return "<blockquote><p>" + ui.esc(item.texto) + "</p><strong>" + ui.esc(item.autor) + "</strong></blockquote>";
     }).join("");
-    raiz.innerHTML = '<section class="hero"><div><img class="letreiro" src="' + ui.url("marca/logo-completa.jpeg") + '" alt=""><h1>' + ui.esc(id.nome) + '</h1><p>CNPJ ' + ui.esc(id.cnpj) + "</p><p>" + ui.esc(id.email) + "</p><p>" + ui.esc(id.telefone) + "</p><p>" + ui.esc(id.endereco || "Endereço a definir") + "</p><p>" + ui.esc(id.horario || "Horário a definir") + "</p>" + redes() + "</div><img class=\"mascote\" src=\"" + ui.url("marca/mascote.png") + '" alt=""></section>' + (depoimentos ? '<section class="cartao"><h2>Depoimentos</h2>' + depoimentos + "</section>" : "") + '<section class="cartao"><h2>Template de postagem</h2><img src="' + ui.url("marca/template-de-postagem.png") + '" alt="Template de postagem da Cria Lab DM"></section>';
+    var parceiros = estado().parceiros.filter(function (item) { return item.podeAparecer; }).map(function (item) {
+      return "<span class=\"chip\">" + ui.esc(item.nome) + "</span>";
+    }).join("");
+    raiz.innerHTML = '<section class="hero"><div><img class="letreiro" src="' + ui.url("marca/logo-completa.jpeg") + '" alt=""><h1>' + ui.esc(id.nome) + '</h1><p>CNPJ ' + ui.esc(id.cnpj) + "</p><p>" + ui.esc(id.email) + "</p><p>" + ui.esc(id.telefone) + "</p><p>" + ui.esc(id.endereco || "Endereço a definir") + "</p><p>" + ui.esc(id.horario || "Horário a definir") + "</p>" + redes() + "</div><img class=\"mascote\" src=\"" + ui.url("marca/mascote.png") + '" alt=""></section>' + (parceiros ? '<section class="cartao"><h2>Parceiros</h2><div class="chips">' + parceiros + "</div></section>" : "") + (depoimentos ? '<section class="cartao"><h2>Depoimentos</h2>' + depoimentos + "</section>" : "") + '<section class="cartao"><h2>Template de postagem</h2><img src="' + ui.url("marca/template-de-postagem.png") + '" alt="Template de postagem da Cria Lab DM"></section>';
   }
 
   if (pagina === "home") home();

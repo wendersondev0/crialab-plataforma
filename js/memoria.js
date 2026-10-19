@@ -49,7 +49,14 @@
   function ler() {
     try {
       var salvo = localStorage.getItem(CHAVE);
-      if (salvo) return JSON.parse(salvo);
+      if (salvo) {
+        var estado = JSON.parse(salvo);
+        var nomes = (estado.parceiros || []).map(function (item) { return item.nome; });
+        if (nomes.indexOf("Ateliê da rua") >= 0 || nomes.indexOf("Parceiro em conversa") >= 0) {
+          estado.parceiros = clonar(root.CriaDados.parceiros);
+        }
+        return estado;
+      }
     } catch (erro) {}
     return cargaInicial();
   }
