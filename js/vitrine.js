@@ -222,7 +222,7 @@
       return '<button type="button" class="botao-linha' + (indice === 0 ? " ativo" : "") + '" data-tamanho="' + ui.esc(tamanho) + '">' + ui.esc(tamanho) + "</button>";
     }).join("");
     var etapas = produto.personalizavel ? produto.etapas.map(function (etapa) {
-      var campo = etapa.tipo === "arquivo" ? '<input type="file" accept="image/*" data-etapa="' + ui.esc(etapa.id) + '">' : '<input data-etapa="' + ui.esc(etapa.id) + '" ' + (etapa.tipo === "numero" ? 'type="number" min="1"' : 'type="text"') + ">";
+      var campo = etapa.tipo === "arquivo" ? '<span class="arquivo-ref"><input type="file" accept="image/*" data-etapa="' + ui.esc(etapa.id) + '"><span class="botao-linha">' + ico("documento") + "Escolher imagem</span><span class=\"arquivo-nome\">Nenhuma imagem</span></span>" : '<input data-etapa="' + ui.esc(etapa.id) + '" ' + (etapa.tipo === "numero" ? 'type="number" min="1"' : 'type="text"') + ">";
       var extra = etapa.acresce ? " · +" + dinheiro.real(etapa.acresce) : "";
       return "<label>" + ui.esc(etapa.nome) + extra + campo + "</label>";
     }).join("") : "";
@@ -248,6 +248,13 @@
     var orcamento = (produto.personalizavel || sobMedida) ? '<button class="botao-teal" type="button" id="pedir-orcamento">' + ico("documento") + "Pedir orçamento</button>" : "";
     var acoes = '<div class="acoes-ficha">' + compraPeca + '<div class="acoes-dupla"><button class="botao-linha" type="button" id="favorito">' + ico("coracao") + '<span id="favorito-rotulo">' + (favoritoAtivo ? "Favorito" : "Favoritar") + '</span></button><a class="botao-linha" href="' + ui.esc(whats) + '" target="_blank" rel="noopener">' + ico("whatsapp") + "WhatsApp</a></div>" + orcamento + "</div>";
     raiz.innerHTML = '<div class="ficha"><div class="galeria"><img class="galeria-principal" id="foto-principal" src="' + ui.url(fotoInicial.arquivo) + '" alt="' + ui.esc(fotoInicial.legenda) + '"><div class="miniaturas">' + miniaturas + '</div><p class="discreto" id="legenda-foto">' + ui.esc(fotoInicial.legenda) + " · sessão " + ui.esc(dinheiro.dataBR(produto.sessao)) + '</p></div><div class="cartao ficha-info">' + tag + '<p class="discreto">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h1>" + ui.esc(produto.titulo) + "</h1>" + precoBloco + '<p class="meta-peca"><span>' + estoqueLinha + "</span><span>" + ui.esc(produto.peso) + " g</span><span>" + ui.esc(produto.medidas) + "</span></p><p>" + ui.esc(produto.descricao) + "</p>" + lojas + '<section class="bloco-ficha"><h2>Filamento</h2><div class="amostras" id="amostras">' + amostras + '</div><p id="cor-nome">' + ui.esc(produto.cores[0].nome) + '</p><div class="linha" id="tamanhos">' + tamanhos + "</div></section>" + (etapas ? '<section class="bloco-ficha"><h2>Personalização</h2><div class="formulario">' + etapas + "</div></section>" : "") + '<label class="qtd-ficha">Quantidade<input id="qtd" type="number" min="1" value="1"></label>' + acoes + '<section class="frete-caixa"><h2 id="frete-titulo">Calcular frete</h2><form id="frete-ficha" class="frete-form"><input name="cep" inputmode="numeric" placeholder="CEP" maxlength="9" aria-label="CEP"><button class="botao" type="submit">' + ico("caminhao") + 'Cotar</button></form><div id="frete-resultado"></div></section></div></div><section class="grade-3 painel-ficha"><article class="cartao"><h2>Perguntas</h2>' + perguntas + '<form id="nova-pergunta" class="formulario"><label>Sua pergunta<input name="texto" required></label><button class="botao" type="submit">' + ico("contato") + "Enviar</button></form></article><article class=\"cartao\"><h2>Avaliações</h2>" + avaliacoes + "</article></section>" + trilho("Relacionados", relacionados);
+    document.querySelectorAll(".arquivo-ref input").forEach(function (campoArquivo) {
+      campoArquivo.addEventListener("change", function () {
+        var nome = campoArquivo.files && campoArquivo.files[0] ? campoArquivo.files[0].name : "Nenhuma imagem";
+        var alvo = campoArquivo.parentElement.querySelector(".arquivo-nome");
+        if (alvo) alvo.textContent = nome;
+      });
+    });
     var cor = produto.cores[0].nome;
     var tamanho = produto.tamanhos[0];
     document.getElementById("amostras").addEventListener("click", function (evento) {

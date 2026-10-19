@@ -6,6 +6,9 @@
 
   function estado() { return Cria.estado; }
   function config() { return estado().configuracao; }
+  function ico(nome) {
+    return '<span class="ico">' + (ui.icone ? ui.icone(nome) : "") + "</span>";
+  }
 
   function totais(frete, forma, codigoCupom) {
     var cupom = CriaCarrinho.cupomPorCodigo(estado(), codigoCupom);
@@ -29,7 +32,7 @@
       raiz.innerHTML = "<h1>Carrinho</h1>" + ui.vazio("O carrinho está vazio.");
       return;
     }
-    raiz.innerHTML = "<h1>Carrinho</h1><div id=\"linhas\"></div><p><a class=\"botao\" href=\"" + ui.url("paginas/checkout.html") + "\">Ir para o checkout</a></p>";
+    raiz.innerHTML = "<h1>Carrinho</h1><div id=\"linhas\"></div><p class=\"acao-carrinho\"><a class=\"botao\" href=\"" + ui.url("paginas/checkout.html") + "\">" + ico("carrinho") + "Finalizar pedido</a></p>";
     pintarLinhas();
   }
 
@@ -37,7 +40,7 @@
     var caixa = document.getElementById("linhas");
     if (!caixa) return;
     caixa.innerHTML = estado().carrinho.map(function (item) {
-      return '<article class="cartao linha"><div><strong>' + ui.esc(item.titulo) + "</strong><p>" + ui.esc(item.tipo === "personalizado" ? "Personalizado" : "Produto") + (item.detalhes ? " · " + ui.esc(item.detalhes) : "") + "</p><p>" + dinheiro.real(item.precoUnitario) + "</p></div><label>Qtd<input data-qtd=\"" + ui.esc(item.id) + "\" type=\"number\" min=\"1\" value=\"" + item.quantidade + "\"></label><button class=\"botao-linha\" type=\"button\" data-remover=\"" + ui.esc(item.id) + "\">Tirar</button></article>";
+      return '<article class="cartao item-carrinho"><div><strong>' + ui.esc(item.titulo) + "</strong><p>" + ui.esc(item.tipo === "personalizado" ? "Personalizado" : "Produto") + (item.detalhes ? " · " + ui.esc(item.detalhes) : "") + "</p><p class=\"preco\">" + dinheiro.real(item.precoUnitario) + "</p></div><label class=\"qtd-ficha\">Quantidade<input data-qtd=\"" + ui.esc(item.id) + "\" type=\"number\" min=\"1\" value=\"" + item.quantidade + "\"></label><button class=\"botao-linha\" type=\"button\" data-remover=\"" + ui.esc(item.id) + "\">Tirar</button></article>";
     }).join("");
     caixa.querySelectorAll("[data-qtd]").forEach(function (campo) {
       campo.addEventListener("change", function () {
@@ -62,14 +65,14 @@
   }
 
   function checkout() {
-    document.title = "Checkout · Cria Lab DM";
+    document.title = "Fechamento · Cria Lab DM";
     if (!estado().carrinho.length) {
-      raiz.innerHTML = "<h1>Checkout</h1>" + ui.vazio("O carrinho está vazio.");
+      raiz.innerHTML = "<h1>Fechamento</h1>" + ui.vazio("O carrinho está vazio.");
       return;
     }
     var rascunho = lerRascunho();
     var endereco = (estado().enderecos[0] && estado().enderecos[0].linha) || "";
-    raiz.innerHTML = '<h1>Checkout</h1><div class="checkout"><form id="fechamento" class="cartao formulario"><h2>Entrega e pagamento</h2><label>Endereço<input name="endereco" value="' + ui.esc(rascunho.endereco || endereco) + '" required></label><label>CEP<input name="cep" inputmode="numeric" value="' + ui.esc(rascunho.cep || "") + '" required></label><div id="opcoes-frete"></div><label>Cupom da loja<input name="cupom" value="' + ui.esc(rascunho.cupom || "") + '" placeholder="OFICINA10"></label><label>Pagamento<select name="forma"><option value="pix">PIX</option><option value="boleto">Boleto</option><option value="cartao">Cartão</option></select></label><p id="mensagem"></p><button class="botao" type="submit">Confirmar pedido</button></form><aside class="cartao resumo" id="resumo"></aside></div><div class="barra-mobile" id="barra-mobile"></div><div id="depois"></div>';
+    raiz.innerHTML = '<h1>Fechamento</h1><div class="checkout"><form id="fechamento" class="cartao formulario"><h2>Entrega e pagamento</h2><label>Endereço<input name="endereco" value="' + ui.esc(rascunho.endereco || endereco) + '" required></label><label>CEP<input name="cep" inputmode="numeric" value="' + ui.esc(rascunho.cep || "") + '" required></label><div id="opcoes-frete"></div><label>Cupom da loja<input name="cupom" value="' + ui.esc(rascunho.cupom || "") + '" placeholder="OFICINA10"></label><label>Pagamento<select name="forma"><option value="pix">PIX</option><option value="boleto">Boleto</option><option value="cartao">Cartão</option></select></label><p id="mensagem"></p><button class="botao" type="submit">' + ico("carrinho") + 'Confirmar pedido</button></form><aside class="cartao resumo" id="resumo"></aside></div><div class="barra-mobile" id="barra-mobile"></div><div id="depois"></div>';
     var form = document.getElementById("fechamento");
     if (rascunho.forma) form.forma.value = rascunho.forma;
     function dadosForm() {
@@ -108,7 +111,7 @@
       if (conta.cupomInvalido) msg.innerHTML = '<span class="erro">Cupom não encontrado.</span>';
       else msg.innerHTML = "";
       var linhas = estado().carrinho.map(function (item) {
-        return "<p>" + ui.esc(item.titulo) + " · " + item.quantidade + " × " + dinheiro.real(item.precoUnitario) + (item.fisico ? "" : " · digital") + "</p>";
+        return "<p>" + ui.esc(item.titulo) + " · " + item.quantidade + " × " + dinheiro.real(item.precoUnitario) + "</p>";
       }).join("");
       var resumo = linhas + "<p>Subtotal " + dinheiro.real(conta.subtotal + conta.descontoCupom) + "</p>" + (conta.descontoCupom ? "<p>Cupom − " + dinheiro.real(conta.descontoCupom) + "</p>" : "") + "<p>Desconto à vista − " + dinheiro.real(conta.descontoAVista) + "</p><p>Frete " + dinheiro.real(conta.freteCobrado) + "</p><p class=\"numero-grande\">Total " + dinheiro.real(conta.total) + "</p>" + (atual.forma === "cartao" ? "<p>" + config().parcelas + "x de " + dinheiro.real(conta.parcelas) + " sem o desconto à vista</p>" : "<p>PIX e boleto já com " + Math.round(config().descontoAVista * 100) + "% de desconto.</p>");
       document.getElementById("resumo").innerHTML = "<h2>Resumo</h2>" + resumo;

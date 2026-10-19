@@ -22,6 +22,12 @@
   .slide { grid-template-columns: 1fr; padding: 24px 56px 40px; }
   .slide img { display: none; }
 }
+.item-carrinho { display: grid; grid-template-columns: 1fr 140px auto; gap: 14px; align-items: center; }
+.item-carrinho p { margin: 4px 0 0; }
+.acao-carrinho { margin-top: 16px; }
+.arquivo-ref { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-weight: 600; }
+.arquivo-ref input[type="file"] { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+.arquivo-nome { font-weight: 600; color: var(--tinta); opacity: 0.75; }
 .ficha { align-items: start; }
 .ficha-info { display: grid; gap: 14px; align-content: start; }
 .ficha-info > h1, .ficha-info > h2, .ficha-info > p, .bloco-ficha h2, .frete-caixa h2 { margin: 0; }
@@ -38,7 +44,7 @@
 .painel-ficha { margin-top: 20px; }
 .ficha-info .botao:hover, .ficha-info .botao-linha:hover, .ficha-info .botao-teal:hover { transform: none; }
 @media (max-width: 720px) {
-  .lojas-ficha, .acoes-dupla, .frete-form { grid-template-columns: 1fr; }
+  .lojas-ficha, .acoes-dupla, .frete-form, .item-carrinho { grid-template-columns: 1fr; }
 }
 .trilho { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 1fr); gap: 14px; overflow-x: auto; padding-bottom: 8px; max-width: 100%; }
 .mesa { display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: center; transition: transform 0.18s ease; }

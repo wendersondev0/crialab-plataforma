@@ -205,7 +205,7 @@
   function marketing() {
     document.title = "Marketing · Administração";
     var cupom = (estado().configuracao.cupons || [])[0] || { codigo: "", percentual: 0, ativo: true };
-    raiz.innerHTML = '<h1>Marketing</h1><p>Cupom da própria loja. O desconto vale no checkout.</p><form id="cupom" class="cartao formulario"><label>Código<input name="codigo" value="' + ui.esc(cupom.codigo) + '"></label><label>Percentual<input name="percentual" type="number" step="0.01" min="0" max="1" value="' + cupom.percentual + '"></label><label class="linha"><input type="checkbox" name="ativo"' + (cupom.ativo ? " checked" : "") + "> Cupom ativo</label><button class=\"botao\" type=\"submit\">Salvar cupom</button></form>";
+    raiz.innerHTML = '<h1>Marketing</h1><p>Cupom da própria loja. O desconto vale no fechamento do pedido.</p><form id="cupom" class="cartao formulario"><label>Código<input name="codigo" value="' + ui.esc(cupom.codigo) + '"></label><label>Percentual<input name="percentual" type="number" step="0.01" min="0" max="1" value="' + cupom.percentual + '"></label><label class="linha"><input type="checkbox" name="ativo"' + (cupom.ativo ? " checked" : "") + "> Cupom ativo</label><button class=\"botao\" type=\"submit\">Salvar cupom</button></form>";
     document.getElementById("cupom").addEventListener("submit", function (evento) {
       evento.preventDefault();
       var dados = new FormData(evento.target);
