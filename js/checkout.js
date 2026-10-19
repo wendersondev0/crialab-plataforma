@@ -37,7 +37,7 @@
     var caixa = document.getElementById("linhas");
     if (!caixa) return;
     caixa.innerHTML = estado().carrinho.map(function (item) {
-      return '<article class="cartao linha"><div><strong>' + ui.esc(item.titulo) + "</strong><p>" + ui.esc(item.tipo === "arquivo" ? "Arquivo digital" : item.tipo === "personalizado" ? "Personalizado" : "Peça pronta") + (item.detalhes ? " · " + ui.esc(item.detalhes) : "") + "</p><p>" + dinheiro.real(item.precoUnitario) + "</p></div><label>Qtd<input data-qtd=\"" + ui.esc(item.id) + "\" type=\"number\" min=\"1\" value=\"" + item.quantidade + "\"></label><button class=\"botao-linha\" type=\"button\" data-remover=\"" + ui.esc(item.id) + "\">Tirar</button></article>";
+      return '<article class="cartao linha"><div><strong>' + ui.esc(item.titulo) + "</strong><p>" + ui.esc(item.tipo === "personalizado" ? "Personalizado" : "Produto") + (item.detalhes ? " · " + ui.esc(item.detalhes) : "") + "</p><p>" + dinheiro.real(item.precoUnitario) + "</p></div><label>Qtd<input data-qtd=\"" + ui.esc(item.id) + "\" type=\"number\" min=\"1\" value=\"" + item.quantidade + "\"></label><button class=\"botao-linha\" type=\"button\" data-remover=\"" + ui.esc(item.id) + "\">Tirar</button></article>";
     }).join("");
     caixa.querySelectorAll("[data-qtd]").forEach(function (campo) {
       campo.addEventListener("change", function () {
@@ -90,7 +90,7 @@
       var cotacao = temFisico ? CriaCalculos.cotarFrete(digitos, config().faixasCep) : { opcoes: [] };
       var freteEscolhido = 0;
       var caixaFrete = document.getElementById("opcoes-frete");
-      if (!temFisico) caixaFrete.innerHTML = "<p>Pedido só com arquivo: sem frete.</p>";
+      if (!temFisico) caixaFrete.innerHTML = "<p>Sem peça física neste pedido.</p>";
       else if (digitos.length !== 8) caixaFrete.innerHTML = '<p class="erro">Informe o CEP com 8 dígitos.</p>';
       else if (cotacao.erro) caixaFrete.innerHTML = '<p class="erro">' + ui.esc(cotacao.erro) + "</p>";
       else {

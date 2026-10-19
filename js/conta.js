@@ -6,34 +6,17 @@
 
   function estado() { return Cria.estado; }
 
-  function baixarArquivo(item) {
-    var conteudo = "Arquivo simulado da Cria Lab DM\n" + item.titulo + "\n" + (item.arquivoFormato || "") + "\nLicença " + (item.arquivoLicenca || "");
-    var blob = new Blob([conteudo], { type: "text/plain" });
-    var link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = item.arquivoNome || "arquivo-simulado.txt";
-    link.click();
-    URL.revokeObjectURL(link.href);
-  }
-
   function conta() {
     document.title = "Conta · Cria Lab DM";
     var vazio = estado().perfil === "vazia";
     var cliente = estado().cliente;
     var pedidos = vazio ? [] : estado().pedidos;
-    var downloads = [];
-    pedidos.forEach(function (pedido) {
-      if (pedido.status === "aguardando pagamento" || pedido.status === "cancelado") return;
-      pedido.itens.forEach(function (item) {
-        if (item.arquivo) downloads.push(item);
-      });
-    });
     var orcamentos = vazio ? [] : estado().orcamentosCliente;
     var favoritos = vazio ? [] : estado().favoritos.map(function (id) {
       return estado().produtos.find(function (produto) { return produto.id === id; });
     }).filter(Boolean);
     var perguntas = vazio ? [] : estado().perguntas.filter(function (item) { return item.autor === cliente.nome; });
-    raiz.innerHTML = '<div class="linha"><h1>Conta</h1><button class="botao-linha" type="button" id="trocar-perfil">' + (vazio ? "Voltar à conta exemplo" : "Ver conta vazia") + '</button></div><section class="cartao"><h2>Dados pessoais</h2><form id="dados" class="formulario"><label>Nome<input name="nome" value="' + ui.esc(vazio ? "" : cliente.nome) + '"></label><label>E-mail<input name="email" type="email" value="' + ui.esc(vazio ? "" : cliente.email) + '"></label><label>Telefone<input name="telefone" value="' + ui.esc(vazio ? "" : cliente.telefone) + '"></label><label>Documento<input name="documento" value="' + ui.esc(vazio ? "" : cliente.documento) + '"></label><button class="botao" type="submit">Salvar</button></form></section><section><h2>Pedidos</h2><div id="pedidos"></div></section><section class="cartao"><h2>Downloads</h2><div id="downloads"></div></section><section class="cartao"><h2>Orçamentos</h2><div id="orcamentos"></div></section><section class="cartao"><h2>Endereços</h2><div id="enderecos"></div><form id="novo-endereco" class="formulario"><label>Novo endereço<input name="linha" required></label><label>CEP<input name="cep" required></label><button class="botao-linha" type="submit">Guardar endereço</button></form></section><section><h2>Favoritos</h2><div id="favoritos" class="grade"></div></section><section class="cartao"><h2>Perguntas</h2><div id="perguntas"></div></section>';
+    raiz.innerHTML = '<div class="linha"><h1>Conta</h1><button class="botao-linha" type="button" id="trocar-perfil">' + (vazio ? "Voltar à conta exemplo" : "Ver conta vazia") + '</button></div><section class="cartao"><h2>Dados pessoais</h2><form id="dados" class="formulario"><label>Nome<input name="nome" value="' + ui.esc(vazio ? "" : cliente.nome) + '"></label><label>E-mail<input name="email" type="email" value="' + ui.esc(vazio ? "" : cliente.email) + '"></label><label>Telefone<input name="telefone" value="' + ui.esc(vazio ? "" : cliente.telefone) + '"></label><label>Documento<input name="documento" value="' + ui.esc(vazio ? "" : cliente.documento) + '"></label><button class="botao" type="submit">Salvar</button></form></section><section><h2>Pedidos</h2><div id="pedidos"></div></section><section class="cartao"><h2>Orçamentos</h2><div id="orcamentos"></div></section><section class="cartao"><h2>Endereços</h2><div id="enderecos"></div><form id="novo-endereco" class="formulario"><label>Novo endereço<input name="linha" required></label><label>CEP<input name="cep" required></label><button class="botao-linha" type="submit">Guardar endereço</button></form></section><section><h2>Favoritos</h2><div id="favoritos" class="grade"></div></section><section class="cartao"><h2>Perguntas</h2><div id="perguntas"></div></section>';
     document.getElementById("pedidos").innerHTML = pedidos.length ? pedidos.map(function (pedido) {
       var devolver = pedido.status === "entregue" ? '<button class="botao-linha" type="button" data-devolver="' + ui.esc(pedido.id) + '">Pedir devolução</button>' : "";
       var recibo = pedido.status !== "aguardando pagamento" && pedido.status !== "cancelado" ? '<a class="botao-linha" href="' + ui.url("paginas/recibo.html?id=" + encodeURIComponent(pedido.id)) + '">Recibo</a>' : "";
@@ -41,9 +24,6 @@
       var cancelar = pedido.status === "aguardando pagamento" ? '<button class="botao-linha" type="button" data-cancelar="' + ui.esc(pedido.id) + '">Cancelar pedido</button>' : "";
       return '<article class="cartao"><strong>' + ui.esc(pedido.id) + "</strong><p>" + ui.esc(pedido.status) + " · " + dinheiro.real(pedido.total) + "</p><p>" + pedido.itens.map(function (item) { return ui.esc(item.titulo) + " × " + item.quantidade; }).join(", ") + "</p><div class=\"linha\">" + pagar + cancelar + devolver + recibo + "</div></article>";
     }).join("") : ui.vazio("Nenhum pedido por aqui.");
-    document.getElementById("downloads").innerHTML = downloads.length ? downloads.map(function (item, indice) {
-      return '<p><button class="botao-linha" type="button" data-download="' + indice + '">Baixar ' + ui.esc(item.arquivoFormato || "arquivo") + "</button> <span class=\"discreto\">" + ui.esc(item.arquivoLicenca || "") + "</span></p>";
-    }).join("") : "<p>Nenhum arquivo liberado.</p>";
     document.getElementById("orcamentos").innerHTML = orcamentos.length ? orcamentos.map(function (item) {
       var acoes = item.status === "respondido" ? '<button class="botao" type="button" data-aceitar="' + ui.esc(item.id) + '">Aceitar ' + dinheiro.real(item.valor) + '</button><button class="botao-linha" type="button" data-recusar="' + ui.esc(item.id) + '">Recusar</button>' : "";
       return "<article><strong>" + ui.esc(item.titulo) + "</strong><p>" + ui.esc(item.status) + "</p><p>" + ui.esc(item.detalhes) + "</p>" + (item.valor ? "<p>" + dinheiro.real(item.valor) + "</p>" : "") + '<div class="linha">' + acoes + "</div></article>";
@@ -82,7 +62,6 @@
       var aceitar = evento.target.getAttribute && evento.target.getAttribute("data-aceitar");
       var recusar = evento.target.getAttribute && evento.target.getAttribute("data-recusar");
       var cancelar = evento.target.getAttribute && evento.target.getAttribute("data-cancelar");
-      var download = evento.target.getAttribute && evento.target.getAttribute("data-download");
       if (pagar) {
         Cria.alterar(function (atual) {
           var pedido = atual.pedidos.find(function (item) { return item.id === pagar; });
@@ -143,16 +122,6 @@
           if (pedido && pedido.status === "aguardando pagamento") pedido.status = "cancelado";
         });
         conta();
-      }
-      if (download != null) {
-        var liberados = [];
-        estado().pedidos.forEach(function (pedido) {
-          if (pedido.status === "aguardando pagamento" || pedido.status === "cancelado") return;
-          pedido.itens.forEach(function (item) {
-            if (item.arquivo) liberados.push(item);
-          });
-        });
-        baixarArquivo(liberados[Number(download)]);
       }
     }
     var formEndereco = document.getElementById("novo-endereco");

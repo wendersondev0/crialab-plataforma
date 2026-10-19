@@ -55,6 +55,16 @@
         if (nomes.indexOf("Ateliê da rua") >= 0 || nomes.indexOf("Parceiro em conversa") >= 0) {
           estado.parceiros = clonar(root.CriaDados.parceiros);
         }
+        estado.produtos = estado.produtos || [];
+        var faltantes = (root.CriaDados.produtos || []).filter(function (produto) {
+          return !estado.produtos.some(function (item) { return item.id === produto.id; });
+        });
+        if (faltantes.length) estado.produtos = faltantes.map(clonar).concat(estado.produtos);
+        estado.produtos.forEach(function (produto) {
+          produto.comArquivo = false;
+          produto.precoArquivo = 0;
+          produto.arquivo = null;
+        });
         return estado;
       }
     } catch (erro) {}

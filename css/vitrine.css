@@ -1,3 +1,27 @@
+.carrossel { position: relative; overflow: hidden; border-radius: var(--raio); background: var(--branco); min-height: 220px; }
+.carrossel-trilho { display: flex; transition: transform 0.45s ease; }
+.slide { min-width: 100%; min-height: 220px; display: grid; grid-template-columns: 1.4fr 0.6fr; align-items: center; gap: 16px; padding: 28px 64px; color: var(--branco); }
+.slide h2 { margin: 0 0 8px; font-size: clamp(1.4rem, 3vw, 2.2rem); }
+.slide p { margin: 0; }
+.slide img { width: 140px; height: 140px; object-fit: contain; justify-self: end; }
+.fundo-laranja { background: linear-gradient(120deg, #e8772a, #c85e16); }
+.fundo-teal { background: linear-gradient(120deg, #148f93, #0e6d70); }
+.fundo-tinta { background: linear-gradient(120deg, #1b2430, #314056); }
+.slide .selo { display: inline-flex; margin-bottom: 8px; background: rgba(255, 255, 255, 0.18); color: var(--branco); border-radius: 999px; padding: 4px 12px; font-weight: 800; }
+.carrossel-seta, .carrossel-pontos button { position: absolute; border: 0; background: var(--branco); color: var(--tinta); cursor: pointer; }
+.carrossel-seta { top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 999px; font-size: 1.6rem; }
+.carrossel-seta.anterior { left: 10px; }
+.carrossel-seta.proxima { right: 10px; }
+.carrossel-pontos { position: absolute; left: 0; right: 0; bottom: 12px; display: flex; justify-content: center; gap: 8px; }
+.carrossel-pontos button { position: static; width: 12px; height: 12px; min-height: 12px; border-radius: 999px; opacity: 0.55; }
+.carrossel-pontos button.ativo { opacity: 1; width: 28px; }
+.faixa-categorias { margin: 16px 0; }
+.grade.vitrine { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px) {
+  .grade.vitrine { grid-template-columns: repeat(2, 1fr); }
+  .slide { grid-template-columns: 1fr; padding: 24px 56px 40px; }
+  .slide img { display: none; }
+}
 .trilho { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 1fr); gap: 14px; overflow-x: auto; padding-bottom: 8px; max-width: 100%; }
 .mesa { display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: center; transition: transform 0.18s ease; }
 .mesa:hover { transform: translateY(-3px); }

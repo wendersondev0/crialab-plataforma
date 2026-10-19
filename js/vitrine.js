@@ -15,21 +15,29 @@
   function precoVista(valor) {
     return valor * (1 - config().descontoAVista);
   }
+  function personalizado(produto) {
+    return produto.tipo === "personalizado";
+  }
+  function fichaUrl(produto) {
+    return ui.url("paginas/produto.html?id=" + encodeURIComponent(produto.id));
+  }
+  function canais(produto) {
+    var id = estado().identidade;
+    return '<div class="canais"><a href="' + ui.esc(id.shopee) + '" target="_blank" rel="noopener">Shopee</a><a href="' + ui.esc(id.mercadoLivre) + '" target="_blank" rel="noopener">Mercado Livre</a><a href="' + fichaUrl(produto) + '#frete-ficha">Calcular frete</a></div>';
+  }
   function card(produto) {
     var foto = produto.fotos[0];
-    var comparativo = produto.precoComparativo ? "<s>" + dinheiro.real(produto.precoComparativo) + "</s>" : "";
-    return '<a class="produto" href="' + ui.url("paginas/produto.html?id=" + encodeURIComponent(produto.id)) + '"><img src="' + ui.url(foto.arquivo) + '" alt="' + ui.esc(foto.legenda) + '"><div><p class="discreto">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h3>" + ui.esc(produto.titulo) + "</h3><p class=\"preco\">" + comparativo + dinheiro.real(produto.preco) + '</p><p class="vista">À vista ' + dinheiro.real(precoVista(produto.preco)) + "</p></div></a>";
+    var sob = personalizado(produto);
+    var tag = sob ? '<span class="tag tag-pers">Personalizado</span>' : '<span class="tag">Produto</span>';
+    var comparativo = !sob && produto.precoComparativo ? "<s>" + dinheiro.real(produto.precoComparativo) + "</s> " : "";
+    var preco = sob
+      ? '<p class="preco">' + dinheiro.real(produto.preco) + '</p><p class="vista">Preço médio · o valor final sai depois do orçamento</p>'
+      : '<p class="preco">' + comparativo + dinheiro.real(produto.preco) + '</p><p class="vista">À vista ' + dinheiro.real(precoVista(produto.preco)) + "</p>";
+    return '<article class="produto"><a class="produto-foto" href="' + fichaUrl(produto) + '"><img src="' + ui.url(foto.arquivo) + '" alt="' + ui.esc(foto.legenda) + '"></a><div>' + tag + '<p class="discreto">' + ui.esc(ui.nomeCategoria(produto.categoria)) + '</p><h3><a href="' + fichaUrl(produto) + '">' + ui.esc(produto.titulo) + "</a></h3>" + preco + canais(produto) + "</div></article>";
   }
   function trilho(titulo, lista) {
     if (!lista.length) return "";
     return "<section><h2>" + ui.esc(titulo) + "</h2><div class=\"trilho\">" + lista.map(card).join("") + "</div></section>";
-  }
-  function mesa() {
-    var trabalhos = estado().impressoes.filter(function (item) { return item.status === "imprimindo"; });
-    if (!trabalhos.length) return ui.vazio("A mesa está livre agora.");
-    return trabalhos.map(function (item) {
-      return '<article class="mesa cartao"><img src="' + ui.url("marca/mascote.png") + '" alt=""><div><strong>' + ui.esc(item.titulo) + "</strong><p class=\"discreto\">" + ui.esc(dinheiro.dataBR(item.inicio)) + " · " + ui.esc(String(item.inicio).slice(11, 16)) + " às " + ui.esc(String(item.fim).slice(11, 16)) + "</p></div></article>";
-    }).join("");
   }
   function redes() {
     return ui.redes();
@@ -52,17 +60,65 @@
       }).join("") + "</div>" : "";
     });
   }
+  function carrossel() {
+    var gratis = dinheiro.real(config().freteGratisAPartir);
+    var slides = [
+      { titulo: "Peças prontas da oficina", texto: "Preço fixo, do jeito que a peça saiu da mesa.", fundo: "laranja" },
+      { titulo: "Personalizados sob encomenda", texto: "O card mostra a média. O valor fecha no orçamento.", fundo: "teal" },
+      { titulo: "Frete grátis a partir de " + gratis, texto: "PAC e SEDEX simulados pelo CEP, em cada produto.", fundo: "tinta" }
+    ];
+    return '<section class="carrossel" id="carrossel"><div class="carrossel-trilho">' + slides.map(function (slide) {
+      return '<article class="slide fundo-' + slide.fundo + '"><div><p class="selo">Cria Lab DM</p><h2>' + ui.esc(slide.titulo) + "</h2><p>" + ui.esc(slide.texto) + '</p></div><img src="' + ui.url("marca/mascote.png") + '" alt=""></article>';
+    }).join("") + '</div><button class="carrossel-seta anterior" type="button" data-passo="-1" aria-label="Anterior">‹</button><button class="carrossel-seta proxima" type="button" data-passo="1" aria-label="Próximo">›</button><div class="carrossel-pontos">' + slides.map(function (_, indice) {
+      return '<button type="button" data-slide="' + indice + '"' + (indice === 0 ? ' class="ativo"' : "") + ' aria-label="Slide ' + (indice + 1) + '"></button>';
+    }).join("") + "</div></section>";
+  }
+  function ligarCarrossel() {
+    var caixa = document.getElementById("carrossel");
+    if (!caixa) return;
+    var trilho = caixa.querySelector(".carrossel-trilho");
+    var pontos = caixa.querySelectorAll("[data-slide]");
+    var indice = 0;
+    var total = pontos.length;
+    var timer = 0;
+    function ir(n) {
+      indice = (n + total) % total;
+      trilho.style.transform = "translateX(-" + (indice * 100) + "%)";
+      pontos.forEach(function (ponto, i) { ponto.classList.toggle("ativo", i === indice); });
+    }
+    function andar() {
+      window.clearInterval(timer);
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      timer = window.setInterval(function () { ir(indice + 1); }, 4000);
+    }
+    caixa.addEventListener("mouseenter", function () { window.clearInterval(timer); });
+    caixa.addEventListener("mouseleave", andar);
+    caixa.addEventListener("click", function (evento) {
+      var ponto = evento.target.closest("[data-slide]");
+      var passo = evento.target.closest("[data-passo]");
+      if (ponto) ir(Number(ponto.getAttribute("data-slide")));
+      if (passo) ir(indice + Number(passo.getAttribute("data-passo")));
+    });
+    andar();
+  }
   function home() {
     document.title = "Cria Lab DM";
+    var lista = produtosVisiveis().slice().sort(function (a, b) {
+      return (a.tipo === "personalizado") - (b.tipo === "personalizado");
+    });
     var categorias = estado().categorias.map(function (categoria) {
       return '<a class="chip" href="' + ui.url("paginas/busca.html?categoria=" + encodeURIComponent(categoria.id)) + '">' + ui.esc(categoria.nome) + "</a>";
     }).join("");
-    var parceiros = estado().parceiros.filter(function (item) { return item.podeAparecer; }).map(function (item) {
-      return "<span class=\"chip\">" + ui.esc(item.nome) + "</span>";
-    }).join("");
-    var vistos = estado().vistos.map(achar).filter(Boolean);
-    raiz.innerHTML = '<section class="hero"><div><p class="selo"><img src="' + ui.url("marca/mascote.png") + '" alt="">Oficina da Cria Lab</p><img class="letreiro" src="' + ui.url("marca/logo-completa.jpeg") + '" alt="Cria Lab DM"><h1>Peças impressas na nossa mesa</h1><p>Decoração, chaveiros, utilidades, moldes e encomendas. Quando a peça tem arquivo, você escolhe comprar a peça ou o arquivo.</p>' + buscaCampo("") + '</div><img class="mascote" src="' + ui.url("marca/mascote.png") + '" alt="Pássaro laranja de óculos com mochila de impressora"></section><section><h2>Na mesa agora</h2>' + mesa() + '</section><section><h2>Categorias</h2><div class="chips">' + categorias + "</div></section>" + trilho("Ofertas", produtosVisiveis().filter(function (produto) { return produto.oferta; })) + trilho("Mais vendidos", produtosVisiveis().filter(function (produto) { return produto.maisVendido; })) + trilho("Personalizados", produtosVisiveis().filter(function (produto) { return produto.personalizavel; })) + trilho("Também vendem o arquivo", produtosVisiveis().filter(function (produto) { return produto.comArquivo; })) + trilho("Vistos recentemente", vistos) + '<section class="cartao"><h2>Redes da oficina</h2>' + redes() + (parceiros ? "<h3>Parceiros</h3><div class=\"chips\">" + parceiros + "</div>" : "") + "</section>";
-    ligarSugestoes();
+    raiz.innerHTML = carrossel() + '<section class="faixa-categorias"><div class="chips">' + categorias + '</div></section><section><div class="linha"><h2>Na loja</h2><a class="botao-linha" href="' + ui.url("paginas/produtos.html") + '">Produtos</a><a class="botao-linha" href="' + ui.url("paginas/personalizados.html") + '">Personalizados</a></div><div class="grade vitrine">' + lista.map(card).join("") + "</div></section>";
+    ligarCarrossel();
+  }
+  function listaTipo(tipo) {
+    var sob = tipo === "personalizado";
+    document.title = (sob ? "Personalizados" : "Produtos") + " · Cria Lab DM";
+    var lista = produtosVisiveis().filter(function (produto) {
+      return sob ? personalizado(produto) : !personalizado(produto);
+    });
+    raiz.innerHTML = "<h1>" + (sob ? "Personalizados" : "Produtos") + "</h1><p class=\"discreto\">" + (sob ? "O preço do card é a média. O valor final sai depois do orçamento." : "Peças prontas, com preço fixo.") + "</p>" + (lista.length ? '<div class="grade vitrine">' + lista.map(card).join("") + "</div>" : ui.vazio("Nada publicado nesta lista."));
   }
   function lerConsulta() {
     var q = new URLSearchParams(location.search);
@@ -74,7 +130,6 @@
       freteGratis: q.get("freteGratis") === "1",
       aVista: q.get("aVista") === "1",
       personalizavel: q.get("personalizavel") === "1",
-      arquivo: q.get("arquivo") === "1",
       nota: q.get("nota") || "",
       ordem: q.get("ordem") || "relevancia"
     };
@@ -90,7 +145,6 @@
       if (consulta.freteGratis && produto.preco < limite) return false;
       if (consulta.aVista && !produto.aVista) return false;
       if (consulta.personalizavel && !produto.personalizavel) return false;
-      if (consulta.arquivo && !produto.comArquivo) return false;
       if (consulta.nota && (produto.nota || 0) < Number(consulta.nota)) return false;
       return true;
     });
@@ -110,7 +164,7 @@
     var categorias = '<option value="">Todas</option>' + estado().categorias.map(function (categoria) {
       return '<option value="' + ui.esc(categoria.id) + '"' + (consulta.categoria === categoria.id ? " selected" : "") + ">" + ui.esc(categoria.nome) + "</option>";
     }).join("");
-    return '<form id="filtros" class="cartao filtros"><label>Texto<input name="q" value="' + ui.esc(consulta.q) + '"></label><label>Categoria<select name="categoria">' + categorias + '</select></label><div class="grade-3"><label>Preço mínimo<input name="precoMin" type="number" min="0" step="0.01" value="' + ui.esc(consulta.precoMin) + '"></label><label>Preço máximo<input name="precoMax" type="number" min="0" step="0.01" value="' + ui.esc(consulta.precoMax) + '"></label><label>Ordenar<select name="ordem"><option value="relevancia">Relevância</option><option value="preco"' + (consulta.ordem === "preco" ? " selected" : "") + '>Preço</option><option value="vendas"' + (consulta.ordem === "vendas" ? " selected" : "") + '>Vendas</option><option value="novidade"' + (consulta.ordem === "novidade" ? " selected" : "") + '>Novidade</option></select></label></div><div class="linha"><label><input type="checkbox" name="freteGratis"' + marcado("freteGratis") + "> Frete grátis</label><label><input type=\"checkbox\" name=\"aVista\"" + marcado("aVista") + "> À vista</label><label><input type=\"checkbox\" name=\"personalizavel\"" + marcado("personalizavel") + "> Personalizável</label><label><input type=\"checkbox\" name=\"arquivo\"" + marcado("arquivo") + "> Com arquivo</label><label>Nota mínima<select name=\"nota\"><option value=\"\">Qualquer</option><option value=\"4\"" + (consulta.nota === "4" ? " selected" : "") + ">4 ou mais</option><option value=\"5\"" + (consulta.nota === "5" ? " selected" : "") + ">5</option></select></label></div><button class=\"botao\" type=\"submit\">Aplicar filtros</button></form>";
+    return '<form id="filtros" class="cartao filtros"><label>Texto<input name="q" value="' + ui.esc(consulta.q) + '"></label><label>Categoria<select name="categoria">' + categorias + '</select></label><div class="grade-3"><label>Preço mínimo<input name="precoMin" type="number" min="0" step="0.01" value="' + ui.esc(consulta.precoMin) + '"></label><label>Preço máximo<input name="precoMax" type="number" min="0" step="0.01" value="' + ui.esc(consulta.precoMax) + '"></label><label>Ordenar<select name="ordem"><option value="relevancia">Relevância</option><option value="preco"' + (consulta.ordem === "preco" ? " selected" : "") + '>Preço</option><option value="vendas"' + (consulta.ordem === "vendas" ? " selected" : "") + '>Vendas</option><option value="novidade"' + (consulta.ordem === "novidade" ? " selected" : "") + '>Novidade</option></select></label></div><div class="linha"><label><input type="checkbox" name="freteGratis"' + marcado("freteGratis") + "> Frete grátis</label><label><input type=\"checkbox\" name=\"aVista\"" + marcado("aVista") + "> À vista</label><label><input type=\"checkbox\" name=\"personalizavel\"" + marcado("personalizavel") + "> Personalizável</label><label>Nota mínima<select name=\"nota\"><option value=\"\">Qualquer</option><option value=\"4\"" + (consulta.nota === "4" ? " selected" : "") + ">4 ou mais</option><option value=\"5\"" + (consulta.nota === "5" ? " selected" : "") + ">5</option></select></label></div><button class=\"botao\" type=\"submit\">Aplicar filtros</button></form>";
   }
   function busca() {
     document.title = "Busca · Cria Lab DM";
@@ -129,7 +183,7 @@
           var valor = String(dados.get(nome) || "");
           if (valor) params.set(nome, valor);
         });
-        ["freteGratis", "aVista", "personalizavel", "arquivo"].forEach(function (nome) {
+        ["freteGratis", "aVista", "personalizavel"].forEach(function (nome) {
           if (dados.get(nome)) params.set(nome, "1");
         });
         location.href = ui.url("paginas/busca.html" + (params.toString() ? "?" + params.toString() : ""));
@@ -169,7 +223,6 @@
       var extra = etapa.acresce ? " · +" + dinheiro.real(etapa.acresce) : "";
       return "<label>" + ui.esc(etapa.nome) + extra + campo + "</label>";
     }).join("") : "";
-    var arquivoBloco = produto.comArquivo ? '<button class="botao-teal" type="button" id="comprar-arquivo">Comprar arquivo</button><p class="discreto">' + ui.esc(produto.arquivo.formato) + " · licença " + ui.esc(produto.arquivo.licenca) + " · " + dinheiro.real(produto.precoArquivo) + " · sem frete</p>" : "";
     var perguntas = estado().perguntas.filter(function (item) { return item.produtoId === produto.id; }).map(function (item) {
       return "<article><strong>" + ui.esc(item.autor) + "</strong><p>" + ui.esc(item.texto) + "</p>" + (item.resposta ? "<p><em>" + ui.esc(item.resposta) + "</em></p>" : "<p class=\"discreto\">Aguardando resposta</p>") + "</article>";
     }).join("") || "<p>Nenhuma pergunta ainda.</p>";
@@ -178,10 +231,17 @@
       return "<article>" + foto + "<strong>" + ui.esc(item.autor) + " · " + item.nota + "/5</strong><p>" + ui.esc(item.texto) + "</p></article>";
     }).join("") || "<p>Sem avaliações de pedido entregue.</p>";
     var relacionados = produtosVisiveis().filter(function (item) { return item.categoria === produto.categoria && item.id !== produto.id; }).slice(0, 4);
-    var esgotado = produto.situacao === "esgotado" || produto.estoque <= 0;
-    var compraPeca = produto.tipo === "personalizado" ? "" : '<button class="botao" type="button" id="comprar-peca"' + (esgotado ? " disabled" : "") + ">" + (esgotado ? "Esgotado" : "Comprar peça") + "</button>";
+    var sobMedida = personalizado(produto);
+    var esgotado = !sobMedida && (produto.situacao === "esgotado" || produto.estoque <= 0);
+    var compraPeca = sobMedida ? "" : '<button class="botao" type="button" id="comprar-peca"' + (esgotado ? " disabled" : "") + ">" + (esgotado ? "Esgotado" : "Comprar") + "</button>";
     var whats = estado().identidade.whatsapp + "?text=" + encodeURIComponent("Olá, quero saber sobre " + produto.titulo);
-    raiz.innerHTML = '<div class="ficha"><div class="galeria"><img class="galeria-principal" id="foto-principal" src="' + ui.url(fotoInicial.arquivo) + '" alt="' + ui.esc(fotoInicial.legenda) + '"><div class="miniaturas">' + miniaturas + '</div><p class="discreto" id="legenda-foto">' + ui.esc(fotoInicial.legenda) + " · sessão " + ui.esc(dinheiro.dataBR(produto.sessao)) + '</p></div><div class="cartao"><p class="discreto">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h1>" + ui.esc(produto.titulo) + "</h1><p class=\"preco\">" + dinheiro.real(produto.preco) + "</p><p class=\"vista\">À vista " + dinheiro.real(precoVista(produto.preco)) + " no PIX ou boleto</p><p>" + config().parcelas + "x de " + dinheiro.real(produto.preco / config().parcelas) + " no cartão, sem o desconto à vista</p><p>" + (esgotado ? "Sem unidade pronta" : ui.esc(String(produto.estoque)) + " em estoque") + " · " + ui.esc(produto.peso) + " g · " + ui.esc(produto.medidas) + "</p><p>" + ui.esc(produto.descricao) + "</p><h2>Filamento</h2><div class=\"amostras\" id=\"amostras\">" + amostras + '</div><p id="cor-nome">' + ui.esc(produto.cores[0].nome) + '</p><div class="linha" id="tamanhos">' + tamanhos + "</div>" + (etapas ? "<h2>Personalização</h2>" + etapas : "") + '<label>Quantidade<input id="qtd" type="number" min="1" value="1"></label><div class="linha">' + compraPeca + arquivoBloco + '<button class="botao-linha" type="button" id="favorito">Favoritar</button></div>' + (produto.personalizavel ? '<button class="botao-teal" type="button" id="pedir-orcamento">Pedir orçamento</button>' : "") + '<a class="botao-linha" href="' + ui.esc(whats) + '" target="_blank" rel="noopener">Chamar no WhatsApp</a><h2>Frete simulado</h2><form id="frete-ficha" class="linha"><input name="cep" inputmode="numeric" placeholder="CEP" maxlength="9"><button class="botao-linha" type="submit">Cotar</button></form><div id="frete-resultado"></div></div></div><section class="grade-3"><article class="cartao"><h2>Perguntas</h2>' + perguntas + '<form id="nova-pergunta" class="formulario"><label>Sua pergunta<input name="texto" required></label><button class="botao-linha" type="submit">Enviar</button></form></article><article class="cartao"><h2>Avaliações</h2>' + avaliacoes + "</article></section>" + trilho("Relacionados", relacionados);
+    var tag = sobMedida ? '<span class="tag tag-pers">Personalizado</span>' : '<span class="tag">Produto</span>';
+    var precoBloco = sobMedida
+      ? '<p class="preco">' + dinheiro.real(produto.preco) + '</p><p class="vista">Preço médio. O valor final sai depois do orçamento.</p>'
+      : '<p class="preco">' + dinheiro.real(produto.preco) + '</p><p class="vista">À vista ' + dinheiro.real(precoVista(produto.preco)) + " no PIX ou boleto</p><p>" + config().parcelas + "x de " + dinheiro.real(produto.preco / config().parcelas) + " no cartão, sem o desconto à vista</p>";
+    var estoqueLinha = sobMedida ? "Sob encomenda" : (esgotado ? "Sem unidade pronta" : ui.esc(String(produto.estoque)) + " em estoque");
+    var lojas = '<div class="linha"><a class="botao-linha" href="' + ui.esc(estado().identidade.shopee) + '" target="_blank" rel="noopener">Shopee</a><a class="botao-linha" href="' + ui.esc(estado().identidade.mercadoLivre) + '" target="_blank" rel="noopener">Mercado Livre</a></div>';
+    raiz.innerHTML = '<div class="ficha"><div class="galeria"><img class="galeria-principal" id="foto-principal" src="' + ui.url(fotoInicial.arquivo) + '" alt="' + ui.esc(fotoInicial.legenda) + '"><div class="miniaturas">' + miniaturas + '</div><p class="discreto" id="legenda-foto">' + ui.esc(fotoInicial.legenda) + " · sessão " + ui.esc(dinheiro.dataBR(produto.sessao)) + '</p></div><div class="cartao">' + tag + '<p class="discreto">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h1>" + ui.esc(produto.titulo) + "</h1>" + precoBloco + "<p>" + estoqueLinha + " · " + ui.esc(produto.peso) + " g · " + ui.esc(produto.medidas) + "</p><p>" + ui.esc(produto.descricao) + "</p>" + lojas + '<h2>Filamento</h2><div class="amostras" id="amostras">' + amostras + '</div><p id="cor-nome">' + ui.esc(produto.cores[0].nome) + '</p><div class="linha" id="tamanhos">' + tamanhos + "</div>" + (etapas ? "<h2>Personalização</h2>" + etapas : "") + '<label>Quantidade<input id="qtd" type="number" min="1" value="1"></label><div class="linha">' + compraPeca + '<button class="botao-linha" type="button" id="favorito">Favoritar</button></div>' + (produto.personalizavel || sobMedida ? '<button class="botao-teal" type="button" id="pedir-orcamento">Pedir orçamento</button>' : "") + '<a class="botao-linha" href="' + ui.esc(whats) + '" target="_blank" rel="noopener">Chamar no WhatsApp</a><h2 id="frete-titulo">Calcular frete</h2><form id="frete-ficha" class="linha"><input name="cep" inputmode="numeric" placeholder="CEP" maxlength="9"><button class="botao-linha" type="submit">Cotar</button></form><div id="frete-resultado"></div></div></div><section class="grade-3"><article class="cartao"><h2>Perguntas</h2>' + perguntas + '<form id="nova-pergunta" class="formulario"><label>Sua pergunta<input name="texto" required></label><button class="botao-linha" type="submit">Enviar</button></form></article><article class="cartao"><h2>Avaliações</h2>' + avaliacoes + "</article></section>" + trilho("Relacionados", relacionados);
     var cor = produto.cores[0].nome;
     var tamanho = produto.tamanhos[0];
     document.getElementById("amostras").addEventListener("click", function (evento) {
@@ -253,24 +313,6 @@
       });
       location.href = ui.url("paginas/carrinho.html");
     });
-    var comprarArquivo = document.getElementById("comprar-arquivo");
-    if (comprarArquivo) comprarArquivo.addEventListener("click", function () {
-      CriaCarrinho.adicionar({
-        produtoId: produto.id,
-        titulo: produto.titulo,
-        tipo: "arquivo",
-        fisico: false,
-        arquivo: true,
-        quantidade: 1,
-        precoUnitario: produto.precoArquivo,
-        arquivoFormato: produto.arquivo.formato,
-        arquivoLicenca: produto.arquivo.licenca,
-        arquivoNome: produto.arquivo.nome,
-        detalhes: produto.arquivo.formato + " · licença " + produto.arquivo.licenca,
-        assinatura: "arquivo"
-      });
-      location.href = ui.url("paginas/carrinho.html");
-    });
     document.getElementById("favorito").addEventListener("click", function () {
       Cria.alterar(function (atual) {
         if (atual.favoritos.indexOf(produto.id) >= 0) atual.favoritos = atual.favoritos.filter(function (item) { return item !== produto.id; });
@@ -329,6 +371,8 @@
 
   if (pagina === "home") home();
   if (pagina === "busca") busca();
+  if (pagina === "vitrine-produtos") listaTipo("pronto");
+  if (pagina === "vitrine-personalizados") listaTipo("personalizado");
   if (pagina === "produto") produtoPagina();
   if (pagina === "sobre") sobre();
 })();

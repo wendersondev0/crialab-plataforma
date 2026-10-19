@@ -8,7 +8,7 @@
   function patrimonio() {
     document.title = "Patrimônio · Administração";
     var compras = estado().lancamentos.filter(function (item) { return item.categoria === "investimento"; });
-    raiz.innerHTML = "<h1>Patrimônio</h1>" + estado().maquinas.map(function (maquina) {
+    raiz.innerHTML = '<h1>Patrimônio e estoque</h1><p>Impressoras, equipamentos, filamentos, ferramentas e outros insumos.</p><p><a class="botao" href="' + ui.url("paginas/admin/estoque.html") + '">Abrir estoque</a></p>' + estado().maquinas.map(function (maquina) {
       return '<article class="cartao"><h2>' + ui.esc(maquina.nome) + "</h2><p>" + (maquina.compraValor ? dinheiro.real(maquina.compraValor) + " · " + ui.esc(maquina.compraCompetencia) : "Sem compra marcada") + "</p><p>Watts " + maquina.watts + "</p><p>Depreciação " + dinheiro.real(maquina.depreciacaoPorMinuto, 3) + "/min · manutenção " + dinheiro.real(maquina.manutencaoPorMinuto, 3) + "/min</p><p>Energia " + dinheiro.real(maquina.energiaPorMinuto, 4) + "/min" + (maquina.controlaHora ? "" : " · sem hora de máquina") + "</p></article>";
     }).join("") + "<h2>Compras marcadas na planilha</h2>" + compras.map(function (item) {
       return "<p>" + ui.esc(dinheiro.competenciaBR(item.competencia)) + " · " + ui.esc(item.descricao) + " · " + dinheiro.real(item.valor) + "</p>";
@@ -99,7 +99,92 @@
     }
   }
 
+  function gestaoImpressao() {
+    document.title = "Gestão de impressão 3D · Administração";
+    var maquinas = estado().maquinas.filter(function (item) { return item.controlaHora; });
+    function daMaquina(id) {
+      return estado().impressoes.filter(function (item) { return item.maquinaId === id; });
+    }
+    function produtoDe(item) {
+      return estado().produtos.find(function (produto) { return produto.id === item.produtoId; });
+    }
+    function rotulo(maquina) {
+      var lista = daMaquina(maquina.id);
+      if (lista.some(function (item) { return item.status === "erro"; })) return "Com erro";
+      if (lista.some(function (item) { return item.status === "pausada"; })) return "Pausada";
+      if (lista.some(function (item) { return item.status === "imprimindo"; })) return "Imprimindo";
+      return "Disponível";
+    }
+    function andamento(item) {
+      var ini = new Date(item.inicio).getTime();
+      var fim = new Date(item.fim).getTime();
+      var agora = Date.now();
+      if (!ini || !fim || fim <= ini) return { progresso: 0, restante: "sem previsão" };
+      var progresso = agora <= ini ? 0 : agora >= fim ? 100 : Math.round(((agora - ini) / (fim - ini)) * 100);
+      var minutos = Math.max(0, Math.round((fim - agora) / 60000));
+      return { progresso: progresso, restante: minutos ? minutos + " min" : "no prazo" };
+    }
+    var monitor = maquinas.map(function (maquina) {
+      var atual = daMaquina(maquina.id).find(function (item) { return item.status === "imprimindo" || item.status === "pausada" || item.status === "erro"; });
+      var detalhe = "Sem trabalho atual.";
+      if (atual) {
+        var tempo = andamento(atual);
+        detalhe = ui.esc(atual.titulo) + " · " + tempo.progresso + "% · " + tempo.restante + " · previsão " + ui.esc(String(atual.fim).replace("T", " ").slice(0, 16));
+      }
+      return '<article class="cartao"><h2>' + ui.esc(maquina.nome) + "</h2><p><strong>" + rotulo(maquina) + "</strong></p><p>" + detalhe + '</p><p class="discreto">Temperatura e alerta: sem leitura desta máquina.</p></article>';
+    }).join("");
+    var mesa = maquinas.map(function (maquina) {
+      var trabalhos = daMaquina(maquina.id).filter(function (item) { return item.status === "imprimindo" || item.status === "na fila" || item.status === "pausada"; });
+      var linhas = trabalhos.length ? trabalhos.map(function (item, indice) {
+        var produto = produtoDe(item);
+        return "<li>" + (item.status === "imprimindo" ? "Em andamento" : "Próximo") + " · " + ui.esc(item.titulo) + " · 1 peça · " + ui.esc(produto ? produto.material : "material não informado") + " · cor não informada · bico não informado · perfil não informado · prioridade " + (indice + 1) + "</li>";
+      }).join("") : "<li>Mesa livre.</li>";
+      var ocupadas = trabalhos.filter(function (item) { return item.status === "imprimindo"; }).length;
+      return '<article class="cartao"><h2>' + ui.esc(maquina.nome) + "</h2><p>Ocupação: " + ocupadas + (ocupadas === 1 ? " trabalho em curso · " : " trabalhos em curso · ") + trabalhos.length + ' na mesa</p><ul>' + linhas + "</ul></article>";
+    }).join("");
+    var porMaquina = {};
+    estado().impressoes.forEach(function (item) {
+      if (item.status !== "concluida") return;
+      if (!porMaquina[item.maquinaId]) porMaquina[item.maquinaId] = { ok: 0, falha: 0, motivos: [] };
+      if (item.sucesso) porMaquina[item.maquinaId].ok += 1;
+      else {
+        porMaquina[item.maquinaId].falha += 1;
+        if (item.motivo) porMaquina[item.maquinaId].motivos.push(item.motivo);
+      }
+    });
+    var qualidade = maquinas.map(function (maquina) {
+      var conta = porMaquina[maquina.id] || { ok: 0, falha: 0, motivos: [] };
+      var total = conta.ok + conta.falha;
+      var taxa = total ? Math.round((conta.ok / total) * 100) : 0;
+      return '<article class="cartao"><h2>' + ui.esc(maquina.nome) + "</h2><p>" + conta.ok + (conta.ok === 1 ? " concluída com sucesso" : " concluídas com sucesso") + "</p><p>" + conta.falha + (conta.falha === 1 ? " com falha ou cancelada na conclusão" : " com falha ou canceladas na conclusão") + "</p><p>Taxa de sucesso " + taxa + "%</p><p>" + (conta.motivos.length ? "Motivos: " + ui.esc(conta.motivos.join(", ")) + ". Estas peças pedem reimpressão." : "Sem motivo de falha registrado.") + "</p></article>";
+    }).join("");
+    var horas = 0;
+    var gramas = 0;
+    estado().impressoes.forEach(function (item) {
+      if (item.status !== "concluida") return;
+      var ini = new Date(item.inicio).getTime();
+      var fim = new Date(item.fim).getTime();
+      if (fim > ini) horas += (fim - ini) / 3600000;
+      gramas += Number(item.pesoReal) || Number(item.pesoPrevisto) || 0;
+    });
+    var emCurso = estado().impressoes.filter(function (item) { return item.status === "imprimindo"; }).length;
+    var historico = maquinas.map(function (maquina) {
+      var lista = daMaquina(maquina.id).filter(function (item) { return item.status === "concluida"; });
+      var h = 0;
+      var g = 0;
+      lista.forEach(function (item) {
+        var ini = new Date(item.inicio).getTime();
+        var fim = new Date(item.fim).getTime();
+        if (fim > ini) h += (fim - ini) / 3600000;
+        g += Number(item.pesoReal) || 0;
+      });
+      return '<article class="cartao"><h2>' + ui.esc(maquina.nome) + "</h2><p>" + h.toFixed(1).replace(".", ",") + " h em operação nas conclusões</p><p>" + g + " g de filamento no peso real</p><p>Compra " + (maquina.compraValor ? dinheiro.real(maquina.compraValor) : "sem valor") + "</p><p>" + lista.length + " trabalhos concluídos</p></article>";
+    }).join("");
+    raiz.innerHTML = '<h1>Gestão de impressão 3D</h1><p>A mesa da oficina fica só aqui. A vitrine não mostra máquina nem fila.</p><p><a class="botao" href="' + ui.url("paginas/admin/impressoes.html") + '">Abrir a fila para concluir</a></p><h2>Monitoramento de impressoras</h2><p class="discreto">Disponível, imprimindo, pausada ou com erro.</p><div class="grade-3">' + monitor + '</div><h2>Gestão da mesa de trabalho</h2><div class="grade-3">' + mesa + '</div><h2>Qualidade e sucesso de impressão</h2><div class="grade-3">' + qualidade + '</div><h2>Histórico e desempenho</h2><article class="cartao"><p>' + horas.toFixed(1).replace(".", ",") + " h concluídas no período carregado</p><p>" + gramas + " g de filamento somados</p><p>" + emCurso + (emCurso === 1 ? " máquina em operação agora. " : " máquinas em operação agora. ") + "O restante das impressoras acompanhadas está parado.</p></article><div class=\"grade-3\">" + historico + '</div><p class="discreto">A leitura direta da impressora, por API, fica para uma etapa futura. Hoje a tela usa a fila gravada neste navegador.</p>';
+  }
+
   if (pagina === "admin-patrimonio") patrimonio();
+  if (pagina === "admin-impressao") gestaoImpressao();
   if (pagina === "admin-estoque") estoque();
   if (pagina === "admin-impressoes") impressoes();
 })();

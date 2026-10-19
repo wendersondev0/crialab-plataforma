@@ -20,6 +20,33 @@ Site estático da loja da própria Cria Lab. Cada fase abaixo é uma entrega que
 
 O back `dotnet-crialab-plataforma` e o front `vue-crialab-plataforma` foram apagados, com o git local deles. Este plano não recria Nuxt, PrimeVue, ASP.NET, Carter nem SQL Server.
 
+## Direção vigente
+
+A loja vende a peça. Não vende arquivo 3D (STL, OBJ, FBX, 3MF, STEP nem licença de download). O cliente manda uma imagem só como referência de um personalizado. As frases das fases 1 a 10 que ainda falam em “Comprar arquivo”, Downloads ou “peça com arquivo” descrevem o primeiro corte e deixam de valer.
+
+“Na mesa agora” saiu da home. A fila, a máquina e o andamento ficam só na administração, em Gestão de impressão 3D. O cliente não vê o nome da impressora.
+
+O cliente entra num marketplace simples, no tom da vitrine da Shopee, com a cara da Cria Lab:
+
+1. Início. Carrossel logo abaixo do menu. Em seguida, os cards. Produto pronto: preço fixo e a tag Produto. Personalizado: preço médio, a tag Personalizado e o aviso de que o valor final sai depois do orçamento. Cada card e cada ficha têm link da loja na Shopee, link de exemplo do Mercado Livre e cálculo de frete por CEP.
+2. Produtos. Só as peças prontas.
+3. Personalizados. Só as encomendas. A carga traz “Chaveiro do seu Cachorro”, “Da imagem para o 3D” e “Action figure personalizada”.
+
+Carrinho, conta e busca ficam no topo, não como itens do menu.
+
+A administração tem dez áreas:
+
+1. Gestão de produtos. Peças prontas.
+2. Gestão de personalizados. Orçamentos, pedidos, ordens de serviço e fabricação.
+3. Marketing. Cupom da loja.
+4. Atendimento ao cliente. Mensagens e perguntas.
+5. Patrimônio e estoque. Impressoras, equipamentos, filamentos, ferramentas e outros insumos.
+6. Gestão financeira. Despesas, receitas, vendas, custos, contas e lucratividade.
+7. Gestão fiscal e documental. Recibo e nota ainda pendente de transmissão, sem chave e sem protocolo.
+8. Administração do sistema. Usuários, permissões, configurações, cadastros e regras. Nesta etapa o acesso continua pelo link, sem senha.
+9. Painel gerencial. Contagem da vitrine e atalhos das áreas.
+10. Gestão de impressão 3D. Monitoramento (disponível, imprimindo, pausada, com erro, trabalho, progresso, tempo restante e previsão; temperatura só quando houver leitura), mesa (em andamento, próximos, peça, quantidade, material, cor, bico, perfil, ocupação e prioridade), qualidade (sucesso, falha, taxa por máquina, motivo e reimpressão) e histórico (horas, filamento, tempo parado, custo e produtividade). A API da impressora fica para depois; a tela lê a fila local.
+
 ## Como acompanhar
 
 1. Fazer uma fase por vez, de cima para baixo.
@@ -83,19 +110,19 @@ Doze fichas nomeadas repartem as sessões maiores, para a vitrine ter os três c
 | Ficha provisória | Caminho | Categoria | Sessão | Fotos |
 | --- | --- | --- | --- | --- |
 | Peça 24/05 | peça pronta | decoração | 2026-05-24 | 13 |
-| Peça 15/10 | peça pronta, com arquivo | chaveiros | 2026-10-15 | 7 |
+| Peça 15/10 | peça pronta | chaveiros | 2026-10-15 | 7 |
 | Peça 26/09 | peça pronta | utilidades | 2026-09-26 | 6 |
 | Peça 13/05 | personalizada | moldes | 2026-05-13 | 4 |
 | Peça 28/05 | peça pronta | pintura | 2026-05-28 | 4 |
-| Peça 03/06 | peça pronta, com arquivo | utilidades | 2026-06-03 | 4 |
+| Peça 03/06 | peça pronta | utilidades | 2026-06-03 | 4 |
 | Peça 08/07 | personalizada | peças sob encomenda | 2026-07-08 | 4 |
 | Peça 23/09 | peça pronta | decoração | 2026-09-23 | 4 |
 | Peça 10/07 | peça pronta | chaveiros | 2026-07-10 | 3 |
-| Peça 31/07 | peça pronta, com arquivo | moldes | 2026-07-31 | 3 |
+| Peça 31/07 | peça pronta | moldes | 2026-07-31 | 3 |
 | Peça 31/08 | personalizada | peças sob encomenda | 2026-08-31 | 3 |
 | Peça 12/10 | peça pronta | utilidades | 2026-10-12 | 3 |
 
-“Com arquivo” usa a foto da sessão como preview. O arquivo de exemplo é STL, OBJ, FBX, 3MF ou STEP, com licença pessoal ou comercial. O caminho do arquivo não aparece no HTML da ficha.
+Cada ficha vende a peça. Não há preço nem botão de arquivo 3D.
 
 ## Regras de venda que a configuração guarda
 
@@ -112,7 +139,7 @@ descontoAVista = percentual do subtotal de produtos quando a forma for PIX ou bo
 total = subtotal - descontoAVista + freteCobrado
 ```
 
-Cupom é desconto da própria loja. A carga traz um cupom, por exemplo `OFICINA10`, 10% nos produtos. Frete só no item físico. Arquivo digital não paga frete.
+Cupom é desconto da própria loja. A carga traz um cupom, por exemplo `OFICINA10`, 10% nos produtos. O frete vale para a peça pronta e para o personalizado. Não existe item digital.
 
 Líquido da venda no site = o que o cliente pagou, menos o frete que a loja repassa quando a configuração marcar esse repasse.
 
@@ -124,7 +151,7 @@ Arquivos: `index.html`, `paginas/sobre.html`, `css/base.css`, `js/casca.js`, `ma
 
 `js/casca.js` monta o mesmo cabeçalho e o mesmo rodapé em todas as páginas que vierem depois.
 
-A home mostra logo, letreiro, mascote, nome Cria Lab DM e um bloco “Na mesa agora” com dois trabalhos de exemplo (peça provisória e horário). O nome da impressora não aparece para o cliente. O bloco ocupa o lugar de vitrine da oficina. Busca, categorias e ofertas ficam para a fase 2; o campo de busca pode aparecer desenhado, com o destino ainda vazio.
+A home da primeira entrega mostrou a marca. A direção vigente troca essa abertura pelo marketplace: menu, busca no topo e carrossel. A fila de impressão não aparece para o cliente.
 
 O rodapé e a página Sobre mostram CNPJ, e-mail, telefone, WhatsApp, Instagram, TikTok, YouTube, Shopee e o link de exemplo do Mercado Livre. Endereço e horário vazios não aparecem.
 
@@ -143,13 +170,13 @@ A vitrine passa a listar as peças das fotos reais.
 
 Arquivos novos: `css/vitrine.css`, `js/vitrine.js`, `js/memoria.js`, `js/dinheiro.js`, `dados/loja.js`, `dados/catalogo.js`, `paginas/busca.html`, `paginas/produto.html`, `fotos/`.
 
-A home ganha busca com sugestão, categorias (decoração, chaveiros, utilidades, moldes, peças sob encomenda, pintura), banner da oficina, ofertas, mais vendidos, personalizados, peças que também vendem o arquivo, e o bloco de redes. “Na mesa agora” continua visível.
+A home vigente abre no carrossel e na grade de produtos. As categorias continuam como atalho. Não há trilho de arquivo nem bloco “Na mesa agora”.
 
-A busca filtra por texto, categoria, faixa de preço, frete grátis, à vista, personalizável, com arquivo incluso e avaliação mínima. Ordena por relevância, preço, vendas e novidade. O filtro fica na URL (`paginas/busca.html?q=&categoria=&precoMin=&precoMax=&freteGratis=&aVista=&personalizavel=&arquivo=&nota=&ordem=`), para o link poder ser compartilhado.
+A busca filtra por texto, categoria, faixa de preço, frete grátis, à vista, personalizável e avaliação mínima. Ordena por relevância, preço, vendas e novidade. O filtro fica na URL (`paginas/busca.html?q=&categoria=&precoMin=&precoMax=&freteGratis=&aVista=&personalizavel=&nota=&ordem=`).
 
 A ficha tem galeria com zoom, variação, estoque, preço, preço à vista já com o desconto, parcelas sem esse desconto, frete simulado por CEP, prazo, descrição, medidas, materiais, personalização, perguntas, avaliações com foto e relacionados. A cor de filamento é uma fileira de amostras (cor e nome), não uma lista genérica.
 
-Se o produto tiver arquivo, a ficha mostra dois caminhos: “Comprar peça” e “Comprar arquivo”. Comprar arquivo guarda o item como digital.
+A ficha vende a peça. O produto pronto tem a tag Produto e o preço fixo. O personalizado tem a tag Personalizado, o preço médio e o texto de que o valor final sai no orçamento. Os dois têm Shopee, Mercado Livre e cotação de frete.
 
 Personalização lê as etapas que o dado já traz (medida, cor, texto gravado, arquivo de referência, quantidade, prazo). Cada etapa pode alterar o preço. O cliente escolhe uma imagem do computador; a tela guarda o nome do arquivo. O item segue como “aguardando orçamento”.
 
@@ -158,7 +185,7 @@ Na ficha, um botão abre o WhatsApp da loja com a mensagem “Olá, quero saber 
 Critério:
 
 - [x] Card, home, busca e ficha usam jpg de `Fotos_Crialab`. Nenhuma imagem de banco no lugar delas.
-- [x] A ficha da sessão 15/10 oferece “Comprar peça” e “Comprar arquivo”. A ficha da sessão 24/05 oferece só a peça.
+- [x] A ficha da sessão 15/10 e a da sessão 24/05 oferecem a peça, sem compra de arquivo.
 - [x] Amostra de filamento é botão colorido, com nome visível, e cabe no toque de 44 px.
 - [x] `busca.html?categoria=chaveiros&ordem=preco` reabre com o mesmo filtro depois de recarregar.
 - [x] Busca sem resultado mostra o mascote e uma frase curta.
@@ -171,14 +198,14 @@ Uma página só de fechamento. O resumo fica visível o tempo todo, ao lado no d
 
 Arquivos novos: `js/checkout.js`, `dados/frete.js`, `paginas/carrinho.html`, `paginas/checkout.html`.
 
-Dá para mudar quantidade, tirar item e aplicar o cupom da loja. O checkout pede endereço, CEP, frete, pagamento e mostra o desconto à vista antes de confirmar. Um pedido pode misturar peça pronta, personalizada e arquivo. Frete só no físico. Abaixo do limite, PAC e SEDEX aparecem com prazo e preço. No limite ou acima, o frete da peça vai a zero.
+Dá para mudar quantidade, tirar item e aplicar o cupom da loja. O checkout pede endereço, CEP, frete, pagamento e mostra o desconto à vista antes de confirmar. Um pedido mistura peça pronta e personalizado. Abaixo do limite, PAC e SEDEX aparecem com prazo e preço. No limite ou acima, o frete da peça vai a zero.
 
-Confirmar não chama banco nem operadora. O pedido nasce com status “aguardando pagamento”. Um botão “Simular pagamento” passa para “pago”. Estoque de peça pronta baixa nesse momento. Personalizado não baixa unidade pronta. Arquivo pago fica disponível em Downloads na fase 4.
+Confirmar não chama banco nem operadora. O pedido nasce com status “aguardando pagamento”. Um botão “Simular pagamento” passa para “pago”. Estoque de peça pronta baixa nesse momento. Personalizado não baixa unidade pronta. Não há download de arquivo 3D.
 
 Critério:
 
 - [x] Carrinho vazio mostra o mascote.
-- [x] Três itens no mesmo pedido: peça 24/05, personalizado 13/05 e arquivo 15/10. O frete soma só a peça e o personalizado.
+- [x] Peça pronta e personalizado entram no mesmo pedido. O frete soma os dois.
 - [x] Com físico abaixo de R$ 200, PAC e SEDEX têm preço. Com físico de R$ 200 ou mais, frete R$ 0.
 - [x] PIX e boleto aplicam 10% sobre o subtotal de produtos. Cartão mostra o total sem esse desconto e as parcelas sobre o preço cheio.
 - [x] Cupom `OFICINA10` reduz os produtos e entra na conta do frete grátis. Cupom inexistente mostra erro e não altera o total.
@@ -186,13 +213,11 @@ Critério:
 - [x] Em 360 px o resumo e o botão de confirmar aparecem sem cortar o total.
 - [x] Recarregar o checkout mantém carrinho, CEP e forma de pagamento.
 
-## Fase 4 — Conta, pedidos, downloads e contato
+## Fase 4 — Conta, pedidos e contato
 
 Arquivos novos: `js/conta.js`, `dados/pedidos.js`, `dados/mensagens.js`, `paginas/conta.html`, `paginas/contato.html`.
 
-A conta, sem senha de verdade, guarda um cliente de exemplo e o que a pessoa preencher: pedidos, downloads, orçamentos, endereços, favoritos, perguntas, devoluções e dados pessoais. Trocar de “cliente” na própria página basta para a demonstração.
-
-Downloads lista o arquivo só depois do pagamento simulado, com nome e licença. O clique monta o download no navegador. A ficha pública continua sem o endereço do arquivo.
+A conta, sem senha de verdade, guarda um cliente de exemplo e o que a pessoa preencher: pedidos, orçamentos, endereços, favoritos, perguntas, devoluções e dados pessoais. Trocar de “cliente” na própria página basta para a demonstração. Não há seção de downloads.
 
 Orçamento personalizado: a carga já traz um pedido respondido, para o cliente aceitar e virar pedido, e o fluxo novo fica “aguardando orçamento” até a fase 9.
 
@@ -202,7 +227,7 @@ Critério:
 
 - [x] Conta sem pedido mostra o mascote.
 - [x] O pedido pago na fase 3 aparece em Pedidos com o status e o total daquela hora.
-- [x] O arquivo 15/10 só surge em Downloads depois de “pago”.
+- [x] A conta não oferece download de arquivo 3D.
 - [x] Aceitar o orçamento de exemplo cria um pedido. Recusar deixa o orçamento encerrado, sem pedido.
 - [x] Enviar o contato grava a mensagem, sobrevive ao recarregar e mostra confirmação na hora.
 - [x] Devolução de um pedido entregue de exemplo muda o status para “devolvido”.
@@ -213,7 +238,7 @@ O dono entra por Administração no rodapé. Não há senha nem cobrança da pla
 
 Arquivos novos: `css/admin.css`, `js/admin.js`, `paginas/admin/index.html`, `paginas/admin/produtos.html`, `paginas/admin/produto.html`, `paginas/admin/configuracao.html`, `paginas/admin/perguntas.html`, `paginas/admin/contato.html`, `paginas/admin/depoimentos.html`.
 
-Publicar, pausar e esgotar. Campos: tipo (pronto, personalizado, peça com arquivo), título, descrição, preço, preço comparativo, estoque, medidas, peso, material, prazo, fotos, variações de cor, tamanho e filamento. A legenda da foto mostra a data da sessão e pode ser editada.
+Publicar, pausar e esgotar. Campos: tipo (pronto ou personalizado), título, descrição, preço, preço comparativo, estoque, medidas, peso, material, prazo, fotos, variações de cor, tamanho e filamento. A legenda da foto mostra a data da sessão e pode ser editada. O cadastro não oferece arquivo 3D.
 
 Perguntas do anúncio são respondidas aqui. Avaliação nova só nasce ligada a um pedido entregue da carga. Parceiros e depoimentos têm o interruptor “pode aparecer no site”; desligado, somem da home e de Sobre.
 
@@ -319,7 +344,7 @@ Depreciação inicial de referência R$ 0,020 por minuto e manutenção R$ 0,010
 
 Estoque de insumo e de produto pronto, com mínimo e alerta. Entrada pela compra. Saída pela impressão, pela ordem de serviço ou pela venda. Quando o saldo fica no mínimo, a tela oferece “Lançar compra”: abre o bloco de insumos do mês com o item preenchido e só grava se o dono confirmar.
 
-Impressão: máquina, peça, peso previsto, peso real, sucesso ou falha, motivo e kWh. A taxa de falha realizada pode ser copiada para a configuração, só com confirmação. Fila simples por máquina, com aviso de choque de horário. “Na mesa agora”, na home, lê essa fila. Manutenção (bico, PTFE, placa, limpeza) pode virar despesa se o dono confirmar.
+Impressão: máquina, peça, peso previsto, peso real, sucesso ou falha, motivo e kWh. A taxa de falha realizada pode ser copiada para a configuração, só com confirmação. Fila simples por máquina, com aviso de choque de horário. Essa fila alimenta a Gestão de impressão 3D e não a home. Manutenção (bico, PTFE, placa, limpeza) pode virar despesa se o dono confirmar.
 
 Critério:
 
@@ -488,7 +513,7 @@ Critério:
 
 ## Ideias novas adotadas
 
-- **Na mesa agora.** A home mostra a fila curta do que está imprimindo, sem o nome da máquina. As impressoras ficam só no patrimônio da administração.
+- **Mesa só na administração.** A fila de impressão fica em Gestão de impressão 3D. O cliente não vê a máquina.
 - **Amostras de filamento.** A cor na ficha é uma fileira de amostras. A pessoa vê o tom antes de ler o nome.
 - **Venda de balcão.** Data, item, quantidade e valor já nascem como receita do mês, no mesmo caderno das vendas da planilha.
 - **Caderno, não ERP.** O financeiro repete os blocos que o dono já usa: gastos fixos, energia, filamentos e outros insumos.
@@ -514,10 +539,23 @@ Simulado agora, no navegador:
 - catálogo, pedidos, estoque, financeiro e orçamentos, a partir dos arquivos `dados/` e da memória local
 - pagamento, que só muda o status
 - PAC e SEDEX por faixa de CEP
-- download do arquivo 3D, montado na hora, sem URL pública
 - comprovante, que guarda o nome do arquivo
 - nota fiscal, que permanece “pendente de transmissão”
 - contato e e-mail, que só entram na lista
 - acesso do dono, pelo link Administração, sem senha
 
-Para um backend futuro, sem desenhar esse backend aqui: gravar de verdade pedido, estoque, lançamento e orçamento; cobrar; cotar frete; autorizar nota; enviar e-mail; guardar o arquivo 3D fora da página; entrar com senha.
+Para um backend futuro, sem desenhar esse backend aqui: gravar de verdade pedido, estoque, lançamento e orçamento; cobrar; cotar frete; autorizar nota; enviar e-mail; entrar com senha; ler o estado da impressora por API.
+
+## Fase 11 — Marketplace e áreas da administração
+
+A vitrine e o menu passam a seguir a direção vigente. As fases anteriores continuam no histórico; o que elas diziam sobre venda de arquivo e sobre a mesa na home não se repete na tela.
+
+Critério:
+
+- [x] A home não mostra “Na mesa agora”, “Comprar arquivo” nem “Também vendem o arquivo”.
+- [x] O topo da loja tem busca, carrinho e conta. O menu do cliente é Início, Produtos e Personalizados. O carrossel passa abaixo do menu.
+- [x] O card de peça pronta tem a tag Produto e o preço fixo. O card personalizado tem a tag Personalizado, o preço médio e o aviso do orçamento.
+- [x] Produtos lista só peça pronta. Personalizados lista só encomenda, incluindo Chaveiro do seu Cachorro, Da imagem para o 3D e Action figure personalizada.
+- [x] A ficha tem Shopee, Mercado Livre e cotação de frete. Não há botão de arquivo 3D nem Downloads na conta.
+- [x] O menu da administração tem as dez áreas. Gestão de impressão 3D mostra monitoramento, mesa, qualidade e histórico, sem prometer API ligada.
+- [x] O painel gerencial mostra a contagem da vitrine. Marketing grava o cupom. Fiscal mostra a nota pendente, sem chave.
