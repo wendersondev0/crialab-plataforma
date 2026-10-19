@@ -40,7 +40,8 @@
     shopee: svg('<path' + traco + ' d="M6 8h12l-1 11H7z"/><path' + traco + ' d="M9 8V7a3 3 0 0 1 6 0v1"/>'),
     mercadolivre: svg('<path' + traco + ' d="M4 10 12 4l8 6"/><path' + traco + ' d="M6 10v8h12v-8"/><path' + traco + ' d="M10 18v-4h4v4"/>'),
     email: svg('<rect' + traco + ' x="3" y="5" width="18" height="14" rx="2"/><path' + traco + ' d="m4 7 8 6 8-6"/>'),
-    telefone: svg('<path' + traco + ' d="M8 4h3l1 4-2 1a12 12 0 0 0 5 5l1-2 4 1v3c0 .6-.4 1-1 1A15 15 0 0 1 5 6c0-.6.4-1 1-1z"/>')
+    telefone: svg('<path' + traco + ' d="M8 4h3l1 4-2 1a12 12 0 0 0 5 5l1-2 4 1v3c0 .6-.4 1-1 1A15 15 0 0 1 5 6c0-.6.4-1 1-1z"/>'),
+    sino: svg('<path' + traco + ' d="M6 16h12l-1.2-2.2V10a4.8 4.8 0 0 0-9.6 0v3.8z"/><path' + traco + ' d="M10 16a2 2 0 0 0 4 0"/>')
   };
 
   function ativo(href) {
@@ -76,6 +77,71 @@
     }).join("") + "</div>";
   }
 
+  function iconesSociais(identidade) {
+    return [
+      ["whatsapp", "WhatsApp", identidade.whatsapp],
+      ["instagram", "Instagram", identidade.instagram],
+      ["tiktok", "TikTok", identidade.tiktok],
+      ["youtube", "YouTube", identidade.youtube],
+      ["shopee", "Shopee", identidade.shopee],
+      ["mercadolivre", "Mercado Livre", identidade.mercadoLivre]
+    ].map(function (item) {
+      return '<a class="icone-topo" href="' + esc(item[2]) + '" target="_blank" rel="noopener" aria-label="' + esc(item[1]) + '">' + icones[item[0]] + "</a>";
+    }).join("");
+  }
+
+  function listaNotificacoes(estado) {
+    if (estado.perfil === "vazia") return [];
+    var nome = estado.cliente && estado.cliente.nome;
+    var lista = [];
+    (estado.orcamentosCliente || []).forEach(function (item) {
+      if (item.status === "respondido") lista.push("Orçamento respondido: " + item.titulo);
+    });
+    (estado.pedidos || []).forEach(function (item) {
+      if (item.status === "aguardando pagamento") lista.push("Pedido aguardando pagamento");
+      if (item.status === "pago") lista.push("Pedido pago");
+    });
+    (estado.perguntas || []).forEach(function (item) {
+      if (item.resposta && item.autor === nome) lista.push("Sua pergunta foi respondida");
+    });
+    return lista.slice(0, 6);
+  }
+
+  function faixaLoja(estado) {
+    var identidade = estado.identidade;
+    var vazio = estado.perfil === "vazia";
+    var avisos = listaNotificacoes(estado);
+    var itensAviso = avisos.length ? avisos.map(function (texto) {
+      return '<a href="' + url("paginas/conta.html") + '">' + esc(texto) + "</a>";
+    }).join("") : '<p class="popup-vazio">Nenhuma notificação.</p>';
+    var selo = avisos.length ? '<span class="selo-qtd">' + avisos.length + "</span>" : "";
+    var sair = vazio ? "Entrar" : "Sair";
+    return '<div class="faixa-fina"><div class="barra faixa-fina-barra"><div class="siga"><span>Siga a Cria Lab</span>' + iconesSociais(identidade) + '</div><div class="faixa-direita"><div class="menu-suspenso"><button class="atalho" type="button" aria-expanded="false" aria-haspopup="true"><span class="ico">' + icones.sino + "</span>Notificações" + selo + '</button><div class="popup-topo" role="menu">' + itensAviso + '</div></div><a class="atalho" href="' + url("paginas/contato.html") + '">Ajuda</a><div class="menu-suspenso menu-conta"><button class="atalho" type="button" id="abrir-conta" aria-expanded="false" aria-haspopup="true"><span class="ico">' + icones.conta + "</span>" + esc(vazio ? "Conta" : estado.cliente.nome) + '</button><div class="popup-topo" role="menu"><a href="' + url("paginas/conta.html") + '">Minha conta</a><a href="' + url("paginas/conta.html#pedidos") + '">Meus pedidos</a><button type="button" id="sair-conta">' + sair + "</button></div></div></div></div></div>";
+  }
+
+  function ligarMenus(topo) {
+    topo.querySelectorAll(".menu-suspenso").forEach(function (menu) {
+      var botao = menu.querySelector(".atalho");
+      if (!botao) return;
+      botao.addEventListener("click", function (evento) {
+        evento.preventDefault();
+        var aberto = menu.classList.toggle("aberto");
+        botao.setAttribute("aria-expanded", aberto ? "true" : "false");
+        topo.querySelectorAll(".menu-suspenso.aberto").forEach(function (outro) {
+          if (outro === menu) return;
+          outro.classList.remove("aberto");
+          var gatilho = outro.querySelector(".atalho");
+          if (gatilho) gatilho.setAttribute("aria-expanded", "false");
+        });
+      });
+    });
+    var sair = document.getElementById("sair-conta");
+    if (sair) sair.addEventListener("click", function () {
+      Cria.alterar(function (atual) { atual.perfil = atual.perfil === "vazia" ? "exemplo" : "vazia"; });
+      location.href = url("paginas/conta.html");
+    });
+  }
+
   function montar() {
     var estado = root.Cria.estado;
     var identidade = estado.identidade;
@@ -105,7 +171,8 @@
         link("paginas/produtos.html", "Produtos"),
         link("paginas/personalizados.html", "Personalizados")
       ].join("");
-      topo.innerHTML = '<div class="loja-faixa"><div class="barra loja-barra"><a class="marca" href="' + url("index.html") + '"><img src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a><form class="busca-topo" action="' + url("paginas/busca.html") + '" method="get"><input name="q" type="search" placeholder="Buscar na Cria Lab" aria-label="Buscar na Cria Lab"><button class="botao" type="submit">Buscar</button></form><div class="loja-acoes">' + link("paginas/carrinho.html", "Carrinho (" + quantidadeCarrinho() + ")") + link("paginas/conta.html", "Conta") + "</div></div><nav class=\"menu menu-loja\">" + menuLoja + "</nav></div>";
+      topo.innerHTML = faixaLoja(estado) + '<div class="loja-faixa"><div class="barra loja-barra"><a class="marca" href="' + url("index.html") + '"><img src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a><form class="busca-topo" action="' + url("paginas/busca.html") + '" method="get"><input name="q" type="search" placeholder="Buscar na Cria Lab" aria-label="Buscar na Cria Lab"><button class="botao" type="submit">Buscar</button></form><div class="loja-acoes">' + link("paginas/carrinho.html", "Carrinho (" + quantidadeCarrinho() + ")") + "</div></div><nav class=\"menu menu-loja\">" + menuLoja + "</nav></div>";
+      ligarMenus(topo);
     }
     var local = (identidade.endereco ? "<p>" + esc(identidade.endereco) + "</p>" : "") + (identidade.horario ? "<p>" + esc(identidade.horario) + "</p>" : "");
     rodape.innerHTML = '<div class="rodape-grade"><div><img class="logo-rodape" src="' + url("marca/logo-colorida.png") + '" alt=""><strong>' + esc(identidade.nome) + '</strong><p>CNPJ ' + esc(identidade.cnpj) + "</p>" + local + '</div><div class="contatos"><a class="contato-linha" href="mailto:' + esc(identidade.email) + '"><span class="ico">' + icones.email + "</span>" + esc(identidade.email) + '</a><a class="contato-linha" href="tel:+5527996530954"><span class="ico">' + icones.telefone + "</span>" + esc(identidade.telefone) + "</a>" + redes(identidade, true) + '</div><div class="menu">' + link("paginas/sobre.html", "Sobre") + link("paginas/admin/index.html", "Administração") + "</div></div>";

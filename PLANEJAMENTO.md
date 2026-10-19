@@ -32,7 +32,7 @@ O cliente entra num marketplace simples, no tom da vitrine da Shopee, com a cara
 2. Produtos. Só as peças prontas.
 3. Personalizados. Só as encomendas. A carga traz “Chaveiro do seu Cachorro”, “Da imagem para o 3D” e “Action figure personalizada”.
 
-Carrinho, conta e busca ficam no topo, não como itens do menu.
+Carrinho e busca ficam na barra laranja. Acima dela, uma faixa fina traz os ícones de WhatsApp, Instagram, TikTok, YouTube, Shopee e Mercado Livre, o aviso de notificações e a conta. Passar o mouse em Conta abre Minha conta, Meus pedidos e Sair.
 
 A administração tem dez áreas:
 
