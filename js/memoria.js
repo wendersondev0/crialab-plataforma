@@ -55,6 +55,10 @@
         if (nomes.indexOf("Ateliê da rua") >= 0 || nomes.indexOf("Parceiro em conversa") >= 0) {
           estado.parceiros = clonar(root.CriaDados.parceiros);
         }
+        (root.CriaDados.parceiros || []).forEach(function (item) {
+          var salvo = (estado.parceiros || []).find(function (parceiro) { return parceiro.id === item.id; });
+          if (salvo && item.logo) salvo.logo = item.logo;
+        });
         estado.produtos = estado.produtos || [];
         var faltantes = (root.CriaDados.produtos || []).filter(function (produto) {
           return !estado.produtos.some(function (item) { return item.id === produto.id; });

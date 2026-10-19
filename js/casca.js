@@ -25,6 +25,16 @@
 
   var traco = ' fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
 
+  function logoCanal(arquivo) {
+    return '<img class="logo-canal" src="' + url(arquivo) + '" alt="">';
+  }
+
+  function desenhoRede(chave, clara) {
+    if (chave === "shopee") return logoCanal(clara ? "marca/shopee-branca.png" : "marca/shopee-preta.png");
+    if (chave === "mercadolivre") return logoCanal(clara ? "marca/mercadolivre-branca.png" : "marca/mercadolivre-preta.png");
+    return icones[chave];
+  }
+
   var icones = {
     casa: svg('<path' + traco + ' d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z"/>'),
     busca: svg('<circle' + traco + ' cx="11" cy="11" r="6"/><path' + traco + ' d="m16 16 4 4"/>'),
@@ -37,8 +47,8 @@
     instagram: svg('<rect' + traco + ' x="4" y="4" width="16" height="16" rx="5"/><circle' + traco + ' cx="12" cy="12" r="3.5"/><circle fill="currentColor" cx="17" cy="7" r="0.8"/>'),
     tiktok: svg('<path' + traco + ' d="M14 5v9.2a3.2 3.2 0 1 1-2.2-3"/><path' + traco + ' d="M14 7.2c.8 1.4 2.1 2.3 4 2.5"/>'),
     youtube: svg('<rect' + traco + ' x="3" y="6" width="18" height="12" rx="3"/><path' + traco + ' d="m11 9.5 5 2.5-5 2.5z"/>'),
-    shopee: svg('<path class="marca-shopee"' + traco + ' d="M8 10.2h8l-.8 8.6H8.8z"/><path class="marca-shopee"' + traco + ' d="M10.2 10.2V8.3a1.8 1.8 0 0 1 3.6 0v1.9"/><path class="marca-shopee"' + traco + ' d="M13.6 12.4c0-1-1.8-1.3-1.8.2 0 .8 1.8.6 1.8 1.4 0 1.2-2 1.4-2-.1"/>'),
-    mercadolivre: svg('<path class="marca-ml"' + traco + ' d="M3 14h4"/><path class="marca-ml"' + traco + ' d="M21 14h-4"/><path class="marca-ml"' + traco + ' d="M7 15.5c-1.2-.2-2-1.6-1.2-3.1.8-1.6 2.6-1.6 3.4.2L11 15"/><path class="marca-ml"' + traco + ' d="M17 15.5c1.2-.2 2-1.6 1.2-3.1-.8-1.6-2.6-1.6-3.4.2L13 15"/><path class="marca-ml"' + traco + ' d="M9.5 14.5c.7 1.6 1.5 2.3 2.5 2.3s1.8-.7 2.5-2.3"/>'),
+    shopee: logoCanal("marca/shopee-preta.png"),
+    mercadolivre: logoCanal("marca/mercadolivre-preta.png"),
     email: svg('<rect' + traco + ' x="3" y="5" width="18" height="14" rx="2"/><path' + traco + ' d="m4 7 8 6 8-6"/>'),
     telefone: svg('<path' + traco + ' d="M8 4h3l1 4-2 1a12 12 0 0 0 5 5l1-2 4 1v3c0 .6-.4 1-1 1A15 15 0 0 1 5 6c0-.6.4-1 1-1z"/>'),
     sino: svg('<path' + traco + ' d="M6 16h12l-1.2-2.2V10a4.8 4.8 0 0 0-9.6 0v3.8z"/><path' + traco + ' d="M10 16a2 2 0 0 0 4 0"/>'),
@@ -78,7 +88,7 @@
       ["shopee", "Shopee", identidade.shopee],
       ["mercadolivre", "Mercado Livre", identidade.mercadoLivre]
     ].map(function (item) {
-      return '<a class="icone-rede" data-rede="' + item[0] + '" href="' + esc(item[2]) + '" target="_blank" rel="noopener" aria-label="' + esc(item[1]) + '"><span class="ico">' + icones[item[0]] + '</span><span class="rotulo">' + esc(item[1]) + "</span></a>";
+      return '<a class="icone-rede" data-rede="' + item[0] + '" href="' + esc(item[2]) + '" target="_blank" rel="noopener" aria-label="' + esc(item[1]) + '"><span class="ico">' + desenhoRede(item[0], claro) + '</span><span class="rotulo">' + esc(item[1]) + "</span></a>";
     }).join("") + "</div>";
   }
 
@@ -91,7 +101,7 @@
       ["shopee", "Shopee", identidade.shopee],
       ["mercadolivre", "Mercado Livre", identidade.mercadoLivre]
     ].map(function (item) {
-      return '<a class="icone-topo" href="' + esc(item[2]) + '" target="_blank" rel="noopener" aria-label="' + esc(item[1]) + '">' + icones[item[0]] + "</a>";
+      return '<a class="icone-topo" href="' + esc(item[2]) + '" target="_blank" rel="noopener" aria-label="' + esc(item[1]) + '">' + desenhoRede(item[0], true) + "</a>";
     }).join("");
   }
 

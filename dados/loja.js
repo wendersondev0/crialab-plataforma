@@ -47,6 +47,6 @@ window.CriaDados.depoimentos = [
   { id: "dep-2", autor: "Oficina vizinha", texto: "Texto guardado, ainda sem publicação.", podeAparecer: false }
 ];
 window.CriaDados.parceiros = [
-  { id: "par-1", nome: "Mercearia Vila Verde", podeAparecer: true },
-  { id: "par-2", nome: "GoFit", podeAparecer: true }
+  { id: "par-1", nome: "Mercearia Vila Verde", logo: "marca/parceiro-vila-verde.png", podeAparecer: true },
+  { id: "par-2", nome: "GoFit", logo: "marca/parceiro-gofit.png", podeAparecer: true }
 ];

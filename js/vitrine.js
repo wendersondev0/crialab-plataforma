@@ -378,10 +378,11 @@
     document.title = "Sobre · Cria Lab DM";
     var id = estado().identidade;
     var parceiros = estado().parceiros.filter(function (item) { return item.podeAparecer; }).map(function (item) {
-      return "<span class=\"chip\">" + ui.esc(item.nome) + "</span>";
+      var marca = item.logo ? '<img src="' + ui.url(item.logo) + '" alt="' + ui.esc(item.nome) + '">' : "<span>" + ui.esc(item.nome) + "</span>";
+      return '<figure class="parceiro">' + marca + "</figure>";
     }).join("");
     var local = (id.endereco ? "<p>" + ui.esc(id.endereco) + "</p>" : "") + (id.horario ? "<p>" + ui.esc(id.horario) + "</p>" : "");
-    raiz.innerHTML = '<section class="sobre"><div class="passaro-palco"><img class="passaro" src="' + ui.url("marca/mascote.png") + '" alt="Mascote da Cria Lab DM"><span class="passaro-sombra"></span></div><div class="sobre-texto"><img class="letreiro" src="' + ui.url("marca/logo-colorida.png") + '" alt="Cria Lab"><h1>' + ui.esc(id.nome) + '</h1><p>CNPJ ' + ui.esc(id.cnpj) + '</p><p><a href="mailto:' + ui.esc(id.email) + '">' + ui.esc(id.email) + '</a></p><p><a href="tel:+5527996530954">' + ui.esc(id.telefone) + "</a></p>" + local + redes() + "</div></section>" + (parceiros ? '<section class="cartao"><h2>Parceiros</h2><div class="chips">' + parceiros + "</div></section>" : "");
+    raiz.innerHTML = '<section class="sobre"><div class="passaro-palco"><img class="passaro" src="' + ui.url("marca/mascote.png") + '" alt="Mascote da Cria Lab DM"><span class="passaro-sombra"></span></div><div class="sobre-texto"><img class="letreiro" src="' + ui.url("marca/logo-colorida.png") + '" alt="Cria Lab"><h1>' + ui.esc(id.nome) + '</h1><p>CNPJ ' + ui.esc(id.cnpj) + '</p><p><a href="mailto:' + ui.esc(id.email) + '">' + ui.esc(id.email) + '</a></p><p><a href="tel:+5527996530954">' + ui.esc(id.telefone) + "</a></p>" + local + redes() + "</div></section>" + (parceiros ? '<section class="cartao"><h2>Parceiros</h2><div class="parceiros">' + parceiros + "</div></section>" : "");
   }
 
   if (pagina === "home") home();
