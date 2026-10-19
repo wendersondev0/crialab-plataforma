@@ -61,7 +61,7 @@
 .avaliacao-topo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
 .estrelas { color: #d9cfc2; letter-spacing: 1px; }
 .estrelas .cheia { color: var(--laranja); }
-.painel-ficha { margin-top: 20px; }
+.painel-ficha { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 20px; }
 .ficha-info .botao:hover, .ficha-info .botao-linha:hover, .ficha-info .botao-teal:hover { transform: none; }
 @media (max-width: 720px) {
   .lojas-ficha, .acoes-dupla, .frete-form, .item-carrinho { grid-template-columns: 1fr; }
