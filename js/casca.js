@@ -37,14 +37,16 @@
     instagram: svg('<rect' + traco + ' x="4" y="4" width="16" height="16" rx="5"/><circle' + traco + ' cx="12" cy="12" r="3.5"/><circle fill="currentColor" cx="17" cy="7" r="0.8"/>'),
     tiktok: svg('<path' + traco + ' d="M14 5v9.2a3.2 3.2 0 1 1-2.2-3"/><path' + traco + ' d="M14 7.2c.8 1.4 2.1 2.3 4 2.5"/>'),
     youtube: svg('<rect' + traco + ' x="3" y="6" width="18" height="12" rx="3"/><path' + traco + ' d="m11 9.5 5 2.5-5 2.5z"/>'),
-    shopee: svg('<path' + traco + ' d="M6 8h12l-1 11H7z"/><path' + traco + ' d="M9 8V7a3 3 0 0 1 6 0v1"/>'),
-    mercadolivre: svg('<path' + traco + ' d="M4 10 12 4l8 6"/><path' + traco + ' d="M6 10v8h12v-8"/><path' + traco + ' d="M10 18v-4h4v4"/>'),
+    shopee: '<svg class="marca-canal" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#EE4D2D"/><path fill="#fff" d="M7.4 10.1h9.2l-.9 8.6H8.3l-.9-8.6z"/><path fill="#fff" d="M9.6 10.1V8.4a2.4 2.4 0 0 1 4.8 0v1.7h-1.5V8.4a.9.9 0 0 0-1.8 0v1.7H9.6z"/><path fill="#EE4D2D" d="M12 12.2c1.5 0 2.4.7 2.4 1.7 0 .6-.4 1.1-1.1 1.3-.8.3-1.3.7-1.3 1.2 0 .4.4.7 1 .7.5 0 1-.2 1.3-.6l.9.8c-.6.7-1.4 1-2.3 1-1.3 0-2.2-.7-2.2-1.7 0-.7.5-1.2 1.3-1.5.7-.2 1.1-.6 1.1-1 0-.4-.3-.6-.9-.6-.5 0-.9.2-1.2.6l-.9-.8c.5-.7 1.3-1.1 2.2-1.1z"/></svg>',
+    mercadolivre: '<svg class="marca-canal" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#FFF159"/><path fill="#2D3277" d="M2.8 14.2 6.8 11.4l2.4 1.8-1.8 2.2H4.6c-1 0-1.8-.6-1.8-1.2z"/><path fill="#2D3277" d="M21.2 14.2 17.2 11.4l-2.4 1.8 1.8 2.2h2.8c1 0 1.8-.6 1.8-1.2z"/><path fill="#2D3277" d="M8.2 13.1h2.2l1.6 2.4 1.6-2.4h2.2L13.4 16l.4 3.4h-3.6L10.6 16 8.2 13.1z"/><path fill="#FFF159" d="M10.4 14.6h3.2v1.1h-3.2z"/></svg>',
     email: svg('<rect' + traco + ' x="3" y="5" width="18" height="14" rx="2"/><path' + traco + ' d="m4 7 8 6 8-6"/>'),
     telefone: svg('<path' + traco + ' d="M8 4h3l1 4-2 1a12 12 0 0 0 5 5l1-2 4 1v3c0 .6-.4 1-1 1A15 15 0 0 1 5 6c0-.6.4-1 1-1z"/>'),
     sino: svg('<path' + traco + ' d="M6 16h12l-1.2-2.2V10a4.8 4.8 0 0 0-9.6 0v3.8z"/><path' + traco + ' d="M10 16a2 2 0 0 0 4 0"/>'),
     coracao: svg('<path' + traco + ' d="M12 19s-7-4.4-7-8.2A3.8 3.8 0 0 1 12 8a3.8 3.8 0 0 1 7 2.8C19 14.6 12 19 12 19z"/>'),
     caminhao: svg('<path' + traco + ' d="M3 7h11v8H3z"/><path' + traco + ' d="M14 10h4l3 3v2h-7z"/><circle' + traco + ' cx="7" cy="17.5" r="1.5"/><circle' + traco + ' cx="17" cy="17.5" r="1.5"/>'),
-    documento: svg('<path' + traco + ' d="M7 3h7l5 5v13H7z"/><path' + traco + ' d="M14 3v5h5"/><path' + traco + ' d="M10 13h6M10 17h6"/>')
+    documento: svg('<path' + traco + ' d="M7 3h7l5 5v13H7z"/><path' + traco + ' d="M14 3v5h5"/><path' + traco + ' d="M10 13h6M10 17h6"/>'),
+    caixa: svg('<path' + traco + ' d="M4 8 12 4l8 4-8 4-8-4z"/><path' + traco + ' d="M4 8v8l8 4 8-4V8"/><path' + traco + ' d="M12 12v8"/>'),
+    estoque: svg('<path' + traco + ' d="M4 7h16M4 12h16M4 17h16"/><path' + traco + ' d="M8 7v10M16 7v10"/>')
   };
 
   function ativo(href) {
@@ -62,7 +64,7 @@
       if (Number(carrinho[1]) > 0) qtd = '<span class="selo-qtd">' + carrinho[1] + "</span>";
     }
     var chave = carrinho ? "carrinho" : texto;
-    var mapa = { "Início": "casa", "Produtos": "shopee", "Personalizados": "admin", "carrinho": "carrinho", "Conta": "conta", "Contato": "contato", "Sobre": "sobre", "Administração": "admin", "Painel Gerencial": "casa", "Gestão Produtos": "shopee", "Gestão Personalizados": "admin", "Marketing": "tiktok", "Atendimento": "contato", "Patrimônio e Estoque": "mercadolivre", "Gestão Financeira": "carrinho", "Gestão Fiscal": "email", "Impressão 3D": "admin", "Ver loja": "casa" };
+    var mapa = { "Início": "casa", "Produtos": "caixa", "Personalizados": "admin", "carrinho": "carrinho", "Conta": "conta", "Contato": "contato", "Sobre": "sobre", "Administração": "admin", "Painel Gerencial": "casa", "Gestão Produtos": "caixa", "Gestão Personalizados": "admin", "Marketing": "tiktok", "Atendimento": "contato", "Patrimônio e Estoque": "estoque", "Gestão Financeira": "carrinho", "Gestão Fiscal": "email", "Impressão 3D": "admin", "Ver loja": "casa" };
     var desenho = icones[mapa[chave]] ? '<span class="ico">' + icones[mapa[chave]] + "</span>" : "";
     return '<a class="nav-link' + (ativo(href) ? " ativo" : "") + '" href="' + url(href) + '">' + desenho + esc(rotulo) + qtd + "</a>";
   }
