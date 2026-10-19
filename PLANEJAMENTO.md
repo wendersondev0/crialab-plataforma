@@ -130,12 +130,12 @@ O rodapé e a página Sobre mostram CNPJ, e-mail, telefone, WhatsApp, Instagram,
 
 Critério:
 
-- [ ] `dotnet-crialab-plataforma` e `vue-crialab-plataforma` continuam ausentes.
-- [ ] `index.html` e `paginas/sobre.html` abrem em `http://localhost`.
-- [ ] Logo colorida, mascote e nome aparecem. As oito saídas (WhatsApp, Instagram, TikTok, YouTube, Shopee, Mercado Livre, e-mail, telefone) são links de verdade.
-- [ ] CNPJ 68.914.190/0001-96 está no rodapé e em Sobre.
-- [ ] Em 360 px, 768 px e 1280 px a página não estoura para o lado. Botão e link têm pelo menos 44 px.
-- [ ] Não existe tela de plano, mensalidade, outra loja nem orçamento.
+- [x] `dotnet-crialab-plataforma` e `vue-crialab-plataforma` continuam ausentes.
+- [x] `index.html` e `paginas/sobre.html` abrem em `http://localhost`.
+- [x] Logo colorida, mascote e nome aparecem. As oito saídas (WhatsApp, Instagram, TikTok, YouTube, Shopee, Mercado Livre, e-mail, telefone) são links de verdade.
+- [x] CNPJ 68.914.190/0001-96 está no rodapé e em Sobre.
+- [x] Em 360 px, 768 px e 1280 px a página não estoura para o lado. Botão e link têm pelo menos 44 px.
+- [x] Não existe tela de plano, mensalidade, outra loja nem orçamento.
 
 ## Fase 2 — Catálogo, busca e ficha
 
@@ -157,13 +157,13 @@ Na ficha, um botão abre o WhatsApp da loja com a mensagem “Olá, quero saber 
 
 Critério:
 
-- [ ] Card, home, busca e ficha usam jpg de `Fotos_Crialab`. Nenhuma imagem de banco no lugar delas.
-- [ ] A ficha da sessão 15/10 oferece “Comprar peça” e “Comprar arquivo”. A ficha da sessão 24/05 oferece só a peça.
-- [ ] Amostra de filamento é botão colorido, com nome visível, e cabe no toque de 44 px.
-- [ ] `busca.html?categoria=chaveiros&ordem=preco` reabre com o mesmo filtro depois de recarregar.
-- [ ] Busca sem resultado mostra o mascote e uma frase curta.
-- [ ] Preço à vista de uma peça de R$ 100 aparece como R$ 90. As 3 parcelas usam R$ 100.
-- [ ] O HTML da ficha não contém o caminho do arquivo 3D.
+- [x] Card, home, busca e ficha usam jpg de `Fotos_Crialab`. Nenhuma imagem de banco no lugar delas.
+- [x] A ficha da sessão 15/10 oferece “Comprar peça” e “Comprar arquivo”. A ficha da sessão 24/05 oferece só a peça.
+- [x] Amostra de filamento é botão colorido, com nome visível, e cabe no toque de 44 px.
+- [x] `busca.html?categoria=chaveiros&ordem=preco` reabre com o mesmo filtro depois de recarregar.
+- [x] Busca sem resultado mostra o mascote e uma frase curta.
+- [x] Preço à vista de uma peça de R$ 100 aparece como R$ 90. As 3 parcelas usam R$ 100.
+- [x] O HTML da ficha não contém o caminho do arquivo 3D.
 
 ## Fase 3 — Carrinho, frete e checkout
 
@@ -177,14 +177,14 @@ Confirmar não chama banco nem operadora. O pedido nasce com status “aguardand
 
 Critério:
 
-- [ ] Carrinho vazio mostra o mascote.
-- [ ] Três itens no mesmo pedido: peça 24/05, personalizado 13/05 e arquivo 15/10. O frete soma só a peça e o personalizado.
-- [ ] Com físico abaixo de R$ 200, PAC e SEDEX têm preço. Com físico de R$ 200 ou mais, frete R$ 0.
-- [ ] PIX e boleto aplicam 10% sobre o subtotal de produtos. Cartão mostra o total sem esse desconto e as parcelas sobre o preço cheio.
-- [ ] Cupom `OFICINA10` reduz os produtos e entra na conta do frete grátis. Cupom inexistente mostra erro e não altera o total.
-- [ ] CEP com menos de 8 dígitos mostra erro e não deixa confirmar.
-- [ ] Em 360 px o resumo e o botão de confirmar aparecem sem cortar o total.
-- [ ] Recarregar o checkout mantém carrinho, CEP e forma de pagamento.
+- [x] Carrinho vazio mostra o mascote.
+- [x] Três itens no mesmo pedido: peça 24/05, personalizado 13/05 e arquivo 15/10. O frete soma só a peça e o personalizado.
+- [x] Com físico abaixo de R$ 200, PAC e SEDEX têm preço. Com físico de R$ 200 ou mais, frete R$ 0.
+- [x] PIX e boleto aplicam 10% sobre o subtotal de produtos. Cartão mostra o total sem esse desconto e as parcelas sobre o preço cheio.
+- [x] Cupom `OFICINA10` reduz os produtos e entra na conta do frete grátis. Cupom inexistente mostra erro e não altera o total.
+- [x] CEP com menos de 8 dígitos mostra erro e não deixa confirmar.
+- [x] Em 360 px o resumo e o botão de confirmar aparecem sem cortar o total.
+- [x] Recarregar o checkout mantém carrinho, CEP e forma de pagamento.
 
 ## Fase 4 — Conta, pedidos, downloads e contato
 
@@ -200,8 +200,8 @@ Contato tem os tipos dúvida, sugestão, elogio, reclamação, orçamento e outr
 
 Critério:
 
-- [ ] Conta sem pedido mostra o mascote.
-- [ ] O pedido pago na fase 3 aparece em Pedidos com o status e o total daquela hora.
+- [x] Conta sem pedido mostra o mascote.
+- [x] O pedido pago na fase 3 aparece em Pedidos com o status e o total daquela hora.
 - [ ] O arquivo 15/10 só surge em Downloads depois de “pago”.
 - [ ] Aceitar o orçamento de exemplo cria um pedido. Recusar deixa o orçamento encerrado, sem pedido.
 - [ ] Enviar o contato grava a mensagem, sobrevive ao recarregar e mostra confirmação na hora.
@@ -300,11 +300,11 @@ Venda de balcão: data, item, quantidade e valor. Ao salvar, já é receita do m
 
 Critério:
 
-- [ ] Setembro de 2026 mostra PLA R$ 72,84142857 por kg (R$ 509,89 em 7 kg) e PETG R$ 64,776 por kg (R$ 971,64 em 15 kg).
-- [ ] Mês com quantidade 0 de um filamento mostra preço médio R$ 0.
-- [ ] No mês da Bambu, o resultado operacional não subtrai R$ 4.437,66. O resultado de caixa subtrai.
-- [ ] A conciliação mostra, lado a lado, PLA R$ 80,56625 e PETG R$ 60,18875 da aba Total, quantidade 104,5, receita R$ 2.919,45, despesa R$ 18.291,50, gastos R$ 23.423,44, e os totais dos sete meses calculados pela tela, com uma frase dizendo que a aba corta agosto, setembro e o zero de junho no PETG.
-- [ ] Gráfico de energia tem valor em reais nos sete meses e kWh em junho, julho, agosto e setembro.
+- [x] Setembro de 2026 mostra PLA R$ 72,84142857 por kg (R$ 509,89 em 7 kg) e PETG R$ 64,776 por kg (R$ 971,64 em 15 kg).
+- [x] Mês com quantidade 0 de um filamento mostra preço médio R$ 0.
+- [x] No mês da Bambu, o resultado operacional não subtrai R$ 4.437,66. O resultado de caixa subtrai.
+- [x] A conciliação mostra, lado a lado, PLA R$ 80,56625 e PETG R$ 60,18875 da aba Total, quantidade 104,5, receita R$ 2.919,45, despesa R$ 18.291,50, gastos R$ 23.423,44, e os totais dos sete meses calculados pela tela, com uma frase dizendo que a aba corta agosto, setembro e o zero de junho no PETG.
+- [x] Gráfico de energia tem valor em reais nos sete meses e kWh em junho, julho, agosto e setembro.
 - [ ] Fechar a energia com preço novo pede confirmação. Cancelar deixa o preço anterior intacto. O R$/min sugerido segue a fórmula e aceita um valor digitado por cima.
 - [ ] Venda de balcão de R$ 40 em setembro aumenta a receita desse mês em R$ 40 e aparece no CSV.
 - [ ] Filtro por link e por texto acha um gasto fixo conhecido. Exportar CSV baixa o período filtrado.
@@ -323,11 +323,11 @@ Impressão: máquina, peça, peso previsto, peso real, sucesso ou falha, motivo 
 
 Critério:
 
-- [ ] As três compras de máquina e a Epson aparecem no patrimônio com os valores da fase 6. A caneta 3D não aparece nessa lista.
-- [ ] Bambu e Kobra mostram R$ 0,020 e R$ 0,010 por minuto até o dono editar.
+- [x] As três compras de máquina e a Epson aparecem no patrimônio com os valores da fase 6. A caneta 3D não aparece nessa lista.
+- [x] Bambu e Kobra mostram R$ 0,020 e R$ 0,010 por minuto até o dono editar.
 - [ ] Uma impressão com falha não baixa produto pronto e baixa o filamento usado. Uma com sucesso baixa os dois.
-- [ ] Dois trabalhos no mesmo horário, na mesma máquina, mostram o choque. Horários diferentes não mostram.
-- [ ] A home lista o trabalho que está na fila, no lugar dos dois exemplos da fase 1.
+- [x] Dois trabalhos no mesmo horário, na mesma máquina, mostram o choque. Horários diferentes não mostram.
+- [x] A home lista o trabalho que está na fila, no lugar dos dois exemplos da fase 1.
 - [ ] Copiar a taxa de falha realizada pede confirmação e não altera orçamento já fechado.
 - [ ] Confirmar uma manutenção de bico cria despesa no mês. Cancelar não cria.
 
@@ -443,15 +443,15 @@ O mascote conduz o primeiro acesso do admin em três passos: lançar uma despesa
 
 Critério:
 
-- [ ] Cachorro branco reproduz a tabela acima, inclusive Shopee R$ 32,66, comissão R$ 11,03, líquido R$ 21,63 e lucro R$ 4,16.
-- [ ] A tela não chega em R$ 20,43 nem em preço R$ 30 para esse caso.
-- [ ] Com os dois descontos de 5%, o preço direto é R$ 22.
-- [ ] Pintura simples com R$ 2,00 de material mostra R$ 32 ao lado de R$ 25.
-- [ ] Os três cartões aparecem juntos. O aviso de faixa fica no cartão da Shopee. O cartão do Mercado Livre usa a margem de 25% e mostra faixas vazias, editáveis.
+- [x] Cachorro branco reproduz a tabela acima, inclusive Shopee R$ 32,66, comissão R$ 11,03, líquido R$ 21,63 e lucro R$ 4,16.
+- [x] A tela não chega em R$ 20,43 nem em preço R$ 30 para esse caso.
+- [x] Com os dois descontos de 5%, o preço direto é R$ 22.
+- [x] Pintura simples com R$ 2,00 de material mostra R$ 32 ao lado de R$ 25.
+- [x] Os três cartões aparecem juntos. O aviso de faixa fica no cartão da Shopee. O cartão do Mercado Livre usa a margem de 25% e mostra faixas vazias, editáveis.
 - [ ] Enviar o orçamento, mudar o PLA médio e reabrir: o Cachorro continua em R$ 85/kg. Um orçamento novo pode escolher o médio.
 - [ ] Depois de um fechamento com R$/min diferente de 0,035, um orçamento novo usa o valor fechado. O Cachorro já salvo permanece em 0,035.
 - [ ] Realizar com peso e tempo diferentes mostra a diferença em reais contra o orçado.
-- [ ] O guia de três passos abre uma vez e, pulado, não volta sozinho.
+- [x] O guia de três passos abre uma vez e, pulado, não volta sozinho.
 
 ## Fase 9 — Ordem de serviço, recibo e nota pendente
 
@@ -481,10 +481,10 @@ Percorrer home, busca, ficha, carrinho, checkout, conta, contato, sobre, admin, 
 
 Critério:
 
-- [ ] Busca sem resultado, carrinho vazio e conta sem pedido mostram o mascote.
-- [ ] Nenhum número de frete, margem, comissão, kWh ou depreciação está escrito direto no HTML. Todos saem de `dados/` ou da memória.
-- [ ] As três larguras não cortam botão, total nem tabela principal. Onde a tabela não cabe, ela rola na horizontal dentro do bloco.
-- [ ] Não há menu, selo ou frase de outra loja, plano, mensalidade ou revendedor.
+- [x] Busca sem resultado, carrinho vazio e conta sem pedido mostram o mascote.
+- [x] Nenhum número de frete, margem, comissão, kWh ou depreciação está escrito direto no HTML. Todos saem de `dados/` ou da memória.
+- [x] As três larguras não cortam botão, total nem tabela principal. Onde a tabela não cabe, ela rola na horizontal dentro do bloco.
+- [x] Não há menu, selo ou frase de outra loja, plano, mensalidade ou revendedor.
 
 ## Ideias novas adotadas
 

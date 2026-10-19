@@ -1,0 +1,4 @@
+.trilho { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 1fr); gap: 14px; overflow-x: auto; padding-bottom: 8px; max-width: 100%; }
+.mesa { display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: center; }
+.rede-bloco { display: flex; gap: 8px; flex-wrap: wrap; }
+.carregando { min-height: 220px; }

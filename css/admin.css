@@ -1,0 +1,8 @@
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.kpi { background: var(--branco); border-radius: 16px; padding: 14px; box-shadow: var(--sombra); }
+.kpi strong { display: block; font-size: 1.2rem; }
+.caderno { display: grid; gap: 16px; }
+.caderno h2 { margin-bottom: 0; }
+@media (max-width: 900px) {
+  .kpis { grid-template-columns: 1fr 1fr; }
+}
