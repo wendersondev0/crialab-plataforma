@@ -126,7 +126,7 @@ Arquivos: `index.html`, `paginas/sobre.html`, `css/base.css`, `js/casca.js`, `ma
 
 A home mostra logo, letreiro, mascote, nome Cria Lab DM e um bloco “Na mesa agora” com dois trabalhos de exemplo (peça provisória e horário). O nome da impressora não aparece para o cliente. O bloco ocupa o lugar de vitrine da oficina. Busca, categorias e ofertas ficam para a fase 2; o campo de busca pode aparecer desenhado, com o destino ainda vazio.
 
-O rodapé e a página Sobre mostram CNPJ, e-mail, telefone, WhatsApp, Instagram, TikTok, YouTube, Shopee e o link de exemplo do Mercado Livre. Endereço e horário aparecem como “a definir”.
+O rodapé e a página Sobre mostram CNPJ, e-mail, telefone, WhatsApp, Instagram, TikTok, YouTube, Shopee e o link de exemplo do Mercado Livre. Endereço e horário vazios não aparecem.
 
 Critério:
 
@@ -477,7 +477,7 @@ Critério:
 
 Revisão visual e de texto. Sem regra nova de dinheiro.
 
-Percorrer home, busca, ficha, carrinho, checkout, conta, contato, sobre, admin, mês, energia, orçamento, recibo e os estados vazios. O mascote entra onde a lista está vazia e no carregamento curto da busca. Conferir 360 px, 768 px e 1280 px. Conferir contraste da tinta no creme e do branco no laranja. Tirar texto em inglês que tenha sobrado. Endereço e horário continuam “a definir” se o dono não tiver preenchido.
+Percorrer home, busca, ficha, carrinho, checkout, conta, contato, sobre, admin, mês, energia, orçamento, recibo e os estados vazios. O mascote entra onde a lista está vazia e no carregamento curto da busca. Conferir 360 px, 768 px e 1280 px. Conferir contraste da tinta no creme e do branco no laranja. Tirar texto em inglês que tenha sobrado. Endereço e horário só aparecem depois que o dono preencher na administração.
 
 Critério:
 

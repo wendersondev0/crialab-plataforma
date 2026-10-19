@@ -48,16 +48,38 @@ textarea { min-height: 88px; }
   cursor: pointer;
   white-space: nowrap;
 }
-.nav-link { color: var(--tinta); }
+.nav-link { color: var(--tinta); transition: background 0.18s ease, transform 0.18s ease, color 0.18s ease; }
 .nav-link.ativo, .nav-link:hover, .botao-linha:hover { background: rgba(20, 143, 147, 0.12); }
-.botao { background: var(--laranja); color: var(--branco); border-color: var(--laranja); font-weight: 700; }
-.botao:hover { background: var(--laranja-escuro); }
+.nav-link:hover { transform: translateY(-2px); }
+.nav-link.ativo { background: var(--tinta); color: var(--branco); }
+.ico { width: 20px; height: 20px; display: inline-flex; flex: 0 0 auto; }
+.ico svg { width: 20px; height: 20px; }
+.selo-qtd { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: var(--laranja); color: var(--branco); font-size: 0.75rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+.botao { background: var(--laranja); color: var(--branco); border-color: var(--laranja); font-weight: 700; transition: background 0.18s ease, transform 0.18s ease; }
+.botao:hover { background: var(--laranja-escuro); transform: translateY(-2px); }
+.botao:active, .icone-rede:active, .chip:active { transform: translateY(0) scale(0.98); }
 .botao-teal { background: var(--teal); color: var(--branco); border-color: var(--teal); font-weight: 700; }
 .botao-linha { border-color: var(--tinta); background: var(--branco); }
 .botao:disabled { opacity: 0.45; cursor: not-allowed; }
 #topo { position: sticky; top: 0; z-index: 20; background: rgba(246, 241, 231, 0.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--linha); }
 #rodape { margin-top: 48px; background: var(--tinta); color: var(--branco); padding: 32px 0; }
 #rodape a { color: var(--branco); min-height: 44px; display: inline-flex; align-items: center; }
+.contatos { display: grid; gap: 8px; align-content: start; }
+.contato-linha { gap: 8px; width: fit-content; border-radius: 999px; padding: 0 12px; transition: background 0.18s ease, transform 0.18s ease; }
+.contato-linha:hover { background: rgba(255, 255, 255, 0.12); transform: translateX(4px); }
+.rede-bloco { display: flex; gap: 10px; flex-wrap: wrap; }
+.icone-rede {
+  width: 84px; min-height: 76px; padding: 10px 6px; border-radius: 18px;
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  text-decoration: none; color: var(--tinta); background: var(--branco);
+  border: 2px solid var(--linha); box-shadow: var(--sombra);
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+.icone-rede .rotulo { font-size: 0.68rem; font-weight: 800; line-height: 1.1; text-align: center; }
+.icone-rede:hover { transform: translateY(-4px); background: var(--laranja); color: var(--branco); border-color: var(--laranja); }
+.icone-rede[data-rede="instagram"]:hover, .icone-rede[data-rede="tiktok"]:hover { background: var(--teal); border-color: var(--teal); }
+.rede-bloco.claro .icone-rede { background: rgba(255, 255, 255, 0.08); color: var(--branco); border-color: rgba(255, 255, 255, 0.16); box-shadow: none; }
+.rede-bloco.claro .icone-rede:hover { background: var(--laranja); border-color: var(--laranja); color: var(--branco); }
 .rodape-grade { display: grid; grid-template-columns: 1.2fr 1.4fr 0.8fr; gap: 24px; }
 .logo-rodape { height: 48px; width: auto; background: var(--branco); border-radius: 12px; padding: 6px; margin-bottom: 8px; }
 .miolo { padding: 28px 0 12px; overflow-x: auto; }
@@ -75,8 +97,10 @@ textarea { min-height: 88px; }
 h1, h2, h3 { line-height: 1.2; }
 .grade { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .grade-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.produto { background: var(--branco); border-radius: var(--raio); box-shadow: var(--sombra); overflow: hidden; display: flex; flex-direction: column; }
-.produto img { aspect-ratio: 1; object-fit: cover; width: 100%; background: #efe8da; }
+.produto { background: var(--branco); border-radius: var(--raio); box-shadow: var(--sombra); overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.produto:hover { transform: translateY(-6px); box-shadow: 0 22px 40px rgba(27, 36, 48, 0.14); }
+.produto img { aspect-ratio: 1; object-fit: cover; width: 100%; background: #efe8da; transition: transform 0.35s ease; }
+.produto:hover img { transform: scale(1.06); }
 .produto div, .cartao, .bloco { padding: 16px; }
 .produto h3 { margin: 0 0 6px; font-size: 1.05rem; }
 .preco { font-size: 1.25rem; font-weight: 800; margin: 0; }
@@ -137,7 +161,13 @@ th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--lin
 .numero-grande { font-size: 1.6rem; font-weight: 800; margin: 4px 0; }
 .discreto { opacity: 0.7; font-size: 0.92rem; }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; }
-.chip { background: #fff; border-radius: 999px; padding: 0 14px; min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; color: var(--tinta); border: 2px solid var(--linha); }
+.chip { background: #fff; border-radius: 999px; padding: 0 14px; min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; color: var(--tinta); border: 2px solid var(--linha); transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease, border-color 0.18s ease; }
+.chip:hover { background: var(--teal); color: var(--branco); border-color: var(--teal); transform: translateY(-2px); }
+.hero .mascote { animation: flutuar 4.5s ease-in-out infinite; }
+@keyframes flutuar { 50% { transform: translateY(-8px); } }
+@media (prefers-reduced-motion: reduce) {
+  .hero .mascote, .produto, .produto img, .chip, .icone-rede, .nav-link, .botao, .contato-linha { animation: none; transition: none; }
+}
 @media (max-width: 900px) {
   .hero, .ficha, .checkout, .rodape-grade, .grade, .grade-3, .cartoes-preco { grid-template-columns: 1fr; }
   .resumo { position: static; }
