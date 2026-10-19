@@ -34,5 +34,11 @@ window.CriaDados.avaliacoes = [
 ];
 window.CriaDados.perguntas = [
   { id: "per-1", produtoId: "peca-2026-05-24", autor: "Ana", texto: "Essa peça pode ser feita em PETG?", resposta: "", criadoEm: "2026-10-01T14:00" },
-  { id: "per-2", produtoId: "peca-2026-10-15", autor: "Bruno", texto: "O arquivo inclui licença comercial?", resposta: "Esta licença é pessoal.", criadoEm: "2026-10-05T16:20" }
+  { id: "per-2", produtoId: "peca-2026-10-15", autor: "Bruno", texto: "Dá para lavar esse chaveiro?", resposta: "Sim, com água e sabão neutro. Evite água quente.", criadoEm: "2026-10-05T16:20" },
+  { id: "per-3", produtoId: "sessao-2026-03-14", autor: "Marina", texto: "A cor laranja da foto é PLA?", resposta: "Sim, é PLA laranja. Também dá para pedir em outra cor da cartela.", criadoEm: "2026-10-08T10:15" },
+  { id: "per-4", produtoId: "sessao-2026-03-14", autor: "Lucas", texto: "Vocês enviam para Vitória?", resposta: "", criadoEm: "2026-10-09T18:40" },
+  { id: "per-5", produtoId: "sessao-2026-03-14", autor: "Helena", texto: "Qual o tamanho aproximado?", resposta: "Cerca de 12 cm de altura, como na foto da sessão.", criadoEm: "2026-10-11T09:05" },
+  { id: "per-6", produtoId: "pers-chaveiro-cachorro", autor: "Camila", texto: "Posso mandar a foto do cachorro de lado?", resposta: "Pode. Quanto mais nítida a foto, mais fiel fica o chaveiro.", criadoEm: "2026-10-12T13:20" },
+  { id: "per-7", produtoId: "pers-chaveiro-cachorro", autor: "Rafael", texto: "A argola já vem inclusa no preço médio?", resposta: "", criadoEm: "2026-10-14T11:00" },
+  { id: "per-8", produtoId: "sessao-2026-04-11", autor: "Paula", texto: "Essa peça de utilidade aguenta uso no dia a dia?", resposta: "Sim. É PLA e serve para uso leve em casa.", criadoEm: "2026-10-15T16:10" }
 ];

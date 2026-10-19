@@ -227,7 +227,8 @@
       return "<label>" + ui.esc(etapa.nome) + extra + campo + "</label>";
     }).join("") : "";
     var perguntas = estado().perguntas.filter(function (item) { return item.produtoId === produto.id; }).map(function (item) {
-      return "<article><strong>" + ui.esc(item.autor) + "</strong><p>" + ui.esc(item.texto) + "</p>" + (item.resposta ? "<p><em>" + ui.esc(item.resposta) + "</em></p>" : "<p class=\"discreto\">Aguardando resposta</p>") + "</article>";
+      var resposta = item.resposta ? '<p class="resposta"><strong>Cria Lab</strong><span>' + ui.esc(item.resposta) + "</span></p>" : '<p class="discreto">Aguardando resposta</p>';
+      return '<article class="pergunta"><strong>' + ui.esc(item.autor) + "</strong><p>" + ui.esc(item.texto) + "</p>" + resposta + "</article>";
     }).join("") || "<p>Nenhuma pergunta ainda.</p>";
     var avaliacoes = estado().avaliacoes.filter(function (item) { return item.produtoId === produto.id && item.pedidoId; }).map(function (item) {
       var nota = Math.max(0, Math.min(5, Number(item.nota) || 0));

@@ -70,6 +70,15 @@
           return !estado.avaliacoes.some(function (salva) { return salva.id === item.id; });
         });
         if (avaliacoesNovas.length) estado.avaliacoes = estado.avaliacoes.concat(avaliacoesNovas.map(clonar));
+        estado.perguntas = estado.perguntas || [];
+        (root.CriaDados.perguntas || []).forEach(function (item) {
+          var salva = estado.perguntas.find(function (pergunta) { return pergunta.id === item.id; });
+          if (!salva) estado.perguntas.push(clonar(item));
+          else if (salva.texto === "O arquivo inclui licença comercial?") {
+            salva.texto = item.texto;
+            salva.resposta = item.resposta;
+          }
+        });
         return estado;
       }
     } catch (erro) {}
