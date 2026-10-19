@@ -65,6 +65,11 @@
           produto.precoArquivo = 0;
           produto.arquivo = null;
         });
+        estado.avaliacoes = estado.avaliacoes || [];
+        var avaliacoesNovas = (root.CriaDados.avaliacoes || []).filter(function (item) {
+          return !estado.avaliacoes.some(function (salva) { return salva.id === item.id; });
+        });
+        if (avaliacoesNovas.length) estado.avaliacoes = estado.avaliacoes.concat(avaliacoesNovas.map(clonar));
         return estado;
       }
     } catch (erro) {}

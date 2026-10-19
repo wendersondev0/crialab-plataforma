@@ -25,7 +25,12 @@ window.CriaDados.orcamentosCliente = [
   { id: "orc-cli-2", produtoId: "peca-2026-07-08", titulo: "Peça 08/07", status: "aguardando", detalhes: "Texto gravado ainda sem preço", arquivoNome: "", valor: null, criadoEm: "2026-10-10T09:30" }
 ];
 window.CriaDados.avaliacoes = [
-  { id: "ava-1", produtoId: "peca-2026-05-24", pedidoId: "ped-entregue", autor: "Cliente exemplo", nota: 5, texto: "A peça chegou bem feita e na cor combinada.", fotoDoProduto: true }
+  { id: "ava-1", produtoId: "peca-2026-05-24", pedidoId: "ped-entregue", autor: "Cliente exemplo", nota: 5, texto: "A peça chegou bem feita e na cor combinada.", fotoDoProduto: true },
+  { id: "ava-2", produtoId: "sessao-2026-03-14", pedidoId: "ped-entregue", autor: "Marina", nota: 5, texto: "Ficou igual à foto e a cor laranja veio bem viva.", fotoDoProduto: true },
+  { id: "ava-3", produtoId: "sessao-2026-03-14", pedidoId: "ped-entregue", autor: "Lucas", nota: 4, texto: "Chegou bem embalado. O prazo passou um pouco do combinado.", fotoDoProduto: false },
+  { id: "ava-4", produtoId: "sessao-2026-03-14", pedidoId: "ped-entregue", autor: "Helena", nota: 5, texto: "Presente certeiro. O acabamento das asas veio caprichado.", fotoDoProduto: true },
+  { id: "ava-5", produtoId: "pers-chaveiro-cachorro", pedidoId: "ped-entregue", autor: "Camila", nota: 5, texto: "O chaveiro saiu parecido com a foto que eu mandei.", fotoDoProduto: true },
+  { id: "ava-6", produtoId: "pers-chaveiro-cachorro", pedidoId: "ped-entregue", autor: "Rafael", nota: 4, texto: "Tamanho bom para o molho de chaves. A argola veio resistente.", fotoDoProduto: false }
 ];
 window.CriaDados.perguntas = [
   { id: "per-1", produtoId: "peca-2026-05-24", autor: "Ana", texto: "Essa peça pode ser feita em PETG?", resposta: "", criadoEm: "2026-10-01T14:00" },

@@ -40,7 +40,23 @@
 .qtd-ficha { max-width: 160px; }
 .frete-caixa { padding: 14px; border: 2px solid var(--linha); border-radius: 16px; }
 .frete-form { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
-.frete-form input { width: 100%; margin: 0; }
+.frete-form input, .painel-ficha .formulario input[type="text"] {
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  border: 2px solid var(--linha);
+  border-radius: 999px;
+  background: var(--branco);
+  padding: 10px 18px;
+}
+.frete-form input:focus, .painel-ficha .formulario input[type="text"]:focus { outline: none; border-color: var(--laranja); }
+.avaliacao { display: grid; grid-template-columns: 72px 1fr; gap: 12px; align-items: start; padding-top: 12px; margin-top: 12px; border-top: 1px solid var(--linha); }
+.avaliacao.sem-foto { grid-template-columns: 1fr; }
+.avaliacao img { width: 72px; height: 72px; object-fit: cover; border-radius: 14px; }
+.avaliacao p { margin: 6px 0 0; font-weight: 500; }
+.avaliacao-topo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.estrelas { color: #d9cfc2; letter-spacing: 1px; }
+.estrelas .cheia { color: var(--laranja); }
 .painel-ficha { margin-top: 20px; }
 .ficha-info .botao:hover, .ficha-info .botao-linha:hover, .ficha-info .botao-teal:hover { transform: none; }
 @media (max-width: 720px) {
