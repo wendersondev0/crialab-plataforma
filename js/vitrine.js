@@ -26,17 +26,17 @@
   }
   function canais(produto) {
     var id = estado().identidade;
-    return '<div class="canais"><a href="' + ui.esc(id.shopee) + '" target="_blank" rel="noopener">Shopee</a><a href="' + ui.esc(id.mercadoLivre) + '" target="_blank" rel="noopener">Mercado Livre</a><a href="' + fichaUrl(produto) + '#frete-ficha">Calcular frete</a></div>';
+    return '<div class="canais"><a class="botao-linha" href="' + ui.esc(id.shopee) + '" target="_blank" rel="noopener">' + ico("shopee") + 'Shopee</a><a class="botao-linha" href="' + ui.esc(id.mercadoLivre) + '" target="_blank" rel="noopener">' + ico("mercadolivre") + 'Mercado Livre</a><a class="botao" href="' + fichaUrl(produto) + '#frete-ficha">' + ico("caminhao") + "Calcular frete</a></div>";
   }
   function card(produto) {
     var foto = produto.fotos[0];
     var sob = personalizado(produto);
-    var tag = sob ? '<span class="tag tag-pers">Personalizado</span>' : '<span class="tag">Produto</span>';
+    var tag = sob ? '<span class="tag tag-pers">' + ico("documento") + "Personalizado</span>" : '<span class="tag">' + ico("carrinho") + "Produto</span>";
     var comparativo = !sob && produto.precoComparativo ? "<s>" + dinheiro.real(produto.precoComparativo) + "</s> " : "";
     var preco = sob
       ? '<p class="preco">' + dinheiro.real(produto.preco) + '</p><p class="vista">Preço médio · o valor final sai depois do orçamento</p>'
       : '<p class="preco">' + comparativo + dinheiro.real(produto.preco) + '</p><p class="vista">À vista ' + dinheiro.real(precoVista(produto.preco)) + "</p>";
-    return '<article class="produto"><a class="produto-foto" href="' + fichaUrl(produto) + '"><img src="' + ui.url(foto.arquivo) + '" alt="' + ui.esc(foto.legenda) + '"></a><div>' + tag + '<p class="discreto">' + ui.esc(ui.nomeCategoria(produto.categoria)) + '</p><h3><a href="' + fichaUrl(produto) + '">' + ui.esc(produto.titulo) + "</a></h3>" + preco + canais(produto) + "</div></article>";
+    return '<article class="produto"><a class="produto-foto" href="' + fichaUrl(produto) + '"><img src="' + ui.url(foto.arquivo) + '" alt="' + ui.esc(foto.legenda) + '"></a><div class="produto-corpo">' + tag + '<p class="discreto">' + ui.esc(ui.nomeCategoria(produto.categoria)) + '</p><h3><a href="' + fichaUrl(produto) + '">' + ui.esc(produto.titulo) + "</a></h3>" + preco + canais(produto) + "</div></article>";
   }
   function trilho(titulo, lista) {
     if (!lista.length) return "";
