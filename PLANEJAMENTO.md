@@ -202,10 +202,10 @@ Critério:
 
 - [x] Conta sem pedido mostra o mascote.
 - [x] O pedido pago na fase 3 aparece em Pedidos com o status e o total daquela hora.
-- [ ] O arquivo 15/10 só surge em Downloads depois de “pago”.
-- [ ] Aceitar o orçamento de exemplo cria um pedido. Recusar deixa o orçamento encerrado, sem pedido.
-- [ ] Enviar o contato grava a mensagem, sobrevive ao recarregar e mostra confirmação na hora.
-- [ ] Devolução de um pedido entregue de exemplo muda o status para “devolvido”.
+- [x] O arquivo 15/10 só surge em Downloads depois de “pago”.
+- [x] Aceitar o orçamento de exemplo cria um pedido. Recusar deixa o orçamento encerrado, sem pedido.
+- [x] Enviar o contato grava a mensagem, sobrevive ao recarregar e mostra confirmação na hora.
+- [x] Devolução de um pedido entregue de exemplo muda o status para “devolvido”.
 
 ## Fase 5 — Administração da vitrine e da configuração
 
@@ -222,11 +222,11 @@ A configuração edita frete grátis, desconto à vista, faixas de CEP, cupom, p
 Critério:
 
 - [x] Pausar a peça 24/05 tira ela da busca e a ficha direta explica que está pausada.
-- [ ] Esgotar zera a compra da peça pronta e mantém a ficha visível.
-- [ ] Trocar o frete grátis para R$ 50 muda o checkout de um carrinho novo. O pedido já pago continua com o frete que tinha.
-- [ ] Depoimento com o interruptor desligado não aparece no site. Ligado, aparece.
-- [ ] Resposta de pergunta surge na ficha. Mensagem de contato vai de aberto para em atendimento e resolvido.
-- [ ] Restaurar a carga inicial desfaz pausa, depoimento e frete grátis alterados.
+- [x] Esgotar zera a compra da peça pronta e mantém a ficha visível.
+- [x] Trocar o frete grátis para R$ 50 muda o checkout de um carrinho novo. O pedido já pago continua com o frete que tinha.
+- [x] Depoimento com o interruptor desligado não aparece no site. Ligado, aparece.
+- [x] Resposta de pergunta surge na ficha. Mensagem de contato vai de aberto para em atendimento e resolvido.
+- [x] Restaurar a carga inicial desfaz pausa, depoimento e frete grátis alterados.
 
 ## Fase 6 — Financeiro no formato do caderno
 
@@ -305,9 +305,9 @@ Critério:
 - [x] No mês da Bambu, o resultado operacional não subtrai R$ 4.437,66. O resultado de caixa subtrai.
 - [x] A conciliação mostra, lado a lado, PLA R$ 80,56625 e PETG R$ 60,18875 da aba Total, quantidade 104,5, receita R$ 2.919,45, despesa R$ 18.291,50, gastos R$ 23.423,44, e os totais dos sete meses calculados pela tela, com uma frase dizendo que a aba corta agosto, setembro e o zero de junho no PETG.
 - [x] Gráfico de energia tem valor em reais nos sete meses e kWh em junho, julho, agosto e setembro.
-- [ ] Fechar a energia com preço novo pede confirmação. Cancelar deixa o preço anterior intacto. O R$/min sugerido segue a fórmula e aceita um valor digitado por cima.
-- [ ] Venda de balcão de R$ 40 em setembro aumenta a receita desse mês em R$ 40 e aparece no CSV.
-- [ ] Filtro por link e por texto acha um gasto fixo conhecido. Exportar CSV baixa o período filtrado.
+- [x] Fechar a energia com preço novo pede confirmação. Cancelar deixa o preço anterior intacto. O R$/min sugerido segue a fórmula e aceita um valor digitado por cima.
+- [x] Venda de balcão de R$ 40 em setembro aumenta a receita desse mês em R$ 40 e aparece no CSV.
+- [x] Filtro por link e por texto acha um gasto fixo conhecido. Exportar CSV baixa o período filtrado.
 
 ## Fase 7 — Patrimônio, estoque e impressão
 
@@ -325,11 +325,11 @@ Critério:
 
 - [x] As três compras de máquina e a Epson aparecem no patrimônio com os valores da fase 6. A caneta 3D não aparece nessa lista.
 - [x] Bambu e Kobra mostram R$ 0,020 e R$ 0,010 por minuto até o dono editar.
-- [ ] Uma impressão com falha não baixa produto pronto e baixa o filamento usado. Uma com sucesso baixa os dois.
+- [x] Uma impressão com falha não baixa produto pronto e baixa o filamento usado. Uma com sucesso baixa os dois.
 - [x] Dois trabalhos no mesmo horário, na mesma máquina, mostram o choque. Horários diferentes não mostram.
 - [x] A home lista o trabalho que está na fila, no lugar dos dois exemplos da fase 1.
-- [ ] Copiar a taxa de falha realizada pede confirmação e não altera orçamento já fechado.
-- [ ] Confirmar uma manutenção de bico cria despesa no mês. Cancelar não cria.
+- [x] Copiar a taxa de falha realizada pede confirmação e não altera orçamento já fechado.
+- [x] Confirmar uma manutenção de bico cria despesa no mês. Cancelar não cria.
 
 ## Fase 8 — Orçamento, pintura, Shopee e realizado
 
@@ -448,9 +448,9 @@ Critério:
 - [x] Com os dois descontos de 5%, o preço direto é R$ 22.
 - [x] Pintura simples com R$ 2,00 de material mostra R$ 32 ao lado de R$ 25.
 - [x] Os três cartões aparecem juntos. O aviso de faixa fica no cartão da Shopee. O cartão do Mercado Livre usa a margem de 25% e mostra faixas vazias, editáveis.
-- [ ] Enviar o orçamento, mudar o PLA médio e reabrir: o Cachorro continua em R$ 85/kg. Um orçamento novo pode escolher o médio.
-- [ ] Depois de um fechamento com R$/min diferente de 0,035, um orçamento novo usa o valor fechado. O Cachorro já salvo permanece em 0,035.
-- [ ] Realizar com peso e tempo diferentes mostra a diferença em reais contra o orçado.
+- [x] Enviar o orçamento, mudar o PLA médio e reabrir: o Cachorro continua em R$ 85/kg. Um orçamento novo pode escolher o médio.
+- [x] Depois de um fechamento com R$/min diferente de 0,035, um orçamento novo usa o valor fechado. O Cachorro já salvo permanece em 0,035.
+- [x] Realizar com peso e tempo diferentes mostra a diferença em reais contra o orçado.
 - [x] O guia de três passos abre uma vez e, pulado, não volta sozinho.
 
 ## Fase 9 — Ordem de serviço, recibo e nota pendente
@@ -467,11 +467,11 @@ O dono responde o personalizado que ficou aguardando na fase 4. O cliente aceita
 
 Critério:
 
-- [ ] Pagar uma peça pronta baixa o estoque e libera o recibo. Cancelar antes do pagamento não baixa.
-- [ ] Concluir a ordem de serviço baixa insumo e não baixa uma unidade de peça pronta.
-- [ ] O recibo abre a impressão do navegador com logo, CNPJ e o total daquele pedido.
-- [ ] A nota do pedido mostra “pendente de transmissão” e não mostra chave nem protocolo.
-- [ ] O dono informa o valor do personalizado pendente, o cliente aceita na conta, e o pedido nasce com esse valor.
+- [x] Pagar uma peça pronta baixa o estoque e libera o recibo. Cancelar antes do pagamento não baixa.
+- [x] Concluir a ordem de serviço baixa insumo e não baixa uma unidade de peça pronta.
+- [x] O recibo abre a impressão do navegador com logo, CNPJ e o total daquele pedido.
+- [x] A nota do pedido mostra “pendente de transmissão” e não mostra chave nem protocolo.
+- [x] O dono informa o valor do personalizado pendente, o cliente aceita na conta, e o pedido nasce com esse valor.
 
 ## Fase 10 — Acabamento
 

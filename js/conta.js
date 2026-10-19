@@ -38,7 +38,8 @@
       var devolver = pedido.status === "entregue" ? '<button class="botao-linha" type="button" data-devolver="' + ui.esc(pedido.id) + '">Pedir devolução</button>' : "";
       var recibo = pedido.status !== "aguardando pagamento" && pedido.status !== "cancelado" ? '<a class="botao-linha" href="' + ui.url("paginas/recibo.html?id=" + encodeURIComponent(pedido.id)) + '">Recibo</a>' : "";
       var pagar = pedido.status === "aguardando pagamento" ? '<button class="botao" type="button" data-pagar="' + ui.esc(pedido.id) + '">Simular pagamento</button>' : "";
-      return '<article class="cartao"><strong>' + ui.esc(pedido.id) + "</strong><p>" + ui.esc(pedido.status) + " · " + dinheiro.real(pedido.total) + "</p><p>" + pedido.itens.map(function (item) { return ui.esc(item.titulo) + " × " + item.quantidade; }).join(", ") + "</p><div class=\"linha\">" + pagar + devolver + recibo + "</div></article>";
+      var cancelar = pedido.status === "aguardando pagamento" ? '<button class="botao-linha" type="button" data-cancelar="' + ui.esc(pedido.id) + '">Cancelar pedido</button>' : "";
+      return '<article class="cartao"><strong>' + ui.esc(pedido.id) + "</strong><p>" + ui.esc(pedido.status) + " · " + dinheiro.real(pedido.total) + "</p><p>" + pedido.itens.map(function (item) { return ui.esc(item.titulo) + " × " + item.quantidade; }).join(", ") + "</p><div class=\"linha\">" + pagar + cancelar + devolver + recibo + "</div></article>";
     }).join("") : ui.vazio("Nenhum pedido por aqui.");
     document.getElementById("downloads").innerHTML = downloads.length ? downloads.map(function (item, indice) {
       return '<p><button class="botao-linha" type="button" data-download="' + indice + '">Baixar ' + ui.esc(item.arquivoFormato || "arquivo") + "</button> <span class=\"discreto\">" + ui.esc(item.arquivoLicenca || "") + "</span></p>";
@@ -71,11 +72,16 @@
         atual.cliente.documento = String(dados.get("documento") || "");
       });
     });
-    raiz.addEventListener("click", function (evento) {
+    if (!raiz.dataset.contaCliques) {
+      raiz.dataset.contaCliques = "1";
+      raiz.addEventListener("click", cliqueConta);
+    }
+    function cliqueConta(evento) {
       var pagar = evento.target.getAttribute && evento.target.getAttribute("data-pagar");
       var devolver = evento.target.getAttribute && evento.target.getAttribute("data-devolver");
       var aceitar = evento.target.getAttribute && evento.target.getAttribute("data-aceitar");
       var recusar = evento.target.getAttribute && evento.target.getAttribute("data-recusar");
+      var cancelar = evento.target.getAttribute && evento.target.getAttribute("data-cancelar");
       var download = evento.target.getAttribute && evento.target.getAttribute("data-download");
       if (pagar) {
         Cria.alterar(function (atual) {
@@ -131,8 +137,24 @@
         });
         conta();
       }
-      if (download != null) baixarArquivo(downloads[Number(download)]);
-    });
+      if (cancelar) {
+        Cria.alterar(function (atual) {
+          var pedido = atual.pedidos.find(function (item) { return item.id === cancelar; });
+          if (pedido && pedido.status === "aguardando pagamento") pedido.status = "cancelado";
+        });
+        conta();
+      }
+      if (download != null) {
+        var liberados = [];
+        estado().pedidos.forEach(function (pedido) {
+          if (pedido.status === "aguardando pagamento" || pedido.status === "cancelado") return;
+          pedido.itens.forEach(function (item) {
+            if (item.arquivo) liberados.push(item);
+          });
+        });
+        baixarArquivo(liberados[Number(download)]);
+      }
+    }
     var formEndereco = document.getElementById("novo-endereco");
     formEndereco.addEventListener("submit", function (evento) {
       evento.preventDefault();

@@ -72,6 +72,8 @@
       });
       alert("Despesa lançada.");
     });
+    if (!raiz.dataset.oficinaCliques) {
+      raiz.dataset.oficinaCliques = "1";
     raiz.addEventListener("click", function (evento) {
       var id = evento.target.getAttribute && evento.target.getAttribute("data-concluir");
       if (!id) return;
@@ -94,6 +96,7 @@
       });
       impressoes();
     });
+    }
   }
 
   if (pagina === "admin-patrimonio") patrimonio();
