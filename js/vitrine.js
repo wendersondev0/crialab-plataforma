@@ -377,13 +377,11 @@
   function sobre() {
     document.title = "Sobre · Cria Lab DM";
     var id = estado().identidade;
-    var depoimentos = estado().depoimentos.filter(function (item) { return item.podeAparecer; }).map(function (item) {
-      return "<blockquote><p>" + ui.esc(item.texto) + "</p><strong>" + ui.esc(item.autor) + "</strong></blockquote>";
-    }).join("");
     var parceiros = estado().parceiros.filter(function (item) { return item.podeAparecer; }).map(function (item) {
       return "<span class=\"chip\">" + ui.esc(item.nome) + "</span>";
     }).join("");
-    raiz.innerHTML = '<section class="hero"><div><img class="letreiro" src="' + ui.url("marca/logo-completa.jpeg") + '" alt=""><h1>' + ui.esc(id.nome) + '</h1><p>CNPJ ' + ui.esc(id.cnpj) + "</p><p>" + ui.esc(id.email) + "</p><p>" + ui.esc(id.telefone) + "</p>" + (id.endereco ? "<p>" + ui.esc(id.endereco) + "</p>" : "") + (id.horario ? "<p>" + ui.esc(id.horario) + "</p>" : "") + redes() + "</div><img class=\"mascote\" src=\"" + ui.url("marca/mascote.png") + '" alt=""></section>' + (parceiros ? '<section class="cartao"><h2>Parceiros</h2><div class="chips">' + parceiros + "</div></section>" : "") + (depoimentos ? '<section class="cartao"><h2>Depoimentos</h2>' + depoimentos + "</section>" : "") + '<section class="cartao"><h2>Template de postagem</h2><img src="' + ui.url("marca/template-de-postagem.png") + '" alt="Template de postagem da Cria Lab DM"></section>';
+    var local = (id.endereco ? "<p>" + ui.esc(id.endereco) + "</p>" : "") + (id.horario ? "<p>" + ui.esc(id.horario) + "</p>" : "");
+    raiz.innerHTML = '<section class="sobre"><div class="passaro-palco"><img class="passaro" src="' + ui.url("marca/mascote.png") + '" alt="Mascote da Cria Lab DM"><span class="passaro-sombra"></span></div><div class="sobre-texto"><img class="letreiro" src="' + ui.url("marca/logo-colorida.png") + '" alt="Cria Lab"><h1>' + ui.esc(id.nome) + '</h1><p>CNPJ ' + ui.esc(id.cnpj) + '</p><p><a href="mailto:' + ui.esc(id.email) + '">' + ui.esc(id.email) + '</a></p><p><a href="tel:+5527996530954">' + ui.esc(id.telefone) + "</a></p>" + local + redes() + "</div></section>" + (parceiros ? '<section class="cartao"><h2>Parceiros</h2><div class="chips">' + parceiros + "</div></section>" : "");
   }
 
   if (pagina === "home") home();

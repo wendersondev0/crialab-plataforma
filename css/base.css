@@ -203,7 +203,7 @@ th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--lin
 .hero .mascote { animation: flutuar 4.5s ease-in-out infinite; }
 @keyframes flutuar { 50% { transform: translateY(-8px); } }
 @media (prefers-reduced-motion: reduce) {
-  .hero .mascote, .produto, .produto img, .chip, .icone-rede, .nav-link, .botao, .contato-linha { animation: none; transition: none; }
+  .hero .mascote, .passaro, .passaro-sombra, .produto, .produto img, .chip, .icone-rede, .nav-link, .botao, .contato-linha { animation: none; transition: none; }
 }
 @media (max-width: 900px) {
   .hero, .ficha, .checkout, .rodape-grade, .grade, .grade-3, .cartoes-preco { grid-template-columns: 1fr; }
