@@ -40,7 +40,7 @@
     var preco = sob
       ? '<p class="preco m-0 text-xl font-extrabold">' + dinheiro.real(produto.preco) + '</p><p class="vista m-0 font-bold text-teal-escuro">Preço médio · o valor final sai depois do orçamento</p>'
       : '<p class="preco m-0 text-xl font-extrabold">' + comparativo + dinheiro.real(produto.preco) + '</p><p class="vista m-0 font-bold text-teal-escuro">À vista ' + dinheiro.real(precoVista(produto.preco)) + "</p>";
-    return '<article class="produto flex flex-col overflow-hidden rounded-[18px] bg-white text-tinta shadow-cria transition hover:-translate-y-1.5"><a class="produto-foto block overflow-hidden no-underline" href="' + fichaUrl(produto) + '"><img class="aspect-square w-full object-cover bg-[#efe8da] transition duration-300 hover:scale-105" src="' + ui.url(foto.arquivo) + '" alt="' + ui.esc(foto.legenda) + '"></a><div class="produto-corpo flex flex-1 flex-col gap-2 p-4">' + tag + '<p class="discreto m-0 text-sm text-tinta/60">' + ui.esc(ui.nomeCategoria(produto.categoria)) + '</p><h3 class="m-0 text-[1.05rem] leading-snug"><a class="text-inherit no-underline" href="' + fichaUrl(produto) + '">' + ui.esc(produto.titulo) + "</a></h3>" + preco + canais(produto) + "</div></article>";
+    return '<article class="produto revela flex flex-col overflow-hidden rounded-[18px] bg-white text-tinta shadow-cria"><a class="produto-foto block overflow-hidden no-underline" href="' + fichaUrl(produto) + '"><img class="aspect-square w-full object-cover bg-[#efe8da]" src="' + ui.url(foto.arquivo) + '" alt="' + ui.esc(foto.legenda) + '"></a><div class="produto-corpo flex flex-1 flex-col gap-2 p-4">' + tag + '<p class="discreto m-0 text-sm text-tinta/60">' + ui.esc(ui.nomeCategoria(produto.categoria)) + '</p><h3 class="m-0 text-[1.05rem] leading-snug"><a class="text-inherit no-underline" href="' + fichaUrl(produto) + '">' + ui.esc(produto.titulo) + "</a></h3>" + preco + canais(produto) + "</div></article>";
   }
   function trilho(titulo, lista) {
     if (!lista.length) return "";
@@ -74,8 +74,8 @@
       { titulo: "Personalizados sob encomenda", texto: "O card mostra a média. O valor fecha no orçamento.", fundo: "teal" },
       { titulo: "Frete grátis a partir de " + gratis, texto: "PAC e SEDEX simulados pelo CEP, em cada produto.", fundo: "tinta" }
     ];
-    return '<section class="carrossel" id="carrossel"><div class="carrossel-trilho">' + slides.map(function (slide) {
-      return '<article class="slide fundo-' + slide.fundo + '"><div><p class="selo">Cria Lab DM</p><h2>' + ui.esc(slide.titulo) + "</h2><p>" + ui.esc(slide.texto) + '</p></div><img src="' + ui.url("marca/mascote.png") + '" alt=""></article>';
+    return '<section class="carrossel revela" id="carrossel"><div class="carrossel-trilho">' + slides.map(function (slide) {
+      return '<article class="slide fundo-' + slide.fundo + '"><div class="slide-texto"><p class="selo">Cria Lab DM</p><h2>' + ui.esc(slide.titulo) + "</h2><p>" + ui.esc(slide.texto) + '</p></div><img class="slide-mascote" src="' + ui.url("marca/mascote.png") + '" alt=""></article>';
     }).join("") + '</div><button class="carrossel-seta anterior" type="button" data-passo="-1" aria-label="Anterior">‹</button><button class="carrossel-seta proxima" type="button" data-passo="1" aria-label="Próximo">›</button><div class="carrossel-pontos">' + slides.map(function (_, indice) {
       return '<button type="button" data-slide="' + indice + '"' + (indice === 0 ? ' class="ativo"' : "") + ' aria-label="Slide ' + (indice + 1) + '"></button>';
     }).join("") + "</div></section>";
@@ -114,10 +114,11 @@
       return (a.tipo === "personalizado") - (b.tipo === "personalizado");
     });
     var categorias = estado().categorias.map(function (categoria) {
-      return '<a class="chip inline-flex min-h-11 items-center rounded-full border-2 border-linha bg-white px-3.5 font-bold text-tinta no-underline transition hover:border-teal hover:bg-teal/10" href="' + ui.url("paginas/busca.html?categoria=" + encodeURIComponent(categoria.id)) + '">' + ui.esc(categoria.nome) + "</a>";
+      return '<a class="chip revela inline-flex min-h-11 items-center rounded-full border-2 border-linha bg-white px-3.5 font-bold text-tinta no-underline" href="' + ui.url("paginas/busca.html?categoria=" + encodeURIComponent(categoria.id)) + '">' + ui.esc(categoria.nome) + "</a>";
     }).join("");
-    raiz.innerHTML = carrossel() + '<section class="faixa-categorias my-4"><div class="chips flex flex-wrap gap-2">' + categorias + '</div></section><section class="mt-2"><div class="linha mb-4 flex flex-wrap items-center gap-2"><h2 class="m-0 mr-auto text-2xl font-extrabold">Na loja</h2><a class="botao-linha inline-flex min-h-11 items-center rounded-full border-2 border-tinta bg-white px-4 font-bold text-tinta no-underline hover:bg-teal/10" href="' + ui.url("paginas/produtos.html") + '">Produtos</a><a class="botao-linha inline-flex min-h-11 items-center rounded-full border-2 border-tinta bg-white px-4 font-bold text-tinta no-underline hover:bg-teal/10" href="' + ui.url("paginas/personalizados.html") + '">Personalizados</a></div><div class="grade vitrine grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">' + lista.map(card).join("") + "</div></section>";
+    raiz.innerHTML = carrossel() + '<section class="faixa-categorias my-4"><div class="chips flex flex-wrap gap-2">' + categorias + '</div></section><section class="mt-2"><div class="titulo-secao linha"><h2>Na loja</h2><a class="botao-linha inline-flex min-h-11 items-center rounded-full border-2 border-tinta bg-white px-4 font-bold text-tinta no-underline" href="' + ui.url("paginas/produtos.html") + '">Produtos</a><a class="botao-linha inline-flex min-h-11 items-center rounded-full border-2 border-tinta bg-white px-4 font-bold text-tinta no-underline" href="' + ui.url("paginas/personalizados.html") + '">Personalizados</a></div><div class="grade vitrine grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">' + lista.map(card).join("") + "</div></section>";
     ligarCarrossel();
+    ui.revelar(raiz);
   }
   function listaTipo(tipo) {
     var sob = tipo === "personalizado";
@@ -126,6 +127,7 @@
       return sob ? personalizado(produto) : !personalizado(produto);
     });
     raiz.innerHTML = '<h1 class="text-3xl font-extrabold text-tinta">' + (sob ? "Personalizados" : "Produtos") + '</h1><p class="discreto text-tinta/65">' + (sob ? "O preço do card é a média. O valor final sai depois do orçamento." : "Peças prontas, com preço fixo.") + "</p>" + (lista.length ? '<div class="grade vitrine mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">' + lista.map(card).join("") + "</div>" : ui.vazio("Nada publicado nesta lista."));
+    ui.revelar(raiz);
   }
   function lerConsulta() {
     var q = new URLSearchParams(location.search);
@@ -195,6 +197,7 @@
         });
         location.href = ui.url("paginas/busca.html" + (params.toString() ? "?" + params.toString() : ""));
       });
+      ui.revelar(raiz);
     }, 350);
   }
   function registrarVisto(id) {
@@ -207,10 +210,12 @@
     var produto = achar(id);
     if (!produto) {
       raiz.innerHTML = ui.vazio("Não encontrei essa peça.");
+      ui.revelar(raiz);
       return;
     }
     if (produto.situacao === "pausado") {
       raiz.innerHTML = ui.vazio("Esta peça está pausada.");
+      ui.revelar(raiz);
       return;
     }
     registrarVisto(produto.id);
@@ -255,7 +260,7 @@
     var lojas = '<div class="lojas-ficha mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2"><a class="botao-linha inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border-2 border-tinta bg-white px-4 font-bold no-underline hover:bg-teal/10" href="' + ui.esc(estado().identidade.shopee) + '" target="_blank" rel="noopener">' + ico("shopee") + 'Shopee</a><a class="botao-linha inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border-2 border-tinta bg-white px-4 font-bold no-underline hover:bg-teal/10" href="' + ui.esc(estado().identidade.mercadoLivre) + '" target="_blank" rel="noopener">' + ico("mercadolivre") + "Mercado Livre</a></div>";
     var orcamento = (produto.personalizavel || sobMedida) ? '<button class="botao-teal inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border-2 border-teal bg-teal px-4 font-bold text-white" type="button" id="pedir-orcamento">' + ico("documento") + "Pedir orçamento</button>" : "";
     var acoes = '<div class="acoes-ficha mt-3 grid gap-2">' + compraPeca + '<div class="acoes-dupla grid grid-cols-1 gap-2 sm:grid-cols-2"><button class="botao-linha inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border-2 border-tinta bg-white px-4 font-bold" type="button" id="favorito">' + ico("coracao") + '<span id="favorito-rotulo">' + (favoritoAtivo ? "Favorito" : "Favoritar") + '</span></button><a class="botao-linha inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border-2 border-tinta bg-white px-4 font-bold no-underline" href="' + ui.esc(whats) + '" target="_blank" rel="noopener">' + ico("whatsapp") + "WhatsApp</a></div>" + orcamento + "</div>";
-    raiz.innerHTML = '<div class="ficha grid grid-cols-1 items-start gap-5 lg:grid-cols-2"><div class="galeria"><img class="galeria-principal rounded-[18px]" id="foto-principal" src="' + ui.url(fotoInicial.arquivo) + '" alt="' + ui.esc(fotoInicial.legenda) + '"><div class="miniaturas">' + miniaturas + '</div><p class="discreto" id="legenda-foto">' + ui.esc(fotoInicial.legenda) + " · sessão " + ui.esc(dinheiro.dataBR(produto.sessao)) + '</p></div><div class="cartao ficha-info grid gap-3 rounded-[18px] bg-white p-4 shadow-cria">' + tag + '<p class="discreto m-0 text-tinta/60">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h1 class=\"mt-0 text-2xl font-extrabold\">" + ui.esc(produto.titulo) + "</h1>" + precoBloco + '<p class="meta-peca m-0 flex flex-wrap gap-x-3 gap-y-1 text-sm text-tinta/70"><span>' + estoqueLinha + "</span><span>" + ui.esc(produto.peso) + " g</span><span>" + ui.esc(produto.medidas) + "</span></p><p class=\"m-0\">" + ui.esc(produto.descricao) + "</p>" + lojas + '<section class="bloco-ficha grid gap-2"><h2 class="mt-0 text-lg font-extrabold">Filamento</h2><div class="amostras" id="amostras">' + amostras + '</div><p id="cor-nome">' + ui.esc(produto.cores[0].nome) + '</p><div class="linha" id="tamanhos">' + tamanhos + "</div></section>" + (etapas ? '<section class="bloco-ficha"><h2>Personalização</h2><div class="formulario">' + etapas + "</div></section>" : "") + '<label class="qtd-ficha">Quantidade<input id="qtd" type="number" min="1" value="1"></label>' + acoes + '<section class="frete-caixa"><h2 id="frete-titulo">Calcular frete</h2><form id="frete-ficha" class="frete-form"><input name="cep" type="text" inputmode="numeric" placeholder="00000-000" maxlength="9" aria-label="CEP"><button class="botao" type="submit">' + ico("caminhao") + 'Cotar</button></form><div id="frete-resultado"></div></section></div></div><section class="painel-ficha mt-5 grid grid-cols-1 gap-4"><article class="cartao rounded-[18px] bg-white p-4 shadow-cria"><h2 class="mt-0 text-xl font-extrabold">Perguntas</h2>' + perguntas + '<form id="nova-pergunta" class="formulario mt-3 grid gap-3"><label class="grid gap-1.5 font-bold">Sua pergunta<input class="min-h-12 w-full rounded-full border-2 border-linha bg-white px-4.5 py-2.5" name="texto" type="text" required placeholder="Escreva sua pergunta"></label><button class="botao inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-laranja px-4 font-bold text-white" type="submit">' + ico("contato") + "Enviar</button></form></article><article class=\"cartao rounded-[18px] bg-white p-4 shadow-cria\"><h2 class=\"mt-0 text-xl font-extrabold\">Avaliações</h2>" + avaliacoes + "</article></section>" + trilho("Relacionados", relacionados);
+    raiz.innerHTML = '<div class="ficha grid grid-cols-1 items-start gap-5 lg:grid-cols-2"><div class="galeria revela"><img class="galeria-principal rounded-[18px]" id="foto-principal" src="' + ui.url(fotoInicial.arquivo) + '" alt="' + ui.esc(fotoInicial.legenda) + '"><div class="miniaturas">' + miniaturas + '</div><p class="discreto" id="legenda-foto">' + ui.esc(fotoInicial.legenda) + " · sessão " + ui.esc(dinheiro.dataBR(produto.sessao)) + '</p></div><div class="cartao ficha-info revela grid gap-3 rounded-[18px] bg-white p-4 shadow-cria">' + tag + '<p class="discreto m-0 text-tinta/60">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h1 class=\"mt-0 text-2xl font-extrabold\">" + ui.esc(produto.titulo) + "</h1>" + precoBloco + '<p class="meta-peca m-0 flex flex-wrap gap-x-3 gap-y-1 text-sm text-tinta/70"><span>' + estoqueLinha + "</span><span>" + ui.esc(produto.peso) + " g</span><span>" + ui.esc(produto.medidas) + "</span></p><p class=\"m-0\">" + ui.esc(produto.descricao) + "</p>" + lojas + '<section class="bloco-ficha grid gap-2"><h2 class="mt-0 text-lg font-extrabold">Filamento</h2><div class="amostras" id="amostras">' + amostras + '</div><p id="cor-nome">' + ui.esc(produto.cores[0].nome) + '</p><div class="linha" id="tamanhos">' + tamanhos + "</div></section>" + (etapas ? '<section class="bloco-ficha"><h2>Personalização</h2><div class="formulario">' + etapas + "</div></section>" : "") + '<label class="qtd-ficha">Quantidade<input id="qtd" type="number" min="1" value="1"></label>' + acoes + '<section class="frete-caixa"><h2 id="frete-titulo">Calcular frete</h2><form id="frete-ficha" class="frete-form"><input name="cep" type="text" inputmode="numeric" placeholder="00000-000" maxlength="9" aria-label="CEP"><button class="botao" type="submit">' + ico("caminhao") + 'Cotar</button></form><div id="frete-resultado"></div></section></div></div><section class="painel-ficha mt-5 grid grid-cols-1 gap-4"><article class="cartao rounded-[18px] bg-white p-4 shadow-cria"><h2 class="mt-0 text-xl font-extrabold">Perguntas</h2>' + perguntas + '<form id="nova-pergunta" class="formulario mt-3 grid gap-3"><label class="grid gap-1.5 font-bold">Sua pergunta<input class="min-h-12 w-full rounded-full border-2 border-linha bg-white px-4.5 py-2.5" name="texto" type="text" required placeholder="Escreva sua pergunta"></label><button class="botao inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-laranja px-4 font-bold text-white" type="submit">' + ico("contato") + "Enviar</button></form></article><article class=\"cartao rounded-[18px] bg-white p-4 shadow-cria\"><h2 class=\"mt-0 text-xl font-extrabold\">Avaliações</h2>" + avaliacoes + "</article></section>" + trilho("Relacionados", relacionados);
     document.querySelectorAll(".arquivo-ref input").forEach(function (campoArquivo) {
       campoArquivo.addEventListener("change", function () {
         var nome = campoArquivo.files && campoArquivo.files[0] ? campoArquivo.files[0].name : "Nenhuma imagem";
@@ -377,16 +382,18 @@
       });
       location.reload();
     });
+    ui.revelar(raiz);
   }
   function sobre() {
     document.title = "Sobre · Cria Lab DM";
     var id = estado().identidade;
     var parceiros = estado().parceiros.filter(function (item) { return item.podeAparecer; }).map(function (item) {
       var marca = item.logo ? '<img src="' + ui.url(item.logo) + '" alt="' + ui.esc(item.nome) + '">' : "<span>" + ui.esc(item.nome) + "</span>";
-      return '<figure class="parceiro m-0 flex min-h-[100px] items-center justify-center rounded-[18px] border-2 border-linha bg-white px-4 py-3">' + marca + "</figure>";
+      return '<figure class="parceiro revela m-0 flex min-h-[100px] items-center justify-center rounded-[18px] border-2 border-linha bg-white px-4 py-3">' + marca + "</figure>";
     }).join("");
     var local = (id.endereco ? "<p class=\"m-0\">" + ui.esc(id.endereco) + "</p>" : "") + (id.horario ? "<p class=\"m-0\">" + ui.esc(id.horario) + "</p>" : "");
-    raiz.innerHTML = '<section class="sobre grid justify-items-center gap-4 py-2 text-center"><div class="passaro-palco relative grid min-h-[300px] w-[min(380px,100%)] items-end justify-items-center"><img class="passaro relative z-[1] w-[min(300px,78vw)]" src="' + ui.url("marca/mascote.png") + '" alt="Mascote da Cria Lab DM"><span class="passaro-sombra"></span></div><div class="sobre-texto grid w-[min(720px,100%)] justify-items-center gap-1.5"><img class="letreiro w-[min(280px,80%)] rounded-[18px] bg-white px-4 py-2.5 shadow-cria" src="' + ui.url("marca/logo-colorida.png") + '" alt="Cria Lab"><h1 class="mt-2">' + ui.esc(id.nome) + '</h1><p class="m-0">CNPJ ' + ui.esc(id.cnpj) + '</p><p class="m-0"><a href="mailto:' + ui.esc(id.email) + '">' + ui.esc(id.email) + '</a></p><p class="m-0"><a href="tel:+5527996530954">' + ui.esc(id.telefone) + "</a></p>" + local + '<div class="mt-3.5">' + redes() + "</div></div></section>" + (parceiros ? '<section class="cartao mt-4 rounded-[18px] bg-white p-4 shadow-cria"><h2 class="mt-0">Parceiros</h2><div class="parceiros flex flex-wrap items-center justify-center gap-4">' + parceiros + "</div></section>" : "");
+    raiz.innerHTML = '<section class="sobre grid justify-items-center gap-4 py-2 text-center"><div class="passaro-palco relative grid min-h-[300px] w-[min(380px,100%)] items-end justify-items-center"><img class="passaro relative z-[1] w-[min(300px,78vw)]" src="' + ui.url("marca/mascote.png") + '" alt="Mascote da Cria Lab DM"><span class="passaro-sombra"></span></div><div class="sobre-texto revela grid w-[min(720px,100%)] justify-items-center gap-1.5"><img class="letreiro w-[min(280px,80%)] rounded-[18px] bg-white px-4 py-2.5 shadow-cria" src="' + ui.url("marca/logo-colorida.png") + '" alt="Cria Lab"><h1 class="mt-2">' + ui.esc(id.nome) + '</h1><p class="m-0">CNPJ ' + ui.esc(id.cnpj) + '</p><p class="m-0"><a href="mailto:' + ui.esc(id.email) + '">' + ui.esc(id.email) + '</a></p><p class="m-0"><a href="tel:+5527996530954">' + ui.esc(id.telefone) + "</a></p>" + local + '<div class="mt-3.5">' + redes() + "</div></div></section>" + (parceiros ? '<section class="cartao revela mt-4 rounded-[18px] bg-white p-4 shadow-cria"><h2 class="mt-0">Parceiros</h2><div class="parceiros flex flex-wrap items-center justify-center gap-4">' + parceiros + "</div></section>" : "");
+    ui.revelar(raiz);
   }
 
   if (pagina === "home") home();

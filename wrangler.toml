@@ -1,0 +1,8 @@
+name = "crialab-plataforma"
+compatibility_date = "2025-10-21"
+workers_dev = true
+
+[assets]
+directory = "."
+html_handling = "auto-trailing-slash"
+not_found_handling = "404-page"

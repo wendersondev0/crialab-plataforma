@@ -6,13 +6,43 @@
   place-items: center;
   background: rgba(27, 36, 48, 0.45);
   padding: 16px;
+  backdrop-filter: blur(4px);
+  animation: pagina-entra 0.35s var(--ease-saida);
 }
 
 .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-.kpi { background: var(--branco); border-radius: 16px; padding: 14px; box-shadow: var(--sombra); }
+.kpi, .painel-kpi, .painel-area {
+  background: var(--branco);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: var(--sombra);
+  transition: transform 0.3s var(--ease-saida), box-shadow 0.3s var(--ease-saida), border-color 0.3s var(--ease-saida);
+}
 .kpi strong { display: block; font-size: 1.2rem; }
+.painel-kpi:hover, .kpi:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-forte);
+}
+.painel-area:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--sombra-forte);
+  border-color: var(--teal) !important;
+}
+.painel-area h2 {
+  transition: color 0.25s var(--ease-saida);
+}
+.painel-area:hover h2 { color: var(--teal-escuro); }
 .caderno { display: grid; gap: 16px; }
 .caderno h2 { margin-bottom: 0; }
+#topo.topo-admin {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(27, 36, 48, 0.06);
+}
+#topo.topo-admin .menu-admin .nav-link {
+  transition: transform 0.22s var(--ease-saida), background 0.22s var(--ease-saida), color 0.22s var(--ease-saida), border-color 0.22s var(--ease-saida);
+}
+#topo.topo-admin .menu-admin .nav-link:hover { transform: translateY(-2px); }
 
 @media (max-width: 900px) {
   .kpis { grid-template-columns: 1fr 1fr; }

@@ -1,11 +1,14 @@
 {
   "name": "crialab-plataforma",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Loja estática Cria Lab DM",
   "scripts": {
+    "build": "npm run build:css",
     "build:css": "npx @tailwindcss/cli -i ./css/entrada.css -o ./css/tailwind.css --minify",
-    "watch:css": "npx @tailwindcss/cli -i ./css/entrada.css -o ./css/tailwind.css --watch"
+    "watch:css": "npx @tailwindcss/cli -i ./css/entrada.css -o ./css/tailwind.css --watch",
+    "deploy": "npm run build && npx wrangler deploy",
+    "preview": "npx wrangler versions upload",
+    "otimizar-fotos": "node scripts/otimizar-fotos.mjs"
   },
   "repository": {
     "type": "git",
@@ -21,6 +24,8 @@
   "homepage": "https://github.com/wendersondev0/crialab-plataforma#readme",
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.3",
-    "tailwindcss": "^4.3.3"
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.3",
+    "wrangler": "^4.45.3"
   }
 }

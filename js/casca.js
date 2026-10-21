@@ -187,7 +187,7 @@
     var admin = ehAdmin();
     topo.classList.toggle("topo-loja", !admin);
     topo.classList.toggle("topo-admin", admin);
-    document.body.classList.add("bg-creme", "text-tinta", "font-cria", "antialiased");
+    document.body.classList.add("text-tinta", "font-cria", "antialiased");
     if (admin) {
       var menuAdmin = [
         link("paginas/admin/index.html", "Painel", "admin"),
@@ -219,7 +219,7 @@
   }
 
   function vazio(texto) {
-    return '<div class="vazio mx-auto grid justify-items-center gap-3 rounded-[18px] bg-white p-8 text-center shadow-cria"><img class="mx-auto w-[min(240px,70%)]" src="' + url("marca/mascote.png") + '" alt="Mascote da Cria Lab DM"><p class="m-0 font-semibold">' + esc(texto) + "</p></div>";
+    return '<div class="vazio revela mx-auto grid justify-items-center gap-3 rounded-[18px] bg-white p-8 text-center shadow-cria"><img class="mx-auto w-[min(240px,70%)]" src="' + url("marca/mascote.png") + '" alt="Mascote da Cria Lab DM"><p class="m-0 font-semibold">' + esc(texto) + "</p></div>";
   }
 
   function nomeCategoria(id) {
@@ -227,7 +227,28 @@
     return categoria ? categoria.nome : id;
   }
 
-  root.CriaUi = { url: url, esc: esc, vazio: vazio, nomeCategoria: nomeCategoria, icone: function (nome) { return icones[nome] || ""; }, redes: function () { return redes(root.Cria.estado.identidade, false); } };
+  function revelar(escopo) {
+    var raiz = escopo || document;
+    var itens = Array.prototype.slice.call(raiz.querySelectorAll(".revela"));
+    if (!itens.length) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
+      itens.forEach(function (el) { el.classList.add("visivel"); });
+      return;
+    }
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (entrada) {
+        if (!entrada.isIntersecting) return;
+        entrada.target.classList.add("visivel");
+        obs.unobserve(entrada.target);
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -36px 0px" });
+    itens.forEach(function (el, i) {
+      el.style.setProperty("--atraso", (Math.min(i % 8, 7) * 55) + "ms");
+      obs.observe(el);
+    });
+  }
+
+  root.CriaUi = { url: url, esc: esc, vazio: vazio, nomeCategoria: nomeCategoria, revelar: revelar, icone: function (nome) { return icones[nome] || ""; }, redes: function () { return redes(root.Cria.estado.identidade, false); } };
   root.CriaCasca = { montar: montar, atualizar: montar, ehAdmin: ehAdmin };
   montar();
 })(window);

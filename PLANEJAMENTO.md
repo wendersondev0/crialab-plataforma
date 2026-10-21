@@ -559,3 +559,33 @@ Critério:
 - [x] A ficha tem Shopee, Mercado Livre e cotação de frete. Não há botão de arquivo 3D nem Downloads na conta.
 - [x] O menu da administração tem as dez áreas. Gestão de impressão 3D mostra monitoramento, mesa, qualidade e histórico, sem prometer API ligada.
 - [x] O painel gerencial mostra a contagem da vitrine. Marketing grava o cupom. Fiscal mostra a nota pendente, sem chave.
+
+## Fase 12 — Publicação, visual e Cloudflare
+
+As fases 1 a 11 entregam a loja completa no navegador local. Esta fase deixa o site pronto para subir no Cloudflare e reforça o visual da marca sem mudar regra de dinheiro.
+
+Direção visual:
+
+- Paleta fixa: laranja `#e8772a`, teal `#148f93`, creme `#f6f1e7`, tinta `#1b2430`, branco.
+- Tailwind CLI gera `css/tailwind.css` no build. O HTML e o JS usam utilitários da marca (`bg-laranja`, `text-tinta`, `shadow-cria`).
+- Microinterações: hover em card, chip e botão; carrossel com brilho e mascote flutuando; entrada em cascata ao rolar (respeita `prefers-reduced-motion`).
+- Fundo da página com gradientes suaves da marca, sem flat único.
+
+Publicação (Cloudflare):
+
+- Site estático. Não há backend Nest/ASP.NET nesta etapa.
+- Preferência: Cloudflare Pages com build `npm run build:css` e pasta de saída na raiz do repositório.
+- Alternativa na tela Workers + Git: mesmo build, deploy com Wrangler e `wrangler.toml` apontando os assets estáticos, ignorando `node_modules`.
+- Domínio alvo: `https://crialabdm.com.br` (DNS e domínio customizado ficam no painel da Cloudflare; o critério desta fase é o deploy da aplicação).
+
+Arquivos desta fase: `wrangler.toml`, `.assetsignore`, `package.json` (scripts `build`, `deploy` e `otimizar-fotos`), `scripts/otimizar-fotos.mjs`, `README.md`, ajustes em `css/` e `js/` do visual. As fotos de `fotos/` passam por compressão web (lado máximo 1600 px) porque o Cloudflare Workers limita cada arquivo a 25 MiB.
+
+Critério:
+
+- [x] `npm run build` gera `css/tailwind.css` sem erro.
+- [x] Existe `wrangler.toml` com assets na raiz e `.assetsignore` sem `node_modules`.
+- [x] O README explica o que colocar na tela do Cloudflare (build, deploy e alternativa Pages).
+- [x] `npx wrangler deploy --dry-run` conclui sem erro de tamanho de asset.
+- [x] Home, ficha e painel admin abrem com a paleta da marca, hover e animação de entrada.
+- [x] Com `prefers-reduced-motion: reduce`, as animações contínuas param.
+- [x] Continua sem venda de arquivo 3D, sem “Na mesa agora” na home e sem Nuxt/ASP.NET.
