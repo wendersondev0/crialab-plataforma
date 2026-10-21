@@ -29,10 +29,11 @@
     var prontos = estado().produtos.filter(function (item) { return item.tipo !== "personalizado" && item.situacao === "publicado"; }).length;
     var sobMedida = estado().produtos.filter(function (item) { return item.tipo === "personalizado"; }).length;
     var abertos = (estado().mensagens || []).filter(function (item) { return item.status === "aberto"; }).length;
-    var resumo = '<div class="grade-3"><article class="cartao"><h2>' + prontos + '</h2><p>Produtos publicados</p></article><article class="cartao"><h2>' + sobMedida + '</h2><p>Personalizados</p></article><article class="cartao"><h2>' + abertos + '</h2><p>Atendimentos abertos</p></article></div>';
-    raiz.innerHTML = htmlGuia + '<h1>Painel gerencial</h1>' + resumo + '<div class="grade-3">' + areas.map(function (area) {
-      return '<a class="cartao" href="' + ui.url(area[0]) + '"><h2>' + ui.esc(area[1]) + "</h2><p>" + ui.esc(area[2]) + "</p></a>";
-    }).join("") + '</div><p><button class="botao-linha discreto" type="button" id="restaurar">Restaurar carga inicial</button></p>';
+    var resumo = '<article class="painel-kpi"><strong>' + prontos + '</strong><span>Produtos publicados</span></article><article class="painel-kpi"><strong>' + sobMedida + '</strong><span>Personalizados</span></article><article class="painel-kpi"><strong>' + abertos + '</strong><span>Atendimentos abertos</span></article>';
+    var atalhos = areas.map(function (area) {
+      return '<a class="painel-area" href="' + ui.url(area[0]) + '"><h2>' + ui.esc(area[1]) + "</h2><p>" + ui.esc(area[2]) + "</p></a>";
+    }).join("");
+    raiz.innerHTML = htmlGuia + '<h1>Painel gerencial</h1><div class="painel-grade">' + resumo + atalhos + '</div><p class="painel-acoes"><button class="botao-linha" type="button" id="restaurar">Restaurar carga inicial</button></p>';
     var pular = document.getElementById("pular-guia");
     if (pular) pular.addEventListener("click", function () {
       Cria.alterar(function (atual) { atual.guiaVisto = true; });

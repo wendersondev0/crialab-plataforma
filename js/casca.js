@@ -74,7 +74,7 @@
       if (Number(carrinho[1]) > 0) qtd = '<span class="selo-qtd">' + carrinho[1] + "</span>";
     }
     var chave = carrinho ? "carrinho" : texto;
-    var mapa = { "Início": "casa", "Produtos": "caixa", "Personalizados": "admin", "carrinho": "carrinho", "Conta": "conta", "Contato": "contato", "Sobre": "sobre", "Administração": "admin", "Painel Gerencial": "casa", "Gestão Produtos": "caixa", "Gestão Personalizados": "admin", "Marketing": "tiktok", "Atendimento": "contato", "Patrimônio e Estoque": "estoque", "Gestão Financeira": "carrinho", "Gestão Fiscal": "email", "Impressão 3D": "admin", "Ver loja": "casa" };
+    var mapa = { "Início": "casa", "Produtos": "caixa", "Personalizados": "admin", "carrinho": "carrinho", "Conta": "conta", "Contato": "contato", "Sobre": "sobre", "Administração": "admin", "Painel": "casa", "Painel Gerencial": "casa", "Gestão Produtos": "caixa", "Gestão Personalizados": "admin", "Marketing": "tiktok", "Atendimento": "contato", "Patrimônio": "estoque", "Patrimônio e Estoque": "estoque", "Financeiro": "carrinho", "Gestão Financeira": "carrinho", "Fiscal": "email", "Gestão Fiscal": "email", "Sistema": "admin", "Impressão": "admin", "Impressão 3D": "admin", "Ver loja": "casa" };
     var desenho = icones[mapa[chave]] ? '<span class="ico">' + icones[mapa[chave]] + "</span>" : "";
     return '<a class="nav-link' + (ativo(href) ? " ativo" : "") + '" href="' + url(href) + '">' + desenho + esc(rotulo) + qtd + "</a>";
   }
@@ -167,21 +167,21 @@
     if (!topo || !rodape) return;
     var admin = ehAdmin();
     topo.classList.toggle("topo-loja", !admin);
+    topo.classList.toggle("topo-admin", admin);
     if (admin) {
       var menuAdmin = [
-        link("paginas/admin/index.html", "Painel Gerencial"),
-        link("paginas/admin/produtos.html", "Gestão Produtos"),
-        link("paginas/admin/personalizados.html", "Gestão Personalizados"),
+        link("paginas/admin/index.html", "Painel"),
+        link("paginas/admin/produtos.html", "Produtos"),
+        link("paginas/admin/personalizados.html", "Personalizados"),
         link("paginas/admin/marketing.html", "Marketing"),
         link("paginas/admin/contato.html", "Atendimento"),
-        link("paginas/admin/patrimonio.html", "Patrimônio e Estoque"),
-        link("paginas/admin/financeiro.html", "Gestão Financeira"),
-        link("paginas/admin/fiscal.html", "Gestão Fiscal"),
-        link("paginas/admin/configuracao.html", "Administração"),
-        link("paginas/admin/impressao.html", "Impressão 3D"),
-        link("index.html", "Ver loja")
+        link("paginas/admin/patrimonio.html", "Patrimônio"),
+        link("paginas/admin/financeiro.html", "Financeiro"),
+        link("paginas/admin/fiscal.html", "Fiscal"),
+        link("paginas/admin/configuracao.html", "Sistema"),
+        link("paginas/admin/impressao.html", "Impressão")
       ].join("");
-      topo.innerHTML = '<div class="barra"><a class="marca" href="' + url("paginas/admin/index.html") + '"><img src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a><nav class="menu">' + menuAdmin + "</nav></div>";
+      topo.innerHTML = '<div class="barra barra-admin"><a class="marca" href="' + url("paginas/admin/index.html") + '"><img src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a><div class="admin-acoes">' + link("index.html", "Ver loja") + '</div></div><nav class="menu menu-admin">' + menuAdmin + "</nav>";
     } else {
       var menuLoja = [
         link("index.html", "Início"),
