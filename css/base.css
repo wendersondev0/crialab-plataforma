@@ -129,8 +129,8 @@ h1, h2, h3 { line-height: 1.2; }
 .grade-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .produto { background: var(--branco); border-radius: var(--raio); box-shadow: var(--sombra); overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .produto:hover { transform: translateY(-6px); box-shadow: 0 22px 40px rgba(27, 36, 48, 0.14); }
-.produto img { aspect-ratio: 1; object-fit: cover; width: 100%; background: #efe8da; transition: transform 0.35s ease; }
-.produto:hover img { transform: scale(1.06); }
+.produto .produto-foto img { aspect-ratio: 1; object-fit: cover; width: 100%; background: #efe8da; transition: transform 0.35s ease; }
+.produto:hover .produto-foto img { transform: scale(1.06); }
 .produto div, .cartao, .bloco { padding: 16px; }
 .produto h3 { margin: 0; font-size: 1.05rem; }
 .produto h3 a, .produto-foto { color: inherit; text-decoration: none; }
@@ -141,8 +141,14 @@ h1, h2, h3 { line-height: 1.2; }
 .tag-pers { background: var(--laranja); }
 .canais { display: grid; gap: 8px; margin-top: auto; }
 .produto .canais { padding: 0; }
-.produto .canais a { width: 100%; min-height: 44px; justify-content: center; }
-.produto .canais a:hover { transform: none; }
+.produto .canais a { width: 100%; min-height: 44px; justify-content: center; gap: 10px; }
+.produto .canais a:hover { transform: none; background: var(--branco); }
+.produto .canais .ico { width: 24px; height: 24px; align-items: center; justify-content: center; }
+.produto .canais .logo-canal {
+  width: auto; height: 20px; max-width: 28px; aspect-ratio: auto;
+  object-fit: contain; background: transparent; transform: none;
+}
+.produto:hover .canais .logo-canal { transform: none; }
 .preco { font-size: 1.25rem; font-weight: 800; margin: 0; }
 .preco s { color: #8a8175; font-weight: 500; margin-right: 6px; }
 .vista { color: var(--teal-escuro); font-weight: 700; }
@@ -206,7 +212,7 @@ th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--lin
 .hero .mascote { animation: flutuar 4.5s ease-in-out infinite; }
 @keyframes flutuar { 50% { transform: translateY(-8px); } }
 @media (prefers-reduced-motion: reduce) {
-  .hero .mascote, .passaro, .passaro-sombra, .produto, .produto img, .chip, .icone-rede, .nav-link, .botao, .contato-linha { animation: none; transition: none; }
+  .hero .mascote, .passaro, .passaro-sombra, .produto, .produto .produto-foto img, .chip, .icone-rede, .nav-link, .botao, .contato-linha { animation: none; transition: none; }
 }
 @media (max-width: 900px) {
   .hero, .ficha, .checkout, .rodape-grade, .grade, .grade-3, .cartoes-preco { grid-template-columns: 1fr; }
