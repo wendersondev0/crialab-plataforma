@@ -59,6 +59,8 @@
           var salvo = (estado.parceiros || []).find(function (parceiro) { return parceiro.id === item.id; });
           if (salvo && item.logo) salvo.logo = item.logo;
         });
+        estado.cliente = estado.cliente || {};
+        if (root.CriaDados.cliente && root.CriaDados.cliente.admin) estado.cliente.admin = true;
         estado.produtos = estado.produtos || [];
         var faltantes = (root.CriaDados.produtos || []).filter(function (produto) {
           return !estado.produtos.some(function (item) { return item.id === produto.id; });

@@ -1,5 +1,5 @@
 window.CriaDados = window.CriaDados || {};
-window.CriaDados.cliente = { nome: "Cliente exemplo", email: "cliente@example.com", telefone: "(27) 99999-0000", documento: "" };
+window.CriaDados.cliente = { nome: "Cliente exemplo", email: "cliente@example.com", telefone: "(27) 99999-0000", documento: "", admin: true };
 window.CriaDados.enderecos = [{ id: "end-1", rotulo: "Casa", cep: "29010000", linha: "Rua das Impressoras, 10, Vitória/ES" }];
 window.CriaDados.pedidos = [{
   id: "ped-entregue",
