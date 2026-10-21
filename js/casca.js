@@ -26,7 +26,7 @@
   var traco = ' fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
 
   function logoCanal(arquivo) {
-    return '<img class="logo-canal" src="' + url(arquivo) + '" alt="">';
+    return '<img class="logo-canal h-5 w-auto max-w-7 object-contain" src="' + url(arquivo) + '" alt="">';
   }
 
   function desenhoRede(chave, clara) {
@@ -65,22 +65,34 @@
     return caminho.endsWith("/" + href);
   }
 
-  function link(href, texto) {
+  function link(href, texto, variante) {
     var rotulo = texto;
     var qtd = "";
     var carrinho = /^Carrinho \((\d+)\)$/.exec(texto);
     if (carrinho) {
       rotulo = "Carrinho";
-      if (Number(carrinho[1]) > 0) qtd = '<span class="selo-qtd">' + carrinho[1] + "</span>";
+      if (Number(carrinho[1]) > 0) qtd = '<span class="selo-qtd ml-1 inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-laranja px-1.5 text-[0.75rem] font-extrabold text-white">' + carrinho[1] + "</span>";
     }
     var chave = carrinho ? "carrinho" : texto;
     var mapa = { "Início": "casa", "Produtos": "caixa", "Personalizados": "admin", "carrinho": "carrinho", "Conta": "conta", "Contato": "contato", "Sobre": "sobre", "Administração": "admin", "Painel": "casa", "Painel Gerencial": "casa", "Gestão Produtos": "caixa", "Gestão Personalizados": "admin", "Marketing": "tiktok", "Atendimento": "contato", "Patrimônio": "estoque", "Patrimônio e Estoque": "estoque", "Financeiro": "carrinho", "Gestão Financeira": "carrinho", "Fiscal": "email", "Gestão Fiscal": "email", "Sistema": "admin", "Impressão": "admin", "Impressão 3D": "admin", "Ver loja": "casa" };
-    var desenho = icones[mapa[chave]] ? '<span class="ico">' + icones[mapa[chave]] + "</span>" : "";
-    return '<a class="nav-link' + (ativo(href) ? " ativo" : "") + '" href="' + url(href) + '">' + desenho + esc(rotulo) + qtd + "</a>";
+    var desenho = icones[mapa[chave]] ? '<span class="ico inline-flex h-5 w-5 shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full">' + icones[mapa[chave]] + "</span>" : "";
+    var base = "nav-link inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-bold no-underline transition";
+    if (texto === "Ver loja" || variante === "ver-loja") {
+      return '<a class="' + base + ' bg-laranja text-white hover:bg-laranja-escuro" href="' + url(href) + '">' + desenho + esc(rotulo) + qtd + "</a>";
+    }
+    var estadoClasse;
+    if (variante === "loja") {
+      estadoClasse = ativo(href) ? " ativo bg-white text-laranja" : " text-white hover:bg-white/20";
+    } else if (variante === "admin") {
+      estadoClasse = ativo(href) ? " ativo border border-tinta bg-tinta text-white" : " border border-linha bg-creme text-tinta hover:bg-teal/15";
+    } else {
+      estadoClasse = ativo(href) ? " ativo bg-tinta text-white" : " text-tinta hover:bg-teal/15";
+    }
+    return '<a class="' + base + estadoClasse + '" href="' + url(href) + '">' + desenho + esc(rotulo) + qtd + "</a>";
   }
 
   function redes(identidade, claro) {
-    return '<div class="rede-bloco' + (claro ? " claro" : "") + '">' + [
+    return '<div class="rede-bloco flex flex-wrap gap-2.5' + (claro ? " claro" : "") + '">' + [
       ["whatsapp", "WhatsApp", identidade.whatsapp],
       ["instagram", "Instagram", identidade.instagram],
       ["tiktok", "TikTok", identidade.tiktok],
@@ -88,7 +100,10 @@
       ["shopee", "Shopee", identidade.shopee],
       ["mercadolivre", "Mercado Livre", identidade.mercadoLivre]
     ].map(function (item) {
-      return '<a class="icone-rede" data-rede="' + item[0] + '" href="' + esc(item[2]) + '" target="_blank" rel="noopener" aria-label="' + esc(item[1]) + '"><span class="ico">' + desenhoRede(item[0], claro) + '</span><span class="rotulo">' + esc(item[1]) + "</span></a>";
+      var fundo = claro
+        ? "border-white/20 bg-white/10 text-white hover:bg-laranja hover:border-laranja"
+        : "border-linha bg-white text-tinta shadow-cria hover:bg-laranja hover:border-laranja hover:text-white";
+      return '<a class="icone-rede inline-flex w-[84px] min-h-[76px] flex-col items-center justify-center gap-1.5 rounded-[18px] border-2 px-1.5 py-2.5 no-underline transition hover:-translate-y-1 ' + fundo + '" data-rede="' + item[0] + '" href="' + esc(item[2]) + '" target="_blank" rel="noopener" aria-label="' + esc(item[1]) + '"><span class="ico inline-flex h-5 w-5 items-center justify-center [&>svg]:h-full [&>svg]:w-full [&>img]:h-5 [&>img]:w-auto [&>img]:max-w-7 [&>img]:object-contain">' + desenhoRede(item[0], claro) + '</span><span class="rotulo text-center text-[0.68rem] font-extrabold leading-tight">' + esc(item[1]) + "</span></a>";
     }).join("") + "</div>";
   }
 
@@ -101,7 +116,8 @@
       ["shopee", "Shopee", identidade.shopee],
       ["mercadolivre", "Mercado Livre", identidade.mercadoLivre]
     ].map(function (item) {
-      return '<a class="icone-topo" href="' + esc(item[2]) + '" target="_blank" rel="noopener" aria-label="' + esc(item[1]) + '">' + desenhoRede(item[0], true) + "</a>";
+      var extra = item[0] === "mercadolivre" ? " [&>img]:h-6 [&>img]:w-6" : " [&>svg]:h-[18px] [&>svg]:w-[18px] [&>img]:h-[18px] [&>img]:w-[18px]";
+      return '<a class="icone-topo inline-flex h-8 w-8 min-h-8 items-center justify-center rounded-full text-white' + extra + '" href="' + esc(item[2]) + '" target="_blank" rel="noopener" aria-label="' + esc(item[1]) + '">' + desenhoRede(item[0], true) + "</a>";
     }).join("");
   }
 
@@ -126,14 +142,17 @@
     var identidade = estado.identidade;
     var vazio = estado.perfil === "vazia";
     var avisos = listaNotificacoes(estado);
+    var itemPopup = 'flex min-h-11 w-full items-center rounded-lg px-3 text-left font-bold text-tinta no-underline hover:bg-teal/15';
     var itensAviso = avisos.length ? avisos.map(function (texto) {
-      return '<a href="' + url("paginas/conta.html") + '">' + esc(texto) + "</a>";
-    }).join("") : '<p class="popup-vazio">Nenhuma notificação.</p>';
-    var selo = avisos.length ? '<span class="selo-qtd">' + avisos.length + "</span>" : "";
+      return '<a class="' + itemPopup + '" href="' + url("paginas/conta.html") + '">' + esc(texto) + "</a>";
+    }).join("") : '<p class="popup-vazio m-2 text-sm text-tinta">Nenhuma notificação.</p>';
+    var selo = avisos.length ? '<span class="selo-qtd ml-1 inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-laranja px-1.5 text-[0.75rem] font-extrabold text-white">' + avisos.length + "</span>" : "";
     var sair = vazio ? "Entrar" : "Sair";
     var admin = !vazio && estado.cliente && estado.cliente.admin;
-    var itemAdmin = admin ? '<a href="' + url("paginas/admin/index.html") + '">Administração</a>' : "";
-    return '<div class="faixa-fina"><div class="barra faixa-fina-barra"><div class="siga"><span>Siga a Cria Lab</span>' + iconesSociais(identidade) + '</div><div class="faixa-direita"><div class="menu-suspenso"><button class="atalho" type="button" aria-expanded="false" aria-haspopup="true"><span class="ico">' + icones.sino + "</span>Notificações" + selo + '</button><div class="popup-topo" role="menu">' + itensAviso + '</div></div><a class="atalho" href="' + url("paginas/contato.html") + '">Ajuda</a><div class="menu-suspenso menu-conta"><button class="atalho" type="button" id="abrir-conta" aria-expanded="false" aria-haspopup="true"><span class="ico">' + icones.conta + "</span>" + esc(vazio ? "Conta" : estado.cliente.nome) + '</button><div class="popup-topo" role="menu"><a href="' + url("paginas/conta.html") + '">Minha conta</a><a href="' + url("paginas/conta.html#pedidos") + '">Meus pedidos</a>' + itemAdmin + '<button type="button" id="sair-conta">' + sair + "</button></div></div></div></div></div>";
+    var itemAdmin = admin ? '<a class="' + itemPopup + '" href="' + url("paginas/admin/index.html") + '">Administração</a>' : "";
+    var atalho = "atalho inline-flex min-h-11 items-center gap-1.5 rounded-full px-2.5 text-[0.92rem] font-bold text-white no-underline hover:bg-white/20";
+    var popup = "popup-topo absolute top-[calc(100%-6px)] right-0 z-30 hidden min-w-[220px] grid-cols-1 gap-0 rounded-xl bg-white p-2 text-tinta shadow-cria";
+    return '<div class="faixa-fina bg-laranja-escuro"><div class="barra faixa-fina-barra mx-auto flex min-h-11 w-[min(1120px,calc(100%-32px))] items-center justify-between gap-3"><div class="siga flex items-center gap-2"><span class="text-[0.92rem] font-bold text-white">Siga a Cria Lab</span>' + iconesSociais(identidade) + '</div><div class="faixa-direita flex items-center gap-2"><div class="menu-suspenso relative"><button class="' + atalho + '" type="button" aria-expanded="false" aria-haspopup="true"><span class="ico inline-flex h-5 w-5 [&>svg]:h-full [&>svg]:w-full">' + icones.sino + "</span>Notificações" + selo + '</button><div class="' + popup + '" role="menu">' + itensAviso + '</div></div><a class="' + atalho + '" href="' + url("paginas/contato.html") + '">Ajuda</a><div class="menu-suspenso menu-conta relative"><button class="' + atalho + '" type="button" id="abrir-conta" aria-expanded="false" aria-haspopup="true"><span class="ico inline-flex h-5 w-5 [&>svg]:h-full [&>svg]:w-full">' + icones.conta + "</span>" + esc(vazio ? "Conta" : estado.cliente.nome) + '</button><div class="' + popup + '" role="menu"><a class="' + itemPopup + '" href="' + url("paginas/conta.html") + '">Minha conta</a><a class="' + itemPopup + '" href="' + url("paginas/conta.html#pedidos") + '">Meus pedidos</a>' + itemAdmin + '<button class="' + itemPopup + ' cursor-pointer border-0 bg-transparent" type="button" id="sair-conta">' + sair + "</button></div></div></div></div></div>";
   }
 
   function ligarMenus(topo) {
@@ -168,35 +187,39 @@
     var admin = ehAdmin();
     topo.classList.toggle("topo-loja", !admin);
     topo.classList.toggle("topo-admin", admin);
+    document.body.classList.add("bg-creme", "text-tinta", "font-cria", "antialiased");
     if (admin) {
       var menuAdmin = [
-        link("paginas/admin/index.html", "Painel"),
-        link("paginas/admin/produtos.html", "Produtos"),
-        link("paginas/admin/personalizados.html", "Personalizados"),
-        link("paginas/admin/marketing.html", "Marketing"),
-        link("paginas/admin/contato.html", "Atendimento"),
-        link("paginas/admin/patrimonio.html", "Patrimônio"),
-        link("paginas/admin/financeiro.html", "Financeiro"),
-        link("paginas/admin/fiscal.html", "Fiscal"),
-        link("paginas/admin/configuracao.html", "Sistema"),
-        link("paginas/admin/impressao.html", "Impressão")
+        link("paginas/admin/index.html", "Painel", "admin"),
+        link("paginas/admin/produtos.html", "Produtos", "admin"),
+        link("paginas/admin/personalizados.html", "Personalizados", "admin"),
+        link("paginas/admin/marketing.html", "Marketing", "admin"),
+        link("paginas/admin/contato.html", "Atendimento", "admin"),
+        link("paginas/admin/patrimonio.html", "Patrimônio", "admin"),
+        link("paginas/admin/financeiro.html", "Financeiro", "admin"),
+        link("paginas/admin/fiscal.html", "Fiscal", "admin"),
+        link("paginas/admin/configuracao.html", "Sistema", "admin"),
+        link("paginas/admin/impressao.html", "Impressão", "admin")
       ].join("");
-      topo.innerHTML = '<div class="barra barra-admin"><a class="marca" href="' + url("paginas/admin/index.html") + '"><img src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a><div class="admin-acoes">' + link("index.html", "Ver loja") + '</div></div><nav class="menu menu-admin">' + menuAdmin + "</nav>";
+      topo.className = "topo-admin sticky top-0 z-20 border-b border-linha bg-white shadow-cria";
+      topo.innerHTML = '<div class="barra barra-admin mx-auto flex min-h-[68px] w-[min(1120px,calc(100%-32px))] items-center justify-between gap-4"><a class="marca" href="' + url("paginas/admin/index.html") + '"><img class="h-11 rounded-xl bg-creme p-1" src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a><div class="admin-acoes">' + link("index.html", "Ver loja", "ver-loja") + '</div></div><nav class="menu menu-admin mx-auto flex w-[min(1120px,calc(100%-32px))] flex-wrap gap-1.5 overflow-visible pb-3.5">' + menuAdmin + "</nav>";
     } else {
       var menuLoja = [
-        link("index.html", "Início"),
-        link("paginas/produtos.html", "Produtos"),
-        link("paginas/personalizados.html", "Personalizados")
+        link("index.html", "Início", "loja"),
+        link("paginas/produtos.html", "Produtos", "loja"),
+        link("paginas/personalizados.html", "Personalizados", "loja")
       ].join("");
-      topo.innerHTML = faixaLoja(estado) + '<div class="loja-faixa"><div class="barra loja-barra"><a class="marca" href="' + url("index.html") + '"><img src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a><form class="busca-topo" action="' + url("paginas/busca.html") + '" method="get"><input name="q" type="search" placeholder="Buscar na Cria Lab" aria-label="Buscar na Cria Lab"><button class="botao" type="submit">Buscar</button></form><div class="loja-acoes">' + link("paginas/carrinho.html", "Carrinho (" + quantidadeCarrinho() + ")") + "</div></div><nav class=\"menu menu-loja\">" + menuLoja + "</nav></div>";
+      topo.className = "topo-loja sticky top-0 z-20 bg-laranja";
+      topo.innerHTML = faixaLoja(estado) + '<div class="loja-faixa"><div class="barra loja-barra mx-auto flex min-h-[76px] w-[min(1120px,calc(100%-32px))] items-center gap-3"><a class="marca" href="' + url("index.html") + '"><img class="h-11 rounded-xl bg-white p-1" src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a><form class="busca-topo flex min-w-0 flex-1 items-center gap-2 rounded-full bg-white py-1 pl-4 pr-1" action="' + url("paginas/busca.html") + '" method="get"><input class="min-h-10 min-w-0 flex-1 border-0 bg-transparent outline-none" name="q" type="search" placeholder="Buscar na Cria Lab" aria-label="Buscar na Cria Lab"><button class="botao inline-flex min-h-10 items-center justify-center rounded-full bg-laranja px-4 font-bold text-white hover:bg-laranja-escuro" type="submit">Buscar</button></form><div class="loja-acoes">' + link("paginas/carrinho.html", "Carrinho (" + quantidadeCarrinho() + ")", "loja") + '</div></div><nav class="menu menu-loja mx-auto flex w-[min(1120px,calc(100%-32px))] flex-wrap gap-2 overflow-visible pb-2.5">' + menuLoja + "</nav></div>";
       ligarMenus(topo);
     }
-    var local = (identidade.endereco ? "<p>" + esc(identidade.endereco) + "</p>" : "") + (identidade.horario ? "<p>" + esc(identidade.horario) + "</p>" : "");
-    rodape.innerHTML = '<div class="rodape-grade"><div><img class="logo-rodape" src="' + url("marca/logo-colorida.png") + '" alt=""><strong>' + esc(identidade.nome) + '</strong><p>CNPJ ' + esc(identidade.cnpj) + "</p>" + local + '</div><div class="contatos"><a class="contato-linha" href="mailto:' + esc(identidade.email) + '"><span class="ico">' + icones.email + "</span>" + esc(identidade.email) + '</a><a class="contato-linha" href="tel:+5527996530954"><span class="ico">' + icones.telefone + "</span>" + esc(identidade.telefone) + "</a>" + redes(identidade, true) + '</div><div class="menu">' + link("paginas/sobre.html", "Sobre") + link("paginas/admin/index.html", "Administração") + "</div></div>";
+    var local = (identidade.endereco ? "<p class=\"m-0\">" + esc(identidade.endereco) + "</p>" : "") + (identidade.horario ? "<p class=\"m-0\">" + esc(identidade.horario) + "</p>" : "");
+    rodape.className = "mt-12 bg-tinta px-0 py-8 text-white";
+    rodape.innerHTML = '<div class="rodape-grade mx-auto grid w-[min(1120px,calc(100%-32px))] grid-cols-1 gap-6 md:grid-cols-[1.2fr_1.4fr_0.8fr]"><div><img class="logo-rodape mb-2 h-12 w-auto rounded-xl bg-white p-1.5" src="' + url("marca/logo-colorida.png") + '" alt=""><strong>' + esc(identidade.nome) + '</strong><p class="m-0">CNPJ ' + esc(identidade.cnpj) + "</p>" + local + '</div><div class="contatos grid gap-2 content-start"><a class="contato-linha inline-flex w-fit items-center gap-2 rounded-full px-3 no-underline text-white hover:bg-white/12" href="mailto:' + esc(identidade.email) + '"><span class="ico inline-flex h-5 w-5 [&>svg]:h-full [&>svg]:w-full">' + icones.email + "</span>" + esc(identidade.email) + '</a><a class="contato-linha inline-flex w-fit items-center gap-2 rounded-full px-3 no-underline text-white hover:bg-white/12" href="tel:+5527996530954"><span class="ico inline-flex h-5 w-5 [&>svg]:h-full [&>svg]:w-full">' + icones.telefone + "</span>" + esc(identidade.telefone) + "</a>" + redes(identidade, true) + '</div><div class="menu flex flex-wrap gap-2">' + link("paginas/sobre.html", "Sobre") + link("paginas/admin/index.html", "Administração") + "</div></div>";
   }
 
   function vazio(texto) {
-    return '<div class="vazio"><img src="' + url("marca/mascote.png") + '" alt="Mascote da Cria Lab DM"><p>' + esc(texto) + "</p></div>";
+    return '<div class="vazio mx-auto grid justify-items-center gap-3 rounded-[18px] bg-white p-8 text-center shadow-cria"><img class="mx-auto w-[min(240px,70%)]" src="' + url("marca/mascote.png") + '" alt="Mascote da Cria Lab DM"><p class="m-0 font-semibold">' + esc(texto) + "</p></div>";
   }
 
   function nomeCategoria(id) {

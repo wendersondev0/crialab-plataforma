@@ -1,0 +1,26 @@
+{
+  "name": "crialab-plataforma",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "npx @tailwindcss/cli -i ./css/entrada.css -o ./css/tailwind.css --minify",
+    "watch:css": "npx @tailwindcss/cli -i ./css/entrada.css -o ./css/tailwind.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wendersondev0/crialab-plataforma.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/wendersondev0/crialab-plataforma/issues"
+  },
+  "homepage": "https://github.com/wendersondev0/crialab-plataforma#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  }
+}
