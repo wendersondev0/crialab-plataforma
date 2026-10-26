@@ -337,10 +337,14 @@ public class FinanceiroModel : PageModel
             MetaBatida = MetaMes > 0 && Resumo.Receita >= MetaMes;
         }
 
-        var mesesRef = Periodo == "geral" ? TodasCompetencias : MesesAno;
-        var (qPla, vPla, mPla) = FinanceiroResumo.MediaFilamento(todos, Periodo == "mes" ? "" : filtro, "PLA");
-        var (qPetg, vPetg, mPetg) = FinanceiroResumo.MediaFilamento(todos, Periodo == "mes" ? "" : filtro, "PETG");
-        _ = (qPla, vPla, qPetg, vPetg);
+        var mesesRef = Periodo switch
+        {
+            "geral" => TodasCompetencias,
+            "mes" => new List<string> { Mes },
+            _ => MesesAno.ToList()
+        };
+        var (_, _, mPla) = FinanceiroResumo.MediaFilamento(todos, filtro, "PLA");
+        var (_, _, mPetg) = FinanceiroResumo.MediaFilamento(todos, filtro, "PETG");
         MediaPla = mPla;
         MediaPetg = mPetg;
         MedianaPla = FinanceiroResumo.MedianaKg(todos, "PLA", mesesRef);

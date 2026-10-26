@@ -159,54 +159,94 @@
         </section>
     }
 
-    <section class="fin-card">
-        <h2 class="fin-titulo">@(Model.Periodo == "geral" ? "Todos os anos" : "Ano " + Model.Ano)</h2>
-        <div class="fin-graficos">
-            @foreach (var graf in new (string Titulo, string Cor, string Campo)[] {
-                ("Receita", "#e8772a", "receita"),
-                ("Energia (R$)", "#e8772a", "energia"),
-                ("Energia (kWh)", "#148f93", "kwh"),
-                ("Resultado operacional", "#148f93", "operacional"),
-                ("Resultado de caixa", "#1b2430", "caixa")
-            })
-            {
-                decimal ValorDe(MesResumo h) => graf.Campo switch
+    @if (Model.Periodo != "mes")
+    {
+        <section class="fin-card">
+            <h2 class="fin-titulo">@(Model.Periodo == "geral" ? "Todos os anos" : "Ano " + Model.Ano)</h2>
+            <div class="fin-graficos">
+                @foreach (var graf in new (string Titulo, string Cor, string Campo)[] {
+                    ("Receita", "#e8772a", "receita"),
+                    ("Energia (R$)", "#e8772a", "energia"),
+                    ("Energia (kWh)", "#148f93", "kwh"),
+                    ("Resultado operacional", "#148f93", "operacional"),
+                    ("Resultado de caixa", "#1b2430", "caixa")
+                })
                 {
-                    "energia" => h.Energia,
-                    "kwh" => h.Kwh,
-                    "operacional" => h.ResultadoOperacional,
-                    "caixa" => h.ResultadoCaixa,
-                    _ => h.Receita
-                };
-                var vals = Model.HistoricoBarras.Select(ValorDe).ToList();
-                var max = Math.Max(1m, vals.Select(Math.Abs).DefaultIfEmpty(1).Max());
-                <div class="fin-graf">
-                    <h3>@graf.Titulo</h3>
-                    <div class="barras fin-barras">
-                    @foreach (var h in Model.HistoricoBarras)
+                    decimal ValorDe(MesResumo h) => graf.Campo switch
                     {
-                        var valor = ValorDe(h);
-                        var altura = Math.Max(4, (int)Math.Round(Math.Abs(valor) / max * 120));
-                        var rotulo = Model.Periodo == "geral" ? h.Competencia : (h.Competencia.Length >= 7 ? h.Competencia[5..] : h.Competencia);
-                        <div class="barra-mes@(valor < 0 ? " neg" : "")">
-                            <span style="height:@(altura)px;background:@graf.Cor"></span>
-                            <small>@rotulo</small>
-                            <small>@(graf.Campo == "kwh" ? valor.ToString("N1", new System.Globalization.CultureInfo("pt-BR")) : FinanceiroModel.FormatarReal(valor))</small>
+                        "energia" => h.Energia,
+                        "kwh" => h.Kwh,
+                        "operacional" => h.ResultadoOperacional,
+                        "caixa" => h.ResultadoCaixa,
+                        _ => h.Receita
+                    };
+                    var vals = Model.HistoricoBarras.Select(ValorDe).ToList();
+                    var max = Math.Max(1m, vals.Select(Math.Abs).DefaultIfEmpty(1).Max());
+                    <div class="fin-graf">
+                        <h3>@graf.Titulo</h3>
+                        <div class="barras fin-barras">
+                        @foreach (var h in Model.HistoricoBarras)
+                        {
+                            var valor = ValorDe(h);
+                            var altura = Math.Max(4, (int)Math.Round(Math.Abs(valor) / max * 120));
+                            var rotulo = Model.Periodo == "geral" ? h.Competencia : (h.Competencia.Length >= 7 ? h.Competencia[5..] : h.Competencia);
+                            <div class="barra-mes@(valor < 0 ? " neg" : "")">
+                                <span style="height:@(altura)px;background:@graf.Cor"></span>
+                                <small>@rotulo</small>
+                                <small>@(graf.Campo == "kwh" ? valor.ToString("N1", new System.Globalization.CultureInfo("pt-BR")) : FinanceiroModel.FormatarReal(valor))</small>
+                            </div>
+                        }
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+    else
+    {
+        <section class="fin-card">
+            <h2 class="fin-titulo">Composição · @Model.RotuloPeriodo</h2>
+            <div class="fin-graficos">
+                @{
+                    var comps = new (string Titulo, decimal Valor, string Cor)[]
+                    {
+                        ("Receita", Model.Resumo.Receita, "#e8772a"),
+                        ("Operação", Model.Resumo.DespesaOperacional, "#148f93"),
+                        ("Gastos fixos", Model.Resumo.GastosFixos, "#1b2430"),
+                        ("Energia", Model.Resumo.Energia, "#e8772a"),
+                        ("Filamentos", Model.Resumo.Filamentos, "#148f93"),
+                        ("Investimento", Model.Resumo.Investimento, "#1b2430"),
+                        ("Operacional", Model.Resumo.ResultadoOperacional, "#148f93"),
+                        ("Caixa", Model.Resumo.ResultadoCaixa, "#1b2430"),
+                        ("Lucro", Model.Resumo.Lucro, "#e8772a")
+                    };
+                    var maxComp = Math.Max(1m, comps.Select(c => Math.Abs(c.Valor)).DefaultIfEmpty(1).Max());
+                }
+                <div class="fin-graf">
+                    <h3>Indicadores do mês</h3>
+                    <div class="barras fin-barras">
+                    @foreach (var c in comps)
+                    {
+                        var altura = Math.Max(4, (int)Math.Round(Math.Abs(c.Valor) / maxComp * 120));
+                        <div class="barra-mes@(c.Valor < 0 ? " neg" : "")">
+                            <span style="height:@(altura)px;background:@c.Cor"></span>
+                            <small>@c.Titulo</small>
+                            <small>@FinanceiroModel.FormatarReal(c.Valor)</small>
                         </div>
                     }
                     </div>
                 </div>
-            }
-        </div>
-    </section>
+            </div>
+        </section>
+    }
 
     <section class="fin-card fin-refs">
         <h2 class="fin-titulo">Referência de filamento</h2>
         <div class="fin-ref-grade">
             <article><span>PLA</span><strong>@FinanceiroModel.FormatarReal(Model.MediaPla)/kg</strong><small>média ponderada</small></article>
-            <article><span>PLA mediana</span><strong>@FinanceiroModel.FormatarReal(Model.MedianaPla)/kg</strong><small>mensal no período</small></article>
+            <article><span>PLA mediana</span><strong>@FinanceiroModel.FormatarReal(Model.MedianaPla)/kg</strong><small>@(Model.Periodo == "mes" ? "neste mês" : "mensal no período")</small></article>
             <article><span>PETG</span><strong>@FinanceiroModel.FormatarReal(Model.MediaPetg)/kg</strong><small>média ponderada</small></article>
-            <article><span>PETG mediana</span><strong>@FinanceiroModel.FormatarReal(Model.MedianaPetg)/kg</strong><small>mensal no período</small></article>
+            <article><span>PETG mediana</span><strong>@FinanceiroModel.FormatarReal(Model.MedianaPetg)/kg</strong><small>@(Model.Periodo == "mes" ? "neste mês" : "mensal no período")</small></article>
         </div>
     </section>
 }
