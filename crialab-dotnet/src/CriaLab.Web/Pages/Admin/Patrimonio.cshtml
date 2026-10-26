@@ -19,16 +19,16 @@
 }
 
 <div class="admin-prod-kpis pat-kpis">
-    <a class="@Kpi("tudo")" asp-page="/Admin/Patrimonio" asp-route-aba="tudo" asp-route-q="@Model.Q"><strong>@Model.TotalTudo</strong><span>Tudo</span></a>
-    <a class="@Kpi("impressoras")" asp-page="/Admin/Patrimonio" asp-route-aba="impressoras" asp-route-q="@Model.Q"><strong>@Model.QtdImpressoras</strong><span>Impressoras</span></a>
-    <a class="@Kpi("filamentos")" asp-page="/Admin/Patrimonio" asp-route-aba="filamentos" asp-route-q="@Model.Q"><strong>@Model.QtdFilamentos</strong><span>Filamentos</span></a>
-    <a class="@Kpi("embalagens")" asp-page="/Admin/Patrimonio" asp-route-aba="embalagens" asp-route-q="@Model.Q"><strong>@Model.QtdEmbalagens</strong><span>Embalagens</span></a>
-    <a class="@Kpi("insumos")" asp-page="/Admin/Patrimonio" asp-route-aba="insumos" asp-route-q="@Model.Q"><strong>@Model.QtdInsumosOutros</strong><span>Insumos</span></a>
-    <a class="@Kpi("equipamentos")" asp-page="/Admin/Patrimonio" asp-route-aba="equipamentos" asp-route-q="@Model.Q"><strong>@Model.QtdEquipamentos</strong><span>Ferramentas</span></a>
+    <a class="@Kpi("tudo")" asp-page="/Admin/Patrimonio" asp-route-aba="tudo" asp-route-q="@Model.Q" title="Lista completa: máquinas, filamentos, embalagens, insumos e ferramentas."><strong>@Model.TotalTudo</strong><span>Tudo</span></a>
+    <a class="@Kpi("impressoras")" asp-page="/Admin/Patrimonio" asp-route-aba="impressoras" asp-route-q="@Model.Q" title="Impressoras 3D e equipamentos de impressão controlados no patrimônio."><strong>@Model.QtdImpressoras</strong><span>Impressoras</span></a>
+    <a class="@Kpi("filamentos")" asp-page="/Admin/Patrimonio" asp-route-aba="filamentos" asp-route-q="@Model.Q" title="@FinanceiroResumo.Dica("filamentos")"><strong>@Model.QtdFilamentos</strong><span>Filamentos</span></a>
+    <a class="@Kpi("embalagens")" asp-page="/Admin/Patrimonio" asp-route-aba="embalagens" asp-route-q="@Model.Q" title="Caixas, sacolas, fita, bolha, papel e outros materiais de embalagem."><strong>@Model.QtdEmbalagens</strong><span>Embalagens</span></a>
+    <a class="@Kpi("insumos")" asp-page="/Admin/Patrimonio" asp-route-aba="insumos" asp-route-q="@Model.Q" title="@FinanceiroResumo.Dica("outros")"><strong>@Model.QtdInsumosOutros</strong><span>Insumos</span></a>
+    <a class="@Kpi("equipamentos")" asp-page="/Admin/Patrimonio" asp-route-aba="equipamentos" asp-route-q="@Model.Q" title="Ferramentas e acessórios da oficina (secador, alicates, etc.)."><strong>@Model.QtdEquipamentos</strong><span>Ferramentas</span></a>
 </div>
 
 <div class="admin-prod-fluxo">
-    <a class="botao-linha admin-fluxo@(Model.Aba == "compras" ? " ativo-fluxo" : "")" asp-page="/Admin/Patrimonio" asp-route-aba="compras">
+    <a class="botao-linha admin-fluxo@(Model.Aba == "compras" ? " ativo-fluxo" : "")" asp-page="/Admin/Patrimonio" asp-route-aba="compras" title="@FinanceiroResumo.Dica("investimento") Lista as compras lançadas como investimento em patrimônio.">
         <span class="ico"><partial name="_SvgIcon" model="@("documento")" /></span><span>Compras da planilha</span>
     </a>
     <a class="botao-linha admin-fluxo" asp-page="/Admin/Impressao" asp-route-aba="mesa">
@@ -311,7 +311,7 @@ else
     <section class="fin-card fin-refs mt-4">
         <div class="fin-card-topo">
             <h2 class="fin-titulo">Referência de custo de compra</h2>
-            <span class="fin-selo">média ponderada</span>
+            <span class="fin-selo" title="@FinanceiroResumo.Dica("media")">média ponderada</span>
         </div>
         <p class="fin-meta-txt">Preço médio unitário com base nos lançamentos tipados (filamento, embalagens, argolas e outros insumos frequentes).</p>
         @foreach (var grupo in Model.ReferenciasPorGrupo)
@@ -320,13 +320,13 @@ else
             <div class="fin-ref-grade">
             @foreach (var r in grupo)
             {
-                <article>
+                <article title="@FinanceiroResumo.Dica("media")@(r.Mediana > 0 ? " " + FinanceiroResumo.Dica("mediana") : "")">
                     <span>@r.Nome</span>
                     <strong>@PatrimonioModel.FormatarReal(r.Media)/@r.Unidade</strong>
                     <small>@r.Compras compra@(r.Compras == 1 ? "" : "s") · @r.Quantidade.ToString("0.##").Replace('.', ',') @r.Unidade</small>
                     @if (r.Mediana > 0)
                     {
-                        <small>mediana @PatrimonioModel.FormatarReal(r.Mediana)/@r.Unidade</small>
+                        <small title="@FinanceiroResumo.Dica("mediana")">mediana @PatrimonioModel.FormatarReal(r.Mediana)/@r.Unidade</small>
                     }
                 </article>
             }

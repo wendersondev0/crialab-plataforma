@@ -60,6 +60,24 @@ public static class FinanceiroResumo
         _ => categoria ?? ""
     };
 
+    public static string Dica(string chave) => chave switch
+    {
+        "receita" => "Soma das vendas (receitas) do período escolhido.",
+        "operacao" or "despesaOperacional" => "Custo direto de produzir e despachar: energia + filamentos + outros insumos.",
+        "operacional" or "resultadoOperacional" => "Receita − operação (energia, filamentos e outros insumos). Não desconta gastos fixos nem compra de patrimônio.",
+        "caixa" or "resultadoCaixa" => "Receita − tudo que saiu no período: operação, gastos fixos e investimentos em patrimônio (ex.: impressoras).",
+        "lucro" => "Receita − operação − gastos fixos. Compra de patrimônio não entra neste número.",
+        "gastoFixo" or "gastosFixos" => "Despesas recorrentes que não são energia nem insumos de produção (mensalidades, serviços, etc.).",
+        "filamento" or "filamentos" => "Compras de PLA, PETG, TPU e outros filamentos tipados.",
+        "energia" => "Custo de energia das máquinas no período (com kWh quando houver medição).",
+        "investimento" => "Compra de patrimônio (impressoras, equipamentos). Sai do caixa, mas não do resultado operacional.",
+        "outroInsumo" or "outros" => "Embalagens, argolas, NFC, verniz, LED e demais insumos que não são filamento.",
+        "quantidade" => "Quantidade de peças/itens somada nas receitas do período.",
+        "media" => "Preço médio unitário: valor total das compras ÷ quantidade (lançamentos tipados, sem estorno).",
+        "mediana" => "Mediana dos preços unitários por competência — menos sensível a picos pontuais que a média.",
+        _ => ""
+    };
+
     public static string CompetenciaBr(string? competencia)
     {
         if (string.IsNullOrWhiteSpace(competencia)) return "—";
