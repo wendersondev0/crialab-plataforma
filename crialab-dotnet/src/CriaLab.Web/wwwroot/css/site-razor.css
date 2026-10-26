@@ -1,3 +1,8 @@
+.revela,
+.revela.visivel {
+  opacity: 1;
+  transform: none;
+}
 .produto {
   display: flex;
   flex-direction: column;

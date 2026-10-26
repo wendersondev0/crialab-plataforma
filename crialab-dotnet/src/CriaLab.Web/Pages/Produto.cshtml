@@ -1,7 +1,9 @@
 @page "{id}"
 @model CriaLab.Web.Pages.ProdutoModel
+@using CriaLab.Web.Services
 @{
     ViewData["Title"] = Model.Produto?.Titulo ?? "Produto";
+    var freteGratis = ViewData["FreteGratisAPartir"] is decimal f ? f : 200m;
 }
 @if (Model.Produto == null)
 {
@@ -11,37 +13,46 @@ else
 {
     var produto = Model.Produto;
     var fotoInicial = produto.Fotos.OrderBy(x => x.Ordem).FirstOrDefault();
-    var tagClasse = produto.ModalidadeId == "personalizado" ? "tag-pers" : "";
+    var tagClasse = LojaVitrineHelper.ClasseTag(produto.ModalidadeId);
+    var entrega = LojaVitrineHelper.TextoEntrega(produto, freteGratis);
+    var personalizado = string.Equals(produto.ModalidadeId, "personalizado", StringComparison.OrdinalIgnoreCase);
     <div class="ficha grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
-        <div class="galeria">
+        <div class="galeria revela visivel">
             @if (fotoInicial != null)
             {
-                <img class="galeria-principal rounded-[18px]" src="~/@fotoInicial.Arquivo" alt="@fotoInicial.Legenda" />
+                <img class="galeria-principal rounded-[18px]" id="foto-principal" src="~/@fotoInicial.Arquivo" alt="@fotoInicial.Legenda" />
             }
             else
             {
                 <img class="galeria-principal rounded-[18px]" src="~/marca/mascote.png" alt="@produto.Titulo" />
             }
             <div class="miniaturas">
-                @foreach (var f in produto.Fotos.OrderBy(x => x.Ordem))
+                @foreach (var foto in produto.Fotos.OrderBy(x => x.Ordem))
                 {
-                    <img src="~/@f.Arquivo" alt="@f.Legenda" style="width:72px;height:72px;object-fit:cover;border-radius:12px" />
+                    <button class="miniatura" type="button" data-src="@Url.Content("~/" + foto.Arquivo)" data-legenda="@foto.Legenda">
+                        <img src="~/@foto.Arquivo" alt="@foto.Legenda" />
+                    </button>
                 }
             </div>
         </div>
-        <div class="cartao ficha-info">
+        <div class="cartao ficha-info revela visivel">
             <span class="tag @tagClasse">@(produto.Modalidade?.Nome ?? produto.ModalidadeId)</span>
-            <p class="ficha-categoria discreto">@(produto.Categoria?.Nome ?? produto.CategoriaId)</p>
-            <h1 class="ficha-titulo">@produto.Titulo</h1>
+            <p class="ficha-categoria discreto m-0">@(produto.Categoria?.Nome ?? produto.CategoriaId)</p>
+            <h1 class="ficha-titulo mt-0">@produto.Titulo</h1>
             <div class="preco-bloco">
                 <p class="preco m-0 text-2xl font-extrabold">R$ @produto.Preco.ToString("N2")</p>
+                @if (personalizado)
+                {
+                    <p class="vista m-0 font-bold text-teal-escuro">Preço médio. O valor final sai depois do orçamento.</p>
+                }
+                <p class="entrega-card m-0 text-sm text-tinta">@Html.Raw(entrega)</p>
             </div>
-            <p class="meta-peca">
-                <span>@(produto.Estoque > 0 ? $"{produto.Estoque} em estoque" : "Sob demanda")</span>
+            <p class="meta-peca m-0">
+                <span>@(produto.Estoque > 0 ? $"{produto.Estoque} em estoque" : (personalizado ? "Sob encomenda" : "Impressão após o pedido"))</span>
                 <span>@produto.Peso g</span>
                 <span>@produto.Medidas</span>
             </p>
-            <p class="ficha-desc">@produto.Descricao</p>
+            <p class="ficha-desc m-0">@produto.Descricao</p>
 
             @if (produto.Variacoes.Any())
             {
@@ -61,7 +72,7 @@ else
                             }
                             else
                             {
-                                <div class="linha" style="display:flex;flex-wrap:wrap;gap:8px">
+                                <div class="linha flex flex-wrap gap-2">
                                     @foreach (var opc in eixo.Opcoes.OrderBy(x => x.Ordem))
                                     {
                                         <span class="botao-linha">@opc.Nome</span>
@@ -75,17 +86,23 @@ else
 
             <form method="post" asp-page-handler="Adicionar" class="acoes-ficha">
                 <input type="hidden" name="id" value="@produto.Id" />
+                <div class="qtd-ficha-box">
+                    <span class="qtd-ficha-rotulo">Quantidade</span>
+                    <div class="qtd-stepper">
+                        <input id="qtd" name="quantidade" type="number" min="1" value="1" aria-label="Quantidade" />
+                    </div>
+                </div>
                 <button class="botao btn-comprar-agora" type="submit">Adicionar ao carrinho</button>
             </form>
         </div>
     </div>
 
-    <section class="painel-ficha mt-5 grid grid-cols-1 gap-4">
+    <section class="painel-ficha mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <article class="cartao rounded-[18px] bg-white p-4 shadow-cria">
             <h2 class="mt-0">Perguntas</h2>
             @if (!Model.Perguntas.Any())
             {
-                <p>Nenhuma pergunta ainda.</p>
+                <p class="discreto">Nenhuma pergunta ainda.</p>
             }
             @foreach (var p in Model.Perguntas)
             {
@@ -103,7 +120,7 @@ else
             <h2 class="mt-0">Avaliações</h2>
             @if (!Model.Avaliacoes.Any())
             {
-                <p>Sem avaliações ainda.</p>
+                <p class="discreto">Sem avaliações ainda.</p>
             }
             @foreach (var a in Model.Avaliacoes)
             {
@@ -116,4 +133,16 @@ else
             }
         </article>
     </section>
+}
+@section Scripts {
+<script>
+document.querySelectorAll(".miniatura").forEach(function (botao) {
+  botao.addEventListener("click", function () {
+    var img = document.getElementById("foto-principal");
+    if (!img) return;
+    img.src = botao.getAttribute("data-src");
+    img.alt = botao.getAttribute("data-legenda") || "";
+  });
+});
+</script>
 }

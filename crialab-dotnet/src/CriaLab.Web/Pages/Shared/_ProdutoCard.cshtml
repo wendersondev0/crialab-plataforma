@@ -12,7 +12,7 @@
     var temDesconto = !personalizado && anterior > Model.Preco;
     var entrega = LojaVitrineHelper.TextoEntrega(Model, freteGratis);
 }
-<article class="produto revela">
+<article class="produto revela visivel">
     <a class="produto-link" asp-page="/Produto" asp-route-id="@Model.Id">
         <span class="produto-foto">
             @if (foto != null)

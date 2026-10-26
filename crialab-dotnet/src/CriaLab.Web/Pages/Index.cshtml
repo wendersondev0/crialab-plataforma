@@ -1,11 +1,11 @@
 @page
 @model CriaLab.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = "Cria Lab DM";
+    ViewData["Title"] = "Início";
     ViewData["FreteGratisAPartir"] = Model.FreteGratisAPartir;
     var freteTxt = Model.FreteGratisAPartir.ToString("N2");
 }
-<section class="carrossel revela" id="carrossel">
+<section class="carrossel revela visivel" id="carrossel">
     <div class="carrossel-trilho">
         <article class="slide fundo-laranja">
             <div class="slide-texto">
@@ -41,14 +41,14 @@
     </div>
 </section>
 
-<p class="intro-pagina intro-home mt-4 mb-2 max-w-3xl text-tinta/75" title="@Model.IntroHome">@Model.IntroHome</p>
+<p class="intro-pagina intro-home mt-4 mb-2 max-w-3xl text-tinta/75">Explore a vitrine da Cria Lab: modalidades, temas e peças para toque e abrir a ficha.</p>
 
 <section class="faixa-categorias faixa-modalidades my-3">
     <p class="discreto m-0 mb-2 font-bold text-tinta/70">Modalidades</p>
     <div class="chips flex flex-wrap gap-2">
         @foreach (var m in Model.Modalidades)
         {
-            <a class="chip revela" asp-page="/Produtos" asp-route-ModalidadeFiltro="@m.Id" title="@m.Resumo">@m.Nome</a>
+            <a class="chip revela visivel inline-flex min-h-11 items-center rounded-full border-2 border-linha bg-white px-3.5 font-bold text-tinta no-underline" asp-page="/Produtos" asp-route-ModalidadeFiltro="@m.Id" title="@m.Resumo">@m.Nome</a>
         }
     </div>
 </section>
@@ -58,7 +58,7 @@
     <div class="chips chips-temas flex flex-nowrap gap-2 overflow-x-auto pb-1">
         @foreach (var c in Model.Categorias)
         {
-            <a class="chip revela" asp-page="/Busca" asp-route-categoria="@c.Id" title="Filtrar a busca por @c.Nome">@c.Nome</a>
+            <a class="chip revela visivel inline-flex min-h-11 items-center rounded-full border-2 border-linha bg-white px-3.5 font-bold text-tinta no-underline" asp-page="/Busca" asp-route-categoria="@c.Id" title="Filtrar a busca por @c.Nome">@c.Nome</a>
         }
     </div>
 </section>
@@ -66,10 +66,17 @@
 <section class="mt-2">
     <div class="titulo-secao linha"><h2>Na loja</h2></div>
     <p class="discreto intro-grade mb-4 max-w-3xl">Cards sem botão: toque na peça para ver preço, frete, Shopee e Mercado Livre na ficha.</p>
-    <div class="grade vitrine grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        @foreach (var p in Model.Produtos)
-        {
-            <partial name="_ProdutoCard" model="p" />
-        }
-    </div>
+    @if (!Model.Produtos.Any())
+    {
+        <div class="vazio cartao"><p>Nenhuma peça publicada ainda.</p></div>
+    }
+    else
+    {
+        <div class="grade vitrine grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            @foreach (var p in Model.Produtos)
+            {
+                <partial name="_ProdutoCard" model="p" />
+            }
+        </div>
+    }
 </section>

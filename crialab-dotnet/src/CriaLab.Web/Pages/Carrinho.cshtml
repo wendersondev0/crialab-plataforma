@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Carrinho";
 }
-<h1 class="mt-0">Carrinho</h1>
+<h1 class="mt-0 text-3xl font-extrabold text-tinta">Carrinho</h1>
 @if (!Model.Itens.Any())
 {
     <div class="vazio cartao">
@@ -13,35 +13,29 @@
 }
 else
 {
-    <table class="tabela-loja">
-        <thead>
-            <tr>
-                <th>Peça</th>
-                <th>Qtd</th>
-                <th>Preço</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var i in Model.Itens)
-            {
-                <tr>
-                    <td>@i.Titulo</td>
-                    <td>@i.Quantidade</td>
-                    <td>R$ @((i.PrecoUnitario * i.Quantidade).ToString("N2"))</td>
-                    <td>
-                        <form method="post" asp-page-handler="Remover">
-                            <input type="hidden" name="produtoId" value="@i.ProdutoId" />
-                            <button class="botao-linha" type="submit">Remover</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <p class="mt-4"><strong>Subtotal:</strong> R$ @Model.Subtotal.ToString("N2")</p>
-    <div class="linha" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-        <a class="botao" asp-page="/Checkout">Finalizar pedido</a>
-        <a class="botao-linha" asp-page="/Produtos">Continuar comprando</a>
+    <div class="grade grid grid-cols-1 gap-3">
+        @foreach (var i in Model.Itens)
+        {
+            <article class="cartao flex flex-wrap items-center justify-between gap-3 p-4">
+                <div>
+                    <strong class="block text-tinta">@i.Titulo</strong>
+                    <span class="discreto">@i.Quantidade × R$ @i.PrecoUnitario.ToString("N2")</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <strong>R$ @((i.PrecoUnitario * i.Quantidade).ToString("N2"))</strong>
+                    <form method="post" asp-page-handler="Remover">
+                        <input type="hidden" name="produtoId" value="@i.ProdutoId" />
+                        <button class="botao-linha" type="submit">Remover</button>
+                    </form>
+                </div>
+            </article>
+        }
+    </div>
+    <div class="cartao mt-4 flex flex-wrap items-center justify-between gap-3 p-4">
+        <p class="m-0 text-xl font-extrabold">Subtotal: R$ @Model.Subtotal.ToString("N2")</p>
+        <div class="flex flex-wrap gap-2">
+            <a class="botao-linha" asp-page="/Produtos">Continuar comprando</a>
+            <a class="botao" asp-page="/Checkout">Finalizar pedido</a>
+        </div>
     </div>
 }

@@ -18,7 +18,6 @@
     var ajudaInicio = (await Db.MenusAjuda.AsNoTracking().FirstOrDefaultAsync(x => x.Id == "inicio"))?.Texto;
     var ajudaSobre = (await Db.MenusAjuda.AsNoTracking().FirstOrDefaultAsync(x => x.Id == "sobre"))?.Texto;
     var ajudaContato = (await Db.MenusAjuda.AsNoTracking().FirstOrDefaultAsync(x => x.Id == "contato"))?.Texto;
-    var ajudaConta = (await Db.MenusAjuda.AsNoTracking().FirstOrDefaultAsync(x => x.Id == "conta"))?.Texto;
     var ajudaCarrinho = (await Db.MenusAjuda.AsNoTracking().FirstOrDefaultAsync(x => x.Id == "carrinho"))?.Texto;
 
     var nomeConta = "Conta";
@@ -42,18 +41,18 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] � Cria Lab DM</title>
+    <title>@ViewData["Title"] · Cria Lab DM</title>
     <link rel="stylesheet" href="~/css/tailwind.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/vitrine.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site-razor.css" asp-append-version="true" />
 </head>
-<body class="text-tinta antialiased">
+<body class="text-tinta font-cria antialiased">
 <header id="topo" class="topo-loja sticky top-0 z-20">
-    <div class="faixa-fina">
-        <div class="barra faixa-fina-barra">
-            <div class="siga">
-                <span class="siga-texto">Siga a Cria Lab</span>
+    <div class="faixa-fina bg-laranja-escuro">
+        <div class="barra faixa-fina-barra mx-auto flex min-h-11 w-[min(1120px,calc(100%-32px))] items-center justify-between gap-3">
+            <div class="siga flex items-center gap-2">
+                <span class="siga-texto text-[0.92rem] font-bold text-white">Siga a Cria Lab</span>
                 @if (!string.IsNullOrWhiteSpace(identidade?.Whatsapp))
                 {
                     <a class="icone-topo" href="@identidade!.Whatsapp" target="_blank" rel="noopener" aria-label="WhatsApp"><partial name="_SvgIcon" model="@("whatsapp")" /></a>
@@ -82,36 +81,36 @@
         </div>
     </div>
     <div class="loja-faixa">
-        <div class="barra loja-barra">
+        <div class="barra loja-barra mx-auto flex min-h-[76px] w-[min(1120px,calc(100%-32px))] items-center gap-3">
             <button class="botao-hamburguer" type="button" id="abrir-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-gaveta">
                 <span class="ico"><partial name="_SvgIcon" model="@("menu")" /></span>
             </button>
             <a class="marca" asp-page="/Index">
-                <img src="~/marca/logo-colorida.png" alt="Cria Lab DM" />
+                <img class="h-11 rounded-xl bg-white p-1" src="~/marca/logo-colorida.png" alt="Cria Lab DM" />
             </a>
-            <form class="busca-topo" asp-page="/Busca" method="get">
-                <input name="q" type="search" placeholder="Buscar na Cria Lab" aria-label="Buscar na Cria Lab" value="@(Context.Request.Query["q"].ToString())" />
-                <button class="botao botao-busca" type="submit" aria-label="Buscar">
+            <form class="busca-topo flex min-w-0 flex-1 items-center gap-2 rounded-full bg-white py-1 pl-3 pr-1" asp-page="/Busca" method="get">
+                <input class="min-h-10 min-w-0 flex-1 border-0 bg-transparent outline-none" name="q" type="search" placeholder="Buscar na Cria Lab" aria-label="Buscar na Cria Lab" value="@(Context.Request.Query["q"].ToString())" />
+                <button class="botao botao-busca inline-flex min-h-10 items-center justify-center rounded-full bg-laranja px-4 font-bold text-white hover:bg-laranja-escuro" type="submit" aria-label="Buscar">
                     <span class="botao-busca-texto">Buscar</span>
                     <span class="botao-busca-ico ico" aria-hidden="true"><partial name="_SvgIcon" model="@("busca")" /></span>
                 </button>
             </form>
             <div class="loja-acoes">
-                <div class="acoes-util">
-                    <div class="menu-suspenso">
-                        <button class="atalho" type="button" aria-label="Notifica��es" aria-expanded="false" aria-haspopup="true">
+                <div class="acoes-util flex items-center gap-0">
+                    <div class="menu-suspenso relative">
+                        <button class="atalho" type="button" aria-label="Notificações" aria-expanded="false" aria-haspopup="true">
                             <span class="ico"><partial name="_SvgIcon" model="@("sino")" /></span>
-                            <span class="atalho-texto">Notifica��es</span>
+                            <span class="atalho-texto">Notificações</span>
                         </button>
                         <div class="popup-topo" role="menu">
-                            <p class="popup-vazio">Nenhuma notifica��o.</p>
+                            <p class="popup-vazio">Nenhuma notificação.</p>
                         </div>
                     </div>
                     <a class="atalho" asp-page="/Contato" aria-label="Ajuda" title="@ajudaContato">
                         <span class="ico"><partial name="_SvgIcon" model="@("contato")" /></span>
                         <span class="atalho-texto">Ajuda</span>
                     </a>
-                    <div class="menu-suspenso menu-conta">
+                    <div class="menu-suspenso menu-conta relative">
                         <button class="atalho" type="button" id="abrir-conta" aria-label="@nomeConta" aria-expanded="false" aria-haspopup="true">
                             <span class="ico"><partial name="_SvgIcon" model="@("conta")" /></span>
                             <span class="atalho-texto">@nomeConta</span>
@@ -123,7 +122,7 @@
                                 <a class="item-popup-topo" asp-page="/Conta/Index"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span><span>Meus pedidos</span></a>
                                 @if (ehAdmin)
                                 {
-                                    <a class="item-popup-topo" asp-page="/Admin/Index"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span>Administra��o</span></a>
+                                    <a class="item-popup-topo" asp-page="/Admin/Index"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span>Administração</span></a>
                                 }
                                 <a class="item-popup-topo" asp-page="/Conta/Logout"><span class="ico"><partial name="_SvgIcon" model="@("sair")" /></span><span>Sair</span></a>
                             }
@@ -145,10 +144,10 @@
                 </a>
             </div>
         </div>
-        <nav class="menu menu-loja">
+        <nav class="menu menu-loja mx-auto flex w-[min(1120px,calc(100%-32px))] flex-nowrap gap-1.5 overflow-x-auto overflow-y-visible pb-2.5">
             <a class="nav-link@(AtivoInicio())" asp-page="/Index" title="@ajudaInicio">
                 <span class="ico"><partial name="_SvgIcon" model="@("casa")" /></span>
-                <span class="nav-texto">In�cio</span>
+                <span class="nav-texto">Início</span>
             </a>
             <a class="nav-link@(AtivoModalidade("pronta-entrega"))" asp-page="/Produtos" asp-route-ModalidadeFiltro="pronta-entrega" title="@DicaMod("pronta-entrega")">
                 <span class="ico"><partial name="_SvgIcon" model="@("caixa")" /></span>
@@ -181,7 +180,7 @@
             </button>
         </div>
         <nav class="menu-gaveta-lista">
-            <a class="nav-link" asp-page="/Index"><span class="ico"><partial name="_SvgIcon" model="@("casa")" /></span><span class="nav-texto">In�cio</span></a>
+            <a class="nav-link" asp-page="/Index"><span class="ico"><partial name="_SvgIcon" model="@("casa")" /></span><span class="nav-texto">Início</span></a>
             <a class="nav-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="pronta-entrega"><span class="ico"><partial name="_SvgIcon" model="@("caixa")" /></span><span class="nav-texto">Pronta Entrega</span></a>
             <a class="nav-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="sob-demanda"><span class="ico"><partial name="_SvgIcon" model="@("caminhao")" /></span><span class="nav-texto">Sob Demanda</span></a>
             <a class="nav-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span class="nav-texto">Personalizados</span></a>
@@ -191,7 +190,7 @@
             <a class="nav-link" asp-page="/Carrinho"><span class="ico"><partial name="_SvgIcon" model="@("carrinho")" /></span><span class="nav-texto nav-texto-carrinho">Carrinho</span>@if (qtd > 0){<span class="selo-qtd">@qtd</span>}</a>
             @if (ehAdmin)
             {
-                <a class="nav-link" asp-page="/Admin/Index"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span class="nav-texto">Administra��o</span></a>
+                <a class="nav-link" asp-page="/Admin/Index"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span class="nav-texto">Administração</span></a>
             }
         </nav>
     </aside>
@@ -228,7 +227,7 @@
             <div class="rodape-marca">
                 <img src="~/marca/logo-colorida.png" alt="Cria Lab DM" />
                 <strong class="rodape-nome">@(identidade?.Nome ?? "Cria Lab DM")</strong>
-                <p class="rodape-meta">Oficina de impress�o 3D � pe�as prontas, sob demanda e personalizadas.</p>
+                <p class="rodape-meta">Oficina de impressão 3D · peças prontas, sob demanda e personalizadas.</p>
                 @if (!string.IsNullOrWhiteSpace(identidade?.Endereco))
                 {
                     <p class="rodape-meta">@identidade!.Endereco</p>
@@ -272,7 +271,7 @@
             </div>
         </div>
         <div class="rodape-base">
-            <span>� @DateTime.UtcNow.Year @(identidade?.Nome ?? "Cria Lab DM")</span>
+            <span>&copy; @DateTime.UtcNow.Year @(identidade?.Nome ?? "Cria Lab DM")</span>
             <span>CNPJ @(identidade?.Cnpj ?? "68.914.190/0001-96")</span>
         </div>
     </div>

@@ -3,55 +3,60 @@
 @{
     ViewData["Title"] = "Minha conta";
 }
-<h1 class="mt-0">Olá, @(Model.Usuario?.NomeCompleto ?? "cliente")</h1>
+<h1 class="mt-0 text-3xl font-extrabold text-tinta">Olá, @(Model.Usuario?.NomeCompleto ?? "cliente")</h1>
+<p class="intro-pagina text-tinta/75">Pedidos, orçamentos e endereços da sua conta.</p>
 
-<section class="cartao" style="padding:18px;margin-bottom:16px">
+<section class="cartao mb-4 p-4">
     <h2 class="mt-0">Pedidos</h2>
     @if (!Model.Pedidos.Any())
     {
-        <p>Nenhum pedido ainda.</p>
+        <p class="discreto">Nenhum pedido ainda.</p>
+        <a class="botao" asp-page="/Produtos">Ver produtos</a>
     }
     else
     {
-        <table class="tabela-loja">
-            <thead><tr><th>Pedido</th><th>Status</th><th>Total</th><th>Data</th></tr></thead>
-            <tbody>
+        <div class="grade grid grid-cols-1 gap-2">
             @foreach (var p in Model.Pedidos)
             {
-                <tr>
-                    <td>@p.Id</td>
-                    <td>@p.Status</td>
-                    <td>R$ @p.Total.ToString("N2")</td>
-                    <td>@p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</td>
-                </tr>
+                <article class="flex flex-wrap items-center justify-between gap-2 border-b border-linha py-3">
+                    <div>
+                        <strong>@p.Id</strong>
+                        <span class="discreto block">@p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                    </div>
+                    <span>@p.Status</span>
+                    <strong>R$ @p.Total.ToString("N2")</strong>
+                </article>
             }
-            </tbody>
-        </table>
+        </div>
     }
 </section>
 
-<section class="cartao" style="padding:18px;margin-bottom:16px">
+<section class="cartao mb-4 p-4">
     <h2 class="mt-0">Orçamentos</h2>
     @if (!Model.Orcamentos.Any())
     {
-        <p>Nenhum orçamento.</p>
+        <p class="discreto">Nenhum orçamento.</p>
     }
     @foreach (var o in Model.Orcamentos)
     {
-        <article style="padding:10px 0;border-top:1px solid var(--linha)">
-            <strong>@o.Titulo</strong> · @o.Status · @(o.Valor.HasValue ? "R$ " + o.Valor.Value.ToString("N2") : "Aguardando valor")
+        <article class="border-b border-linha py-3">
+            <strong>@o.Titulo</strong>
+            <span class="discreto"> · @o.Status · @(o.Valor.HasValue ? "R$ " + o.Valor.Value.ToString("N2") : "Aguardando valor")</span>
         </article>
     }
 </section>
 
-<section class="cartao" style="padding:18px">
+<section class="cartao p-4">
     <h2 class="mt-0">Endereços</h2>
     @if (!Model.Enderecos.Any())
     {
-        <p>Nenhum endereço cadastrado.</p>
+        <p class="discreto">Nenhum endereço cadastrado.</p>
     }
     @foreach (var e in Model.Enderecos)
     {
-        <p><strong>@e.Rotulo</strong> · CEP @e.Cep · @e.Linha</p>
+        <p class="m-0 py-2"><strong>@e.Rotulo</strong> · CEP @e.Cep · @e.Linha</p>
     }
+    <form method="post" asp-page-handler="Logout" class="mt-4">
+        <a class="botao-linha" asp-page="/Conta/Logout">Sair</a>
+    </form>
 </section>

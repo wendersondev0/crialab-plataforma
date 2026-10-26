@@ -2,25 +2,146 @@
 @model CriaLab.Web.Pages.SobreModel
 @{
     ViewData["Title"] = "Sobre";
+    var id = Model.Identidade;
+    var whats = string.IsNullOrWhiteSpace(id?.Whatsapp)
+        ? "#"
+        : id!.Whatsapp + "?text=" + Uri.EscapeDataString("Olá! Quero saber mais sobre impressão 3D e peças personalizadas na Cria Lab.");
 }
 <section class="sobre">
     <div class="passaro-palco">
         <img class="passaro" src="~/marca/mascote.png" alt="Mascote da Cria Lab DM" />
         <span class="passaro-sombra"></span>
     </div>
-    <div class="sobre-texto">
+    <div class="sobre-texto revela visivel">
         <img class="letreiro" src="~/marca/logo-colorida.png" alt="Cria Lab" />
-        <h1>@(Model.Identidade?.Nome ?? "Cria Lab DM")</h1>
+        <h1>@(id?.Nome ?? "Cria Lab DM")</h1>
         <p class="sobre-slogan">Oficina de impressão 3D que transforma ideia em peça — pronta, sob demanda ou do seu jeito.</p>
-        <p class="sobre-lead">@(Model.Ajuda?.Texto ?? "Somos uma oficina de impressão 3D: peças prontas, sob demanda e personalizadas do seu jeito.")</p>
+        <p class="sobre-lead">A Cria Lab DM nasce da bancada: filamento, impressora e muita vontade de criar. Fazemos decoração, chaveiros, utilidades, moldes e o que mais couber na sua imaginação. Se dá para modelar e imprimir, a gente conversa.</p>
         <div class="sobre-ctas">
-            <a class="botao" asp-page="/Produtos">Ver produtos</a>
-            <a class="botao-teal" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado">Personalizados</a>
-            <a class="botao-linha" asp-page="/Contato">Falar conosco</a>
+            <a class="botao" asp-page="/Produtos"><span class="ico"><partial name="_SvgIcon" model="@("caixa")" /></span>Ver produtos</a>
+            <a class="botao-teal" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span>Peças personalizadas</a>
+            <a class="botao-linha" href="@whats" target="_blank" rel="noopener"><span class="ico"><partial name="_SvgIcon" model="@("whatsapp")" /></span>Falar no WhatsApp</a>
         </div>
-        @if (!string.IsNullOrWhiteSpace(Model.Identidade?.Cnpj))
+    </div>
+</section>
+
+<section class="sobre-bloco revela visivel">
+    <div class="sobre-bloco-cab">
+        <h2>O que fazemos</h2>
+        <p>Impressão 3D com cara de oficina: do estoque da mesa ao projeto sob encomenda.</p>
+    </div>
+    <div class="sobre-pilares">
+        <article class="sobre-pilar revela visivel">
+            <span class="sobre-pilar-ico"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span></span>
+            <h3>Impressão 3D de verdade</h3>
+            <p>Projetamos e imprimimos na oficina: do protótipo à peça acabada, com material e acabamento combinados com você.</p>
+        </article>
+        <article class="sobre-pilar revela visivel">
+            <span class="sobre-pilar-ico"><span class="ico"><partial name="_SvgIcon" model="@("caixa")" /></span></span>
+            <h3>Pronta entrega</h3>
+            <p>Chaveiros, decoração e utilidades já saídos da impressora, prontos para enviar ou retirar sem espera de produção.</p>
+        </article>
+        <article class="sobre-pilar revela visivel">
+            <span class="sobre-pilar-ico"><span class="ico"><partial name="_SvgIcon" model="@("caminhao")" /></span></span>
+            <h3>Sob demanda</h3>
+            <p>O modelo já existe na vitrine; depois do pedido a gente imprime a sua unidade no prazo combinado.</p>
+        </article>
+        <article class="sobre-pilar revela visivel">
+            <span class="sobre-pilar-ico"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span></span>
+            <h3>100% personalizado</h3>
+            <p>Tem ideia, foto, logo ou medida? A gente transforma em peça. Orçamento sem compromisso antes de produzir.</p>
+        </article>
+    </div>
+</section>
+
+<section class="sobre-bloco revela visivel">
+    <div class="sobre-bloco-cab">
+        <h2>Produtos que saem da nossa impressora</h2>
+        <p>Uma vitrine ampla — e espaço para o que ainda não está nela.</p>
+    </div>
+    <ul class="sobre-produtos">
+        <li><strong>Decoração</strong><span>Quadros, letras, enfeites e peças que dão cara ao ambiente.</span></li>
+        <li><strong>Chaveiros e brindes</strong><span>Para presente, empresa, evento ou o dia a dia com a sua cara.</span></li>
+        <li><strong>Utilidades</strong><span>Suportes, organizadores e soluções práticas impressas sob medida.</span></li>
+        <li><strong>Moldes e peças técnicas</strong><span>Para quem precisa de forma, encaixe ou reposição que não acha pronta.</span></li>
+        <li><strong>Pintura e acabamento</strong><span>Quando a peça pede cor, verniz ou aquele detalhe a mais.</span></li>
+    </ul>
+</section>
+
+<section class="sobre-bloco revela visivel">
+    <div class="sobre-bloco-cab">
+        <h2>Por que pedir na Cria Lab</h2>
+        <p>Mensagens diretas para quem quer criar, presentear ou resolver um problema com uma peça impressa.</p>
+    </div>
+    <div class="sobre-mensagens">
+        <article class="sobre-mensagem revela visivel">
+            <h3>Não achou na loja?</h3>
+            <p>Manda referência no WhatsApp. Se der para imprimir, a gente faz — e se precisar adaptar, a gente adapta.</p>
+        </article>
+        <article class="sobre-mensagem revela visivel">
+            <h3>Do rascunho à mão</h3>
+            <p>Trabalhamos com ideia solta, arquivo 3D ou só uma foto. O importante é você sair com a peça que imaginou.</p>
+        </article>
+        <article class="sobre-mensagem revela visivel">
+            <h3>Para pessoa e para negócio</h3>
+            <p>Presente, uso pessoal, brindes de marca ou peça sob encomenda para a sua empresa: a oficina atende os dois mundos.</p>
+        </article>
+    </div>
+</section>
+
+<section class="sobre-bloco sobre-contato revela visivel">
+    <div class="sobre-bloco-cab">
+        <h2>Fale com a oficina</h2>
+        <p>Tire dúvida, peça orçamento ou conte o que você quer criar.</p>
+    </div>
+    <div class="sobre-contato-grade">
+        @if (!string.IsNullOrWhiteSpace(id?.Cnpj))
         {
-            <p class="discreto">CNPJ @Model.Identidade.Cnpj</p>
+            <p><strong>CNPJ</strong><span>@id!.Cnpj</span></p>
+        }
+        @if (!string.IsNullOrWhiteSpace(id?.Email))
+        {
+            <p><strong>E-mail</strong><a href="mailto:@id!.Email">@id.Email</a></p>
+        }
+        @if (!string.IsNullOrWhiteSpace(id?.Telefone))
+        {
+            <p><strong>Telefone</strong><a href="tel:+5527996530954">@id!.Telefone</a></p>
+        }
+        @if (!string.IsNullOrWhiteSpace(id?.Endereco) || !string.IsNullOrWhiteSpace(id?.Horario))
+        {
+            <div class="sobre-local">
+                @if (!string.IsNullOrWhiteSpace(id?.Endereco))
+                {
+                    <p class="m-0">@id!.Endereco</p>
+                }
+                @if (!string.IsNullOrWhiteSpace(id?.Horario))
+                {
+                    <p class="m-0">@id!.Horario</p>
+                }
+            </div>
         }
     </div>
 </section>
+
+@if (Model.Parceiros.Any())
+{
+    <section class="cartao revela visivel sobre-parceiros">
+        <h2 class="mt-0">Parceiros</h2>
+        <p class="sobre-parceiros-intro">Quem caminha com a gente.</p>
+        <div class="parceiros">
+            @foreach (var p in Model.Parceiros)
+            {
+                <figure class="parceiro revela visivel m-0 flex min-h-[100px] items-center justify-center rounded-[18px] border-2 border-linha bg-white px-4 py-3" title="@p.Nome">
+                    @if (!string.IsNullOrWhiteSpace(p.Logo))
+                    {
+                        <img src="~/@p.Logo" alt="@p.Nome" />
+                    }
+                    else
+                    {
+                        <span>@p.Nome</span>
+                    }
+                </figure>
+            }
+        </div>
+    </section>
+}

@@ -1,4 +1,30 @@
 (function () {
+  function revelar(escopo) {
+    var raiz = escopo || document;
+    var itens = Array.prototype.slice.call(raiz.querySelectorAll(".revela"));
+    if (!itens.length) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
+      itens.forEach(function (el) { el.classList.add("visivel"); });
+      return;
+    }
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (entrada) {
+        if (!entrada.isIntersecting) return;
+        entrada.target.classList.add("visivel");
+        obs.unobserve(entrada.target);
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -24px 0px" });
+    itens.forEach(function (el, i) {
+      el.style.setProperty("--atraso", (Math.min(i % 8, 7) * 55) + "ms");
+      obs.observe(el);
+    });
+    window.setTimeout(function () {
+      itens.forEach(function (el) {
+        if (!el.classList.contains("visivel")) el.classList.add("visivel");
+      });
+    }, 1200);
+  }
+
   function ligarCarrossel() {
     var caixa = document.getElementById("carrossel");
     if (!caixa) return;
@@ -70,9 +96,18 @@
     document.addEventListener("keydown", function (evento) {
       if (evento.key === "Escape") setMenu(false);
     });
+    document.addEventListener("click", function (evento) {
+      if (evento.target.closest(".menu-suspenso")) return;
+      topo.querySelectorAll(".menu-suspenso.aberto").forEach(function (menu) {
+        menu.classList.remove("aberto");
+        var gatilho = menu.querySelector(".atalho");
+        if (gatilho) gatilho.setAttribute("aria-expanded", "false");
+      });
+    });
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    revelar(document.getElementById("conteudo") || document);
     ligarCarrossel();
     ligarMenus();
   });
