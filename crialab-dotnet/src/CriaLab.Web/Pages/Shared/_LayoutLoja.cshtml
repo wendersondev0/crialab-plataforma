@@ -263,7 +263,20 @@
                     @foreach (var p in parceiros)
                     {
                         <figure class="parceiro parceiro-rodape" title="@p.Nome">
-                            @if (!string.IsNullOrWhiteSpace(p.Logo))
+                            @if (!string.IsNullOrWhiteSpace(p.Url))
+                            {
+                                <a href="@p.Url" target="_blank" rel="noopener" aria-label="@p.Nome">
+                                    @if (!string.IsNullOrWhiteSpace(p.Logo))
+                                    {
+                                        <img src="~/@p.Logo" alt="@p.Nome" />
+                                    }
+                                    else
+                                    {
+                                        <span>@p.Nome</span>
+                                    }
+                                </a>
+                            }
+                            else if (!string.IsNullOrWhiteSpace(p.Logo))
                             {
                                 <img src="~/@p.Logo" alt="@p.Nome" />
                             }

@@ -331,6 +331,7 @@
         var marca = item.logo
           ? '<img src="' + url(item.logo) + '" alt="' + esc(item.nome) + '">'
           : "<span>" + esc(item.nome) + "</span>";
+        if (item.url) marca = '<a href="' + esc(item.url) + '" target="_blank" rel="noopener" aria-label="' + esc(item.nome) + '">' + marca + "</a>";
         return '<figure class="parceiro parceiro-rodape" title="' + esc(item.nome) + '">' + marca + "</figure>";
       }).join("") + "</div></section>"
       : "";

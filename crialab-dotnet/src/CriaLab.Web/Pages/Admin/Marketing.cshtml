@@ -81,6 +81,7 @@ else if (Model.Aba == "parceiros")
     <form method="post" asp-page-handler="Parceiro" enctype="multipart/form-data" class="cartao formulario p-4 mb-4">
         <h2 class="mt-0">Novo parceiro</h2>
         <label>Nome<input name="nome" required /></label>
+        <label>Link (Instagram ou site)<input name="url" type="url" placeholder="https://www.instagram.com/..." /></label>
         <label>Logo<input name="logo" type="file" accept="image/*" /></label>
         <label class="flex items-center gap-2 font-semibold"><input name="podeAparecer" type="checkbox" value="true" checked style="width:auto;min-height:auto" /> Pode aparecer no Sobre</label>
         <button class="botao" type="submit">Salvar</button>
@@ -96,7 +97,18 @@ else if (Model.Aba == "parceiros")
             <div class="grow">
                 <strong>@p.Nome</strong>
                 <span class="@(p.PodeAparecer ? "cta-selo ok" : "cta-selo mute")">@(p.PodeAparecer ? "No site" : "Oculto")</span>
+                @if (!string.IsNullOrWhiteSpace(p.Url))
+                {
+                    <p class="m-0 mt-1"><a href="@p.Url" target="_blank" rel="noopener">@p.Url</a></p>
+                }
             </div>
+            <form method="post" asp-page-handler="Parceiro" enctype="multipart/form-data" class="formulario flex flex-wrap items-end gap-2">
+                <input type="hidden" name="id" value="@p.Id" />
+                <input type="hidden" name="nome" value="@p.Nome" />
+                <input type="hidden" name="podeAparecer" value="@(p.PodeAparecer ? "true" : "false")" />
+                <label class="m-0">Link<input name="url" type="url" value="@p.Url" placeholder="https://..." /></label>
+                <button class="botao-linha" type="submit">Salvar link</button>
+            </form>
             <form method="post" asp-page-handler="ToggleParceiro">
                 <input type="hidden" name="id" value="@p.Id" />
                 <button class="botao-linha" type="submit">@(p.PodeAparecer ? "Ocultar" : "Publicar")</button>

@@ -132,7 +132,20 @@
             @foreach (var p in Model.Parceiros)
             {
                 <figure class="parceiro revela visivel m-0 flex min-h-[100px] items-center justify-center rounded-[18px] border-2 border-linha bg-white px-4 py-3" title="@p.Nome">
-                    @if (!string.IsNullOrWhiteSpace(p.Logo))
+                    @if (!string.IsNullOrWhiteSpace(p.Url))
+                    {
+                        <a href="@p.Url" target="_blank" rel="noopener" aria-label="@p.Nome">
+                            @if (!string.IsNullOrWhiteSpace(p.Logo))
+                            {
+                                <img src="~/@p.Logo" alt="@p.Nome" />
+                            }
+                            else
+                            {
+                                <span>@p.Nome</span>
+                            }
+                        </a>
+                    }
+                    else if (!string.IsNullOrWhiteSpace(p.Logo))
                     {
                         <img src="~/@p.Logo" alt="@p.Nome" />
                     }

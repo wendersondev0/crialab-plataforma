@@ -1396,6 +1396,11 @@ namespace CriaLab.Web.Data.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("pode_aparecer");
 
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("url");
+
                     b.HasKey("Id")
                         .HasName("pk_parceiros");
 

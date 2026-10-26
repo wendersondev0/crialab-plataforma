@@ -589,6 +589,7 @@
     var id = estado().identidade;
     var parceiros = estado().parceiros.filter(function (item) { return item.podeAparecer; }).map(function (item) {
       var marca = item.logo ? '<img src="' + ui.url(item.logo) + '" alt="' + ui.esc(item.nome) + '">' : "<span>" + ui.esc(item.nome) + "</span>";
+      if (item.url) marca = '<a href="' + ui.esc(item.url) + '" target="_blank" rel="noopener" aria-label="' + ui.esc(item.nome) + '">' + marca + "</a>";
       return '<figure class="parceiro revela m-0 flex min-h-[100px] items-center justify-center rounded-[18px] border-2 border-linha bg-white px-4 py-3">' + marca + "</figure>";
     }).join("");
     var local = (id.endereco ? "<p class=\"m-0\">" + ui.esc(id.endereco) + "</p>" : "") + (id.horario ? "<p class=\"m-0\">" + ui.esc(id.horario) + "</p>" : "");

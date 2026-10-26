@@ -47,6 +47,7 @@ public static class DbSeeder
             await EnsureInsumosPlanilhaAsync(context);
             await EnsureMaquinasPlanilhaAsync(context);
             await EnsureImpressoesPlanilhaAsync(context);
+            await EnsureParceirosLinksAsync(context);
             return;
         }
 
@@ -244,8 +245,8 @@ public static class DbSeeder
             new Depoimento { Id = "dep-2", Autor = "Oficina vizinha", Texto = "Texto guardado, ainda sem publicação.", PodeAparecer = false });
 
         context.Parceiros.AddRange(
-            new Parceiro { Id = "par-1", Nome = "Mercearia Vila Verde", Logo = "marca/parceiro-vila-verde.png", PodeAparecer = true },
-            new Parceiro { Id = "par-2", Nome = "GoFit", Logo = "marca/parceiro-gofit.png", PodeAparecer = true });
+            new Parceiro { Id = "par-1", Nome = "Mercearia Vila Verde", Logo = "marca/parceiro-vila-verde.png", Url = "https://www.instagram.com/verdemerceariavila/", PodeAparecer = true },
+            new Parceiro { Id = "par-2", Nome = "GoFit", Logo = "marca/parceiro-gofit.png", Url = "https://www.instagram.com/gofitacademiadm/", PodeAparecer = true });
     }
 
     private static async Task SeedProdutosAsync(ApplicationDbContext context, IWebHostEnvironment env)
@@ -542,6 +543,26 @@ public static class DbSeeder
         if (faltando.Count == 0) return;
         context.Maquinas.AddRange(faltando);
         await context.SaveChangesAsync();
+    }
+
+    private static async Task EnsureParceirosLinksAsync(ApplicationDbContext context)
+    {
+        var links = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["par-1"] = "https://www.instagram.com/verdemerceariavila/",
+            ["par-2"] = "https://www.instagram.com/gofitacademiadm/"
+        };
+        var parceiros = await context.Parceiros.Where(x => links.Keys.Contains(x.Id)).ToListAsync();
+        var mudou = false;
+        foreach (var p in parceiros)
+        {
+            if (!links.TryGetValue(p.Id, out var url) || string.Equals(p.Url, url, StringComparison.Ordinal))
+                continue;
+            p.Url = url;
+            mudou = true;
+        }
+        if (mudou)
+            await context.SaveChangesAsync();
     }
 
     private static List<Maquina> CriarMaquinasPlanilha() =>

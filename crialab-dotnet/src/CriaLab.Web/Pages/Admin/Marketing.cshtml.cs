@@ -60,7 +60,7 @@ public class MarketingModel : PageModel
         return RedirectToPage(new { aba = "cupom" });
     }
 
-    public async Task<IActionResult> OnPostParceiroAsync(string? id, string nome, bool podeAparecer, IFormFile? logo)
+    public async Task<IActionResult> OnPostParceiroAsync(string? id, string nome, string? url, bool podeAparecer, IFormFile? logo)
     {
         if (string.IsNullOrWhiteSpace(nome))
             return RedirectToPage(new { aba = "parceiros" });
@@ -76,6 +76,7 @@ public class MarketingModel : PageModel
         }
 
         parceiro.Nome = nome.Trim();
+        parceiro.Url = (url ?? "").Trim();
         parceiro.PodeAparecer = podeAparecer;
         if (logo is { Length: > 0 })
         {
