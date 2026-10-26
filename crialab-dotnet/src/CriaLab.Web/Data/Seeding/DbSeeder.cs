@@ -9,6 +9,9 @@ namespace CriaLab.Web.Data.Seeding;
 
 public static class DbSeeder
 {
+    private static DateTime Utc(string valor) =>
+        DateTime.SpecifyKind(DateTime.Parse(valor, CultureInfo.InvariantCulture), DateTimeKind.Utc);
+
     public static async Task SeedAsync(IServiceProvider services)
     {
         using var scope = services.CreateScope();
@@ -267,15 +270,20 @@ public static class DbSeeder
 
         if (element.TryGetProperty("etapas", out var etapasEl) && etapasEl.ValueKind == JsonValueKind.Array)
         {
+            var ordemEtapa = 0;
             foreach (var etapa in etapasEl.EnumerateArray())
             {
+                var etapaLocal = etapa.TryGetProperty("id", out var eid) ? eid.GetString() : null;
+                if (string.IsNullOrWhiteSpace(etapaLocal))
+                    etapaLocal = "etapa-" + ordemEtapa;
                 produto.EtapasPersonalizacao.Add(new ProdutoEtapaPersonalizacao
                 {
-                    Id = etapa.TryGetProperty("id", out var eid) ? eid.GetString() ?? Guid.NewGuid().ToString("N") : Guid.NewGuid().ToString("N"),
+                    Id = id + "-" + etapaLocal,
                     Nome = etapa.TryGetProperty("nome", out var en) ? en.GetString() ?? "" : "",
                     Tipo = etapa.TryGetProperty("tipo", out var et) ? et.GetString() ?? "texto" : "texto",
                     Acresce = etapa.TryGetProperty("acresce", out var ac) ? ac.GetDecimal() : 0
                 });
+                ordemEtapa++;
             }
         }
 
@@ -313,9 +321,13 @@ public static class DbSeeder
             var ordemEixo = 0;
             foreach (var eixo in varEl.EnumerateArray())
             {
+                var eixoLocal = eixo.TryGetProperty("id", out var veid) ? veid.GetString() : null;
+                if (string.IsNullOrWhiteSpace(eixoLocal))
+                    eixoLocal = "var-" + ordemEixo;
+                var eixoId = id + "-" + eixoLocal;
                 var eixoEntity = new VariacaoEixo
                 {
-                    Id = eixo.TryGetProperty("id", out var veid) ? veid.GetString() ?? $"var-{ordemEixo}" : $"var-{ordemEixo}",
+                    Id = eixoId,
                     Nome = eixo.TryGetProperty("nome", out var vn) ? vn.GetString() ?? "Variação" : "Variação",
                     Tipo = eixo.TryGetProperty("tipo", out var vt) && vt.GetString() == "cor" ? "cor" : "texto",
                     Ordem = ordemEixo++
@@ -325,9 +337,12 @@ public static class DbSeeder
                 {
                     foreach (var opc in opcoesEl.EnumerateArray())
                     {
+                        var opcLocal = opc.TryGetProperty("id", out var oid) ? oid.GetString() : null;
+                        if (string.IsNullOrWhiteSpace(opcLocal))
+                            opcLocal = "opc-" + ordemOpc;
                         eixoEntity.Opcoes.Add(new VariacaoOpcao
                         {
-                            Id = opc.TryGetProperty("id", out var oid) ? oid.GetString() ?? $"opc-{ordemOpc}" : $"opc-{ordemOpc}",
+                            Id = eixoId + "-" + opcLocal,
                             Nome = opc.TryGetProperty("nome", out var on) ? on.GetString() ?? "" : "",
                             Hex = opc.TryGetProperty("hex", out var oh) ? oh.GetString() ?? "#cccccc" : "#cccccc",
                             Ordem = ordemOpc++
@@ -436,8 +451,8 @@ public static class DbSeeder
                 Titulo = "Peça da oficina — 14/03/2026",
                 PesoPrevisto = 40,
                 Kwh = 0.4m,
-                Inicio = DateTime.Parse("2026-10-19T09:00", CultureInfo.InvariantCulture),
-                Fim = DateTime.Parse("2026-10-19T12:00", CultureInfo.InvariantCulture),
+                Inicio = Utc("2026-10-19T09:00"),
+                Fim = Utc("2026-10-19T12:00"),
                 Status = "imprimindo"
             },
             new ImpressaoJob
@@ -450,8 +465,8 @@ public static class DbSeeder
                 PesoReal = 42,
                 Sucesso = true,
                 Kwh = 0.35m,
-                Inicio = DateTime.Parse("2026-10-10T08:00", CultureInfo.InvariantCulture),
-                Fim = DateTime.Parse("2026-10-10T11:00", CultureInfo.InvariantCulture),
+                Inicio = Utc("2026-10-10T08:00"),
+                Fim = Utc("2026-10-10T11:00"),
                 Status = "concluida"
             });
     }
@@ -527,7 +542,7 @@ public static class DbSeeder
             Email = "cliente@crialab.local",
             Texto = "Gostei da peça que chegou.",
             Status = "aberto",
-            CriadoEm = DateTime.Parse("2026-10-08T10:00", CultureInfo.InvariantCulture)
+            CriadoEm = Utc("2026-10-08T10:00")
         });
 
         context.EnderecosCliente.Add(new EnderecoCliente
@@ -544,7 +559,7 @@ public static class DbSeeder
             Id = "ped-entregue",
             UsuarioId = adminUserId,
             Status = "entregue",
-            CriadoEm = DateTime.Parse("2026-09-20T15:00", CultureInfo.InvariantCulture),
+            CriadoEm = Utc("2026-09-20T15:00"),
             Subtotal = 89,
             DescontoAVista = 8.9m,
             Total = 80.1m,
@@ -581,7 +596,7 @@ public static class DbSeeder
                 Detalhes = "Medida 8 cm, cor teal, texto Cria",
                 ArquivoNome = "referencia.png",
                 Valor = 180,
-                CriadoEm = DateTime.Parse("2026-10-02T11:00", CultureInfo.InvariantCulture)
+                CriadoEm = Utc("2026-10-02T11:00")
             },
             new OrcamentoCliente
             {
@@ -591,7 +606,7 @@ public static class DbSeeder
                 Titulo = "Peça da oficina — 27/03/2026",
                 Status = "aguardando",
                 Detalhes = "Texto gravado ainda sem preço",
-                CriadoEm = DateTime.Parse("2026-10-10T09:30", CultureInfo.InvariantCulture)
+                CriadoEm = Utc("2026-10-10T09:30")
             });
 
         context.Avaliacoes.Add(new Avaliacao
@@ -611,7 +626,7 @@ public static class DbSeeder
             ProdutoId = "sessao-2026-03-14",
             Autor = "Ana",
             Texto = "Essa peça pode ser feita em PETG?",
-            CriadoEm = DateTime.Parse("2026-10-01T14:00", CultureInfo.InvariantCulture)
+            CriadoEm = Utc("2026-10-01T14:00")
         });
     }
 }
