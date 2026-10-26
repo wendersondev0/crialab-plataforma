@@ -15,17 +15,34 @@ public static class DbSeeder
     public static async Task SeedAsync(IServiceProvider services)
     {
         using var scope = services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        await SeedCoreAsync(scope.ServiceProvider, forcar: false);
+    }
+
+    public static async Task RestaurarDemoAsync(IServiceProvider services)
+    {
+        using var scope = services.CreateScope();
         var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+        if (!env.IsDevelopment())
+            throw new InvalidOperationException("Restauração da carga inicial só é permitida em Development.");
+
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await context.Database.EnsureDeletedAsync();
+        await SeedCoreAsync(scope.ServiceProvider, forcar: true);
+    }
+
+    private static async Task SeedCoreAsync(IServiceProvider services, bool forcar)
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var env = services.GetRequiredService<IWebHostEnvironment>();
 
         await context.Database.MigrateAsync();
 
         await SeedRolesAsync(roleManager);
         await SeedUsersAsync(userManager);
 
-        if (await context.LojaIdentidades.AnyAsync())
+        if (!forcar && await context.LojaIdentidades.AnyAsync())
             return;
 
         var cliente = await userManager.FindByEmailAsync("cliente@crialab.local");

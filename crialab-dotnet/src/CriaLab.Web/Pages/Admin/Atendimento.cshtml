@@ -65,15 +65,15 @@
                         <button class="botao-linha" type="submit">Em atendimento</button>
                     </form>
                 }
-                @if (m.Status != "fechado")
+                @if (m.Status != "resolvido" && m.Status != "fechado")
                 {
                     <form method="post" asp-page-handler="StatusMensagem">
                         <input type="hidden" name="id" value="@m.Id" />
-                        <input type="hidden" name="status" value="fechado" />
-                        <button class="botao" type="submit">Fechar</button>
+                        <input type="hidden" name="status" value="resolvido" />
+                        <button class="botao" type="submit">Resolvido</button>
                     </form>
                 }
-                @if (m.Status == "fechado")
+                @if (m.Status is "resolvido" or "fechado")
                 {
                     <form method="post" asp-page-handler="StatusMensagem">
                         <input type="hidden" name="id" value="@m.Id" />

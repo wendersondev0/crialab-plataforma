@@ -1,2 +1,8 @@
 <Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CriaLab.Web/CriaLab.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CriaLab.Web.Tests/CriaLab.Web.Tests.csproj" />
+  </Folder>
 </Solution>

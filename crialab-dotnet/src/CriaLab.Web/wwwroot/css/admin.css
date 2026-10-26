@@ -154,6 +154,18 @@
   background: rgba(20, 143, 147, 0.1);
   color: var(--teal-escuro);
 }
+.orc-canais {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.imp-choque {
+  border-color: rgba(204, 12, 57, 0.45) !important;
+  box-shadow: 0 0 0 1px rgba(204, 12, 57, 0.2);
+}
+@media (max-width: 900px) {
+  .orc-canais { grid-template-columns: 1fr; }
+}
 .admin-prod-lista { display: grid; gap: 12px; }
 .admin-prod-edit-grade {
   display: grid;

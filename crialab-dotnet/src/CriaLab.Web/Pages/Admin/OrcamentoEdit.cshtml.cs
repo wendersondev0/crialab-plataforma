@@ -1,6 +1,7 @@
 using System.Text.Json;
 using CriaLab.Web.Data;
 using CriaLab.Web.Data.Entities;
+using CriaLab.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,6 +13,7 @@ namespace CriaLab.Web.Pages.Admin;
 public class OrcamentoEditModel : PageModel
 {
     private readonly ApplicationDbContext _db;
+    private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
     public OrcamentoEditModel(ApplicationDbContext db) => _db = db;
 
@@ -21,10 +23,13 @@ public class OrcamentoEditModel : PageModel
     [BindProperty]
     public string ItensJson { get; set; } = "[]";
 
-    public decimal CustoMaterial { get; private set; }
-    public decimal CustoEnergia { get; private set; }
-    public decimal CustoBase { get; private set; }
-    public decimal PrecoSugerido { get; private set; }
+    [BindProperty]
+    public decimal DescontoPct { get; set; }
+
+    public OrcamentoCalculoHelper.ResultadoOrcamento Calc { get; private set; } = new();
+    public decimal PrecoSite { get; private set; }
+    public OrcamentoCalculoHelper.ResultadoCanal CanalShopee { get; private set; } = new();
+    public IList<FaixaMarketplace> FaixasShopee { get; private set; } = new List<FaixaMarketplace>();
 
     public class ItemDto
     {
@@ -46,7 +51,7 @@ public class OrcamentoEditModel : PageModel
             Quantidade = i.Quantidade,
             Preco = i.Preco
         }));
-        Calcular();
+        await CalcularAsync();
         return Page();
     }
 
@@ -71,10 +76,10 @@ public class OrcamentoEditModel : PageModel
         existente.TaxaFalha = Orcamento.TaxaFalha;
         existente.FreteCanal = Orcamento.FreteCanal;
         existente.Enviado = Orcamento.Enviado;
+        existente.DescontosMarcadosJson = JsonSerializer.Serialize(new[] { Math.Clamp(DescontoPct, 0, 90) / 100m });
 
         _db.OrcamentoItens.RemoveRange(existente.Itens);
-        var itens = JsonSerializer.Deserialize<List<ItemDto>>(ItensJson ?? "[]",
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
+        var itens = JsonSerializer.Deserialize<List<ItemDto>>(ItensJson ?? "[]", JsonOpts) ?? new();
         foreach (var i in itens.Where(x => !string.IsNullOrWhiteSpace(x.Nome)))
         {
             existente.Itens.Add(new OrcamentoItem
@@ -91,20 +96,38 @@ public class OrcamentoEditModel : PageModel
         return RedirectToPage(new { id = existente.Id });
     }
 
-    private void Calcular()
+    private async Task CalcularAsync()
     {
-        CustoMaterial = (Orcamento.PesoG + Orcamento.LixoG) / 1000m * Orcamento.PrecoKg;
-        CustoEnergia = Orcamento.Minutos * Orcamento.EnergiaPorMinuto;
-        var extras = 0m;
+        FaixasShopee = await _db.FaixasMarketplace.AsNoTracking()
+            .Where(x => x.Canal == "Shopee")
+            .OrderBy(x => x.De)
+            .ToListAsync();
+
+        var desconto = 0m;
         try
         {
-            var itens = JsonSerializer.Deserialize<List<ItemDto>>(ItensJson ?? "[]",
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
-            extras = itens.Sum(x => x.Quantidade * x.Preco);
+            var marcados = JsonSerializer.Deserialize<List<decimal>>(Orcamento.DescontosMarcadosJson ?? "[]", JsonOpts) ?? new();
+            desconto = marcados.FirstOrDefault();
+            DescontoPct = Math.Round(desconto * 100m, 1);
         }
-        catch { /* ignore */ }
-        CustoBase = CustoMaterial + CustoEnergia + Orcamento.Depreciacao + Orcamento.Manutencao + Orcamento.Servico + extras;
-        var comFalha = CustoBase * (1 + Orcamento.TaxaFalha);
-        PrecoSugerido = Math.Round(comFalha / Math.Max(0.01m, 1 - Orcamento.MargemSite) + Orcamento.FreteCanal, 2);
+        catch { DescontoPct = 0; }
+
+        var itens = JsonSerializer.Deserialize<List<ItemDto>>(ItensJson ?? "[]", JsonOpts) ?? new();
+        Calc = OrcamentoCalculoHelper.Orcar(
+            Orcamento.PrecoKg,
+            Orcamento.PesoG,
+            Orcamento.LixoG,
+            Orcamento.EnergiaPorMinuto,
+            Orcamento.Depreciacao,
+            Orcamento.Manutencao,
+            Orcamento.Minutos,
+            Orcamento.Servico,
+            Orcamento.MargemSite,
+            Orcamento.TaxaFalha,
+            desconto,
+            itens.Select(i => new OrcamentoCalculoHelper.ItemEntrada { Quantidade = i.Quantidade, Preco = i.Preco }));
+
+        PrecoSite = Calc.Direto;
+        CanalShopee = OrcamentoCalculoHelper.PrecoCanal(Calc.Original, FaixasShopee, Orcamento.FreteCanal);
     }
 }

@@ -62,6 +62,10 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapGet("/pronta-entrega", () => Results.Redirect("/Produtos?ModalidadeFiltro=pronta-entrega"));
+app.MapGet("/sob-demanda", () => Results.Redirect("/Produtos?ModalidadeFiltro=sob-demanda"));
+app.MapGet("/personalizados", () => Results.Redirect("/Produtos?ModalidadeFiltro=personalizado"));
+
 app.MapRazorPages();
 
 await DbSeeder.SeedAsync(app.Services);

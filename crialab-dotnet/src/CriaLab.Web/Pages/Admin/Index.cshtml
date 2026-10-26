@@ -3,6 +3,33 @@
 @{
     ViewData["Title"] = "Painel";
 }
+@if (Model.MostrarGuia)
+{
+    <div class="guia" id="guia">
+        <div class="cartao">
+            <img src="~/marca/mascote.png" alt="" style="width:120px" />
+            <h2>Primeiro acesso</h2>
+            <ol>
+                <li><a asp-page="/Admin/Financeiro" asp-route-aba="lancar">Lançar uma despesa</a></li>
+                <li><a asp-page="/Admin/Mes">Ver o caderno do mês</a></li>
+                <li><a asp-page="/Admin/Orcamentos">Fazer um orçamento</a></li>
+            </ol>
+            <form method="post" asp-page-handler="PularGuia">
+                <button class="botao-linha" type="submit">Pular</button>
+            </form>
+        </div>
+    </div>
+}
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+@if (TempData["Erro"] is string erro)
+{
+    <p class="cta-erro">@erro</p>
+}
+
 <h1 class="mt-0 mb-4 text-2xl font-extrabold text-tinta">Painel gerencial</h1>
 <div class="painel-grade grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
     <a class="painel-kpi revela visivel rounded-[18px] border-2 border-linha bg-white p-4 shadow-cria no-underline" asp-page="/Admin/Produtos" asp-route-Modalidade="pronta-entrega">
@@ -45,10 +72,6 @@
         <h2 class="mt-0 text-lg font-extrabold text-tinta">Patrimônio e estoque</h2>
         <p class="m-0 mt-1 text-sm text-tinta/65">Máquinas, filamento, embalagens e saldos.</p>
     </a>
-    <a class="painel-area revela visivel rounded-[18px] border-2 border-linha bg-white p-4 no-underline shadow-cria" asp-page="/Admin/Impressao">
-        <h2 class="mt-0 text-lg font-extrabold text-tinta">Fila de impressão</h2>
-        <p class="m-0 mt-1 text-sm text-tinta/65">Mesa, fila, qualidade e histórico.</p>
-    </a>
     <a class="painel-area revela visivel rounded-[18px] border-2 border-linha bg-white p-4 no-underline shadow-cria" asp-page="/Admin/Financeiro">
         <h2 class="mt-0 text-lg font-extrabold text-tinta">Gestão financeira</h2>
         <p class="m-0 mt-1 text-sm text-tinta/65">Resumo, contas, caderno, energia e conciliação.</p>
@@ -66,3 +89,12 @@
         <p class="m-0 mt-1 text-sm text-tinta/65">Mesa, fila, qualidade e manutenção.</p>
     </a>
 </div>
+
+@if (Model.PodeRestaurar)
+{
+    <p class="painel-acoes mt-5">
+        <form method="post" asp-page-handler="Restaurar" onsubmit="return confirm('Isso apaga os dados de demonstração do Postgres e volta à carga inicial. Continuar?');">
+            <button class="botao-linha inline-flex min-h-11 items-center justify-center gap-2 rounded-full border-2 border-tinta bg-white px-4 font-bold text-tinta" type="submit">Restaurar carga inicial</button>
+        </form>
+    </p>
+}

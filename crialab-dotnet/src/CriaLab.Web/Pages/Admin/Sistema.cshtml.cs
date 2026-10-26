@@ -1,6 +1,7 @@
 using System.Text.Json;
 using CriaLab.Web.Data;
 using CriaLab.Web.Data.Entities;
+using CriaLab.Web.Data.Seeding;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,9 +13,18 @@ namespace CriaLab.Web.Pages.Admin;
 public class SistemaModel : PageModel
 {
     private readonly ApplicationDbContext _db;
+    private readonly IWebHostEnvironment _env;
+    private readonly IServiceProvider _services;
     private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
-    public SistemaModel(ApplicationDbContext db) => _db = db;
+    public SistemaModel(ApplicationDbContext db, IWebHostEnvironment env, IServiceProvider services)
+    {
+        _db = db;
+        _env = env;
+        _services = services;
+    }
+
+    public bool PodeRestaurar { get; private set; }
 
     public string Aba { get; private set; } = "loja";
     public string Cep { get; private set; } = "";
@@ -55,7 +65,21 @@ public class SistemaModel : PageModel
     {
         Aba = aba is "vendas" or "frete" or "site" or "avancado" ? aba : "loja";
         Cep = cep ?? "";
+        PodeRestaurar = _env.IsDevelopment();
         await CarregarAsync();
+    }
+
+    public async Task<IActionResult> OnPostRestaurarAsync()
+    {
+        if (!_env.IsDevelopment())
+        {
+            TempData["Erro"] = "Restauração só disponível em Development.";
+            return RedirectToPage(new { aba = "avancado" });
+        }
+
+        await DbSeeder.RestaurarDemoAsync(_services);
+        TempData["Ok"] = "Carga inicial restaurada.";
+        return RedirectToPage(new { aba = "avancado" });
     }
 
     public async Task<IActionResult> OnPostLojaAsync()

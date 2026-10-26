@@ -2,11 +2,12 @@
 @model CriaLab.Web.Pages.Admin.OrcamentoEditModel
 @{
     ViewData["Title"] = "Editar orçamento";
+    var shopee = Model.CanalShopee;
 }
 <div class="admin-prod-cab">
     <div>
         <h1 class="m-0">@Model.Orcamento.Nome</h1>
-        <p class="admin-prod-intro m-0 mt-1">Cálculo simplificado de custo e preço sugerido.</p>
+        <p class="admin-prod-intro m-0 mt-1">Custo, prazo e preços por canal (fórmula alinhada ao estático).</p>
     </div>
     <a class="botao-linha" asp-page="/Admin/Orcamentos">Voltar</a>
 </div>
@@ -23,18 +24,19 @@
     <div class="grade grid grid-cols-1 gap-4 lg:grid-cols-2">
         <label>Nome<input asp-for="Orcamento.Nome" required /></label>
         <label>Material<input asp-for="Orcamento.Material" /></label>
-        <label>Minutos<input asp-for="Orcamento.Minutos" type="number" min="0" /></label>
-        <label>Peso (g)<input asp-for="Orcamento.PesoG" type="number" step="0.01" min="0" /></label>
-        <label>Lixo (g)<input asp-for="Orcamento.LixoG" type="number" step="0.01" min="0" /></label>
-        <label>Preço kg (R$)<input asp-for="Orcamento.PrecoKg" type="number" step="0.01" min="0" /></label>
-        <label>Energia / min<input asp-for="Orcamento.EnergiaPorMinuto" type="number" step="0.0001" min="0" /></label>
-        <label>Depreciação<input asp-for="Orcamento.Depreciacao" type="number" step="0.01" min="0" /></label>
-        <label>Manutenção<input asp-for="Orcamento.Manutencao" type="number" step="0.01" min="0" /></label>
-        <label>Serviço<input asp-for="Orcamento.Servico" type="number" step="0.01" min="0" /></label>
-        <label>Taxa falha (0–1)<input asp-for="Orcamento.TaxaFalha" type="number" step="0.01" min="0" max="1" /></label>
-        <label>Margem site (0–1)<input asp-for="Orcamento.MargemSite" type="number" step="0.01" min="0" max="0.99" /></label>
-        <label>Frete canal<input asp-for="Orcamento.FreteCanal" type="number" step="0.01" min="0" /></label>
-        <label class="flex items-center gap-2 font-semibold"><input asp-for="Orcamento.Enviado" type="checkbox" style="width:auto;min-height:auto" /> Enviado</label>
+        <label>Minutos<input asp-for="Orcamento.Minutos" type="number" min="0" data-calc /></label>
+        <label>Peso (g)<input asp-for="Orcamento.PesoG" type="number" step="0.01" min="0" data-calc /></label>
+        <label>Lixo (g)<input asp-for="Orcamento.LixoG" type="number" step="0.01" min="0" data-calc /></label>
+        <label>Preço kg (R$)<input asp-for="Orcamento.PrecoKg" type="number" step="0.01" min="0" data-calc /></label>
+        <label>Energia / min<input asp-for="Orcamento.EnergiaPorMinuto" type="number" step="0.0001" min="0" data-calc /></label>
+        <label>Depreciação / min<input asp-for="Orcamento.Depreciacao" type="number" step="0.0001" min="0" data-calc /></label>
+        <label>Manutenção / min<input asp-for="Orcamento.Manutencao" type="number" step="0.0001" min="0" data-calc /></label>
+        <label>Serviço<input asp-for="Orcamento.Servico" type="number" step="0.01" min="0" data-calc /></label>
+        <label>Taxa falha (0–1)<input asp-for="Orcamento.TaxaFalha" type="number" step="0.01" min="0" max="1" data-calc /></label>
+        <label>Margem site (0–1)<input asp-for="Orcamento.MargemSite" type="number" step="0.01" min="0" max="0.99" data-calc /></label>
+        <label>Desconto (%)<input asp-for="DescontoPct" type="number" step="0.5" min="0" max="90" data-calc /></label>
+        <label>Frete canal (R$)<input asp-for="Orcamento.FreteCanal" type="number" step="0.01" min="0" data-calc /></label>
+        <label class="flex items-center gap-2 font-semibold"><input asp-for="Orcamento.Enviado" type="checkbox" style="width:auto;min-height:auto" /> Enviado ao cliente</label>
     </div>
 
     <section class="var-admin mt-4">
@@ -48,10 +50,41 @@
         <div id="itens-lista"></div>
     </section>
 
-    <div class="cartao mt-4 p-4 bg-creme">
-        <p class="m-0">Material R$ @Model.CustoMaterial.ToString("N2") · Energia R$ @Model.CustoEnergia.ToString("N2")</p>
-        <p class="m-0">Custo base R$ @Model.CustoBase.ToString("N2")</p>
-        <p class="numero-grande m-0 mt-2">Preço sugerido R$ @Model.PrecoSugerido.ToString("N2")</p>
+    <div class="orc-canais mt-4">
+        <article class="cartao p-4">
+            <h2 class="mt-0">Conta</h2>
+            <p class="m-0" id="orc-filamento">Filamento R$ @Model.Calc.Filamento.ToString("N2")</p>
+            <p class="m-0" id="orc-tempo">Tempo R$ @Model.Calc.Tempo.ToString("N2")</p>
+            <p class="m-0" id="orc-params">Parâmetros R$ @Model.Calc.Parametros.ToString("N2")</p>
+            <p class="m-0" id="orc-custo">Custo R$ @Model.Calc.Custo.ToString("N2")</p>
+            <p class="m-0" id="orc-lucro">Lucro R$ @Model.Calc.Lucro.ToString("N2") · Reserva R$ @Model.Calc.Reserva.ToString("N2")</p>
+            <p class="m-0" id="orc-prazo">Prazo ~ <span id="orc-horas">@Model.Calc.Horas</span> h / <span id="orc-dias">@Model.Calc.Dias</span> d</p>
+        </article>
+        <article class="cartao p-4">
+            <h2 class="mt-0">Site</h2>
+            <p class="numero-grande m-0" id="orc-site">R$ @Model.PrecoSite.ToString("N2")</p>
+            <p class="sys-meta m-0 mt-1">À vista na loja (arredondado para cima).</p>
+        </article>
+        <article class="cartao p-4">
+            <h2 class="mt-0">Shopee</h2>
+            @if (shopee.FaixasVazias)
+            {
+                <p class="sys-meta">Sem faixas de marketplace no seed.</p>
+            }
+            else if (shopee.Preco is null)
+            {
+                <p class="sys-meta" id="orc-shopee-aviso">@(string.IsNullOrEmpty(shopee.Aviso) ? "Sem preço válido." : shopee.Aviso)</p>
+            }
+            else
+            {
+                <p class="numero-grande m-0" id="orc-shopee">R$ @shopee.Preco.Value.ToString("N2")</p>
+                <p class="m-0 sys-meta" id="orc-shopee-liq">Líquido R$ @shopee.Liquido?.ToString("N2") · comissão R$ @shopee.Comissao.ToString("N2")</p>
+                @if (!string.IsNullOrEmpty(shopee.Aviso))
+                {
+                    <p class="cta-erro mt-2" id="orc-shopee-aviso">@shopee.Aviso</p>
+                }
+            }
+        </article>
     </div>
 
     <div class="flex flex-wrap gap-2 mt-4">
@@ -65,22 +98,91 @@
 (function () {
   var itens = [];
   try { itens = JSON.parse(document.getElementById("ItensJson").value || "[]") || []; } catch (e) { itens = []; }
+  var faixas = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.FaixasShopee.Select(f => new { de = f.De, ate = f.Ate, percentual = f.Percentual, fixo = f.Fixo })));
+
   function esc(s) { return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+  function n(sel) { var el = document.querySelector(sel); return el ? Number(el.value) || 0 : 0; }
+  function centavos(v) { return Math.round((Number(v) + Number.EPSILON) * 100) / 100; }
+  function cima(v) { var a = Math.round(Number(v) * 1000) / 1000; return Math.ceil(a - 1e-9); }
+  function money(v) { return "R$ " + Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
   function coletar() {
     document.querySelectorAll("[data-item-i]").forEach(function (card) {
       var i = Number(card.getAttribute("data-item-i"));
       if (!itens[i]) return;
-      var n = card.querySelector("[data-c=nome]");
-      var q = card.querySelector("[data-c=qtd]");
-      var p = card.querySelector("[data-c=preco]");
-      if (n) itens[i].nome = n.value;
-      if (q) itens[i].quantidade = Number(q.value) || 0;
-      if (p) itens[i].preco = Number(p.value) || 0;
+      var nome = card.querySelector("[data-c=nome]");
+      var qtd = card.querySelector("[data-c=qtd]");
+      var preco = card.querySelector("[data-c=preco]");
+      if (nome) itens[i].nome = nome.value;
+      if (qtd) itens[i].quantidade = Number(qtd.value) || 0;
+      if (preco) itens[i].preco = Number(preco.value) || 0;
     });
   }
+
+  function comissao(preco) {
+    var faixa = faixas.find(function (f) { return preco >= f.de && preco <= f.ate + 0.001; });
+    if (!faixa) return 0;
+    var fixo = preco < 9 ? preco / 2 : faixa.fixo;
+    return centavos(preco * faixa.percentual + fixo);
+  }
+
+  function precoCanal(valorOriginal, frete) {
+    if (!faixas.length) return { vazio: true };
+    var candidatos = faixas.map(function (f) {
+      var preco = (valorOriginal + f.fixo) / Math.max(0.01, 1 - f.percentual);
+      if (preco < 9) {
+        var denom = 1 - f.percentual - 0.5;
+        if (denom > 0) preco = valorOriginal / denom;
+      }
+      preco = centavos(preco);
+      return { preco: preco, dentro: preco >= f.de && preco <= f.ate + 0.001 };
+    });
+    var ok = candidatos.filter(function (c) { return c.dentro; }).sort(function (a, b) { return a.preco - b.preco; })[0];
+    if (!ok) return { aviso: "Sem preço válido na faixa." };
+    var c = comissao(ok.preco);
+    return { preco: ok.preco, comissao: c, liquido: centavos(ok.preco - c - frete) };
+  }
+
+  function recalcular() {
+    coletar();
+    var precoKg = n("[name='Orcamento.PrecoKg']");
+    var peso = n("[name='Orcamento.PesoG']") + n("[name='Orcamento.LixoG']");
+    var filamento = (precoKg / 1000) * peso;
+    var taxaMin = n("[name='Orcamento.EnergiaPorMinuto']") + n("[name='Orcamento.Depreciacao']") + n("[name='Orcamento.Manutencao']");
+    var minutos = n("[name='Orcamento.Minutos']");
+    var tempo = minutos * taxaMin;
+    var parametros = itens.reduce(function (t, i) { return t + (Number(i.quantidade) || 0) * (Number(i.preco) || 0); }, 0);
+    var custo = n("[name='Orcamento.Servico']") + filamento + tempo + parametros;
+    var margem = n("[name='Orcamento.MargemSite']");
+    var falha = n("[name='Orcamento.TaxaFalha']");
+    var desconto = Math.max(0, Math.min(90, n("[name='DescontoPct']"))) / 100;
+    var lucro = custo * margem;
+    var reserva = custo * falha;
+    var original = custo + lucro + reserva;
+    var direto = cima(original * (1 - desconto));
+    var horas = Math.ceil(minutos / 60 - 1e-9);
+    var dias = Math.ceil(horas / 24 - 1e-9);
+    var frete = n("[name='Orcamento.FreteCanal']");
+    var canal = precoCanal(original, frete);
+
+    var set = function (id, txt) { var el = document.getElementById(id); if (el) el.textContent = txt; };
+    set("orc-filamento", "Filamento " + money(filamento));
+    set("orc-tempo", "Tempo " + money(tempo));
+    set("orc-params", "Parâmetros " + money(parametros));
+    set("orc-custo", "Custo " + money(custo));
+    set("orc-lucro", "Lucro " + money(lucro) + " · Reserva " + money(reserva));
+    set("orc-horas", String(Math.max(0, horas)));
+    set("orc-dias", String(Math.max(0, dias)));
+    set("orc-site", money(direto));
+    if (canal.preco != null) {
+      set("orc-shopee", money(canal.preco));
+      set("orc-shopee-liq", "Líquido " + money(canal.liquido) + " · comissão " + money(canal.comissao));
+    }
+  }
+
   function pintar() {
     var lista = document.getElementById("itens-lista");
-    if (!itens.length) { lista.innerHTML = '<p class="var-admin-vazia">Nenhum item extra.</p>'; return; }
+    if (!itens.length) { lista.innerHTML = '<p class="var-admin-vazia">Nenhum item extra.</p>'; recalcular(); return; }
     lista.innerHTML = itens.map(function (it, i) {
       return '<article class="var-eixo" data-item-i="' + i + '"><div class="var-eixo-cab">' +
         '<label class="fin-campo"><span>Nome</span><input data-c="nome" value="' + esc(it.nome || it.Nome || "") + '"></label>' +
@@ -91,7 +193,10 @@
     lista.querySelectorAll("[data-rm]").forEach(function (b) {
       b.addEventListener("click", function () { coletar(); itens.splice(Number(b.getAttribute("data-rm")), 1); pintar(); });
     });
+    lista.querySelectorAll("input").forEach(function (inp) { inp.addEventListener("input", recalcular); });
+    recalcular();
   }
+
   document.getElementById("add-item").addEventListener("click", function () {
     coletar();
     itens.push({ nome: "Item", quantidade: 1, preco: 0 });
@@ -99,8 +204,11 @@
   });
   document.getElementById("form-orc").addEventListener("submit", function () {
     coletar();
-    document.getElementById("ItensJson").value = JSON.stringify(itens);
+    document.getElementById("ItensJson").value = JSON.stringify(itens.map(function (i) {
+      return { nome: i.nome, quantidade: i.quantidade, preco: i.preco };
+    }));
   });
+  document.querySelectorAll("[data-calc]").forEach(function (el) { el.addEventListener("input", recalcular); });
   pintar();
 })();
 </script>

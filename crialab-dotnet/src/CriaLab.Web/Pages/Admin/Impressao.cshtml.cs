@@ -27,6 +27,8 @@ public class ImpressaoModel : PageModel
     public int Imprimindo { get; private set; }
     public int Concluidas { get; private set; }
     public int Falhas { get; private set; }
+    public int Choques { get; private set; }
+    public HashSet<string> JobsEmChoque { get; private set; } = new(StringComparer.OrdinalIgnoreCase);
 
     [BindProperty]
     public string NovoTitulo { get; set; } = "";
@@ -135,6 +137,20 @@ public class ImpressaoModel : PageModel
         _ => "imp-selo"
     };
 
+    public static bool TemChoque(IEnumerable<ImpressaoJob> impressoes, ImpressaoJob atual)
+    {
+        if (atual.Inicio == null || atual.Fim == null || atual.Status == "cancelada")
+            return false;
+        return impressoes.Any(item =>
+            item.Id != atual.Id
+            && item.MaquinaId == atual.MaquinaId
+            && item.Status != "cancelada"
+            && item.Inicio != null
+            && item.Fim != null
+            && item.Inicio < atual.Fim
+            && atual.Inicio < item.Fim);
+    }
+
     private async Task CarregarAsync()
     {
         Maquinas = await _db.Maquinas.AsNoTracking().Where(x => x.ControlaHora).OrderBy(x => x.Nome).ToListAsync();
@@ -156,6 +172,11 @@ public class ImpressaoModel : PageModel
         Imprimindo = todos.Count(x => x.Status == "imprimindo");
         Concluidas = todos.Count(x => x.Status == "concluida");
         Falhas = todos.Count(x => x.Status == "concluida" && x.Sucesso == false);
+        JobsEmChoque = todos
+            .Where(x => x.Status is not ("concluida" or "cancelada") && TemChoque(todos, x))
+            .Select(x => x.Id)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        Choques = JobsEmChoque.Count;
 
         var lista = await query.OrderByDescending(x => x.Inicio).ToListAsync();
         Jobs = Aba switch

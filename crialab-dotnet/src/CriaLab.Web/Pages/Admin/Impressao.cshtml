@@ -22,6 +22,7 @@
     <div class="painel-kpi"><strong>@Model.NaFila</strong><span>Na fila</span></div>
     <div class="painel-kpi"><strong>@Model.Concluidas</strong><span>Concluídas</span></div>
     <div class="painel-kpi @(Model.Falhas > 0 ? "pat-kpi-alerta" : "")"><strong>@Model.Falhas</strong><span>Falhas</span></div>
+    <a class="painel-kpi @(Model.Choques > 0 ? "pat-kpi-alerta" : "") no-underline" asp-page="/Admin/Impressao" asp-route-aba="fila"><strong>@Model.Choques</strong><span>Choques</span></a>
 </div>
 
 <div class="cta-abas mb-3">
@@ -94,10 +95,15 @@
 <div class="grade grid grid-cols-1 gap-3">
 @foreach (var j in Model.Jobs)
 {
-    <article class="cartao p-4">
+    var emChoque = Model.JobsEmChoque.Contains(j.Id);
+    <article class="cartao p-4 @(emChoque ? "imp-choque" : "")">
         <div class="flex flex-wrap items-start justify-between gap-2">
             <div>
                 <strong>@j.Titulo</strong>
+                @if (emChoque)
+                {
+                    <span class="imp-selo alerta ml-2">Choque de agenda</span>
+                }
                 <p class="discreto m-0">@(j.Maquina?.Nome ?? j.MaquinaId) · @j.PesoPrevisto g previsto
                     @if (j.Inicio.HasValue)
                     {

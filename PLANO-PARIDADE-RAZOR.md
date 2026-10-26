@@ -12,7 +12,7 @@ Referência de verdade do front: HTML/CSS/JS em `estatico/` (`casca.js`, `vitrin
 2. **Portar tela a tela** com checklist de aceite = screenshot + fluxo clicável iguais ao estático.
 3. **Não inventar UX nova** no admin: reutilizar classes e estrutura do estático (`admin-prod-*`, `fin-*`, `pat-*`, `sys-*`, etc.).
 4. **Backend já modelado** (EF + seed): o gap principal é UI/UX + handlers CRUD, não schema.
-5. **CSS admin**: o Razor hoje usa shell lateral (`admin-shell`) diferente do estático (topo horizontal + menu). **Padronizar no layout do estático**.
+5. **CSS admin**: layout do estático (topo horizontal + menu + gaveta).
 6. Critério de “pronto” por módulo: (a) layout, (b) listagem/filtros, (c) criar/editar/ações, (d) persistência real, (e) empty states.
 
 ---
@@ -23,234 +23,115 @@ Referência de verdade do front: HTML/CSS/JS em `estatico/` (`casca.js`, `vitrin
 
 | Estático | Razor | Status |
 | --- | --- | --- |
-| Home (carrossel, chips, grade) | `Pages/Index` | Parcial — casca/home ok; falta polish fino |
-| Busca (filtros, sugestões, ordem) | `Pages/Busca` | Parcial — só `q` + categoria |
-| Pronta / Sob demanda / Personalizados | `Pages/Produtos?ModalidadeFiltro=` | Parcial — falta intro rica e URL dedicada opcional |
-| Ficha produto | `Pages/Produto` | Parcial — falta frete CEP, Shopee/ML, favorito, orçamento, variações interativas, toast |
-| Carrinho | `Pages/Carrinho` | Parcial — sem cupom/frete na UI |
-| Checkout | `Pages/Checkout` | Stub — sem PAC/SEDEX, cupom real, formas |
-| Conta (abas) | `Pages/Conta/*` | Parcial — faltam favoritos, perguntas, editar dados/endereços, pagar |
-| Contato | `Pages/Contato` | Parcial — formulário ok, UI fraca |
-| Sobre | `Pages/Sobre` | Quase — revisar contra estático |
-| Recibo | *(não existe)* | Ausente |
+| Home | `Pages/Index` | OK |
+| Busca | `Pages/Busca` | OK |
+| Pronta / Sob demanda / Personalizados | `/Produtos?ModalidadeFiltro=` + redirects `/pronta-entrega`, `/sob-demanda`, `/personalizados` | OK |
+| Ficha produto | `Pages/Produto` | OK |
+| Carrinho | `Pages/Carrinho` | OK |
+| Checkout | `Pages/Checkout` | OK |
+| Conta | `Pages/Conta/Index` (abas) | OK |
+| Contato / Sobre | `Pages/Contato`, `Sobre` | OK |
+| Recibo | `Pages/Recibo` | OK |
+| Notificações topo | `_LayoutLoja` (pedidos/orçamentos/perguntas) | OK |
 
 ### 1.2 Administração
 
-| Estático | JS | Razor | Status |
-| --- | --- | --- | --- |
-| Casca admin (topo + menu + gaveta) | `casca.js` | `_LayoutAdmin` shell lateral | **Diferente** |
-| Painel | `admin.js` → `painel` | `Admin/Index` | Stub KPIs |
-| Produtos (lista rica) | `admin.js` → `produtos` | `Admin/Produtos` | Tabela crua |
-| Produto (form completo) | `admin.js` → `formularioProduto` | `Admin/ProdutoEdit` | Stub |
-| Personalizados (atalho/lista) | `admin.js` | *(faltando página)* | Ausente |
-| Marketing | `admin.js` → `marketing` | `Admin/Marketing` | Stub |
-| Atendimento / Contato | `admin.js` → `contatoAdmin` | `Admin/Atendimento` | Stub |
-| Perguntas | `admin.js` → `perguntas` | *(dentro Atendimento ou página)* | Ausente |
-| Depoimentos | `admin.js` → `depoimentos` | *(faltando)* | Ausente |
-| Pedidos | `pedidos-admin.js` | `Admin/Pedidos` | Stub |
-| OS | `pedidos-admin.js` | *(faltando)* | Ausente |
-| Orçamentos / Orçamento | `orcamento.js` | *(faltando)* | Ausente |
-| Patrimônio | `oficina.js` | `Admin/Patrimonio` | Stub |
-| Estoque | `oficina.js` | *(faltando / misturado)* | Ausente |
-| Impressão / Impressões | `oficina.js` | `Admin/Impressao` | Stub |
-| Financeiro | `financeiro.js` | `Admin/Financeiro` | Stub |
-| Mês | `financeiro.js` | *(faltando)* | Ausente |
-| Energia | `financeiro.js` | *(faltando)* | Ausente |
-| Conciliação | `financeiro.js` | *(faltando)* | Ausente |
-| Fiscal | `admin.js` → `fiscal` | `Admin/Fiscal` | Stub |
-| Sistema / Configuração | `admin.js` → `configuracao` | `Admin/Sistema` | Stub leitura |
+| Estático | Razor | Status |
+| --- | --- | --- |
+| Casca admin | `_LayoutAdmin` | OK |
+| Painel (+ guia + restaurar Dev) | `Admin/Index` | OK |
+| Produtos / Produto | `Admin/Produtos`, `ProdutoEdit` (+ preview) | OK |
+| Personalizados | `Admin/Personalizados` → filtro | OK |
+| Pedidos / OS | `Admin/Pedidos`, `Os` | OK |
+| Orçamentos / Orçamento | `Admin/Orcamentos`, `OrcamentoEdit` (fórmula + Site/Shopee) | OK |
+| Marketing | `Admin/Marketing` | OK |
+| Contato / Perguntas / Depoimentos | `Admin/Atendimento` (+ aliases) | OK |
+| Patrimônio / Estoque | `Admin/Patrimonio`, `Estoque` → aba | OK |
+| Impressão / Impressões | `Admin/Impressao` (+ choques), `Impressoes` → fila | OK |
+| Financeiro / Mês / Energia / Conciliação | páginas dedicadas | OK |
+| Fiscal | `Admin/Fiscal` | OK |
+| Sistema / Configuração | `Admin/Sistema` (+ restaurar Dev) | OK |
 
 ---
 
-## 2. Fase A — Fundação visual admin (obrigatória antes das telas)
+## 2. Fase A — Fundação visual admin
 
-**Entrega:** `_LayoutAdmin.cshtml` = casca do estático.
-
-- [x] Remover `admin-shell` lateral como padrão visual.
-- [x] Topo branco sticky: hambúrguer, logo, “Ver loja”, nav `menu-admin` com os 9 itens do estático.
-- [x] Menu gaveta admin (`menu-gaveta-admin`) no mobile.
-- [x] Incluir `tailwind.css` + `base.css` + `admin.css` (hoje falta Tailwind no admin).
-- [x] Ícones SVG iguais (`_SvgIcon` / portar mapa do `casca.js`).
-- [x] Item ativo com as mesmas classes do estático.
-- [x] Auth: só role `Administrador`; redirect loja se não autorizado.
-
-**Aceite:** screenshot do topo admin Razor ≈ estático em desktop e mobile.
-
-**Feito em:** casca admin + painel gerencial (KPIs/atalhos).
+- [x] Topo sticky, gaveta, Tailwind + base + admin.css, ícones, AdminOnly
 
 ---
 
-## 3. Fase B — Storefront (fechar gaps da loja)
+## 3. Fase B — Storefront
 
-Ordem sugerida (impacto no cliente):
-
-### B1. Ficha de produto (alta)
-- [x] Galeria + zoom + miniaturas ativas
-- [x] Variações clicáveis (cor/tamanho) persistindo escolha no add-to-cart
-- [x] Stepper quantidade
-- [x] Preço à vista / parcelas / comparativo / oferta
-- [x] Simulador frete CEP (PAC/SEDEX) via faixas seed
-- [x] Canais Shopee / Mercado Livre
-- [x] Favoritar (Identity ou cookie autenticado)
-- [x] Pedir orçamento → `OrcamentoCliente`
-- [x] Perguntas/avaliações UI completa
-- [x] Relacionados da mesma categoria
-- [x] Toast “adicionado ao carrinho”
-
-### B2. Busca
-- [x] Filtros: categoria, preço min/max, frete grátis, à vista, personalizável, nota, ordem
-- [x] Sugestões ao digitar
-- [x] Querystring compartilhável (paridade com estático)
-
-### B3. Carrinho + Checkout + Recibo
-- [x] Carrinho visual tipo cards (já parcialmente)
-- [x] Cupom, CEP, escolha PAC/SEDEX
-- [x] Checkout com endereço, forma de pagamento simulada, totais
-- [x] Página Recibo (`/Recibo/{id}`) espelhando `recibo.html`
-
-### B4. Conta
-- [x] Abas: Pedidos, Orçamentos, Favoritos, Endereços, Perguntas, Meus dados
-- [x] CRUD endereço, editar perfil
-- [x] Ação “pagar” / status pedido
-- [x] Login/Register já existem — alinhar visual `entrada`/cartão
-
-### B5. Polish loja
-- [x] Cards: favorito no card, selo oferta, entrega
-- [x] Intro modalidades iguais ao estático
-- [x] Contato/Sobre revisão final de classes
+- [x] B1 Ficha · B2 Busca · B3 Carrinho/Checkout/Recibo · B4 Conta · B5 Polish
 
 ---
 
-## 4. Fase C — Admin por módulo (ordem de negócio)
+## 4. Fase C — Admin por módulo
 
-### C1. Painel (`Admin/Index`)
-Espelhar `painel()`: KPIs por modalidade, mensagens abertas, guia primeira visita (opcional), atalhos para áreas, restaurar seed (somente Dev).
-
-### C2. Produtos + ProdutoEdit (núcleo)
-Lista (`produtos()`):
-- [x] KPIs filtro modalidade
-- [x] Filtros q/modalidade/situação/ordem
-- [x] Cards `admin-prod-card` (thumb, selos, preço, estoque, vendas)
-- [x] Ações: editar, duplicar, pausar/publicar, excluir
-- [x] Atalhos fluxo: Pedidos, Atendimento (Orçamentos/OS na próxima leva)
-
-Form (`formularioProduto()`):
-- [x] Campos: título, categoria, modalidade, tipo, preços, estoque, medidas, material, prazo, descrição, situação, flags (oferta, mais vendido, personalizável, a vista, com arquivo)
-- [x] Fotos (upload para `wwwroot/fotos/...`)
-- [x] Variações (eixos/opções cor-hex ou texto)
-- [x] Etapas personalização
-- [x] Preview card
-
-Página opcional **Personalizados** = atalho filtrado da lista (KPI já filtra).
-
-### C3. Pedidos + OS + Orçamentos
-- [x] `Admin/Pedidos`: lista, status, nota, recibo, copiar ID
-- [x] `Admin/Os`: ordens de serviço ligadas a pedidos
-- [x] `Admin/Orcamentos` + `Admin/OrcamentoEdit/{id}`: lista e editor (cálculo simplificado; paridade total do `orcamento.js` fica para polish)
-
-### C4. Atendimento
-- [x] Mensagens contato (abrir/responder/fechar)
-- [x] Perguntas de produto
-- [x] Depoimentos (CRUD + `podeAparecer`) — página própria ou aba
-
-### C5. Marketing
-- [x] Parceiros (logo, nome, pode aparecer)
-- [x] Conteúdos/menus ajuda se existirem no estático
-- [x] O que o `marketing()` do estático gerencia (revisar e portar 1:1)
-
-### C6. Patrimônio + Estoque + Impressão
-- [x] Máquinas / patrimônio (`oficina.js` patrimônio)
-- [x] Estoque insumos, cores, variantes
-- [x] Jobs impressão + lista impressões
-
-### C7. Financeiro
-- [x] Painel financeiro (contas, lançamentos, metas)
-- [x] Visão por mês (`mes.html`)
-- [x] Energia (`energia.html`)
-- [x] Conciliação (`conciliacao.html`)
-- [x] Reusar classes `fin-*` do `admin.css`
-
-### C8. Fiscal
-- [x] Lista documentos/pedidos com nota
-- [x] Export CSV
-- [x] Marcar pendente / recibo
-
-### C9. Sistema (`configuracao`)
-- [x] Form editável: frete grátis, desconto à vista, parcelas, faixas CEP CRUD
-- [x] Cupons
-- [x] Tipos de insumo
-- [x] Identidade da loja (nome, redes, endereço, horário, CNPJ)
-- [x] Parâmetros custo / margens se presentes no estático
+- [x] C1 Painel (KPIs, atalhos, guia 1ª visita, restaurar seed em Dev)
+- [x] C2 Produtos + ProdutoEdit + preview
+- [x] C3 Pedidos / OS / Orçamentos (fórmula `calculos.js` + cartões Site/Shopee)
+- [x] C4 Atendimento (mensagens/perguntas/depoimentos; status **resolvido**)
+- [x] C5 Marketing
+- [x] C6 Patrimônio / Estoque / Impressão (KPI choques de agenda)
+- [x] C7 Financeiro
+- [x] C8 Fiscal
+- [x] C9 Sistema
 
 ---
 
 ## 5. Fase D — Infra e qualidade
 
-- [x] Upload de imagens (produtos/parceiros) com validação
-- [x] Autorização por página (`[Authorize(Policy = "AdminOnly")]` = papel Administrador)
-- [x] Anti-forgery em POSTs (Razor Pages + FormTagHelper)
-- [x] Mensagens TempData / flash (`cta-ok` / `cta-erro`)
-- [x] `dotnet watch` documentado para evitar lock de `CriaLab.Web.exe`
-- [x] Testes manuais checklist por módulo (no README + §7)
-- [ ] (Opcional) testes de integração API/handlers críticos
-- [x] Atualizar `crialab-dotnet/README.md` com mapa de rotas e credenciais
+- [x] Upload validado (`ImageUploadHelper`)
+- [x] Autorização AdminOnly
+- [x] Anti-forgery (Razor Pages)
+- [x] TempData `cta-ok` / `cta-erro`
+- [x] `dotnet watch` no README
+- [x] Checklist manual no README + §7
+- [x] Testes unitários do cálculo de orçamento (`tests/CriaLab.Web.Tests`)
+- [ ] (Opcional) testes de integração E2E (checkout/fiscal HTTP)
+- [x] README com rotas e credenciais
+- [x] Aliases de URL loja/admin iguais aos HTML estáticos
+- [x] Restaurar carga inicial (Dev) no Painel e no Sistema
 
 ---
 
-## 6. Ordem de execução recomendada (sprints)
+## 6. Sprints (histórico)
 
 | Sprint | Foco | Resultado |
 | --- | --- | --- |
-| **S0** | Fase A casca admin + Tailwind no admin | Admin “parece” o estático |
-| **S1** | C2 Produtos/ProdutoEdit | Operação real da vitrine |
-| **S2** | B1 ficha + B3 carrinho/checkout/recibo | Compra ponta a ponta |
-| **S3** | C3 Pedidos/OS/Orçamentos + B4 Conta | Pós-venda |
-| **S4** | C4 Atendimento + C5 Marketing | Conteúdo e suporte |
-| **S5** | C6 Oficina (patrimônio/estoque/impressão) | Operação oficina |
-| **S6** | C7 Financeiro (mês/energia/conciliação) | Gestão financeira |
-| **S7** | C8 Fiscal + C9 Sistema + B2/B5 polish | Fechamento 100% |
-
-Estimativa grossa: **S0–S2 = MVP comercial**; **S0–S7 = paridade completa**.
+| S0–S7 | Casca → Fiscal/Sistema | Paridade funcional |
+| Polish | Orçamento, seed restore, URLs, notificações, choques | Fechamento de gaps pós-auditoria |
 
 ---
 
 ## 7. Checklist de aceite global
 
-Para cada tela do estático:
-
 1. Abrir estático e Razor lado a lado.
-2. Mesmos blocos/seções (nomes e ordem).
-3. Mesmas ações principais.
-4. Empty state não quebra layout.
-5. Mobile: menu gaveta e scroll horizontal de menus ok.
-6. Dados persistem após F5 (Postgres).
-7. Sem regressão de `.revela` invisível / CSS não carregado.
+2. Mesmos blocos/seções e ações principais.
+3. Empty state não quebra layout.
+4. Mobile: gaveta e scroll de menus ok.
+5. Dados persistem após F5 (Postgres).
+6. Sem regressão de `.revela` / CSS.
 
-Inventário de páginas estáticas a bater:
-
-**Loja:** `index`, `busca`, `pronta-entrega`, `sob-demanda`, `personalizados`, `produto`, `carrinho`, `checkout`, `conta`, `contato`, `sobre`, `recibo`.
-
-**Admin:** `index`, `produtos`, `produto`, `personalizados`, `pedidos`, `os`, `orcamentos`, `orcamento`, `marketing`, `contato`, `perguntas`, `depoimentos`, `patrimonio`, `estoque`, `impressao`, `impressoes`, `financeiro`, `mes`, `energia`, `conciliacao`, `fiscal`, `configuracao`.
+Inventário estático coberto pelas rotas da §1.
 
 ---
 
-## 8. Riscos e decisões
+## 8. Riscos
 
 | Risco | Mitigação |
 | --- | --- |
-| Portar JS monolítico (~80kb admin + 40kb financeiro…) | Portar por tela; não traduzir tudo de uma vez |
-| Upload/fotos | Manter pasta `wwwroot/fotos` compatível com paths do seed |
-| Shell admin lateral já existe | Substituir na S0; não manter dois layouts |
-| Processo `dotnet run` travando build | Usar `dotnet watch run` ou matar `CriaLab.Web` antes |
-| Escopo “100%” vs MVP | Congelar MVP em S2; backlog S3–S7 explícito |
+| Lock `CriaLab.Web.exe` | `dotnet watch run` / matar processo |
+| Restaurar seed | Só Development; `EnsureDeleted` + reseed |
+| Orçamento vs marketplace | Faixas Shopee no seed; ML não tem faixas seed |
 
 ---
 
-## 9. Próximo passo imediato
+## 9. Próximo passo
 
-**Concluído:** S0–S7 + Fase D (exceto testes de integração opcionais).
+**Paridade do plano concluída.** Opcional restante:
 
-**Opcional / polish:**
-1. Testes de integração nos handlers críticos (checkout, fiscal CSV, sistema CEP)
-2. Paridade fina do `orcamento.js` no `OrcamentoEdit`
-3. Rodar checklist §7 lado a lado com `estatico/`
+1. Testes E2E HTTP (checkout, fiscal CSV, restore)
+2. Faixas Mercado Livre no seed (cartão ML no orçamento)
+3. Checklist §7 visual lado a lado com `estatico/`

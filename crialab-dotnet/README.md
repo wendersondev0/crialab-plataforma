@@ -51,7 +51,8 @@ Cadastro público em `/Conta/Register` recebe o papel **Usuario**. `/Admin` exig
 | --- | --- |
 | `/` | Home |
 | `/Busca` | Busca com filtros |
-| `/Produtos?modalidade=…` | Listas (pronta/sob demanda/personalizados) |
+| `/Produtos?ModalidadeFiltro=…` | Listas por modalidade |
+| `/pronta-entrega` · `/sob-demanda` · `/personalizados` | Redirects amigáveis → Produtos |
 | `/Produto/{id}` | Ficha |
 | `/Carrinho` | Carrinho + CEP/cupom |
 | `/Checkout` | Checkout |
@@ -66,7 +67,9 @@ Cadastro público em `/Conta/Register` recebe o papel **Usuario**. `/Admin` exig
 | Rota | Módulo |
 | --- | --- |
 | `/Admin` | Painel |
-| `/Admin/Produtos` · `/Admin/ProdutoEdit/{id?}` | Catálogo |
+| `/Admin/Produtos` · `/Admin/ProdutoEdit/{id?}` · `/Admin/Personalizados` | Catálogo |
+| `/Admin/Perguntas` · `/Admin/Depoimentos` | Aliases → Atendimento |
+| `/Admin/Impressoes` · `/Admin/Estoque` | Aliases → Impressão fila / Patrimônio |
 | `/Admin/Pedidos` · `/Admin/Os` | Pedidos / OS |
 | `/Admin/Orcamentos` · `/Admin/OrcamentoEdit/{id}` | Orçamentos |
 | `/Admin/Atendimento` | Mensagens, perguntas, depoimentos |
@@ -76,9 +79,19 @@ Cadastro público em `/Conta/Register` recebe o papel **Usuario**. `/Admin` exig
 | `/Admin/Fiscal` | Recibos / revisão de nota / CSV |
 | `/Admin/Sistema` | Identidade, vendas, CEP, publicação, avançado |
 
+## Restaurar carga inicial (Development)
+
+No Painel (`/Admin`) ou em Sistema → Avançado, use **Restaurar carga inicial**. Isso apaga o banco Postgres da app e roda o seed de novo (somente `ASPNETCORE_ENVIRONMENT=Development`).
+
 ## Upload de imagens
 
 Produtos (`wwwroot/fotos/…`) e logos de parceiros (`wwwroot/parceiros/…`) aceitam JPG, PNG, WEBP ou GIF até **5 MB**. Extensão e content-type são validados em `ImageUploadHelper`.
+
+## Testes
+
+```powershell
+dotnet test tests/CriaLab.Web.Tests/CriaLab.Web.Tests.csproj
+```
 
 ## Migrações
 

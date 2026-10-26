@@ -39,6 +39,10 @@
 {
     <p class="sys-ok">@ok</p>
 }
+@if (TempData["Erro"] is string erroTopo)
+{
+    <p class="cta-erro">@erroTopo</p>
+}
 
 @if (Model.Aba == "loja")
 {
@@ -233,10 +237,19 @@ else
     <div class="sys-card sys-perigoso">
         <div class="sys-card-topo">
             <h2 class="sys-titulo">Restaurar carga inicial</h2>
-            <span class="sys-selo alerta">Somente desenvolvimento</span>
+            <span class="sys-selo alerta">@(Model.PodeRestaurar ? "Irreversível neste banco" : "Somente Development")</span>
         </div>
-        <p class="sys-meta">No Razor a carga inicial vem do seed do Postgres. Para recriar o banco de demonstração, apague o schema e rode a aplicação novamente (ou use o atalho do Painel em Dev).</p>
-        <a class="botao-linha" asp-page="/Admin/Index">Ir ao Painel</a>
+        <p class="sys-meta">Apaga os dados de demonstração do Postgres e volta ao seed (produtos, pedidos, financeiro…). Usuários Identity são recriados.</p>
+        @if (Model.PodeRestaurar)
+        {
+            <form method="post" asp-page-handler="Restaurar" onsubmit="return confirm('Isso apaga as alterações do banco e volta à carga inicial. Continuar?');">
+                <button class="botao-linha" type="submit">Restaurar agora</button>
+            </form>
+        }
+        else
+        {
+            <a class="botao-linha" asp-page="/Admin/Index">Ir ao Painel</a>
+        }
     </div>
 }
 
