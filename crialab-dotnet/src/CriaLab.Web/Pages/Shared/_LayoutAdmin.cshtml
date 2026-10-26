@@ -1,42 +1,86 @@
 @{
-    var path = Context.Request.Path.Value ?? "";
-    string Ativo(string trecho) => path.Contains(trecho, StringComparison.OrdinalIgnoreCase) ? " ativo" : "";
+    var path = (Context.Request.Path.Value ?? "").TrimEnd('/');
+    bool Eh(params string[] trechos) =>
+        trechos.Any(t => path.Equals(t.TrimEnd('/'), StringComparison.OrdinalIgnoreCase)
+            || path.StartsWith(t.TrimEnd('/') + "/", StringComparison.OrdinalIgnoreCase));
+    bool PainelAtivo() => path.Equals("/Admin", StringComparison.OrdinalIgnoreCase)
+        || path.Equals("/Admin/Index", StringComparison.OrdinalIgnoreCase);
+    string ClasseNav(bool ativo) =>
+        "nav-link inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-bold no-underline transition"
+        + (ativo ? " ativo border border-tinta bg-tinta text-white" : " border border-linha bg-creme text-tinta hover:bg-teal/15");
 }
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] · Admin Cria Lab</title>
+    <title>@ViewData["Title"] · Administração</title>
+    <link rel="stylesheet" href="~/css/tailwind.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site-razor.css" asp-append-version="true" />
 </head>
-<body>
-<div class="admin-shell">
-    <aside class="admin-menu">
-        <a class="marca" asp-page="/Admin/Index" style="display:inline-block;margin-bottom:12px">
-            <img src="~/marca/logo-colorida.png" alt="Cria Lab" style="height:44px;background:#fff;border-radius:12px;padding:4px" />
-        </a>
-        <h1>Administração</h1>
-        <nav>
-            <a class="@Ativo("/Admin/Index").Trim()" asp-page="/Admin/Index">Painel</a>
-            <a class="@Ativo("/Admin/Produtos")" asp-page="/Admin/Produtos">Produtos</a>
-            <a class="@Ativo("/Admin/Pedidos")" asp-page="/Admin/Pedidos">Pedidos</a>
-            <a class="@Ativo("/Admin/Marketing")" asp-page="/Admin/Marketing">Marketing</a>
-            <a class="@Ativo("/Admin/Atendimento")" asp-page="/Admin/Atendimento">Atendimento</a>
-            <a class="@Ativo("/Admin/Patrimonio")" asp-page="/Admin/Patrimonio">Patrimônio</a>
-            <a class="@Ativo("/Admin/Financeiro")" asp-page="/Admin/Financeiro">Financeiro</a>
-            <a class="@Ativo("/Admin/Fiscal")" asp-page="/Admin/Fiscal">Fiscal</a>
-            <a class="@Ativo("/Admin/Sistema")" asp-page="/Admin/Sistema">Sistema</a>
-            <a class="@Ativo("/Admin/Impressao")" asp-page="/Admin/Impressao">Impressão</a>
-            <a asp-page="/Index">Ver loja</a>
+<body class="text-tinta font-cria antialiased">
+<header id="topo" class="topo-admin sticky top-0 z-20 border-b border-linha bg-white shadow-cria">
+    <div class="admin-faixa">
+        <div class="barra barra-admin mx-auto flex min-h-[68px] w-[min(1120px,calc(100%-32px))] items-center gap-3">
+            <button class="botao-hamburguer botao-hamburguer-admin" type="button" id="abrir-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-gaveta">
+                <span class="ico"><partial name="_SvgIcon" model="@("menu")" /></span>
+            </button>
+            <a class="marca" asp-page="/Admin/Index">
+                <img class="h-11 rounded-xl bg-creme p-1" src="~/marca/logo-colorida.png" alt="Cria Lab DM" />
+            </a>
+            <div class="admin-acoes ml-auto">
+                <a class="nav-link inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-bold no-underline bg-laranja text-white hover:bg-laranja-escuro" asp-page="/Index">
+                    <span class="ico"><partial name="_SvgIcon" model="@("casa")" /></span>
+                    <span class="nav-texto">Ver loja</span>
+                </a>
+            </div>
+        </div>
+        <nav class="menu menu-admin mx-auto flex w-[min(1120px,calc(100%-32px))] flex-wrap gap-1.5 overflow-visible pb-3.5">
+            <a class="@ClasseNav(PainelAtivo())" asp-page="/Admin/Index"><span class="ico"><partial name="_SvgIcon" model="@("casa")" /></span><span class="nav-texto">Painel</span></a>
+            <a class="@ClasseNav(Eh("/Admin/Produtos", "/Admin/ProdutoEdit"))" asp-page="/Admin/Produtos"><span class="ico"><partial name="_SvgIcon" model="@("caixa")" /></span><span class="nav-texto">Produtos</span></a>
+            <a class="@ClasseNav(Eh("/Admin/Marketing"))" asp-page="/Admin/Marketing"><span class="ico"><partial name="_SvgIcon" model="@("tiktok")" /></span><span class="nav-texto">Marketing</span></a>
+            <a class="@ClasseNav(Eh("/Admin/Atendimento"))" asp-page="/Admin/Atendimento"><span class="ico"><partial name="_SvgIcon" model="@("contato")" /></span><span class="nav-texto">Atendimento</span></a>
+            <a class="@ClasseNav(Eh("/Admin/Patrimonio"))" asp-page="/Admin/Patrimonio"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span><span class="nav-texto">Patrimônio</span></a>
+            <a class="@ClasseNav(Eh("/Admin/Financeiro"))" asp-page="/Admin/Financeiro"><span class="ico"><partial name="_SvgIcon" model="@("carrinho")" /></span><span class="nav-texto">Financeiro</span></a>
+            <a class="@ClasseNav(Eh("/Admin/Fiscal"))" asp-page="/Admin/Fiscal"><span class="ico"><partial name="_SvgIcon" model="@("email")" /></span><span class="nav-texto">Fiscal</span></a>
+            <a class="@ClasseNav(Eh("/Admin/Sistema"))" asp-page="/Admin/Sistema"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span class="nav-texto">Sistema</span></a>
+            <a class="@ClasseNav(Eh("/Admin/Impressao"))" asp-page="/Admin/Impressao"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span class="nav-texto">Impressão</span></a>
+        </nav>
+    </div>
+</header>
+
+<div class="menu-gaveta menu-gaveta-admin" id="menu-gaveta">
+    <button class="menu-gaveta-fundo" type="button" aria-label="Fechar menu"></button>
+    <aside class="menu-gaveta-painel" role="dialog" aria-modal="true" aria-label="Menu da administração">
+        <div class="menu-gaveta-topo">
+            <strong>Administração</strong>
+            <button class="botao-fechar-menu" type="button" id="fechar-menu" aria-label="Fechar menu">
+                <span class="ico"><partial name="_SvgIcon" model="@("fechar")" /></span>
+            </button>
+        </div>
+        <nav class="menu-gaveta-lista">
+            <a class="nav-link" asp-page="/Admin/Index"><span class="ico"><partial name="_SvgIcon" model="@("casa")" /></span><span class="nav-texto">Painel</span></a>
+            <a class="nav-link" asp-page="/Admin/Produtos"><span class="ico"><partial name="_SvgIcon" model="@("caixa")" /></span><span class="nav-texto">Produtos</span></a>
+            <a class="nav-link" asp-page="/Admin/Marketing"><span class="ico"><partial name="_SvgIcon" model="@("tiktok")" /></span><span class="nav-texto">Marketing</span></a>
+            <a class="nav-link" asp-page="/Admin/Atendimento"><span class="ico"><partial name="_SvgIcon" model="@("contato")" /></span><span class="nav-texto">Atendimento</span></a>
+            <a class="nav-link" asp-page="/Admin/Patrimonio"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span><span class="nav-texto">Patrimônio</span></a>
+            <a class="nav-link" asp-page="/Admin/Financeiro"><span class="ico"><partial name="_SvgIcon" model="@("carrinho")" /></span><span class="nav-texto">Financeiro</span></a>
+            <a class="nav-link" asp-page="/Admin/Fiscal"><span class="ico"><partial name="_SvgIcon" model="@("email")" /></span><span class="nav-texto">Fiscal</span></a>
+            <a class="nav-link" asp-page="/Admin/Sistema"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span class="nav-texto">Sistema</span></a>
+            <a class="nav-link" asp-page="/Admin/Impressao"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span class="nav-texto">Impressão</span></a>
+            <a class="nav-link" asp-page="/Admin/Pedidos"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span><span class="nav-texto">Pedidos</span></a>
+            <a class="nav-link" asp-page="/Index"><span class="ico"><partial name="_SvgIcon" model="@("casa")" /></span><span class="nav-texto">Ver loja</span></a>
         </nav>
     </aside>
-    <main class="admin-conteudo miolo" style="width:auto;margin:0">
-        @RenderBody()
-    </main>
 </div>
+
+<main id="conteudo" class="miolo">
+    @RenderBody()
+</main>
+
+<script src="~/js/loja.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -3,16 +3,54 @@
 @{
     ViewData["Title"] = "Painel";
 }
-<h1 class="mt-0">Painel administrativo</h1>
-<p class="admin-prod-intro">Resumo rápido da loja e atalhos das áreas.</p>
-<div class="admin-kpis">
-    <article class="admin-kpi"><strong>@Model.TotalProdutos</strong><span>Produtos publicados</span></article>
-    <article class="admin-kpi"><strong>@Model.TotalPedidos</strong><span>Pedidos</span></article>
-    <article class="admin-kpi"><strong>@Model.MensagensAbertas</strong><span>Mensagens abertas</span></article>
-    <article class="admin-kpi"><strong>@Model.JobsImpressao</strong><span>Jobs de impressão</span></article>
-</div>
-<div class="grade grade-3">
-    <a class="cartao bloco" asp-page="/Admin/Produtos" style="text-decoration:none;color:inherit"><h2>Produtos</h2><p>Cadastro e publicação das peças.</p></a>
-    <a class="cartao bloco" asp-page="/Admin/Pedidos" style="text-decoration:none;color:inherit"><h2>Pedidos</h2><p>Acompanhe o que entrou na loja.</p></a>
-    <a class="cartao bloco" asp-page="/Admin/Atendimento" style="text-decoration:none;color:inherit"><h2>Atendimento</h2><p>Mensagens e perguntas dos clientes.</p></a>
+<h1 class="mt-0 mb-4 text-2xl font-extrabold text-tinta">Painel gerencial</h1>
+<div class="painel-grade grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <a class="painel-kpi revela visivel rounded-[18px] border-2 border-linha bg-white p-4 shadow-cria no-underline" asp-page="/Admin/Produtos" asp-route-Modalidade="pronta-entrega">
+        <strong class="block text-3xl font-extrabold text-laranja">@Model.ProntaEntrega</strong>
+        <span class="mt-1 block font-bold text-tinta/70">Pronta entrega</span>
+    </a>
+    <a class="painel-kpi revela visivel rounded-[18px] border-2 border-linha bg-white p-4 shadow-cria no-underline" asp-page="/Admin/Produtos" asp-route-Modalidade="sob-demanda">
+        <strong class="block text-3xl font-extrabold text-teal">@Model.SobDemanda</strong>
+        <span class="mt-1 block font-bold text-tinta/70">Sob demanda</span>
+    </a>
+    <a class="painel-kpi revela visivel rounded-[18px] border-2 border-linha bg-white p-4 shadow-cria no-underline" asp-page="/Admin/Produtos" asp-route-Modalidade="personalizado">
+        <strong class="block text-3xl font-extrabold text-tinta">@Model.Personalizados</strong>
+        <span class="mt-1 block font-bold text-tinta/70">Personalizados</span>
+    </a>
+    <a class="painel-kpi revela visivel rounded-[18px] border-2 border-linha bg-white p-4 shadow-cria no-underline" asp-page="/Admin/Atendimento">
+        <strong class="block text-3xl font-extrabold text-tinta">@Model.MensagensAbertas</strong>
+        <span class="mt-1 block font-bold text-tinta/70">Atendimentos abertos</span>
+    </a>
+    <a class="painel-area revela visivel rounded-[18px] border-2 border-linha bg-white p-4 no-underline shadow-cria" asp-page="/Admin/Produtos">
+        <h2 class="mt-0 text-lg font-extrabold text-tinta">Gestão de produtos</h2>
+        <p class="m-0 mt-1 text-sm text-tinta/65">Pronta entrega, sob demanda e personalizados.</p>
+    </a>
+    <a class="painel-area revela visivel rounded-[18px] border-2 border-linha bg-white p-4 no-underline shadow-cria" asp-page="/Admin/Marketing">
+        <h2 class="mt-0 text-lg font-extrabold text-tinta">Marketing</h2>
+        <p class="m-0 mt-1 text-sm text-tinta/65">Cupom da loja e parceiros.</p>
+    </a>
+    <a class="painel-area revela visivel rounded-[18px] border-2 border-linha bg-white p-4 no-underline shadow-cria" asp-page="/Admin/Atendimento">
+        <h2 class="mt-0 text-lg font-extrabold text-tinta">Atendimento ao cliente</h2>
+        <p class="m-0 mt-1 text-sm text-tinta/65">Mensagens e perguntas.</p>
+    </a>
+    <a class="painel-area revela visivel rounded-[18px] border-2 border-linha bg-white p-4 no-underline shadow-cria" asp-page="/Admin/Patrimonio">
+        <h2 class="mt-0 text-lg font-extrabold text-tinta">Patrimônio e estoque</h2>
+        <p class="m-0 mt-1 text-sm text-tinta/65">Máquinas, filamento e peças.</p>
+    </a>
+    <a class="painel-area revela visivel rounded-[18px] border-2 border-linha bg-white p-4 no-underline shadow-cria" asp-page="/Admin/Financeiro">
+        <h2 class="mt-0 text-lg font-extrabold text-tinta">Gestão financeira</h2>
+        <p class="m-0 mt-1 text-sm text-tinta/65">Despesas, receitas e o mês.</p>
+    </a>
+    <a class="painel-area revela visivel rounded-[18px] border-2 border-linha bg-white p-4 no-underline shadow-cria" asp-page="/Admin/Fiscal">
+        <h2 class="mt-0 text-lg font-extrabold text-tinta">Gestão fiscal e documental</h2>
+        <p class="m-0 mt-1 text-sm text-tinta/65">Recibos, notas pendentes e revisão.</p>
+    </a>
+    <a class="painel-area revela visivel rounded-[18px] border-2 border-linha bg-white p-4 no-underline shadow-cria" asp-page="/Admin/Sistema">
+        <h2 class="mt-0 text-lg font-extrabold text-tinta">Administração do sistema</h2>
+        <p class="m-0 mt-1 text-sm text-tinta/65">Loja, frete, site e configuração.</p>
+    </a>
+    <a class="painel-area revela visivel rounded-[18px] border-2 border-linha bg-white p-4 no-underline shadow-cria" asp-page="/Admin/Impressao">
+        <h2 class="mt-0 text-lg font-extrabold text-tinta">Gestão de impressão 3D</h2>
+        <p class="m-0 mt-1 text-sm text-tinta/65">Mesa, fila, qualidade e manutenção.</p>
+    </a>
 </div>

@@ -1,10 +1,138 @@
 @page
 @model CriaLab.Web.Pages.Admin.ProdutosModel
-@{ ViewData["Title"] = "Produtos"; }
-<h1>Produtos</h1>
-<table><thead><tr><th>Título</th><th>Categoria</th><th>Modalidade</th><th>Preço</th><th></th></tr></thead><tbody>
-@foreach (var p in Model.Produtos) {
-<tr><td>@p.Titulo</td><td>@p.CategoriaId</td><td>@p.ModalidadeId</td><td>R$ @p.Preco.ToString("N2")</td>
-<td><a asp-page="/Admin/ProdutoEdit" asp-route-id="@p.Id">Editar</a></td></tr>
+@{
+    ViewData["Title"] = "Gestão de produtos";
+    string KpiAtivo(string? id) => string.Equals(Model.Modalidade, id, StringComparison.OrdinalIgnoreCase) || (string.IsNullOrEmpty(id) && string.IsNullOrEmpty(Model.Modalidade)) ? " ativo" : "";
 }
-</tbody></table>
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Gestão de produtos</h1>
+        <p class="admin-prod-intro m-0 mt-1">Pronta entrega, sob demanda e personalizados no mesmo lugar. Filtre por modalidade, ordene e gerencie a peça sem sair da lista.</p>
+    </div>
+    <a class="botao" asp-page="/Admin/ProdutoEdit"><span class="ico"><partial name="_SvgIcon" model="@("caixa")" /></span><span>Novo produto</span></a>
+</div>
+
+<div class="admin-prod-kpis">
+    <a class="admin-prod-kpi@(KpiAtivo(null))" asp-page="/Admin/Produtos" asp-route-Q="@Model.Q" asp-route-Situacao="@Model.Situacao" asp-route-Ordem="@Model.Ordem" asp-route-Desc="@Model.Desc"><strong>@Model.TotalTodos</strong><span>Todas</span></a>
+    <a class="admin-prod-kpi@(KpiAtivo("pronta-entrega"))" asp-page="/Admin/Produtos" asp-route-Modalidade="pronta-entrega" asp-route-Q="@Model.Q" asp-route-Situacao="@Model.Situacao" asp-route-Ordem="@Model.Ordem" asp-route-Desc="@Model.Desc"><strong>@Model.TotalPronta</strong><span>Pronta Entrega</span></a>
+    <a class="admin-prod-kpi@(KpiAtivo("sob-demanda"))" asp-page="/Admin/Produtos" asp-route-Modalidade="sob-demanda" asp-route-Q="@Model.Q" asp-route-Situacao="@Model.Situacao" asp-route-Ordem="@Model.Ordem" asp-route-Desc="@Model.Desc"><strong>@Model.TotalDemanda</strong><span>Sob Demanda</span></a>
+    <a class="admin-prod-kpi@(KpiAtivo("personalizado"))" asp-page="/Admin/Produtos" asp-route-Modalidade="personalizado" asp-route-Q="@Model.Q" asp-route-Situacao="@Model.Situacao" asp-route-Ordem="@Model.Ordem" asp-route-Desc="@Model.Desc"><strong>@Model.TotalPers</strong><span>Personalizados</span></a>
+</div>
+
+<div class="admin-prod-fluxo">
+    <a class="botao-linha admin-fluxo" asp-page="/Admin/Pedidos"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span><span>Pedidos</span></a>
+    <a class="botao-linha admin-fluxo" asp-page="/Admin/Atendimento"><span class="ico"><partial name="_SvgIcon" model="@("contato")" /></span><span>Atendimento</span></a>
+</div>
+
+<form method="get" class="admin-prod-filtros" id="filtros-produtos">
+    @if (!string.IsNullOrWhiteSpace(Model.Modalidade))
+    {
+        <input type="hidden" name="Modalidade" value="@Model.Modalidade" />
+    }
+    <label class="campo-busca">
+        <span class="ico"><partial name="_SvgIcon" model="@("busca")" /></span>
+        <input type="search" name="Q" value="@Model.Q" placeholder="Buscar peça" />
+    </label>
+    <label>
+        Situação
+        <select name="Situacao">
+            <option value="">Todas</option>
+            <option value="publicado" selected="@(Model.Situacao == "publicado" ? "selected" : null)">Publicado</option>
+            <option value="pausado" selected="@(Model.Situacao == "pausado" ? "selected" : null)">Pausado</option>
+        </select>
+    </label>
+    <label>
+        Ordenar
+        <select name="Ordem">
+            <option value="titulo" selected="@(Model.Ordem == "titulo" ? "selected" : null)">Título</option>
+            <option value="situacao" selected="@(Model.Ordem == "situacao" ? "selected" : null)">Situação</option>
+            <option value="preco" selected="@(Model.Ordem == "preco" ? "selected" : null)">Preço</option>
+            <option value="estoque" selected="@(Model.Ordem == "estoque" ? "selected" : null)">Estoque</option>
+            <option value="vendas" selected="@(Model.Ordem == "vendas" ? "selected" : null)">Vendas</option>
+        </select>
+    </label>
+    <label>
+        Direção
+        <select name="Desc">
+            <option value="false" selected="@(!Model.Desc ? "selected" : null)">Crescente</option>
+            <option value="true" selected="@(Model.Desc ? "selected" : null)">Decrescente</option>
+        </select>
+    </label>
+    <button class="botao" type="submit">Filtrar</button>
+</form>
+
+<div class="admin-prod-painel cartao">
+    <div class="admin-prod-resumo"><strong>@Model.Produtos.Count</strong> peça@(Model.Produtos.Count == 1 ? "" : "s") nesta vista</div>
+    @if (!Model.Produtos.Any())
+    {
+        <div class="vazio"><p>Nenhuma peça nesta vista.</p></div>
+    }
+    else
+    {
+        <div class="admin-prod-lista">
+            @foreach (var p in Model.Produtos)
+            {
+                var foto = p.Fotos.OrderBy(f => f.Ordem).FirstOrDefault();
+                var mod = p.Modalidade?.Nome ?? p.ModalidadeId;
+                var tagMod = p.ModalidadeId == "personalizado" ? "tag-pers" : (p.ModalidadeId == "sob-demanda" ? "tag-demanda" : "tag-pronta");
+                <article class="admin-prod-card">
+                    <div class="admin-prod-foto">
+                        @if (foto != null)
+                        {
+                            <img class="admin-prod-thumb" src="~/@foto.Arquivo" alt="" />
+                        }
+                        else
+                        {
+                            <span class="admin-prod-thumb vazia"><span class="ico"><partial name="_SvgIcon" model="@("caixa")" /></span></span>
+                        }
+                    </div>
+                    <div class="admin-prod-info">
+                        <div class="admin-prod-topo">
+                            <span class="tag @tagMod">@mod</span>
+                            <span class="selo-sit @(p.Situacao == "publicado" ? "ok" : "pause")">@p.Situacao</span>
+                        </div>
+                        <h3 class="admin-prod-titulo">@p.Titulo</h3>
+                        <p class="admin-prod-meta">@(p.Categoria?.Nome ?? p.CategoriaId) · @p.CriadoEm.ToString("dd/MM/yyyy")</p>
+                        <div class="admin-prod-nums">
+                            <span class="admin-prod-preco">R$ @p.Preco.ToString("N2")</span>
+                            @if (p.ModalidadeId == "personalizado")
+                            {
+                                <span class="admin-prod-estoque">Preço médio</span>
+                            }
+                            else
+                            {
+                                <span class="admin-prod-estoque">Estoque @p.Estoque</span>
+                            }
+                            <span class="admin-prod-vendas">@p.Vendas vendas</span>
+                        </div>
+                    </div>
+                    <div class="admin-prod-acoes">
+                        <a class="botao-linha admin-acao" asp-page="/Admin/ProdutoEdit" asp-route-id="@p.Id"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span><span>Editar</span></a>
+                        <form method="post" asp-page-handler="Duplicar">
+                            <input type="hidden" name="id" value="@p.Id" />
+                            <button class="botao-linha admin-acao" type="submit"><span class="ico"><partial name="_SvgIcon" model="@("caixa")" /></span><span>Duplicar</span></button>
+                        </form>
+                        @if (p.Situacao == "publicado")
+                        {
+                            <form method="post" asp-page-handler="Pausar">
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <button class="botao-linha admin-acao" type="submit"><span class="ico"><partial name="_SvgIcon" model="@("fechar")" /></span><span>Pausar</span></button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="post" asp-page-handler="Publicar">
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <button class="botao-linha admin-acao" type="submit"><span class="ico"><partial name="_SvgIcon" model="@("sobre")" /></span><span>Publicar</span></button>
+                            </form>
+                        }
+                        <form method="post" asp-page-handler="Excluir" onsubmit="return confirm('Excluir esta peça?');">
+                            <input type="hidden" name="id" value="@p.Id" />
+                            <button class="botao-linha admin-acao perigo" type="submit"><span class="ico"><partial name="_SvgIcon" model="@("fechar")" /></span><span>Excluir</span></button>
+                        </form>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</div>

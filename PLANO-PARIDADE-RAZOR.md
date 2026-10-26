@@ -66,15 +66,17 @@ Referência de verdade do front: HTML/CSS/JS em `estatico/` (`casca.js`, `vitrin
 
 **Entrega:** `_LayoutAdmin.cshtml` = casca do estático.
 
-- [ ] Remover `admin-shell` lateral como padrão visual.
-- [ ] Topo branco sticky: hambúrguer, logo, “Ver loja”, nav `menu-admin` com os 9 itens do estático.
-- [ ] Menu gaveta admin (`menu-gaveta-admin`) no mobile.
-- [ ] Incluir `tailwind.css` + `base.css` + `admin.css` (hoje falta Tailwind no admin).
-- [ ] Ícones SVG iguais (`_SvgIcon` / portar mapa do `casca.js`).
-- [ ] Item ativo com as mesmas classes do estático.
-- [ ] Auth: só role `Administrador`; redirect loja se não autorizado.
+- [x] Remover `admin-shell` lateral como padrão visual.
+- [x] Topo branco sticky: hambúrguer, logo, “Ver loja”, nav `menu-admin` com os 9 itens do estático.
+- [x] Menu gaveta admin (`menu-gaveta-admin`) no mobile.
+- [x] Incluir `tailwind.css` + `base.css` + `admin.css` (hoje falta Tailwind no admin).
+- [x] Ícones SVG iguais (`_SvgIcon` / portar mapa do `casca.js`).
+- [x] Item ativo com as mesmas classes do estático.
+- [x] Auth: só role `Administrador`; redirect loja se não autorizado.
 
 **Aceite:** screenshot do topo admin Razor ≈ estático em desktop e mobile.
+
+**Feito em:** casca admin + painel gerencial (KPIs/atalhos).
 
 ---
 
@@ -126,20 +128,20 @@ Espelhar `painel()`: KPIs por modalidade, mensagens abertas, guia primeira visit
 
 ### C2. Produtos + ProdutoEdit (núcleo)
 Lista (`produtos()`):
-- [ ] KPIs filtro modalidade
-- [ ] Filtros q/modalidade/situação/ordem
-- [ ] Cards `admin-prod-card` (thumb, selos, preço, estoque, vendas)
-- [ ] Ações: editar, duplicar, pausar/publicar, excluir
-- [ ] Atalhos fluxo: Orçamentos, Pedidos, OS
+- [x] KPIs filtro modalidade
+- [x] Filtros q/modalidade/situação/ordem
+- [x] Cards `admin-prod-card` (thumb, selos, preço, estoque, vendas)
+- [x] Ações: editar, duplicar, pausar/publicar, excluir
+- [x] Atalhos fluxo: Pedidos, Atendimento (Orçamentos/OS na próxima leva)
 
 Form (`formularioProduto()`):
-- [ ] Campos: título, categoria, modalidade, tipo, preços, estoque, medidas, material, prazo, descrição, situação, flags (oferta, mais vendido, personalizável, a vista, com arquivo)
+- [x] Campos: título, categoria, modalidade, tipo, preços, estoque, medidas, material, prazo, descrição, situação, flags (oferta, mais vendido, personalizável, a vista, com arquivo)
 - [ ] Fotos (upload para `wwwroot/fotos/...`)
 - [ ] Variações (eixos/opções cor-hex ou texto)
 - [ ] Etapas personalização
 - [ ] Preview card
 
-Página opcional **Personalizados** = atalho filtrado da lista.
+Página opcional **Personalizados** = atalho filtrado da lista (KPI já filtra).
 
 ### C3. Pedidos + OS + Orçamentos
 - [ ] `Admin/Pedidos`: lista, status, nota, recibo, copiar ID
@@ -246,4 +248,9 @@ Inventário de páginas estáticas a bater:
 
 ## 9. Próximo passo imediato
 
-Começar pela **Fase A (casca admin)**: reescrever `_LayoutAdmin` para espelhar `casca.js` admin + carregar Tailwind, depois **C2 Produtos** com as classes `admin-prod-*` do estático.
+**Concluído:** Fase A + C2 lista/form básico.
+
+**Seguir com:**
+1. Upload de fotos + variações/etapas no `ProdutoEdit`
+2. Sprint S2 loja: ficha completa + checkout/recibo (Fase B1/B3)
+3. Pedidos/OS/Orçamentos (C3)
