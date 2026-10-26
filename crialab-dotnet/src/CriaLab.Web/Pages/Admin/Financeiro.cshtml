@@ -16,6 +16,17 @@
             q = q ?? Model.Texto,
             ordem = ordem ?? (Model.Ordem == "data" ? null : Model.Ordem)
         })!;
+    const string HintReceita = "Soma das vendas (categoria receita) no período selecionado.";
+    const string HintOperacional = "Resultado operacional: receita menos filamento, outros insumos e energia. Não desconta gastos fixos nem investimento.";
+    const string HintCaixa = "Resultado de caixa: receita menos operação, gastos fixos e investimentos em patrimônio.";
+    const string HintLucro = "Lucro: receita menos operação e gastos fixos (investimentos ficam de fora).";
+    const string HintFixos = "Despesas recorrentes do período (aluguel, mensalidades, assinaturas etc.).";
+    const string HintFilamento = "Compras de filamento lançadas no período.";
+    const string HintEnergia = "Custo de energia (e kWh, quando informado) no período.";
+    const string HintInvestimento = "Compras de patrimônio e equipamentos (máquinas, ferramentas etc.).";
+    const string HintOutros = "Embalagens, argolas, tags e demais insumos que não são filamento.";
+    const string HintQtd = "Soma das quantidades nas vendas (lançamentos de receita).";
+    const string HintOperacao = "Despesa operacional: filamento + outros insumos + energia.";
 }
 <div class="admin-prod-cab">
     <div>
@@ -105,19 +116,19 @@
 </div>
 
 <div class="fin-kpis">
-    <a class="fin-kpi no-underline" href="@Rota(aba: "caderno", categoria: "receita")" title="@FinanceiroResumo.Dica("receita")"><span>Receita</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Receita)</strong><small>@Model.RotuloPeriodo</small></a>
-    <a class="fin-kpi no-underline" href="@Rota(aba: "caderno", categoria: "")" title="@FinanceiroResumo.Dica("operacional")"><span>Operacional</span><strong class="@(Model.Resumo.ResultadoOperacional < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoOperacional)</strong><small>Receita − operação</small></a>
-    <a class="fin-kpi no-underline" href="@Rota(aba: "caderno", categoria: "investimento")" title="@FinanceiroResumo.Dica("caixa")"><span>Caixa</span><strong class="@(Model.Resumo.ResultadoCaixa < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoCaixa)</strong><small>Com investimentos</small></a>
-    <a class="fin-kpi no-underline" href="@Rota(aba: "resumo")" title="@FinanceiroResumo.Dica("lucro")"><span>Lucro</span><strong class="@(Model.Resumo.Lucro < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.Lucro)</strong><small>Receita − operação − fixos</small></a>
+    <a class="fin-kpi no-underline" href="@Rota(aba: "caderno", categoria: "receita")" title="@HintReceita"><span>Receita</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Receita)</strong><small>@Model.RotuloPeriodo</small></a>
+    <a class="fin-kpi no-underline" href="@Rota(aba: "caderno", categoria: "")" title="@HintOperacional"><span>Operacional</span><strong class="@(Model.Resumo.ResultadoOperacional < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoOperacional)</strong><small>Receita − operação</small></a>
+    <a class="fin-kpi no-underline" href="@Rota(aba: "caderno", categoria: "investimento")" title="@HintCaixa"><span>Caixa</span><strong class="@(Model.Resumo.ResultadoCaixa < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoCaixa)</strong><small>Com investimentos</small></a>
+    <a class="fin-kpi no-underline" href="@Rota(aba: "resumo")" title="@HintLucro"><span>Lucro</span><strong class="@(Model.Resumo.Lucro < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.Lucro)</strong><small>Receita − operação − fixos</small></a>
 </div>
 
 <div class="fin-detalhe-grid">
-    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "gastoFixo")" title="@FinanceiroResumo.Dica("gastosFixos")"><span>Gastos fixos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.GastosFixos)</strong></a>
-    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "filamento")" title="@FinanceiroResumo.Dica("filamentos")"><span>Filamentos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Filamentos)</strong></a>
-    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "energia")" title="@FinanceiroResumo.Dica("energia")"><span>Energia</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Energia)</strong></a>
-    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "investimento")" title="@FinanceiroResumo.Dica("investimento")"><span>Investimento</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Investimento)</strong></a>
-    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "receita")" title="@FinanceiroResumo.Dica("quantidade")"><span>Qtd. vendida</span><strong>@Model.Resumo.Quantidade.ToString("0.##").Replace('.', ',')</strong></a>
-    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "outroInsumo")" title="@FinanceiroResumo.Dica("outros")"><span>Outros insumos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Outros)</strong></a>
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "gastoFixo")" title="@HintFixos"><span>Gastos fixos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.GastosFixos)</strong></a>
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "filamento")" title="@HintFilamento"><span>Filamentos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Filamentos)</strong></a>
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "energia")" title="@HintEnergia"><span>Energia</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Energia)</strong></a>
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "investimento")" title="@HintInvestimento"><span>Investimento</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Investimento)</strong></a>
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "receita")" title="@HintQtd"><span>Qtd. vendida</span><strong>@Model.Resumo.Quantidade.ToString("0.##").Replace('.', ',')</strong></a>
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "outroInsumo")" title="@HintOutros"><span>Outros insumos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Outros)</strong></a>
 </div>
 
 <div class="admin-prod-fluxo">
@@ -164,12 +175,12 @@
         <section class="fin-card">
             <h2 class="fin-titulo">@(Model.Periodo == "geral" ? "Todos os anos" : "Ano " + Model.Ano)</h2>
             <div class="fin-graficos">
-                @foreach (var graf in new (string Titulo, string Cor, string Campo, string Dica)[] {
-                    ("Receita", "#e8772a", "receita", FinanceiroResumo.Dica("receita")),
-                    ("Energia (R$)", "#e8772a", "energia", FinanceiroResumo.Dica("energia")),
-                    ("Energia (kWh)", "#148f93", "kwh", "Consumo medido em quilowatt-hora no período."),
-                    ("Resultado operacional", "#148f93", "operacional", FinanceiroResumo.Dica("operacional")),
-                    ("Resultado de caixa", "#1b2430", "caixa", FinanceiroResumo.Dica("caixa"))
+                @foreach (var graf in new (string Titulo, string Cor, string Campo, string Hint)[] {
+                    ("Receita", "#e8772a", "receita", HintReceita),
+                    ("Energia (R$)", "#e8772a", "energia", HintEnergia),
+                    ("Energia (kWh)", "#148f93", "kwh", "Consumo de energia em quilowatt-hora lançado no período."),
+                    ("Resultado operacional", "#148f93", "operacional", HintOperacional),
+                    ("Resultado de caixa", "#1b2430", "caixa", HintCaixa)
                 })
                 {
                     decimal ValorDe(MesResumo h) => graf.Campo switch
@@ -182,8 +193,8 @@
                     };
                     var vals = Model.HistoricoBarras.Select(ValorDe).ToList();
                     var max = Math.Max(1m, vals.Select(Math.Abs).DefaultIfEmpty(1).Max());
-                    <div class="fin-graf" title="@graf.Dica">
-                        <h3>@graf.Titulo</h3>
+                    <div class="fin-graf" title="@graf.Hint">
+                        <h3 title="@graf.Hint">@graf.Titulo</h3>
                         <div class="barras fin-barras">
                         @foreach (var h in Model.HistoricoBarras)
                         {
@@ -204,20 +215,20 @@
     }
     else
     {
-        var movimentos = new (string Titulo, decimal Valor, string Cor, string Dica)[]
+        var movimentos = new (string Titulo, decimal Valor, string Cor, string Hint)[]
         {
-            ("Receita", Model.Resumo.Receita, "#e8772a", FinanceiroResumo.Dica("receita")),
-            ("Filamentos", Model.Resumo.Filamentos, "#148f93", FinanceiroResumo.Dica("filamentos")),
-            ("Outros insumos", Model.Resumo.Outros, "#148f93", FinanceiroResumo.Dica("outros")),
-            ("Energia", Model.Resumo.Energia, "#e8772a", FinanceiroResumo.Dica("energia")),
-            ("Gastos fixos", Model.Resumo.GastosFixos, "#1b2430", FinanceiroResumo.Dica("gastosFixos")),
-            ("Investimento", Model.Resumo.Investimento, "#1b2430", FinanceiroResumo.Dica("investimento"))
+            ("Receita", Model.Resumo.Receita, "#e8772a", HintReceita),
+            ("Filamentos", Model.Resumo.Filamentos, "#148f93", HintFilamento),
+            ("Outros insumos", Model.Resumo.Outros, "#148f93", HintOutros),
+            ("Energia", Model.Resumo.Energia, "#e8772a", HintEnergia),
+            ("Gastos fixos", Model.Resumo.GastosFixos, "#1b2430", HintFixos),
+            ("Investimento", Model.Resumo.Investimento, "#1b2430", HintInvestimento)
         };
-        var resultados = new (string Titulo, decimal Valor, string Dica)[]
+        var resultados = new (string Titulo, decimal Valor, string Hint)[]
         {
-            ("Resultado operacional", Model.Resumo.ResultadoOperacional, FinanceiroResumo.Dica("operacional")),
-            ("Resultado de caixa", Model.Resumo.ResultadoCaixa, FinanceiroResumo.Dica("caixa")),
-            ("Lucro", Model.Resumo.Lucro, FinanceiroResumo.Dica("lucro"))
+            ("Resultado operacional", Model.Resumo.ResultadoOperacional, HintOperacional),
+            ("Resultado de caixa", Model.Resumo.ResultadoCaixa, HintCaixa),
+            ("Lucro", Model.Resumo.Lucro, HintLucro)
         };
         var maxMov = Math.Max(1m, movimentos.Select(c => Math.Abs(c.Valor)).DefaultIfEmpty(1).Max());
         var maxRes = Math.Max(1m, resultados.Select(c => Math.Abs(c.Valor)).DefaultIfEmpty(1).Max());
@@ -229,7 +240,7 @@
                 @foreach (var c in movimentos)
                 {
                     var pct = (int)Math.Min(100, Math.Round(Math.Abs(c.Valor) / maxMov * 100));
-                    <li class="fin-comp-linha" title="@c.Dica">
+                    <li class="fin-comp-linha" title="@c.Hint">
                         <span class="fin-comp-nome">@c.Titulo</span>
                         <span class="fin-comp-trilha" aria-hidden="true"><span style="width:@(pct)%;background:@c.Cor"></span></span>
                         <strong class="fin-comp-valor">@FinanceiroModel.FormatarReal(c.Valor)</strong>
@@ -242,7 +253,7 @@
                 {
                     var pct = (int)Math.Min(100, Math.Round(Math.Abs(c.Valor) / maxRes * 100));
                     var cor = c.Valor < 0 ? "#a40a2e" : "#148f93";
-                    <li class="fin-comp-linha@(c.Valor < 0 ? " neg" : "")" title="@c.Dica">
+                    <li class="fin-comp-linha@(c.Valor < 0 ? " neg" : "")" title="@c.Hint">
                         <span class="fin-comp-nome">@c.Titulo</span>
                         <span class="fin-comp-trilha" aria-hidden="true"><span style="width:@(pct)%;background:@cor"></span></span>
                         <strong class="fin-comp-valor">@FinanceiroModel.FormatarReal(c.Valor)</strong>
@@ -322,12 +333,12 @@ else if (Model.Aba == "caderno")
     </form>
 
     <div class="fin-detalhe-grid fin-caderno-totais">
-        <article class="fin-mini" title="@FinanceiroResumo.Dica("receita")"><span>Receita</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Receita)</strong></article>
-        <article class="fin-mini" title="@FinanceiroResumo.Dica("operacao")"><span>Operação</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.DespesaOperacional)</strong></article>
-        <article class="fin-mini" title="@FinanceiroResumo.Dica("gastosFixos")"><span>Gastos fixos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.GastosFixos)</strong></article>
-        <article class="fin-mini" title="@FinanceiroResumo.Dica("investimento")"><span>Investimento</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Investimento)</strong></article>
-        <article class="fin-mini" title="@FinanceiroResumo.Dica("operacional")"><span>Operacional</span><strong class="@(Model.Resumo.ResultadoOperacional < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoOperacional)</strong></article>
-        <article class="fin-mini" title="@FinanceiroResumo.Dica("caixa")"><span>Caixa</span><strong class="@(Model.Resumo.ResultadoCaixa < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoCaixa)</strong></article>
+        <article class="fin-mini" title="@HintReceita"><span>Receita</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Receita)</strong></article>
+        <article class="fin-mini" title="@HintOperacao"><span>Operação</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.DespesaOperacional)</strong></article>
+        <article class="fin-mini" title="@HintFixos"><span>Gastos fixos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.GastosFixos)</strong></article>
+        <article class="fin-mini" title="@HintInvestimento"><span>Investimento</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Investimento)</strong></article>
+        <article class="fin-mini" title="@HintOperacional"><span>Operacional</span><strong class="@(Model.Resumo.ResultadoOperacional < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoOperacional)</strong></article>
+        <article class="fin-mini" title="@HintCaixa"><span>Caixa</span><strong class="@(Model.Resumo.ResultadoCaixa < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoCaixa)</strong></article>
     </div>
 
     <div class="fin-caderno">

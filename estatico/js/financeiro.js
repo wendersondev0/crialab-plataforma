@@ -344,19 +344,23 @@
       var pla = calc.mediaFilamento(estado().lancamentos, "", "PLA");
       var petg = calc.mediaFilamento(estado().lancamentos, "", "PETG");
       var filtroAno = htmlFiltroPeriodo(vista);
+      var hintReceita = "Soma das vendas (categoria receita) no período selecionado.";
+      var hintOperacional = "Resultado operacional: receita menos filamento, outros insumos e energia. Não desconta gastos fixos nem investimento.";
+      var hintCaixa = "Resultado de caixa: receita menos operação, gastos fixos e investimentos em patrimônio.";
+      var hintLucro = "Lucro: receita menos operação e gastos fixos (investimentos ficam de fora).";
       var kpis = '<div class="fin-kpis">' +
-        '<button class="fin-kpi" type="button" data-ir="caderno" data-cat="receita"><span>Receita</span><strong>' + dinheiro.real(resumo.receita) + '</strong><small>' + ui.esc(dinheiro.competenciaBR(atual)) + "</small></button>" +
-        '<button class="fin-kpi" type="button" data-ir="caderno" data-cat=""><span>Operacional</span><strong class="' + (resumo.resultadoOperacional < 0 ? "neg" : "") + '">' + dinheiro.real(resumo.resultadoOperacional) + "</strong><small>Receita − operação</small></button>" +
-        '<button class="fin-kpi" type="button" data-ir="caderno" data-cat="investimento"><span>Caixa</span><strong class="' + (resumo.resultadoCaixa < 0 ? "neg" : "") + '">' + dinheiro.real(resumo.resultadoCaixa) + "</strong><small>Com investimentos</small></button>" +
-        '<button class="fin-kpi" type="button" data-ir="resumo" data-cat=""><span>Lucro</span><strong class="' + (resumo.lucro < 0 ? "neg" : "") + '">' + dinheiro.real(resumo.lucro) + "</strong><small>Receita − operação − fixos</small></button>" +
+        '<button class="fin-kpi" type="button" data-ir="caderno" data-cat="receita" title="' + ui.esc(hintReceita) + '"><span>Receita</span><strong>' + dinheiro.real(resumo.receita) + '</strong><small>' + ui.esc(dinheiro.competenciaBR(atual)) + "</small></button>" +
+        '<button class="fin-kpi" type="button" data-ir="caderno" data-cat="" title="' + ui.esc(hintOperacional) + '"><span>Operacional</span><strong class="' + (resumo.resultadoOperacional < 0 ? "neg" : "") + '">' + dinheiro.real(resumo.resultadoOperacional) + "</strong><small>Receita − operação</small></button>" +
+        '<button class="fin-kpi" type="button" data-ir="caderno" data-cat="investimento" title="' + ui.esc(hintCaixa) + '"><span>Caixa</span><strong class="' + (resumo.resultadoCaixa < 0 ? "neg" : "") + '">' + dinheiro.real(resumo.resultadoCaixa) + "</strong><small>Com investimentos</small></button>" +
+        '<button class="fin-kpi" type="button" data-ir="resumo" data-cat="" title="' + ui.esc(hintLucro) + '"><span>Lucro</span><strong class="' + (resumo.lucro < 0 ? "neg" : "") + '">' + dinheiro.real(resumo.lucro) + "</strong><small>Receita − operação − fixos</small></button>" +
         "</div>";
       var detalheMes = '<div class="fin-detalhe-grid">' +
-        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="gastoFixo"><span>Gastos fixos</span><strong>' + dinheiro.real(resumo.gastosFixos) + "</strong></button>" +
-        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="filamento"><span>Filamentos</span><strong>' + dinheiro.real(resumo.filamentos) + "</strong></button>" +
-        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="energia"><span>Energia</span><strong>' + dinheiro.real(resumo.energia) + "</strong></button>" +
-        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="investimento"><span>Investimento</span><strong>' + dinheiro.real(resumo.investimento) + "</strong></button>" +
-        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="receita"><span>Qtd. vendida</span><strong>' + String(resumo.quantidade).replace(".", ",") + "</strong></button>" +
-        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="outroInsumo"><span>Outros insumos</span><strong>' + dinheiro.real(resumo.outros) + "</strong></button>" +
+        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="gastoFixo" title="Despesas recorrentes do período (aluguel, mensalidades, assinaturas etc.)."><span>Gastos fixos</span><strong>' + dinheiro.real(resumo.gastosFixos) + "</strong></button>" +
+        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="filamento" title="Compras de filamento lançadas no período."><span>Filamentos</span><strong>' + dinheiro.real(resumo.filamentos) + "</strong></button>" +
+        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="energia" title="Custo de energia (e kWh, quando informado) no período."><span>Energia</span><strong>' + dinheiro.real(resumo.energia) + "</strong></button>" +
+        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="investimento" title="Compras de patrimônio e equipamentos (máquinas, ferramentas etc.)."><span>Investimento</span><strong>' + dinheiro.real(resumo.investimento) + "</strong></button>" +
+        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="receita" title="Soma das quantidades nas vendas (lançamentos de receita)."><span>Qtd. vendida</span><strong>' + String(resumo.quantidade).replace(".", ",") + "</strong></button>" +
+        '<button class="fin-mini" type="button" data-ir="caderno" data-cat="outroInsumo" title="Embalagens, argolas, tags e demais insumos que não são filamento."><span>Outros insumos</span><strong>' + dinheiro.real(resumo.outros) + "</strong></button>" +
         "</div>";
       var metaPct = Math.min(100, Math.round(percentual));
       var metaHtml = '<section class="fin-card">' +

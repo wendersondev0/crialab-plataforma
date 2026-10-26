@@ -245,11 +245,11 @@
       var itensAdmin = [
         ["paginas/admin/index.html", "Painel"],
         ["paginas/admin/produtos.html", "Produtos"],
+        ["paginas/admin/pedidos.html", "Pedidos"],
         ["paginas/admin/marketing.html", "Marketing"],
         ["paginas/admin/contato.html", "Atendimento"],
         ["paginas/admin/patrimonio.html", "Patrimônio"],
         ["paginas/admin/financeiro.html", "Financeiro"],
-        ["paginas/admin/fiscal.html", "Fiscal"],
         ["paginas/admin/configuracao.html", "Sistema"],
         ["paginas/admin/impressao.html", "Impressão"]
       ];

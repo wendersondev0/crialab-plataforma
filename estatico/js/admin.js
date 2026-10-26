@@ -20,8 +20,8 @@
       ["paginas/admin/marketing.html", "Marketing", "Cupom da loja."],
       ["paginas/admin/contato.html", "Atendimento ao cliente", "Mensagens e perguntas."],
       ["paginas/admin/patrimonio.html", "Patrimônio e estoque", "Máquinas, filamento e peças."],
+      ["paginas/admin/pedidos.html", "Pedidos, OS e fiscal", "Status, recibos, notas e ordens de serviço."],
       ["paginas/admin/financeiro.html", "Gestão financeira", "Despesas, receitas e o mês."],
-      ["paginas/admin/fiscal.html", "Gestão fiscal e documental", "Recibos, notas pendentes e revisão."],
       ["paginas/admin/configuracao.html", "Administração do sistema", "Loja, frete, site e restauração."],
       ["paginas/admin/impressao.html", "Gestão de impressão 3D", "Mesa, fila, qualidade e manutenção."]
     ];
@@ -1143,6 +1143,7 @@
       raiz.innerHTML =
         '<div class="admin-prod-cab"><div><h1 class="m-0">Fiscal</h1><p class="admin-prod-intro m-0 mt-1">Organize recibos e o andamento das notas por pedido. Filtre, revise e exporte sem misturar status.</p></div>' +
         '<a class="botao-linha" href="' + ui.url("paginas/admin/pedidos.html") + '">' + ico("pedidos") + "<span>Ver pedidos</span></a></div>" +
+        '<div class="fin-abas mb-4"><a class="fin-aba" href="' + ui.url("paginas/admin/pedidos.html") + '">Pedidos</a><a class="fin-aba ativo" href="' + ui.url("paginas/admin/fiscal.html") + '">Fiscal</a></div>' +
         kpis +
         '<div class="fis-grade"><div class="fis-principal">' + filtros +
         '<div class="fis-lista-cab"><h2 class="fis-titulo m-0">Documentos</h2><span class="fis-contador">' + lista.length + " de " + pedidos.length + "</span></div>" +

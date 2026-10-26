@@ -853,9 +853,7 @@
 .fin-kpi[title],
 .fin-mini[title],
 .fin-comp-linha[title],
-.fin-graf[title],
-.fin-ref-grade article[title],
-.admin-prod-kpis a[title] {
+.fin-graf[title] {
   cursor: help;
 }
 .fin-kpi span, .fin-mini span {
