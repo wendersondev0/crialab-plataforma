@@ -5,23 +5,19 @@ Pasta `crialab-plataforma/crialab-dotnet`. Loja e administração com **ASP.NET 
 ## Pré-requisitos
 
 - [.NET SDK 10](https://dotnet.microsoft.com/download)
-- Docker (recomendado) **ou** PostgreSQL 14+
+- PostgreSQL 14+ em `localhost:5432`
 
-## Banco com Docker (recomendado)
+## Banco de dados
 
-Na raiz `crialab-dotnet`:
+Crie o banco (se ainda não existir):
 
-```powershell
-docker compose up -d
+```sql
+CREATE DATABASE crialab;
 ```
-
-Sobe Postgres em `localhost:5433`, banco `crialab`, usuário/senha `postgres`/`postgres` (porta 5433 para não conflitar com um Postgres local na 5432).
 
 Connection string em `src/CriaLab.Web/appsettings.json`:
 
-`Host=localhost;Port=5433;Database=crialab;Username=postgres;Password=postgres`
-
-Se usar o Postgres da máquina, ajuste a connection string (porta/senha) em `appsettings.json` ou em User Secrets.
+`Host=localhost;Port=5432;Database=crialab;Username=postgres;Password=@123Mudar`
 
 ## Executar
 
