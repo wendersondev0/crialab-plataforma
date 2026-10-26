@@ -152,9 +152,9 @@ public class PatrimonioModel : PageModel
         Insumos = Aba switch
         {
             "maquinas" => new List<EstoqueInsumo>(),
-            "filamentos" => insumos.Where(x => x.Categoria == "filamento" || x.Cores.Any()).ToList(),
-            "embalagens" => insumos.Where(x => x.Categoria == "embalagem" || x.Variantes.Any()).ToList(),
-            "outros" => insumos.Where(x => x.Categoria is not ("filamento" or "embalagem") && !x.Cores.Any() && !x.Variantes.Any()).ToList(),
+            "filamentos" => insumos.Where(x => x.Categoria == "filamento").ToList(),
+            "embalagens" => insumos.Where(x => x.Categoria == "embalagem").ToList(),
+            "outros" => insumos.Where(x => x.Categoria is not ("filamento" or "embalagem")).ToList(),
             _ => insumos
         };
         if (Aba == "tudo")

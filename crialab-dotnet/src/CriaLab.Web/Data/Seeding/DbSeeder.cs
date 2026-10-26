@@ -44,6 +44,7 @@ public static class DbSeeder
         if (!forcar && await context.LojaIdentidades.AnyAsync())
         {
             await SeedUsersAsync(userManager);
+            await EnsureInsumosPlanilhaAsync(context);
             return;
         }
 
@@ -476,43 +477,7 @@ public static class DbSeeder
                 Notas = "Câmara fechada para PETG e peças maiores."
             });
 
-        var insPla = new EstoqueInsumo
-        {
-            Id = "ins-pla",
-            Nome = "PLA",
-            Unidade = "kg",
-            Saldo = 20.3m,
-            Minimo = 2,
-            Categoria = "filamento",
-            Imagem = "marca/patrimonio/pat-pla.jpg",
-            AdquiridoEm = DateOnly.Parse("2026-03-01"),
-            Fornecedor = "ELEGOO / F3D / Voolt3D",
-            OrigemPlanilha = "Despesas e Receitas · filamentos mar–set/2026"
-        };
-        insPla.Cores.Add(new InsumoCor { Id = "pla-preto", Nome = "Preto", Hex = "#1b2430", Saldo = 1.6m, Bobinas = 2 });
-        insPla.Cores.Add(new InsumoCor { Id = "pla-branco", Nome = "Branco", Hex = "#f4efe6", Saldo = 1.8m, Bobinas = 2 });
-        insPla.Cores.Add(new InsumoCor { Id = "pla-bronze", Nome = "Bronze", Hex = "#b87333", Saldo = 0.8m, Bobinas = 1 });
-        insPla.Cores.Add(new InsumoCor { Id = "pla-verde", Nome = "Verde", Hex = "#2f9e44", Saldo = 1.2m, Bobinas = 2 });
-        context.EstoqueInsumos.Add(insPla);
-
-        var insPetg = new EstoqueInsumo
-        {
-            Id = "ins-petg",
-            Nome = "PETG",
-            Unidade = "kg",
-            Saldo = 14.5m,
-            Minimo = 2,
-            Categoria = "filamento",
-            Imagem = "marca/patrimonio/pat-pla.jpg",
-            AdquiridoEm = DateOnly.Parse("2026-07-05"),
-            Fornecedor = "Masterprint / 3d Print Pulse",
-            OrigemPlanilha = "Despesas e Receitas · PETG jul–set/2026"
-        };
-        insPetg.Cores.Add(new InsumoCor { Id = "petg-branco", Nome = "Branco", Hex = "#f4efe6", Saldo = 2.5m, Bobinas = 3 });
-        insPetg.Cores.Add(new InsumoCor { Id = "petg-preto", Nome = "Preto", Hex = "#1b2430", Saldo = 3.2m, Bobinas = 4 });
-        insPetg.Cores.Add(new InsumoCor { Id = "petg-verde", Nome = "Verde", Hex = "#2f9e44", Saldo = 1.1m, Bobinas = 1 });
-        insPetg.Cores.Add(new InsumoCor { Id = "petg-gold", Nome = "Gold", Hex = "#d4a017", Saldo = 0.9m, Bobinas = 1 });
-        context.EstoqueInsumos.Add(insPetg);
+        context.EstoqueInsumos.AddRange(CriarInsumosPlanilha());
 
         context.ImpressaoJobs.AddRange(
             new ImpressaoJob
@@ -541,6 +506,138 @@ public static class DbSeeder
                 Fim = Utc("2026-10-10T11:00"),
                 Status = "concluida"
             });
+    }
+
+    private static async Task EnsureInsumosPlanilhaAsync(ApplicationDbContext context)
+    {
+        var existentes = await context.EstoqueInsumos.AsNoTracking().Select(x => x.Id).ToListAsync();
+        var set = existentes.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var faltando = CriarInsumosPlanilha().Where(x => !set.Contains(x.Id)).ToList();
+        if (faltando.Count == 0) return;
+        context.EstoqueInsumos.AddRange(faltando);
+        await context.SaveChangesAsync();
+    }
+
+    private static List<EstoqueInsumo> CriarInsumosPlanilha()
+    {
+        var lista = new List<EstoqueInsumo>();
+
+        EstoqueInsumo Ins(
+            string id, string nome, string unidade, decimal saldo, decimal minimo, string categoria,
+            string imagem, string adquirido, string fornecedor, string origem,
+            Action<EstoqueInsumo>? extra = null)
+        {
+            var item = new EstoqueInsumo
+            {
+                Id = id,
+                Nome = nome,
+                Unidade = unidade,
+                Saldo = saldo,
+                Minimo = minimo,
+                Categoria = categoria,
+                Imagem = imagem,
+                AdquiridoEm = DateOnly.Parse(adquirido),
+                Fornecedor = fornecedor,
+                OrigemPlanilha = origem
+            };
+            extra?.Invoke(item);
+            if (item.Cores.Count > 0)
+                item.Saldo = item.Cores.Sum(c => c.Saldo);
+            if (item.Variantes.Count > 0)
+                item.Saldo = item.Variantes.Sum(v => v.Saldo);
+            lista.Add(item);
+            return item;
+        }
+
+        Ins("ins-pla", "PLA", "kg", 20.3m, 2, "filamento", "marca/patrimonio/pat-pla.jpg", "2026-03-01", "ELEGOO / F3D / Voolt3D", "Despesas e Receitas · filamentos mar–set/2026", i =>
+        {
+            i.Cores.Add(new InsumoCor { Id = "pla-preto", Nome = "Preto", Hex = "#1b2430", Saldo = 1.6m, Bobinas = 2 });
+            i.Cores.Add(new InsumoCor { Id = "pla-branco", Nome = "Branco", Hex = "#f4efe6", Saldo = 1.8m, Bobinas = 2 });
+            i.Cores.Add(new InsumoCor { Id = "pla-bronze", Nome = "Bronze", Hex = "#b87333", Saldo = 0.8m, Bobinas = 1 });
+            i.Cores.Add(new InsumoCor { Id = "pla-verde", Nome = "Verde", Hex = "#2f9e44", Saldo = 1.2m, Bobinas = 2 });
+            i.Cores.Add(new InsumoCor { Id = "pla-azul", Nome = "Azul", Hex = "#2563eb", Saldo = 1.1m, Bobinas = 1 });
+            i.Cores.Add(new InsumoCor { Id = "pla-amarelo", Nome = "Amarelo", Hex = "#eab308", Saldo = 0.9m, Bobinas = 1 });
+            i.Cores.Add(new InsumoCor { Id = "pla-cinza", Nome = "Cinza / Marble", Hex = "#94a3b8", Saldo = 0.7m, Bobinas = 1 });
+        });
+
+        Ins("ins-petg", "PETG", "kg", 14.5m, 2, "filamento", "marca/patrimonio/pat-petg.jpg", "2026-07-05", "Masterprint / 3d Print Pulse", "Despesas e Receitas · PETG jul–set/2026", i =>
+        {
+            i.Cores.Add(new InsumoCor { Id = "petg-branco", Nome = "Branco", Hex = "#f4efe6", Saldo = 2.5m, Bobinas = 3 });
+            i.Cores.Add(new InsumoCor { Id = "petg-preto", Nome = "Preto", Hex = "#1b2430", Saldo = 3.2m, Bobinas = 4 });
+            i.Cores.Add(new InsumoCor { Id = "petg-verde", Nome = "Verde", Hex = "#2f9e44", Saldo = 1.1m, Bobinas = 1 });
+            i.Cores.Add(new InsumoCor { Id = "petg-gold", Nome = "Gold / Dourado", Hex = "#d4a017", Saldo = 1.8m, Bobinas = 2 });
+            i.Cores.Add(new InsumoCor { Id = "petg-azul", Nome = "Azul", Hex = "#2563eb", Saldo = 1.0m, Bobinas = 1 });
+            i.Cores.Add(new InsumoCor { Id = "petg-prata", Nome = "Prata", Hex = "#94a3b8", Saldo = 0.8m, Bobinas = 1 });
+            i.Cores.Add(new InsumoCor { Id = "petg-vermelho", Nome = "Vermelho", Hex = "#dc2626", Saldo = 0.9m, Bobinas = 1 });
+        });
+
+        Ins("ins-tpu", "TPU 95A", "kg", 0.7m, 0.5m, "filamento", "marca/patrimonio/pat-tpu.jpg", "2026-06-10", "ELEGOO", "Despesas e Receitas · junho/2026", i =>
+        {
+            i.Cores.Add(new InsumoCor { Id = "tpu-preto", Nome = "Preto flex", Hex = "#111827", Saldo = 0.7m, Bobinas = 1 });
+        });
+
+        Ins("ins-nfc", "Tags NFC", "un", 42, 10, "eletronico", "marca/patrimonio/pat-nfc.jpg", "2026-09-01", "Mercado Livre", "kit 50 etiquetas · set/2026", i =>
+        {
+            i.Variantes.Add(new InsumoVariante { Id = "nfc-padrao", Nome = "Tag redonda", Saldo = 42, Unidade = "un" });
+        });
+
+        Ins("ins-lampada-led", "Lâmpada LED", "un", 5, 2, "eletronico", "marca/patrimonio/pat-led.jpg", "2026-09-17", "Shopee", "kit 5 peças + LED smart · set/2026", i =>
+        {
+            i.Variantes.Add(new InsumoVariante { Id = "led-kit", Nome = "LED para luminária", Saldo = 4, Unidade = "un" });
+            i.Variantes.Add(new InsumoVariante { Id = "led-smart", Nome = "LED smart", Saldo = 1, Unidade = "un" });
+        });
+
+        Ins("ins-soquete", "Soquete flexível para lâmpada", "un", 1, 1, "eletronico", "marca/patrimonio/pat-led.jpg", "2026-06-15", "Shopee", "junho/2026");
+
+        Ins("ins-copo", "Copo de alumínio 500 ml", "un", 8, 4, "acabamento", "marca/patrimonio/pat-copo.jpg", "2026-09-13", "Shopee", "10 un · set/2026");
+
+        Ins("ins-argola", "Argola / elo de chaveiro", "un", 220, 40, "ferragem", "marca/patrimonio/pat-argola.jpg", "2026-03-15", "Mercado Livre / Shopee", "100 argolas mar/2026 + kit 150 jun/2026", i =>
+        {
+            i.Variantes.Add(new InsumoVariante { Id = "arg-simples", Nome = "Argola com corrente", Saldo = 80, Unidade = "un" });
+            i.Variantes.Add(new InsumoVariante { Id = "arg-kit", Nome = "Kit prata + elo + lagosta", Saldo = 140, Unidade = "un" });
+        });
+
+        Ins("ins-ima-8", "Ímã neodímio 8×2 mm", "un", 180, 30, "ferragem", "marca/patrimonio/pat-ima.jpg", "2026-03-15", "Mercado Livre", "200 un mar/2026 + 50 un ago/2026");
+        Ins("ins-ima-10", "Ímã neodímio 10×2 mm", "un", 40, 20, "ferragem", "marca/patrimonio/pat-ima.jpg", "2026-07-24", "Mercado Livre", "100 un jul/2026");
+
+        Ins("ins-verniz", "Verniz / spray", "un", 6, 2, "acabamento", "marca/patrimonio/pat-pla.jpg", "2026-04-20", "Shopee / ML", "spray brilhante, fosco e Acrilex · abr–set/2026", i =>
+        {
+            i.Variantes.Add(new InsumoVariante { Id = "ver-bril", Nome = "Spray brilhante", Saldo = 3, Unidade = "un" });
+            i.Variantes.Add(new InsumoVariante { Id = "ver-fosco", Nome = "Spray / potes fosco", Saldo = 3, Unidade = "un" });
+        });
+
+        Ins("ins-cola", "Cola", "un", 10, 3, "acabamento", "marca/patrimonio/pat-caixa.jpg", "2026-03-10", "Shopee / ML", "instantânea, universal e bastão · mar–jul/2026", i =>
+        {
+            i.Variantes.Add(new InsumoVariante { Id = "cola-inst", Nome = "Cola instantânea", Saldo = 4, Unidade = "un" });
+            i.Variantes.Add(new InsumoVariante { Id = "cola-univ", Nome = "Kit universal + ativador", Saldo = 1, Unidade = "un" });
+            i.Variantes.Add(new InsumoVariante { Id = "cola-bastao", Nome = "Bastão", Saldo = 5, Unidade = "un" });
+        });
+
+        Ins("ins-caixa-p", "Caixa P", "un", 38, 10, "embalagem", "marca/patrimonio/pat-caixa.jpg", "2026-08-10", "Mercado Livre", "50 caixas 16×11×6 · ago/2026");
+        Ins("ins-caixa-m", "Caixa M", "un", 22, 8, "embalagem", "marca/patrimonio/pat-caixa.jpg", "2026-08-25", "Shopee", "25 caixas 19×12×12 · ago/2026");
+        Ins("ins-caixa-g", "Caixa G", "un", 20, 8, "embalagem", "marca/patrimonio/pat-caixa.jpg", "2026-08-25", "Shopee", "25 caixas 20×20×10 · ago/2026");
+        Ins("ins-sacola-p", "Sacola kraft P", "un", 40, 15, "embalagem", "marca/patrimonio/pat-caixa.jpg", "2026-07-18", "Shopee", "50 sacolas kraft P · jul/2026");
+        Ins("ins-sacola-g", "Sacola kraft G", "un", 42, 15, "embalagem", "marca/patrimonio/pat-caixa.jpg", "2026-08-12", "Shopee", "50 unidades GG1 34×31×18 · ago/2026");
+        Ins("ins-saco-zip", "Saco zip holográfico", "un", 80, 20, "embalagem", "marca/patrimonio/pat-bolha.jpg", "2026-09-09", "Shopee", "100 un 9×16 · set/2026");
+        Ins("ins-plastico-bolha", "Plástico bolha", "m", 12, 3, "embalagem", "marca/patrimonio/pat-bolha.jpg", "2026-08-26", "Shopee", "30cm × 10m · ago/2026");
+        Ins("ins-fita", "Fita adesiva de embalagem", "un", 4, 2, "embalagem", "marca/patrimonio/pat-fita.jpg", "2026-07-01", "Oficina", "Fechamento de caixas e sacolas", i =>
+        {
+            i.Variantes.Add(new InsumoVariante { Id = "fita-marrom", Nome = "Fita marrom", Saldo = 2, Unidade = "un" });
+            i.Variantes.Add(new InsumoVariante { Id = "fita-transp", Nome = "Fita transparente", Saldo = 2, Unidade = "un" });
+        });
+        Ins("ins-barbante", "Barbante", "m", 42, 10, "embalagem", "marca/patrimonio/pat-argola.jpg", "2026-09-13", "Shopee", "50 m bicolor vermelho/branco · set/2026", i =>
+        {
+            i.Variantes.Add(new InsumoVariante { Id = "bar-bicolor", Nome = "Vermelho/branco", Saldo = 42, Unidade = "m" });
+        });
+        Ins("ins-papel-foto", "Papel fotográfico (cartão presente)", "un", 85, 20, "embalagem", "marca/patrimonio/pat-caixa.jpg", "2026-09-03", "Shopee", "100 folhas 180g Masterprint · set/2026", i =>
+        {
+            i.Variantes.Add(new InsumoVariante { Id = "foto-a4", Nome = "Folha A4 glossy 180g", Saldo = 70, Unidade = "un" });
+            i.Variantes.Add(new InsumoVariante { Id = "foto-cartao", Nome = "Cartões de presente cortados", Saldo = 15, Unidade = "un" });
+        });
+        Ins("ins-cartao", "Cartão de presente / tag", "un", 80, 20, "embalagem", "marca/patrimonio/pat-caixa.jpg", "2026-05-01", "Oficina", "Parâmetro de orçamento (Base Orçamento)");
+        Ins("ins-silica", "Sílica gel", "un", 2, 1, "acabamento", "marca/patrimonio/pat-secador.jpg", "2026-09-09", "Shopee", "sílica laranja · mar e set/2026");
+
+        return lista;
     }
 
     private static void SeedFinanceiro(ApplicationDbContext context, IWebHostEnvironment env)
