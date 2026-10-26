@@ -254,13 +254,36 @@
     }
 
     <section class="fin-card fin-refs">
-        <h2 class="fin-titulo">Referência de filamento</h2>
-        <div class="fin-ref-grade">
-            <article><span>PLA</span><strong>@FinanceiroModel.FormatarReal(Model.MediaPla)/kg</strong><small>média ponderada</small></article>
-            <article><span>PLA mediana</span><strong>@FinanceiroModel.FormatarReal(Model.MedianaPla)/kg</strong><small>@(Model.Periodo == "mes" ? "neste mês" : "mensal no período")</small></article>
-            <article><span>PETG</span><strong>@FinanceiroModel.FormatarReal(Model.MediaPetg)/kg</strong><small>média ponderada</small></article>
-            <article><span>PETG mediana</span><strong>@FinanceiroModel.FormatarReal(Model.MedianaPetg)/kg</strong><small>@(Model.Periodo == "mes" ? "neste mês" : "mensal no período")</small></article>
+        <div class="fin-card-topo">
+            <h2 class="fin-titulo">Referência de insumos</h2>
+            <span class="fin-selo">@Model.RotuloPeriodo</span>
         </div>
+        <p class="fin-meta-txt">Média ponderada das compras do período (filamento, embalagens, argolas e demais tipos). Mediana considera o preço unitário por competência.</p>
+        @if (Model.ReferenciasPorGrupo.Any())
+        {
+            @foreach (var grupo in Model.ReferenciasPorGrupo)
+            {
+                <h3 class="fin-comp-titulo">@grupo.Key</h3>
+                <div class="fin-ref-grade">
+                @foreach (var r in grupo)
+                {
+                    <article>
+                        <span>@r.Nome</span>
+                        <strong>@FinanceiroModel.FormatarReal(r.Media)/@r.Unidade</strong>
+                        <small>média · @r.Compras compra@(r.Compras == 1 ? "" : "s") · @r.Quantidade.ToString("0.##").Replace('.', ',') @r.Unidade</small>
+                        @if (r.Mediana > 0)
+                        {
+                            <small>mediana @FinanceiroModel.FormatarReal(r.Mediana)/@r.Unidade</small>
+                        }
+                    </article>
+                }
+                </div>
+            }
+        }
+        else
+        {
+            <p class="fin-vazio m-0">Sem compras de insumo tipadas neste período. Lance filamento ou outro insumo com tipo preenchido.</p>
+        }
     </section>
 }
 else if (Model.Aba == "caderno")

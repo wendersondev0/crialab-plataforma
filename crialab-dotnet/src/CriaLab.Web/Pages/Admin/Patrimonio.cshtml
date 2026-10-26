@@ -1,6 +1,7 @@
 @page
 @model CriaLab.Web.Pages.Admin.PatrimonioModel
 @using CriaLab.Web.Pages.Admin
+@using CriaLab.Web.Services
 @{
     ViewData["Title"] = "Patrimônio · Administração";
     string Kpi(string aba) => "admin-prod-kpi" + (Model.Aba == aba ? " ativo" : "");
@@ -304,3 +305,32 @@ else
     }
 }
 </div>
+
+@if (Model.Aba != "compras" && Model.ReferenciasPorGrupo.Any())
+{
+    <section class="fin-card fin-refs mt-4">
+        <div class="fin-card-topo">
+            <h2 class="fin-titulo">Referência de custo de compra</h2>
+            <span class="fin-selo">média ponderada</span>
+        </div>
+        <p class="fin-meta-txt">Preço médio unitário com base nos lançamentos tipados (filamento, embalagens, argolas e outros insumos frequentes).</p>
+        @foreach (var grupo in Model.ReferenciasPorGrupo)
+        {
+            <h3 class="fin-comp-titulo">@grupo.Key</h3>
+            <div class="fin-ref-grade">
+            @foreach (var r in grupo)
+            {
+                <article>
+                    <span>@r.Nome</span>
+                    <strong>@PatrimonioModel.FormatarReal(r.Media)/@r.Unidade</strong>
+                    <small>@r.Compras compra@(r.Compras == 1 ? "" : "s") · @r.Quantidade.ToString("0.##").Replace('.', ',') @r.Unidade</small>
+                    @if (r.Mediana > 0)
+                    {
+                        <small>mediana @PatrimonioModel.FormatarReal(r.Mediana)/@r.Unidade</small>
+                    }
+                </article>
+            }
+            </div>
+        }
+    </section>
+}

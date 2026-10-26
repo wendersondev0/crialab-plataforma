@@ -1,5 +1,7 @@
+using System.Globalization;
 using CriaLab.Web.Data;
 using CriaLab.Web.Data.Entities;
+using CriaLab.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -35,6 +37,7 @@ public class PatrimonioModel : PageModel
     public string TituloSecaoMaquinas { get; private set; } = "Máquinas e equipamentos";
     public string TituloSecaoInsumos { get; private set; } = "Filamentos e insumos";
     public string MesAtual { get; private set; } = DateTime.Now.ToString("yyyy-MM");
+    public IList<IGrouping<string, RefInsumo>> ReferenciasPorGrupo { get; private set; } = new List<IGrouping<string, RefInsumo>>();
 
     public async Task OnGetAsync(string? aba, string? q, string? id)
     {
@@ -227,7 +230,30 @@ public class PatrimonioModel : PageModel
             "insumos" => "Insumos (LED, copos, argolas, verniz...)",
             _ => "Filamentos e insumos"
         };
+
+        var lancamentos = await _db.LancamentosFinanceiros.AsNoTracking().ToListAsync();
+        var comps = lancamentos
+            .Select(x => x.Competencia)
+            .Where(x => !string.IsNullOrWhiteSpace(x) && x.Length >= 7)
+            .Distinct()
+            .OrderBy(x => x)
+            .ToList();
+        if (comps.Count == 0)
+            comps = new List<string> { MesAtual };
+
+        var refs = FinanceiroResumo.ReferenciasInsumos(lancamentos, null, comps);
+        ReferenciasPorGrupo = Aba switch
+        {
+            "filamentos" => refs.Where(x => x.Grupo == "Filamento").GroupBy(x => x.Grupo).ToList(),
+            "embalagens" => refs.Where(x => x.Grupo == "Embalagem").GroupBy(x => x.Grupo).ToList(),
+            "insumos" => refs.Where(x => x.Grupo is not ("Filamento" or "Embalagem")).GroupBy(x => x.Grupo).ToList(),
+            "impressoras" or "equipamentos" => new List<IGrouping<string, RefInsumo>>(),
+            _ => refs.GroupBy(x => x.Grupo).ToList()
+        };
     }
+
+    public static string FormatarReal(decimal valor) =>
+        valor.ToString("C", new CultureInfo("pt-BR"));
 
     private async Task<List<CompraPatrimonioVm>> CarregarComprasAsync()
     {

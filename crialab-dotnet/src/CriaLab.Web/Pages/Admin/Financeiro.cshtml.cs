@@ -54,6 +54,8 @@ public class FinanceiroModel : PageModel
     public decimal MediaPetg { get; private set; }
     public decimal MedianaPla { get; private set; }
     public decimal MedianaPetg { get; private set; }
+    public IList<RefInsumo> ReferenciasInsumos { get; private set; } = new List<RefInsumo>();
+    public IList<IGrouping<string, RefInsumo>> ReferenciasPorGrupo { get; private set; } = new List<IGrouping<string, RefInsumo>>();
 
     [BindProperty] public string ContaTipo { get; set; } = "pagar";
     [BindProperty] public string ContaDescricao { get; set; } = "";
@@ -349,6 +351,8 @@ public class FinanceiroModel : PageModel
         MediaPetg = mPetg;
         MedianaPla = FinanceiroResumo.MedianaKg(todos, "PLA", mesesRef);
         MedianaPetg = FinanceiroResumo.MedianaKg(todos, "PETG", mesesRef);
+        ReferenciasInsumos = FinanceiroResumo.ReferenciasInsumos(todos, filtro, mesesRef);
+        ReferenciasPorGrupo = ReferenciasInsumos.GroupBy(x => x.Grupo).ToList();
 
         var caderno = LancamentosPeriodo.AsEnumerable();
         if (!string.IsNullOrWhiteSpace(Categoria))
