@@ -1,6 +1,7 @@
 using System.Text.Json;
 using CriaLab.Web.Data;
 using CriaLab.Web.Data.Entities;
+using CriaLab.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -212,9 +213,13 @@ public class ProdutoEditModel : PageModel
         var ordem = produto.Fotos.Any() ? produto.Fotos.Max(x => x.Ordem) + 1 : 0;
         foreach (var arquivo in NovasFotos.Where(f => f.Length > 0))
         {
-            var ext = Path.GetExtension(arquivo.FileName);
-            if (string.IsNullOrWhiteSpace(ext)) ext = ".jpg";
-            var nome = Guid.NewGuid().ToString("N")[..12] + ext.ToLowerInvariant();
+            if (!ImageUploadHelper.EhImagemValida(arquivo, out var erro))
+            {
+                TempData["Erro"] = erro;
+                continue;
+            }
+            var ext = ImageUploadHelper.ExtensaoSegura(arquivo);
+            var nome = Guid.NewGuid().ToString("N")[..12] + ext;
             var caminhoAbs = Path.Combine(pastaAbs, nome);
             await using (var stream = System.IO.File.Create(caminhoAbs))
                 await arquivo.CopyToAsync(stream);

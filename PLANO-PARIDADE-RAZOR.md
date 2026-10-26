@@ -186,14 +186,14 @@ Página opcional **Personalizados** = atalho filtrado da lista (KPI já filtra).
 
 ## 5. Fase D — Infra e qualidade
 
-- [ ] Upload de imagens (produtos/parceiros) com validação
-- [ ] Autorização por página (`[Authorize(Roles = "Administrador")]`)
-- [ ] Anti-forgery em todos POSTs
-- [ ] Mensagens TempData / flash iguais aos toasts do estático
-- [ ] `dotnet watch` documentado para evitar lock de `CriaLab.Web.exe`
-- [ ] Testes manuais checklist por módulo (abaixo)
+- [x] Upload de imagens (produtos/parceiros) com validação
+- [x] Autorização por página (`[Authorize(Policy = "AdminOnly")]` = papel Administrador)
+- [x] Anti-forgery em POSTs (Razor Pages + FormTagHelper)
+- [x] Mensagens TempData / flash (`cta-ok` / `cta-erro`)
+- [x] `dotnet watch` documentado para evitar lock de `CriaLab.Web.exe`
+- [x] Testes manuais checklist por módulo (no README + §7)
 - [ ] (Opcional) testes de integração API/handlers críticos
-- [ ] Atualizar `crialab-dotnet/README.md` com mapa de rotas e credenciais
+- [x] Atualizar `crialab-dotnet/README.md` com mapa de rotas e credenciais
 
 ---
 
@@ -248,9 +248,9 @@ Inventário de páginas estáticas a bater:
 
 ## 9. Próximo passo imediato
 
-**Concluído:** S0–S7 — Fiscal (C8), Sistema (C9), preview ProdutoEdit.
+**Concluído:** S0–S7 + Fase D (exceto testes de integração opcionais).
 
-**Seguir com (Fase D):**
-1. Documentar `dotnet watch` / mapa de rotas no README
-2. Checklist de aceite por módulo (loja + admin)
-3. Anti-forgery / flash / upload — revisar lacunas se houver
+**Opcional / polish:**
+1. Testes de integração nos handlers críticos (checkout, fiscal CSV, sistema CEP)
+2. Paridade fina do `orcamento.js` no `OrcamentoEdit`
+3. Rodar checklist §7 lado a lado com `estatico/`

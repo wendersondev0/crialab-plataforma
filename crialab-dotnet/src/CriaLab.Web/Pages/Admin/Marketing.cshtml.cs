@@ -1,5 +1,6 @@
 using CriaLab.Web.Data;
 using CriaLab.Web.Data.Entities;
+using CriaLab.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -78,11 +79,15 @@ public class MarketingModel : PageModel
         parceiro.PodeAparecer = podeAparecer;
         if (logo is { Length: > 0 })
         {
+            if (!ImageUploadHelper.EhImagemValida(logo, out var erro))
+            {
+                TempData["Erro"] = erro;
+                return RedirectToPage(new { aba = "parceiros" });
+            }
             var pasta = Path.Combine(_env.WebRootPath, "parceiros");
             Directory.CreateDirectory(pasta);
-            var ext = Path.GetExtension(logo.FileName);
-            if (string.IsNullOrWhiteSpace(ext)) ext = ".png";
-            var arquivo = parceiro.Id + ext.ToLowerInvariant();
+            var ext = ImageUploadHelper.ExtensaoSegura(logo, ".png");
+            var arquivo = parceiro.Id + ext;
             await using (var stream = System.IO.File.Create(Path.Combine(pasta, arquivo)))
                 await logo.CopyToAsync(stream);
             parceiro.Logo = "parceiros/" + arquivo;

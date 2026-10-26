@@ -979,6 +979,14 @@
   color: var(--teal-escuro);
   font-weight: 800;
 }
+.cta-erro {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(204, 12, 57, 0.12);
+  color: #a40a2e;
+  font-weight: 800;
+}
 .cta-lista { display: grid; gap: 12px; }
 .cta-card {
   padding: 16px;

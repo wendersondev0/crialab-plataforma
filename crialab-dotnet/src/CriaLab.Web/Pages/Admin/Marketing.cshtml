@@ -16,6 +16,10 @@
 {
     <p class="cta-ok mkt-ok">@ok</p>
 }
+@if (TempData["Erro"] is string erro)
+{
+    <p class="cta-erro mkt-ok">@erro</p>
+}
 
 <div class="cta-abas mb-4">
     <a class="cta-aba@(Model.Aba == "cupom" ? " ativo" : "")" asp-page="/Admin/Marketing" asp-route-aba="cupom">Cupom</a>

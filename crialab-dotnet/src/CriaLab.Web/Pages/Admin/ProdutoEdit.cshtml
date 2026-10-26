@@ -17,6 +17,15 @@
     <a class="botao-linha" asp-page="/Admin/Produtos">Voltar à lista</a>
 </div>
 
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+@if (TempData["Erro"] is string erro)
+{
+    <p class="cta-erro">@erro</p>
+}
+
 <div class="admin-prod-edit-grade">
 <form method="post" enctype="multipart/form-data" class="cartao formulario admin-prod-form" id="form-produto">
     <input type="hidden" asp-for="Produto.Id" />
