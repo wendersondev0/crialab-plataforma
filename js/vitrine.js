@@ -28,9 +28,16 @@
     return ui.url("paginas/produto.html?id=" + encodeURIComponent(produto.id));
   }
   function canaisFicha() {
-    var id = estado().identidade;
-    var linha = "botao-linha inline-flex w-full min-h-11 items-center justify-center gap-2.5 rounded-full border-2 border-tinta bg-white px-4 font-bold text-tinta no-underline transition hover:bg-teal/10";
-    return '<div class="lojas-ficha mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2"><a class="' + linha + '" href="' + ui.esc(id.shopee) + '" target="_blank" rel="noopener">' + ico("shopee") + 'Shopee</a><a class="' + linha + '" href="' + ui.esc(id.mercadoLivre) + '" target="_blank" rel="noopener">' + ico("mercadolivre") + "Mercado Livre</a></div>";
+    var id = estado().identidade || {};
+    var links = [];
+    if (id.shopee) {
+      links.push('<a class="canal-ficha-link" href="' + ui.esc(id.shopee) + '" target="_blank" rel="noopener">' + ico("shopee") + "<span>Shopee</span></a>");
+    }
+    if (id.mercadoLivre) {
+      links.push('<a class="canal-ficha-link" href="' + ui.esc(id.mercadoLivre) + '" target="_blank" rel="noopener">' + ico("mercadolivre") + "<span>Mercado Livre</span></a>");
+    }
+    if (!links.length) return "";
+    return '<aside class="canais-ficha" aria-label="Outros canais de venda"><p class="canais-ficha-rotulo">Disponível também em:</p><div class="canais-ficha-links">' + links.join("") + "</div></aside>";
   }
   function addDias(base, dias) {
     var d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + dias);
@@ -372,20 +379,25 @@
     var sobMedida = personalizado(produto);
     var mod = modalidadeDe(produto);
     var esgotado = !sobMedida && mod === "pronta-entrega" && (produto.situacao === "esgotado" || produto.estoque <= 0);
-    var compraPeca = sobMedida ? "" : '<button class="botao inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border-2 border-laranja bg-laranja px-4 font-bold text-white hover:bg-laranja-escuro disabled:opacity-45" type="button" id="comprar-peca"' + (esgotado ? " disabled" : "") + ">" + ico("carrinho") + (esgotado ? "Esgotado" : "Comprar") + "</button>";
+    var desabilitadoCompra = esgotado ? " disabled" : "";
+    var compraPeca = sobMedida ? "" : '<div class="acoes-compra">' +
+      '<button class="botao btn-comprar-agora" type="button" id="comprar-peca"' + desabilitadoCompra + ">" + ico("caixa") + (esgotado ? "Esgotado" : "Comprar agora") + "</button>" +
+      '<button class="botao-linha btn-add-carrinho" type="button" id="add-carrinho"' + desabilitadoCompra + ">" + ico("carrinho") + "Adicionar ao carrinho</button>" +
+      "</div>";
     var whats = estado().identidade.whatsapp + "?text=" + encodeURIComponent("Olá, quero saber sobre " + produto.titulo);
     var tagCor = mod === "personalizado" ? "tag-pers bg-laranja" : (mod === "sob-demanda" ? "bg-tinta" : "bg-teal");
     var tag = '<span class="tag ' + tagCor + ' inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-extrabold text-white" title="' + ui.esc((ui.modalidadeInfo(mod) || {}).resumo || "") + '">' + ui.esc(ui.nomeModalidade(mod)) + "</span>";
     var desc = dadosDesconto(produto);
     var precoBloco = sobMedida
-      ? '<p class="preco m-0 text-2xl font-extrabold">' + dinheiro.real(produto.preco) + '</p><p class="vista m-0 font-bold text-teal-escuro">Preço médio. O valor final sai depois do orçamento.</p><p class="entrega-card m-0 mt-1 text-sm text-tinta">' + htmlEntrega(produto) + "</p>"
-      : (desc ? tagOferta(produto) : "") + '<div class="preco-linha flex flex-wrap items-end gap-2"><p class="preco m-0 text-2xl font-extrabold">' + dinheiro.real(produto.preco) + '</p>' + (desc ? '<s class="preco-riscado text-base font-medium text-tinta/45">' + dinheiro.real(desc.anterior) + "</s>" : "") + '</div><p class="vista m-0 font-bold text-teal-escuro">À vista ' + dinheiro.real(precoVista(produto.preco)) + " no PIX ou boleto</p><p class=\"discreto m-0 text-tinta/60\">" + config().parcelas + "x de " + dinheiro.real(produto.preco / config().parcelas) + " no cartão, sem o desconto à vista</p><p class=\"entrega-card m-0 mt-1 text-sm text-tinta\">" + htmlEntrega(produto) + "</p>";
+      ? '<div class="preco-bloco"><p class="preco m-0 text-2xl font-extrabold">' + dinheiro.real(produto.preco) + '</p><p class="vista m-0 font-bold text-teal-escuro">Preço médio. O valor final sai depois do orçamento.</p><p class="entrega-card m-0 text-sm text-tinta">' + htmlEntrega(produto) + "</p></div>"
+      : '<div class="preco-bloco">' + (desc ? tagOferta(produto) : "") + '<div class="preco-linha flex flex-wrap items-end gap-2"><p class="preco m-0 text-2xl font-extrabold">' + dinheiro.real(produto.preco) + '</p>' + (desc ? '<s class="preco-riscado text-base font-medium text-tinta/45">' + dinheiro.real(desc.anterior) + "</s>" : "") + '</div><p class="vista m-0 font-bold text-teal-escuro">À vista ' + dinheiro.real(precoVista(produto.preco)) + " no PIX ou boleto</p><p class=\"discreto m-0 text-tinta/60\">" + config().parcelas + "x de " + dinheiro.real(produto.preco / config().parcelas) + " no cartão, sem o desconto à vista</p><p class=\"entrega-card m-0 text-sm text-tinta\">" + htmlEntrega(produto) + "</p></div>";
     var estoqueLinha = sobMedida ? "Sob encomenda" : (mod === "sob-demanda" ? "Impressão após o pedido" : (esgotado ? "Sem unidade pronta" : ui.esc(String(produto.estoque)) + " em estoque"));
     var favoritoAtivo = estado().favoritos.indexOf(produto.id) >= 0;
     var lojas = canaisFicha();
     var orcamento = (produto.personalizavel || sobMedida) ? '<button class="botao-teal inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border-2 border-teal bg-teal px-4 font-bold text-white" type="button" id="pedir-orcamento">' + ico("documento") + "Pedir orçamento</button>" : "";
-    var acoes = '<div class="acoes-ficha mt-3 grid gap-2">' + compraPeca + '<div class="acoes-dupla grid grid-cols-1 gap-2 sm:grid-cols-2"><button class="btn-favorito-ficha' + (favoritoAtivo ? " ativo" : "") + '" type="button" id="favorito" aria-pressed="' + (favoritoAtivo ? "true" : "false") + '">' + ico("coracao") + '<span id="favorito-rotulo">' + (favoritoAtivo ? "Nos favoritos" : "Salvar nos favoritos") + '</span></button><a class="botao-linha inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border-2 border-tinta bg-white px-4 font-bold no-underline" href="' + ui.esc(whats) + '" target="_blank" rel="noopener">' + ico("whatsapp") + "WhatsApp</a></div>" + orcamento + "</div>";
-    raiz.innerHTML = '<div class="ficha grid grid-cols-1 items-start gap-5 lg:grid-cols-2"><div class="galeria revela"><img class="galeria-principal rounded-[18px]" id="foto-principal" src="' + ui.url(fotoInicial.arquivo) + '" alt="' + ui.esc(fotoInicial.legenda) + '"><div class="miniaturas">' + miniaturas + '</div><p class="discreto" id="legenda-foto">' + ui.esc(fotoInicial.legenda) + " · sessão " + ui.esc(dinheiro.dataBR(produto.sessao)) + '</p></div><div class="cartao ficha-info revela grid gap-3 rounded-[18px] bg-white p-4 shadow-cria">' + tag + '<p class="discreto m-0 text-tinta/60">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h1 class=\"mt-0 text-2xl font-extrabold\">" + ui.esc(produto.titulo) + "</h1>" + precoBloco + '<p class="meta-peca m-0 flex flex-wrap gap-x-3 gap-y-1 text-sm text-tinta/70"><span>' + estoqueLinha + "</span><span>" + ui.esc(produto.peso) + " g</span><span>" + ui.esc(produto.medidas) + "</span></p><p class=\"m-0\">" + ui.esc(produto.descricao) + "</p>" + lojas + htmlVariacoes + (etapas ? '<section class="bloco-ficha"><h2>Personalização</h2><div class="formulario">' + etapas + "</div></section>" : "") + '<label class="qtd-ficha">Quantidade<input id="qtd" type="number" min="1" value="1"></label>' + acoes + '<section class="frete-caixa"><h2 id="frete-titulo">Calcular frete</h2><form id="frete-ficha" class="frete-form"><input name="cep" type="text" inputmode="numeric" placeholder="00000-000" maxlength="9" aria-label="CEP"><button class="botao" type="submit">' + ico("caminhao") + 'Cotar</button></form><div id="frete-resultado"></div></section></div></div><section class="painel-ficha mt-5 grid grid-cols-1 gap-4"><article class="cartao rounded-[18px] bg-white p-4 shadow-cria"><h2 class="mt-0 text-xl font-extrabold">Perguntas</h2>' + perguntas + '<form id="nova-pergunta" class="formulario mt-3 grid gap-3"><label class="grid gap-1.5 font-bold">Sua pergunta<input class="min-h-12 w-full rounded-full border-2 border-linha bg-white px-4.5 py-2.5" name="texto" type="text" required placeholder="Escreva sua pergunta"></label><button class="botao inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-laranja px-4 font-bold text-white" type="submit">' + ico("contato") + "Enviar</button></form></article><article class=\"cartao rounded-[18px] bg-white p-4 shadow-cria\"><h2 class=\"mt-0 text-xl font-extrabold\">Avaliações</h2>" + avaliacoes + "</article></section>" + trilho("Relacionados", relacionados);
+    var qtdBloco = sobMedida ? "" : '<div class="qtd-ficha-box"><span class="qtd-ficha-rotulo">Quantidade</span><div class="qtd-stepper"><button type="button" id="qtd-menos" aria-label="Diminuir quantidade">−</button><input id="qtd" type="number" min="1" value="1" aria-label="Quantidade"><button type="button" id="qtd-mais" aria-label="Aumentar quantidade">+</button></div></div>';
+    var acoes = '<div class="acoes-ficha">' + qtdBloco + compraPeca + '<div class="acoes-dupla"><button class="btn-favorito-ficha' + (favoritoAtivo ? " ativo" : "") + '" type="button" id="favorito" aria-pressed="' + (favoritoAtivo ? "true" : "false") + '">' + ico("coracao") + '<span id="favorito-rotulo">' + (favoritoAtivo ? "Nos favoritos" : "Salvar nos favoritos") + '</span></button><a class="botao-linha btn-whats-ficha" href="' + ui.esc(whats) + '" target="_blank" rel="noopener">' + ico("whatsapp") + "WhatsApp</a></div>" + orcamento + lojas + "</div>";
+    raiz.innerHTML = '<div class="ficha grid grid-cols-1 items-start gap-5 lg:grid-cols-2"><div class="galeria revela"><img class="galeria-principal rounded-[18px]" id="foto-principal" src="' + ui.url(fotoInicial.arquivo) + '" alt="' + ui.esc(fotoInicial.legenda) + '"><div class="miniaturas">' + miniaturas + '</div><p class="discreto" id="legenda-foto">' + ui.esc(fotoInicial.legenda) + " · sessão " + ui.esc(dinheiro.dataBR(produto.sessao)) + '</p></div><div class="cartao ficha-info revela">' + tag + '<p class="ficha-categoria discreto m-0">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h1 class=\"ficha-titulo mt-0\">" + ui.esc(produto.titulo) + "</h1>" + precoBloco + '<p class="meta-peca m-0"><span>' + estoqueLinha + "</span><span>" + ui.esc(produto.peso) + " g</span><span>" + ui.esc(produto.medidas) + "</span></p><p class=\"ficha-desc m-0\">" + ui.esc(produto.descricao) + "</p>" + htmlVariacoes + (etapas ? '<section class="bloco-ficha"><h2>Personalização</h2><div class="formulario">' + etapas + "</div></section>" : "") + acoes + '<section class="frete-caixa"><h2 id="frete-titulo">Calcular frete</h2><form id="frete-ficha" class="frete-form"><input name="cep" type="text" inputmode="numeric" placeholder="00000-000" maxlength="9" aria-label="CEP"><button class="botao" type="submit">' + ico("caminhao") + 'Cotar</button></form><div id="frete-resultado"></div></section></div></div><div id="toast-carrinho" class="toast-carrinho" hidden role="status"></div><section class="painel-ficha mt-5 grid grid-cols-1 gap-4"><article class="cartao rounded-[18px] bg-white p-4 shadow-cria"><h2 class="mt-0 text-xl font-extrabold">Perguntas</h2>' + perguntas + '<form id="nova-pergunta" class="formulario mt-3 grid gap-3"><label class="grid gap-1.5 font-bold">Sua pergunta<input class="min-h-12 w-full rounded-full border-2 border-linha bg-white px-4.5 py-2.5" name="texto" type="text" required placeholder="Escreva sua pergunta"></label><button class="botao inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-laranja px-4 font-bold text-white" type="submit">' + ico("contato") + "Enviar</button></form></article><article class=\"cartao rounded-[18px] bg-white p-4 shadow-cria\"><h2 class=\"mt-0 text-xl font-extrabold\">Avaliações</h2>" + avaliacoes + "</article></section>" + trilho("Relacionados", relacionados);
     document.querySelectorAll(".arquivo-ref input").forEach(function (campoArquivo) {
       campoArquivo.addEventListener("change", function () {
         var nome = campoArquivo.files && campoArquivo.files[0] ? campoArquivo.files[0].name : "Nenhuma imagem";
@@ -454,15 +466,31 @@
       });
       return { texto: partes.join(" · "), extra: extra, arquivoNome: arquivoNome };
     }
-    var comprar = document.getElementById("comprar-peca");
-    if (comprar) comprar.addEventListener("click", function () {
+    function lerQuantidade() {
+      var campo = document.getElementById("qtd");
+      return Math.max(1, Number(campo && campo.value) || 1);
+    }
+    function definirQuantidade(valor) {
+      var campo = document.getElementById("qtd");
+      if (!campo) return;
+      var max = modalidadeDe(produto) === "pronta-entrega" && produto.estoque > 0 ? produto.estoque : 99;
+      var n = Math.max(1, Math.min(max, Number(valor) || 1));
+      campo.value = String(n);
+    }
+    var menos = document.getElementById("qtd-menos");
+    var mais = document.getElementById("qtd-mais");
+    if (menos) menos.addEventListener("click", function () { definirQuantidade(lerQuantidade() - 1); });
+    if (mais) mais.addEventListener("click", function () { definirQuantidade(lerQuantidade() + 1); });
+    var campoQtd = document.getElementById("qtd");
+    if (campoQtd) campoQtd.addEventListener("change", function () { definirQuantidade(campoQtd.value); });
+    function montarItemCarrinho() {
       var personalizacao = detalhesPersonalizacao();
-      var qtd = Math.max(1, Number(document.getElementById("qtd").value) || 1);
+      var qtd = lerQuantidade();
       if (modalidadeDe(produto) === "pronta-entrega" && qtd > produto.estoque) {
         alert("A quantidade passa do estoque.");
-        return;
+        return null;
       }
-      CriaCarrinho.adicionar({
+      return {
         produtoId: produto.id,
         titulo: produto.titulo,
         tipo: produto.tipo === "personalizado" ? "personalizado" : "pronto",
@@ -473,8 +501,33 @@
         detalhes: [textoEscolhas(), personalizacao.texto].filter(Boolean).join(" · "),
         arquivoNome: personalizacao.arquivoNome,
         assinatura: produto.tipo === "personalizado" ? CriaCarrinho.novoId("pers") : assinaturaEscolhas()
-      });
-      location.href = ui.url("paginas/carrinho.html");
+      };
+    }
+    function mostrarToastCarrinho() {
+      var toast = document.getElementById("toast-carrinho");
+      if (!toast) return;
+      toast.hidden = false;
+      toast.classList.add("visivel");
+      toast.innerHTML = "<strong>Adicionado ao carrinho</strong><a href=\"" + ui.url("paginas/carrinho.html") + "\">Ver carrinho</a><a class=\"toast-checkout\" href=\"" + ui.url("paginas/checkout.html") + "\">Finalizar</a>";
+      window.clearTimeout(mostrarToastCarrinho._timer);
+      mostrarToastCarrinho._timer = window.setTimeout(function () {
+        toast.classList.remove("visivel");
+        toast.hidden = true;
+      }, 4200);
+    }
+    var comprar = document.getElementById("comprar-peca");
+    if (comprar) comprar.addEventListener("click", function () {
+      var item = montarItemCarrinho();
+      if (!item) return;
+      CriaCarrinho.adicionar(item);
+      location.href = ui.url("paginas/checkout.html");
+    });
+    var addCarrinho = document.getElementById("add-carrinho");
+    if (addCarrinho) addCarrinho.addEventListener("click", function () {
+      var item = montarItemCarrinho();
+      if (!item) return;
+      CriaCarrinho.adicionar(item);
+      mostrarToastCarrinho();
     });
     document.getElementById("favorito").addEventListener("click", function () {
       Cria.alterar(function (atual) {
