@@ -40,8 +40,15 @@ Na subida a aplicação aplica a migration inicial e o seed (papéis, usuários,
 |--------|--------|-------|
 | Administrador | crialab.dm@gmail.com | @123Mudar |
 | Cliente | cliente@crialab.local | Cliente@123! |
+| Teste | ana.silva@teste.crialab.local | Teste@123! |
+| Teste | bruno.costa@teste.crialab.local | Teste@123! |
+| Teste | camila.souza@teste.crialab.local | Teste@123! |
+| Teste | diego.ferreira@teste.crialab.local | Teste@123! |
+| Teste | elena.ramos@teste.crialab.local | Teste@123! |
 
 Cadastro público em `/Conta/Register` recebe o papel **Usuario**. `/Admin` exige política **AdminOnly** (papel `Administrador`).
+
+O seed financeiro/orçamentos carrega `Data/Seeding/planilha/*.json` (exportados da planilha Despesas/Receitas e pastas de Orçamentos).
 
 ## Mapa de rotas
 

@@ -1,0 +1,2168 @@
+[
+ {
+  "id": "orc-001",
+  "nome": "Coração Anatômico",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 1761,
+  "pesoG": 92.93,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-002",
+  "nome": "Shrek e Fiona",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 631,
+  "pesoG": 41.98,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-003",
+  "nome": "Microfone com canopla e placas removivéis Anderson Platter",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 357,
+  "pesoG": 104.82,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-004",
+  "nome": "Logos Microfone",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 2465,
+  "pesoG": 142.08,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-005",
+  "nome": "Pencil Holder",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 527,
+  "pesoG": 207.38,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-006",
+  "nome": "Peça do Rack",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 348,
+  "pesoG": 115.82,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-007",
+  "nome": "Lab Rax 6U 10\" server rack - Bolted Version",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 2289,
+  "pesoG": 992.0,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-008",
+  "nome": "Borda da Ventoinha Frontal",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 856,
+  "pesoG": 36.53,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-009",
+  "nome": "Chiquinha para velha da mamãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 1380,
+  "pesoG": 283.21,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-010",
+  "nome": "Emblema Domingos Martins Grupo de Dança Pintado",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 1198,
+  "pesoG": 157.62,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-011",
+  "nome": "Emblema Domingos Martins Grupo de Dança",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 2662,
+  "pesoG": 902.62,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-012",
+  "nome": "Emblema Domingos Martins Grupo de Dança",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 1034,
+  "pesoG": 182.08,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-013",
+  "nome": "Celeiro Fazenda para mamãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 714,
+  "pesoG": 295.53,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-014",
+  "nome": "Colher balde mamãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 112,
+  "pesoG": 24.98,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-015",
+  "nome": "Colher balde mamãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 52,
+  "pesoG": 8.62,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-016",
+  "nome": "Fazendinha mamãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 273,
+  "pesoG": 133.69,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-017",
+  "nome": "Fazendinha mamãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 1021,
+  "pesoG": 119.18,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-018",
+  "nome": "Suporte de Celular de Parede Para Mamãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 111,
+  "pesoG": 37.51,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-019",
+  "nome": "Celeiro da fazenda",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 548,
+  "pesoG": 215.25,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-020",
+  "nome": "Celeiro da fazenda",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 993,
+  "pesoG": 422.61,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-021",
+  "nome": "Animais da Fazenda",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 1306,
+  "pesoG": 117.23,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-022",
+  "nome": "Suportes de Livro Miguel",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 186,
+  "pesoG": 73.0,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-023",
+  "nome": "Ogum Orixá",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 1061,
+  "pesoG": 195.31,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-024",
+  "nome": "CACHORRAS do Lucas (4 Betinhas)",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 1023,
+  "pesoG": 89.72,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-025",
+  "nome": "Quico",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 1242,
+  "pesoG": 279.05,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-026",
+  "nome": "Silvio Santos",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 1213,
+  "pesoG": 269.97,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-027",
+  "nome": "Chaveiro Pedra Azul (5 Juntos)",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 738,
+  "pesoG": 38.04,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-028",
+  "nome": "Chaveiro Domingos Martins (7 Juntos)",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 749,
+  "pesoG": 33.12,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-029",
+  "nome": "27 Chaveiro Pesos e Halteres (Preço Unidade)",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 687,
+  "pesoG": 221.2,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-030",
+  "nome": "Gato Celular",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 467,
+  "pesoG": 63.72,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-031",
+  "nome": "Hellow Kitty",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 745,
+  "pesoG": 162.49,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-032",
+  "nome": "Pikachu",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 668,
+  "pesoG": 173.99,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-033",
+  "nome": "Chaveiros da Copa para Humberto",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 528,
+  "pesoG": 152.91,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-034",
+  "nome": "Sonic",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 856,
+  "pesoG": 168.81,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-035",
+  "nome": "Chiquinha/Seu Madruga/Quico Estimativa",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 1788,
+  "pesoG": 245.41,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-036",
+  "nome": "Mickey Mouse / Sem AMS",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 113,
+  "pesoG": 30.23,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-037",
+  "nome": "Mickey Mouse / Sem AMS (Parte PETG)",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 556,
+  "pesoG": 160.46,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-038",
+  "nome": "Aio Todo Chaveiro",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 187,
+  "pesoG": 17.55,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-039",
+  "nome": "Itadori",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 208,
+  "pesoG": 19.5,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-040",
+  "nome": "Itadori",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 291,
+  "pesoG": 26.5,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-041",
+  "nome": "Adaptador de Braçadeira de Microfone",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 238,
+  "pesoG": 84.02,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-042",
+  "nome": "Cesto para mamãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 240,
+  "pesoG": 82.83,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-043",
+  "nome": "Base Coração dia das mãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 63,
+  "pesoG": 21.6,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-044",
+  "nome": "Coração dia das mãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 303,
+  "pesoG": 31.68,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-045",
+  "nome": "Suporte Notebook",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 224,
+  "pesoG": 92.0,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-046",
+  "nome": "Itadori chaveiro com pintura",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 108,
+  "pesoG": 6.95,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-047",
+  "nome": "Pote Furado para remédio para mamãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 239,
+  "pesoG": 82.83,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-048",
+  "nome": "Shrek e Fiona",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 620,
+  "pesoG": 47.12,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-049",
+  "nome": "Shrek e Fiona",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 1783,
+  "pesoG": 116.23,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-050",
+  "nome": "Pote de Incenso",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 698,
+  "pesoG": 314.0,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-051",
+  "nome": "Suporte de Cabo para o Tiago",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 207,
+  "pesoG": 82.69,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-052",
+  "nome": "2x Chaveiro Pedra Azul",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 300,
+  "pesoG": 14.0,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-053",
+  "nome": "10x Chaveiro Pedra Azul",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 660,
+  "pesoG": 46.67,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-054",
+  "nome": "Jude Duarte da Gisele",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 587,
+  "pesoG": 40.61,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-055",
+  "nome": "Caixa pra Mamãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 40,
+  "pesoG": 280.0,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-056",
+  "nome": "Caixa de Lápis",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 40,
+  "pesoG": 235.0,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-057",
+  "nome": "4 Suportes de Fone",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 40,
+  "pesoG": 742.71,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-058",
+  "nome": "5 Stitchs",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 40,
+  "pesoG": 361.86,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-059",
+  "nome": "Labubu",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 40,
+  "pesoG": 79.12,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-060",
+  "nome": "Cérebro Anatômico",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 40,
+  "pesoG": 287.56,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-061",
+  "nome": "Coração Anatômico",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 40,
+  "pesoG": 72.64,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-062",
+  "nome": "Mestre Xurumin",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": -319,
+  "pesoG": 39.12,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-063",
+  "nome": "Cofrinho para mamãe",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": -691,
+  "pesoG": 337.0,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-064",
+  "nome": "Stitch",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": -718,
+  "pesoG": 119.53,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-065",
+  "nome": "Tux Linux",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": -305,
+  "pesoG": 50.86,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-066",
+  "nome": "Coelho com coração da páscoa",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 8,
+  "pesoG": 5.0,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-067",
+  "nome": "Pote furado grande",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": -426,
+  "pesoG": 142.0,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-068",
+  "nome": "Dragões do Game of Thrones Opção 1",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 629,
+  "pesoG": 116.04,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-069",
+  "nome": "Dragões do Game of Thrones Opção 2",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 814,
+  "pesoG": 160.71,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-070",
+  "nome": "homem aranha",
+  "arquivo": "1° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 618,
+  "pesoG": 86.0,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-071",
+  "nome": "Microfone com canopla e placas removivéis",
+  "arquivo": "2° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 357,
+  "pesoG": 104.82,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-072",
+  "nome": "4 Placas Microfone Domingos Martins",
+  "arquivo": "2° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 425,
+  "pesoG": 27.18,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-073",
+  "nome": "4 Placas Microfone Domingos Martins",
+  "arquivo": "2° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 500,
+  "pesoG": 18.21,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-074",
+  "nome": "4 Placas Microfone Domingos Martins",
+  "arquivo": "2° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 250,
+  "pesoG": 16.88,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-075",
+  "nome": "2 Placas Microfone - Copa Rafael Pereira",
+  "arquivo": "2° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 466,
+  "pesoG": 28.84,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-076",
+  "nome": "2 Placas Microfone - Copa Rafael Pereira",
+  "arquivo": "2° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 274,
+  "pesoG": 16.83,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-077",
+  "nome": "2 Placas Microfone Letras RP",
+  "arquivo": "2° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 242,
+  "pesoG": 16.65,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-078",
+  "nome": "2 Placas Microfone Logo RP",
+  "arquivo": "2° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 260,
+  "pesoG": 17.01,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-079",
+  "nome": "Lab Rax 6U 10\" server rack - Bolted Version",
+  "arquivo": "2° Orçamentos - Março a Junho.xlsx",
+  "material": "PETG",
+  "minutos": 2740,
+  "pesoG": 999.03,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-080",
+  "nome": "Borda da Ventoinha Frontal",
+  "arquivo": "2° Orçamentos - Março a Junho.xlsx",
+  "material": "PLA",
+  "minutos": 475,
+  "pesoG": 38.17,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-081",
+  "nome": "Suporte de Lápis Tiago",
+  "arquivo": "1° Tiago Amorim.xlsx",
+  "material": "PLA",
+  "minutos": 527,
+  "pesoG": 207.38,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-082",
+  "nome": "Allen key holder",
+  "arquivo": "1° Tiago Amorim.xlsx",
+  "material": "PETG",
+  "minutos": 38,
+  "pesoG": 6.47,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-083",
+  "nome": "Suporte câmera na porta do Tiago",
+  "arquivo": "1° Tiago Amorim.xlsx",
+  "material": "PETG",
+  "minutos": 341,
+  "pesoG": 154.76,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-084",
+  "nome": "Carimbo Logo Mileni Faller",
+  "arquivo": "2° Mileni Faller - Primeiros Moldes.xlsx",
+  "material": "PETG",
+  "minutos": 233,
+  "pesoG": 92.93,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-085",
+  "nome": "Molde da Casa",
+  "arquivo": "2° Mileni Faller - Primeiros Moldes.xlsx",
+  "material": "PETG",
+  "minutos": 879,
+  "pesoG": 286.93,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-086",
+  "nome": "Molde do pé",
+  "arquivo": "2° Mileni Faller - Primeiros Moldes.xlsx",
+  "material": "PETG",
+  "minutos": 86,
+  "pesoG": 35.35,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-087",
+  "nome": "Molde Círculo com furos triangules",
+  "arquivo": "2° Mileni Faller - Primeiros Moldes.xlsx",
+  "material": "PETG",
+  "minutos": 317,
+  "pesoG": 89.35,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-088",
+  "nome": "Molde da Casa",
+  "arquivo": "2° Mileni Faller - Primeiros Moldes.xlsx",
+  "material": "PETG",
+  "minutos": 61,
+  "pesoG": 4.16,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-089",
+  "nome": "Alfabeto Molde",
+  "arquivo": "3° Alfabetos Moldes.xlsx",
+  "material": "PETG",
+  "minutos": 1680,
+  "pesoG": 108.32,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-090",
+  "nome": "Prateleira Miguel",
+  "arquivo": "4° Prateleira Miguel.xlsx",
+  "material": "PETG",
+  "minutos": 417,
+  "pesoG": 148.23,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-091",
+  "nome": "Prateleira Miguel",
+  "arquivo": "4° Prateleira Miguel.xlsx",
+  "material": "PLA",
+  "minutos": 364,
+  "pesoG": 136.81,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-092",
+  "nome": "Prateleira Miguel",
+  "arquivo": "4° Prateleira Miguel.xlsx",
+  "material": "PLA",
+  "minutos": 335,
+  "pesoG": 206.28,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-093",
+  "nome": "Bottons Hugelmanner Plattler",
+  "arquivo": "5° Bottons Hugelmanner Plattler.xlsx",
+  "material": "PLA",
+  "minutos": 15145,
+  "pesoG": 597.72,
+  "margemSite": 0.5,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 1.0,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-094",
+  "nome": "Botton Chapeu",
+  "arquivo": "5° Bottons Hugelmanner Plattler.xlsx",
+  "material": "PLA",
+  "minutos": 2323,
+  "pesoG": 108.63,
+  "margemSite": 0.5,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-095",
+  "nome": "Botton Pedra Azul",
+  "arquivo": "5° Bottons Hugelmanner Plattler.xlsx",
+  "material": "PLA",
+  "minutos": 2910,
+  "pesoG": 133.94,
+  "margemSite": 0.5,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-096",
+  "nome": "Botton Chapeu",
+  "arquivo": "5° Bottons Hugelmanner Plattler.xlsx",
+  "material": "PLA",
+  "minutos": 1359,
+  "pesoG": 121.21,
+  "margemSite": 0.5,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-097",
+  "nome": "Botton Chapeu",
+  "arquivo": "5° Bottons Hugelmanner Plattler.xlsx",
+  "material": "PLA",
+  "minutos": 2927,
+  "pesoG": 147.47,
+  "margemSite": 0.5,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-098",
+  "nome": "Tampa Reservatório de poeira Robô",
+  "arquivo": "6° Tampa Reservatório de poeira Robô.xlsx",
+  "material": "PETG",
+  "minutos": 13,
+  "pesoG": 1.89,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-099",
+  "nome": "Disco Molde",
+  "arquivo": "7° Disco Molde.xlsx",
+  "material": "PETG",
+  "minutos": 354,
+  "pesoG": 233.38,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-100",
+  "nome": "Enfeites Natal",
+  "arquivo": "8° Moldes Textos e Enfeites Natal.xlsx",
+  "material": "PETG",
+  "minutos": 1011,
+  "pesoG": 234.56,
+  "margemSite": 0.45,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 0.5,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-101",
+  "nome": "Textos e Enfeites Natal",
+  "arquivo": "8° Moldes Textos e Enfeites Natal.xlsx",
+  "material": "PETG",
+  "minutos": 218,
+  "pesoG": 90.82,
+  "margemSite": 0.45,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 0.5,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-102",
+  "nome": "Moldes Textos",
+  "arquivo": "8° Moldes Textos e Enfeites Natal.xlsx",
+  "material": "PETG",
+  "minutos": 826,
+  "pesoG": 108.45,
+  "margemSite": 0.45,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 0.5,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-103",
+  "nome": "Suporte UniFi U6+",
+  "arquivo": "9° Moldes Suporte Lab Rax Miguel com Suporte UniFi U6+ Personalizado.xlsx",
+  "material": "PETG",
+  "minutos": 274,
+  "pesoG": 90.3,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 0.5,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-104",
+  "nome": "UniFi Ubiquiti USW Ultra Switch Rack Mount for KWS",
+  "arquivo": "9° Moldes Suporte Lab Rax Miguel com Suporte UniFi U6+ Personalizado.xlsx",
+  "material": "PETG",
+  "minutos": 227,
+  "pesoG": 74.09,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 0.5,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-105",
+  "nome": "3 Papai Noel",
+  "arquivo": "10° Enfeites Natal.xlsx",
+  "material": "PLA",
+  "minutos": 960,
+  "pesoG": 128.64,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-106",
+  "nome": "3 Papai Noel",
+  "arquivo": "10° Enfeites Natal.xlsx",
+  "material": "PLA",
+  "minutos": 780,
+  "pesoG": 105.74,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-107",
+  "nome": "3 Papai Noel",
+  "arquivo": "10° Enfeites Natal.xlsx",
+  "material": "PLA",
+  "minutos": 720,
+  "pesoG": 142.82,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-108",
+  "nome": "3 Papai Noel",
+  "arquivo": "11° Origami Transforming Cube.xlsx",
+  "material": "PLA",
+  "minutos": 120,
+  "pesoG": 39.35,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-109",
+  "nome": "Canecas",
+  "arquivo": "12° Canecas.xlsx",
+  "material": "PETG",
+  "minutos": 1248,
+  "pesoG": 658.06,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 1.0,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-110",
+  "nome": "Ejetor Sapato Brigadeiro",
+  "arquivo": "13° Ejetor Sapato Brigadeiro.xlsx",
+  "material": "PETG",
+  "minutos": 167,
+  "pesoG": 41.9,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-111",
+  "nome": "Carimbo",
+  "arquivo": "2° MK carimbo.xlsx",
+  "material": "PETG",
+  "minutos": 81,
+  "pesoG": 3.77,
+  "margemSite": 0.45,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-112",
+  "nome": "Cesta Mamãe",
+  "arquivo": "2° MK carimbo.xlsx",
+  "material": "PETG",
+  "minutos": 32,
+  "pesoG": 4.16,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-113",
+  "nome": "Cortador",
+  "arquivo": "2° MK carimbo.xlsx",
+  "material": "PETG",
+  "minutos": 15,
+  "pesoG": 2.15,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-114",
+  "nome": "Carimbo",
+  "arquivo": "3° Matriz Molde e Carimbo Mileni Novo.xlsx",
+  "material": "PETG",
+  "minutos": 39,
+  "pesoG": 1.82,
+  "margemSite": 0.45,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 0.5,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-115",
+  "nome": "Carimbo",
+  "arquivo": "3° Matriz Molde e Carimbo Mileni Novo.xlsx",
+  "material": "PETG",
+  "minutos": 311,
+  "pesoG": 194.96,
+  "margemSite": 0.45,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 0.5,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-116",
+  "nome": "Prato Morango",
+  "arquivo": "3° Matriz Molde e Carimbo Mileni Novo.xlsx",
+  "material": "PETG",
+  "minutos": 210,
+  "pesoG": 54.53,
+  "margemSite": 0.45,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 0.5,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-117",
+  "nome": "Prato Morango",
+  "arquivo": "3° Matriz Molde e Carimbo Mileni Novo.xlsx",
+  "material": "PETG",
+  "minutos": 1144,
+  "pesoG": 188.31,
+  "margemSite": 0.45,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 1.0,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-118",
+  "nome": "Prato Morango",
+  "arquivo": "4° MK Chaveiro.xlsx",
+  "material": "PLA",
+  "minutos": 158,
+  "pesoG": 7.0,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-119",
+  "nome": "Prato Morango",
+  "arquivo": "4° MK Chaveiro.xlsx",
+  "material": "PLA",
+  "minutos": 248,
+  "pesoG": 9.68,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-120",
+  "nome": "Prato Morango",
+  "arquivo": "4° MK Chaveiro.xlsx",
+  "material": "PLA",
+  "minutos": 427,
+  "pesoG": 14.94,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-121",
+  "nome": "Prato Morango",
+  "arquivo": "4° MK Chaveiro.xlsx",
+  "material": "PLA",
+  "minutos": 286,
+  "pesoG": 13.31,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-122",
+  "nome": "Prato Morango",
+  "arquivo": "4° MK Chaveiro.xlsx",
+  "material": "PLA",
+  "minutos": 424,
+  "pesoG": 15.61,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-123",
+  "nome": "Prato Morango",
+  "arquivo": "4° MK Chaveiro.xlsx",
+  "material": "PLA",
+  "minutos": 702,
+  "pesoG": 20.2,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-124",
+  "nome": "Desenhos 2d Fino",
+  "arquivo": "5° Molde mamão e Desenhos 2D para cerâmica.xlsx",
+  "material": "PETG",
+  "minutos": 187,
+  "pesoG": 46.8,
+  "margemSite": 0.45,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 1.0,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-125",
+  "nome": "Prato Morango",
+  "arquivo": "5° Molde mamão e Desenhos 2D para cerâmica.xlsx",
+  "material": "PETG",
+  "minutos": 309,
+  "pesoG": 180.79,
+  "margemSite": 0.45,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 1.0,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-126",
+  "nome": "Desenhos 2d Fino",
+  "arquivo": "6° Molde Suporte fone.xlsx",
+  "material": "PETG",
+  "minutos": 180,
+  "pesoG": 78.14,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 1.0,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-127",
+  "nome": "Desenhos 2d Fino",
+  "arquivo": "7° Moldes e Textos.xlsx",
+  "material": "PETG",
+  "minutos": 208,
+  "pesoG": 9.22,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-128",
+  "nome": "Desenhos 2d Fino",
+  "arquivo": "7° Moldes e Textos.xlsx",
+  "material": "PETG",
+  "minutos": 40,
+  "pesoG": 13.27,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-129",
+  "nome": "Base Molde",
+  "arquivo": "7° Moldes e Textos.xlsx",
+  "material": "PETG",
+  "minutos": 262,
+  "pesoG": 162.48,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-130",
+  "nome": "Molde Mamão",
+  "arquivo": "7° Moldes e Textos.xlsx",
+  "material": "PETG",
+  "minutos": 190,
+  "pesoG": 118.29,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-131",
+  "nome": "Molde Abacaxi",
+  "arquivo": "7° Moldes e Textos.xlsx",
+  "material": "PETG",
+  "minutos": 298,
+  "pesoG": 135.48,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-132",
+  "nome": "Molde Abacaxi",
+  "arquivo": "7° Moldes e Textos.xlsx",
+  "material": "PETG",
+  "minutos": 164,
+  "pesoG": 87.58,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-133",
+  "nome": "Molde Abacaxi",
+  "arquivo": "7° Moldes e Textos.xlsx",
+  "material": "PETG",
+  "minutos": 232,
+  "pesoG": 150.42,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-134",
+  "nome": "Molde Abacaxi",
+  "arquivo": "7° Moldes e Textos.xlsx",
+  "material": "PETG",
+  "minutos": 231,
+  "pesoG": 153.43,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-135",
+  "nome": "34 Chaveiros Academia",
+  "arquivo": "8° Chaveiros Academia.xlsx",
+  "material": "PLA",
+  "minutos": 845,
+  "pesoG": 255.81,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-136",
+  "nome": "Coquetelira",
+  "arquivo": "8° Chaveiros Academia.xlsx",
+  "material": "PLA",
+  "minutos": 102,
+  "pesoG": 23.06,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-137",
+  "nome": "Crossfit",
+  "arquivo": "8° Chaveiros Academia.xlsx",
+  "material": "PLA",
+  "minutos": 105,
+  "pesoG": 34.92,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-138",
+  "nome": "Peso Abridor de Lata",
+  "arquivo": "8° Chaveiros Academia.xlsx",
+  "material": "PLA",
+  "minutos": 117,
+  "pesoG": 34.66,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-139",
+  "nome": "Kettlebell Anel",
+  "arquivo": "8° Chaveiros Academia.xlsx",
+  "material": "PLA",
+  "minutos": 151,
+  "pesoG": 48.82,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-140",
+  "nome": "Kettlebell Anel",
+  "arquivo": "8° Chaveiros Academia.xlsx",
+  "material": "PLA",
+  "minutos": 184,
+  "pesoG": 68.57,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-141",
+  "nome": "Kettlebell Anel",
+  "arquivo": "8° Chaveiros Academia.xlsx",
+  "material": "PLA",
+  "minutos": 73,
+  "pesoG": 27.08,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-142",
+  "nome": "Caminhão Edu Sem Pintura",
+  "arquivo": "9° Caminhão Edu.xlsx",
+  "material": "PETG",
+  "minutos": 2358,
+  "pesoG": 905.42,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-143",
+  "nome": "Caminhão Edu",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 229,
+  "pesoG": 48.97,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-144",
+  "nome": "Caminhão Edu",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 281,
+  "pesoG": 60.42,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-145",
+  "nome": "3 Rodas decorada",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 285,
+  "pesoG": 60.92,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-146",
+  "nome": "4 Cabine",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 951,
+  "pesoG": 309.75,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-147",
+  "nome": "5 Carroceria",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 496,
+  "pesoG": 130.08,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-148",
+  "nome": "5 Carroceria",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 395,
+  "pesoG": 119.14,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-149",
+  "nome": "5 Carroceria",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 225,
+  "pesoG": 47.41,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-150",
+  "nome": "5 Carroceria",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 324,
+  "pesoG": 84.66,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-151",
+  "nome": "5 Carroceria",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 195,
+  "pesoG": 48.44,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-152",
+  "nome": "5 Carroceria",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 275,
+  "pesoG": 75.53,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-153",
+  "nome": "5 Carroceria",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 734,
+  "pesoG": 289.49,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-154",
+  "nome": "5 Carroceria",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 635,
+  "pesoG": 243.39,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-155",
+  "nome": "5 Carroceria",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 127,
+  "pesoG": 21.88,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-156",
+  "nome": "5 Carroceria",
+  "arquivo": "1° Caminhão Edu.xlsx",
+  "material": "PLA",
+  "minutos": 59,
+  "pesoG": 6.99,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-157",
+  "nome": "Caminhão Edu",
+  "arquivo": "2° Pote Laryssa EL.xlsx",
+  "material": "PLA",
+  "minutos": 151,
+  "pesoG": 71.14,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 0.5,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-158",
+  "nome": "Caminhão Edu",
+  "arquivo": "2° Pote Laryssa EL.xlsx",
+  "material": "PLA",
+  "minutos": 614,
+  "pesoG": 215.17,
+  "margemSite": 0.45,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 0.5,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-159",
+  "nome": "Caminhão Edu",
+  "arquivo": "3° Ejetor Sapato.xlsx",
+  "material": "PETG",
+  "minutos": 202,
+  "pesoG": 65.95,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 1.0,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-160",
+  "nome": "Cachorro branco",
+  "arquivo": "4° Cachorros.xlsx",
+  "material": "PLA",
+  "minutos": 367,
+  "pesoG": 41.66,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 0.5,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-161",
+  "nome": "Cachorro Marrom",
+  "arquivo": "4° Cachorros.xlsx",
+  "material": "PLA",
+  "minutos": 643,
+  "pesoG": 71.99,
+  "margemSite": 0.4,
+  "precoKg": 85,
+  "itens": [
+   {
+    "nome": "Saco kraft pequeno",
+    "quantidade": 0.5,
+    "preco": 0.5
+   }
+  ],
+  "enviado": true
+ },
+ {
+  "id": "orc-162",
+  "nome": "Animais Flexi",
+  "arquivo": "5° Animais Flexi.xlsx",
+  "material": "PETG",
+  "minutos": 750,
+  "pesoG": 138.14,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [],
+  "enviado": true
+ },
+ {
+  "id": "orc-163",
+  "nome": "Parede de Contenção Moldes",
+  "arquivo": "6° Parede de Contenção Moldes.xlsx",
+  "material": "PETG",
+  "minutos": 583,
+  "pesoG": 287.24,
+  "margemSite": 0.4,
+  "precoKg": 65,
+  "itens": [
+   {
+    "nome": "Saco kraft grande",
+    "quantidade": 1.0,
+    "preco": 1.1286
+   }
+  ],
+  "enviado": true
+ }
+]

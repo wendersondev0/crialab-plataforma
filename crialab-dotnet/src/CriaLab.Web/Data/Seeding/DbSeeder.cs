@@ -40,21 +40,22 @@ public static class DbSeeder
         await context.Database.MigrateAsync();
 
         await SeedRolesAsync(roleManager);
-        await SeedUsersAsync(userManager);
 
         if (!forcar && await context.LojaIdentidades.AnyAsync())
+        {
+            await SeedUsersAsync(userManager);
             return;
+        }
 
-        var cliente = await userManager.FindByEmailAsync("cliente@crialab.local");
+        var clientes = await SeedUsersAsync(userManager);
         SeedCatalogo(context);
         SeedConfiguracao(context);
         SeedMarketing(context);
         await SeedProdutosAsync(context, env);
         SeedOperacoes(context);
-        SeedFinanceiro(context);
-        SeedOrcamentoInterno(context);
-        if (cliente != null)
-            SeedAtendimento(context, cliente.Id);
+        SeedFinanceiro(context, env);
+        SeedOrcamentoInterno(context, env);
+        SeedAtendimento(context, clientes);
         await context.SaveChangesAsync();
     }
 
@@ -67,9 +68,10 @@ public static class DbSeeder
         }
     }
 
-    private static async Task SeedUsersAsync(UserManager<ApplicationUser> userManager)
+    private static async Task<List<ApplicationUser>> SeedUsersAsync(UserManager<ApplicationUser> userManager)
     {
         const string senhaAdmin = "@123Mudar";
+        const string senhaTeste = "Teste@123!";
         var admin = await userManager.FindByEmailAsync("crialab.dm@gmail.com");
         if (admin == null)
         {
@@ -96,21 +98,43 @@ public static class DbSeeder
                 await userManager.AddToRoleAsync(admin, RoleNames.Usuario);
         }
 
-        var cliente = await userManager.FindByEmailAsync("cliente@crialab.local");
-        if (cliente == null)
+        var clientesDef = new (string Email, string Nome, string Tel)[]
         {
-            cliente = new ApplicationUser
+            ("cliente@crialab.local", "Cliente exemplo", "(27) 99999-0000"),
+            ("ana.silva@teste.crialab.local", "Ana Silva", "(27) 98811-1001"),
+            ("bruno.costa@teste.crialab.local", "Bruno Costa", "(27) 98822-2002"),
+            ("camila.souza@teste.crialab.local", "Camila Souza", "(27) 98833-3003"),
+            ("diego.ferreira@teste.crialab.local", "Diego Ferreira", "(27) 98844-4004"),
+            ("elena.ramos@teste.crialab.local", "Elena Ramos", "(27) 98855-5005")
+        };
+
+        var clientes = new List<ApplicationUser>();
+        foreach (var (email, nome, tel) in clientesDef)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null)
             {
-                UserName = "cliente@crialab.local",
-                Email = "cliente@crialab.local",
-                EmailConfirmed = true,
-                NomeCompleto = "Cliente exemplo",
-                TelefoneContato = "(27) 99999-0000",
-                CriadoEm = DateTime.UtcNow
-            };
-            await userManager.CreateAsync(cliente, "Cliente@123!");
-            await userManager.AddToRoleAsync(cliente, RoleNames.Usuario);
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true,
+                    NomeCompleto = nome,
+                    TelefoneContato = tel,
+                    CriadoEm = DateTime.UtcNow
+                };
+                var senha = email == "cliente@crialab.local" ? "Cliente@123!" : senhaTeste;
+                await userManager.CreateAsync(user, senha);
+                await userManager.AddToRoleAsync(user, RoleNames.Usuario);
+            }
+            else if (!await userManager.IsInRoleAsync(user, RoleNames.Usuario))
+            {
+                await userManager.AddToRoleAsync(user, RoleNames.Usuario);
+            }
+            clientes.Add(user);
         }
+
+        return clientes;
     }
 
     private static void SeedCatalogo(ApplicationDbContext context)
@@ -467,7 +491,28 @@ public static class DbSeeder
         };
         insPla.Cores.Add(new InsumoCor { Id = "pla-preto", Nome = "Preto", Hex = "#1b2430", Saldo = 1.6m, Bobinas = 2 });
         insPla.Cores.Add(new InsumoCor { Id = "pla-branco", Nome = "Branco", Hex = "#f4efe6", Saldo = 1.8m, Bobinas = 2 });
+        insPla.Cores.Add(new InsumoCor { Id = "pla-bronze", Nome = "Bronze", Hex = "#b87333", Saldo = 0.8m, Bobinas = 1 });
+        insPla.Cores.Add(new InsumoCor { Id = "pla-verde", Nome = "Verde", Hex = "#2f9e44", Saldo = 1.2m, Bobinas = 2 });
         context.EstoqueInsumos.Add(insPla);
+
+        var insPetg = new EstoqueInsumo
+        {
+            Id = "ins-petg",
+            Nome = "PETG",
+            Unidade = "kg",
+            Saldo = 14.5m,
+            Minimo = 2,
+            Categoria = "filamento",
+            Imagem = "marca/patrimonio/pat-pla.jpg",
+            AdquiridoEm = DateOnly.Parse("2026-07-05"),
+            Fornecedor = "Masterprint / 3d Print Pulse",
+            OrigemPlanilha = "Despesas e Receitas · PETG jul–set/2026"
+        };
+        insPetg.Cores.Add(new InsumoCor { Id = "petg-branco", Nome = "Branco", Hex = "#f4efe6", Saldo = 2.5m, Bobinas = 3 });
+        insPetg.Cores.Add(new InsumoCor { Id = "petg-preto", Nome = "Preto", Hex = "#1b2430", Saldo = 3.2m, Bobinas = 4 });
+        insPetg.Cores.Add(new InsumoCor { Id = "petg-verde", Nome = "Verde", Hex = "#2f9e44", Saldo = 1.1m, Bobinas = 1 });
+        insPetg.Cores.Add(new InsumoCor { Id = "petg-gold", Nome = "Gold", Hex = "#d4a017", Saldo = 0.9m, Bobinas = 1 });
+        context.EstoqueInsumos.Add(insPetg);
 
         context.ImpressaoJobs.AddRange(
             new ImpressaoJob
@@ -498,26 +543,42 @@ public static class DbSeeder
             });
     }
 
-    private static void SeedFinanceiro(ApplicationDbContext context)
+    private static void SeedFinanceiro(ApplicationDbContext context, IWebHostEnvironment env)
     {
         context.ContasFinanceiras.AddRange(
-            new ContaFinanceira { Id = "conta-1", Tipo = "pagar", Descricao = "Conta de energia de outubro", Valor = 80, Vencimento = DateOnly.Parse("2026-10-25") },
-            new ContaFinanceira { Id = "conta-2", Tipo = "receber", Descricao = "Molde combinado com a cliente", Valor = 150, Vencimento = DateOnly.Parse("2026-10-22") });
+            new ContaFinanceira { Id = "conta-1", Tipo = "pagar", Descricao = "Energia / mensalidade máquinas (out/2026)", Valor = 90, Vencimento = DateOnly.Parse("2026-10-28") },
+            new ContaFinanceira { Id = "conta-2", Tipo = "receber", Descricao = "Mileni — saldo moldes", Valor = 150, Vencimento = DateOnly.Parse("2026-10-22") },
+            new ContaFinanceira { Id = "conta-3", Tipo = "receber", Descricao = "Edu — caminhão (parcial)", Valor = 120, Vencimento = DateOnly.Parse("2026-10-30"), Baixada = false },
+            new ContaFinanceira { Id = "conta-4", Tipo = "pagar", Descricao = "Filamento PETG pedido aberto", Valor = 198.91m, Vencimento = DateOnly.Parse("2026-10-18"), Baixada = true });
 
-        context.LancamentosFinanceiros.AddRange(
-            new LancamentoFinanceiro { Id = "lan-0001", Data = DateOnly.Parse("2026-09-02"), Competencia = "2026-09", Descricao = "Magno Carimbo de Biscoito com cortador", Categoria = "receita", Quantidade = 1, Valor = 15, Origem = "planilha" },
-            new LancamentoFinanceiro { Id = "lan-0002", Data = DateOnly.Parse("2026-09-10"), Competencia = "2026-09", Descricao = "Mileni Parte dos Moldes", Categoria = "receita", Quantidade = 1, Valor = 150, Origem = "planilha" });
+        var lancamentos = PlanilhaSeedLoader.CarregarLancamentos(env);
+        if (lancamentos.Count > 0)
+            context.LancamentosFinanceiros.AddRange(lancamentos);
+        else
+        {
+            context.LancamentosFinanceiros.AddRange(
+                new LancamentoFinanceiro { Id = "lan-0001", Data = DateOnly.Parse("2026-09-02"), Competencia = "2026-09", Descricao = "Magno Carimbo de Biscoito com cortador", Categoria = "receita", Quantidade = 1, Valor = 15, Origem = "planilha" },
+                new LancamentoFinanceiro { Id = "lan-0002", Data = DateOnly.Parse("2026-09-10"), Competencia = "2026-09", Descricao = "Mileni Parte dos Moldes", Categoria = "receita", Quantidade = 1, Valor = 150, Origem = "planilha" });
+        }
+
+        var energia = PlanilhaSeedLoader.CarregarEnergia(env);
+        if (energia.Count > 0)
+            context.FechamentosEnergia.AddRange(energia);
 
         context.ParametrosCusto.AddRange(
             new ParametroCusto { Id = "par-pla", Nome = "PLA", Unidade = "kg", Preco = 85, Travado = true },
             new ParametroCusto { Id = "par-petg", Nome = "PETG", Unidade = "kg", Preco = 65, Travado = true },
-            new ParametroCusto { Id = "par-tpu", Nome = "TPU", Unidade = "kg", Preco = 80, Travado = true });
+            new ParametroCusto { Id = "par-tpu", Nome = "TPU", Unidade = "kg", Preco = 80, Travado = true },
+            new ParametroCusto { Id = "par-kraft-p", Nome = "Saco kraft pequeno", Unidade = "un", Preco = 0.5m, Travado = true },
+            new ParametroCusto { Id = "par-kraft-g", Nome = "Saco kraft grande", Unidade = "un", Preco = 1.1286m, Travado = true },
+            new ParametroCusto { Id = "par-ia", Nome = "Uso de IA", Unidade = "un", Preco = 2m, Travado = true });
 
         context.MargensCanal.AddRange(
-            new MargemCanal { Id = "marketplace", Nome = "Marketplace", Percentual = 0.25m, Ativo = true },
+            new MargemCanal { Id = "marketplace", Nome = "Revenda / Shopee", Percentual = 0.25m, Ativo = true },
             new MargemCanal { Id = "simples", Nome = "Simples", Percentual = 0.4m, Ativo = true },
-            new MargemCanal { Id = "medio", Nome = "Médio", Percentual = 0.5m, Ativo = true },
-            new MargemCanal { Id = "complexo", Nome = "Complexo", Percentual = 0.6m, Ativo = true });
+            new MargemCanal { Id = "medio", Nome = "Médio", Percentual = 0.45m, Ativo = true },
+            new MargemCanal { Id = "complexo", Nome = "Complexo", Percentual = 0.5m, Ativo = true },
+            new MargemCanal { Id = "exclusivo", Nome = "Modelagem exclusiva", Percentual = 0.55m, Ativo = true });
 
         context.DescontosOrcamento.Add(new DescontoOrcamento { Id = "default", Recorrente = 0.05m, Volume = 0.05m });
 
@@ -534,10 +595,23 @@ public static class DbSeeder
             new FaixaMarketplace { Canal = "Shopee", De = 100, Ate = 199.99m, Percentual = 0.14m, Fixo = 20 },
             new FaixaMarketplace { Canal = "Shopee", De = 200, Ate = 499.99m, Percentual = 0.14m, Fixo = 26 },
             new FaixaMarketplace { Canal = "Shopee", De = 500, Ate = 999999, Percentual = 0.14m, Fixo = 26 });
+
+        context.MetasFinanceiras.Add(new MetaFinanceira
+        {
+            Chave = "receita-2026-09",
+            ValorJson = """{"meta":800,"notas":"Meta baseada no ritmo de set/2026 (R$ 621,50 realizados)"}"""
+        });
     }
 
-    private static void SeedOrcamentoInterno(ApplicationDbContext context)
+    private static void SeedOrcamentoInterno(ApplicationDbContext context, IWebHostEnvironment env)
     {
+        var lista = PlanilhaSeedLoader.CarregarOrcamentos(env);
+        if (lista.Count > 0)
+        {
+            context.OrcamentosInternos.AddRange(lista);
+            return;
+        }
+
         var orc = new OrcamentoInterno
         {
             Id = "orc-cachorro",
@@ -559,101 +633,147 @@ public static class DbSeeder
         context.OrcamentosInternos.Add(orc);
     }
 
-    private static void SeedAtendimento(ApplicationDbContext context, string adminUserId)
+    private static void SeedAtendimento(ApplicationDbContext context, List<ApplicationUser> clientes)
     {
-        context.MensagensContato.Add(new MensagemContato
-        {
-            Id = "msg-1",
-            Tipo = "elogio",
-            Nome = "Cliente exemplo",
-            Email = "cliente@crialab.local",
-            Texto = "Gostei da peça que chegou.",
-            Status = "aberto",
-            CriadoEm = Utc("2026-10-08T10:00")
-        });
+        if (clientes.Count == 0) return;
+        var c0 = clientes[0];
+        var c1 = clientes.ElementAtOrDefault(1) ?? c0;
+        var c2 = clientes.ElementAtOrDefault(2) ?? c0;
+        var c3 = clientes.ElementAtOrDefault(3) ?? c0;
+        var c4 = clientes.ElementAtOrDefault(4) ?? c0;
+        var c5 = clientes.ElementAtOrDefault(5) ?? c0;
 
-        context.EnderecosCliente.Add(new EnderecoCliente
-        {
-            Id = "end-1",
-            UsuarioId = adminUserId,
-            Rotulo = "Casa",
-            Cep = "29010000",
-            Linha = "Rua das Impressoras, 10, Vitória/ES"
-        });
+        context.MensagensContato.AddRange(
+            new MensagemContato { Id = "msg-1", Tipo = "elogio", Nome = c0.NomeCompleto, Email = c0.Email!, Texto = "Gostei da peça que chegou — acabamento ótimo.", Status = "aberto", CriadoEm = Utc("2026-10-08T10:00") },
+            new MensagemContato { Id = "msg-2", Tipo = "duvida", Nome = c1.NomeCompleto, Email = c1.Email!, Texto = "Vocês fazem molde de silicone a partir de modelo 3D?", Status = "em atendimento", CriadoEm = Utc("2026-10-12T14:20") },
+            new MensagemContato { Id = "msg-3", Tipo = "orcamento", Nome = c2.NomeCompleto, Email = c2.Email!, Texto = "Quero orçar um suporte de fone personalizado com nome.", Status = "aberto", CriadoEm = Utc("2026-10-15T09:10") },
+            new MensagemContato { Id = "msg-4", Tipo = "reclamacao", Nome = c3.NomeCompleto, Email = c3.Email!, Texto = "O frete demorou mais que o estimado no PAC.", Status = "resolvido", CriadoEm = Utc("2026-09-28T16:40") },
+            new MensagemContato { Id = "msg-5", Tipo = "elogio", Nome = c4.NomeCompleto, Email = c4.Email!, Texto = "Os chaveiros da academia ficaram perfeitos.", Status = "resolvido", CriadoEm = Utc("2026-09-24T11:00") },
+            new MensagemContato { Id = "msg-6", Tipo = "duvida", Nome = c5.NomeCompleto, Email = c5.Email!, Texto = "Dá para pintar a peça em degradê azul/branco?", Status = "aberto", CriadoEm = Utc("2026-10-18T18:05") });
 
-        context.Pedidos.Add(new Pedido
-        {
-            Id = "ped-entregue",
-            UsuarioId = adminUserId,
-            Status = "entregue",
-            CriadoEm = Utc("2026-09-20T15:00"),
-            Subtotal = 89,
-            DescontoAVista = 8.9m,
-            Total = 80.1m,
-            Forma = "pix",
-            Endereco = "Rua das Impressoras, 10, Vitória/ES",
-            Cep = "29010000",
-            FreteNome = "Frete grátis",
-            RepassarFrete = true,
-            Nota = "pendente",
-            Itens =
+        context.EnderecosCliente.AddRange(
+            new EnderecoCliente { Id = "end-1", UsuarioId = c0.Id, Rotulo = "Casa", Cep = "29010000", Linha = "Rua das Impressoras, 10, Vitória/ES" },
+            new EnderecoCliente { Id = "end-2", UsuarioId = c1.Id, Rotulo = "Apartamento", Cep = "29055000", Linha = "Av. Leitão da Silva, 200, Vitória/ES" },
+            new EnderecoCliente { Id = "end-3", UsuarioId = c2.Id, Rotulo = "Trabalho", Cep = "29101000", Linha = "Rua Sete de Setembro, 55, Vila Velha/ES" },
+            new EnderecoCliente { Id = "end-4", UsuarioId = c3.Id, Rotulo = "Casa", Cep = "29160000", Linha = "Rua das Palmeiras, 88, Serra/ES" },
+            new EnderecoCliente { Id = "end-5", UsuarioId = c4.Id, Rotulo = "Casa", Cep = "29025000", Linha = "Rua Aleixo Netto, 312, Vitória/ES" });
+
+        context.Pedidos.AddRange(
+            new Pedido
             {
-                new PedidoItem
-                {
-                    Id = "item-ent-1",
-                    ProdutoId = "sessao-2026-03-14",
-                    Titulo = "Peça da oficina — 14/03/2026",
-                    Tipo = "pronto",
-                    Fisico = true,
-                    Quantidade = 1,
-                    PrecoUnitario = 89
-                }
+                Id = "ped-entregue",
+                UsuarioId = c0.Id,
+                Status = "entregue",
+                CriadoEm = Utc("2026-09-20T15:00"),
+                Subtotal = 89,
+                DescontoAVista = 8.9m,
+                Total = 80.1m,
+                Forma = "pix",
+                Endereco = "Rua das Impressoras, 10, Vitória/ES",
+                Cep = "29010000",
+                FreteNome = "Frete grátis",
+                RepassarFrete = true,
+                Nota = "revisada",
+                Itens = { new PedidoItem { Id = "item-ent-1", ProdutoId = "sessao-2026-03-14", Titulo = "Peça da oficina — 14/03/2026", Tipo = "pronto", Fisico = true, Quantidade = 1, PrecoUnitario = 89 } },
+                Os = new PedidoOs { Status = "concluida", InsumoBaixado = true }
             },
-            Os = new PedidoOs { Status = "concluida", InsumoBaixado = true }
-        });
-
-        context.OrcamentosCliente.AddRange(
-            new OrcamentoCliente
+            new Pedido
             {
-                Id = "orc-cli-1",
-                UsuarioId = adminUserId,
-                ProdutoId = "sessao-2026-04-14",
-                Titulo = "Peça da oficina — 14/04/2026",
-                Status = "respondido",
-                Detalhes = "Medida 8 cm, cor teal, texto Cria",
-                ArquivoNome = "referencia.png",
-                Valor = 180,
-                CriadoEm = Utc("2026-10-02T11:00")
+                Id = "ped-ana-1",
+                UsuarioId = c1.Id,
+                Status = "pago",
+                CriadoEm = Utc("2026-10-05T12:30"),
+                Subtotal = 64,
+                FreteCobrado = 29.9m,
+                Total = 93.9m,
+                Forma = "cartao",
+                Endereco = "Av. Leitão da Silva, 200, Vitória/ES",
+                Cep = "29055000",
+                FreteNome = "PAC",
+                Nota = "pendente",
+                Itens = { new PedidoItem { Id = "item-ana-1", ProdutoId = "sessao-2026-03-27", Titulo = "Peça da oficina — 27/03/2026", Tipo = "pronto", Fisico = true, Quantidade = 1, PrecoUnitario = 64 } },
+                Os = new PedidoOs { Status = "em producao", InsumoBaixado = false }
             },
-            new OrcamentoCliente
+            new Pedido
             {
-                Id = "orc-cli-2",
-                UsuarioId = adminUserId,
-                ProdutoId = "sessao-2026-03-27",
-                Titulo = "Peça da oficina — 27/03/2026",
-                Status = "aguardando",
-                Detalhes = "Texto gravado ainda sem preço",
-                CriadoEm = Utc("2026-10-10T09:30")
+                Id = "ped-bruno-1",
+                UsuarioId = c2.Id,
+                Status = "aguardando pagamento",
+                CriadoEm = Utc("2026-10-16T09:00"),
+                Subtotal = 120,
+                DescontoCupom = 12,
+                Total = 108,
+                Forma = "boleto",
+                Endereco = "Rua Sete de Setembro, 55, Vila Velha/ES",
+                Cep = "29101000",
+                FreteNome = "Retirada",
+                Cupom = "OFICINA10",
+                Nota = "nao_aplicavel",
+                Itens = { new PedidoItem { Id = "item-bru-1", ProdutoId = "sessao-2026-04-14", Titulo = "Peça da oficina — 14/04/2026", Tipo = "personalizado", Fisico = true, Quantidade = 1, PrecoUnitario = 120 } }
+            },
+            new Pedido
+            {
+                Id = "ped-camila-1",
+                UsuarioId = c3.Id,
+                Status = "enviado",
+                CriadoEm = Utc("2026-09-30T17:20"),
+                Subtotal = 52.5m,
+                FreteCobrado = 0,
+                Total = 52.5m,
+                Forma = "pix",
+                Endereco = "Rua das Palmeiras, 88, Serra/ES",
+                Cep = "29160000",
+                FreteNome = "Frete grátis",
+                Nota = "pendente",
+                Itens = { new PedidoItem { Id = "item-cam-1", ProdutoId = "sessao-2026-03-14", Titulo = "Chaveiros Academia GoFit", Tipo = "pronto", Fisico = true, Quantidade = 21, PrecoUnitario = 2.5m } },
+                Os = new PedidoOs { Status = "concluida", InsumoBaixado = true }
+            },
+            new Pedido
+            {
+                Id = "ped-diego-1",
+                UsuarioId = c4.Id,
+                Status = "entregue",
+                CriadoEm = Utc("2026-08-18T11:00"),
+                Subtotal = 40,
+                Total = 40,
+                Forma = "pix",
+                Endereco = "Rua Aleixo Netto, 312, Vitória/ES",
+                Cep = "29025000",
+                FreteNome = "Retirada",
+                Nota = "revisada",
+                Itens = { new PedidoItem { Id = "item-die-1", ProdutoId = "sessao-2026-03-14", Titulo = "Pikachu", Tipo = "pronto", Fisico = true, Quantidade = 1, PrecoUnitario = 40 } },
+                Os = new PedidoOs { Status = "concluida", InsumoBaixado = true }
             });
 
-        context.Avaliacoes.Add(new Avaliacao
-        {
-            Id = "ava-1",
-            ProdutoId = "sessao-2026-03-14",
-            PedidoId = "ped-entregue",
-            Autor = "Cliente exemplo",
-            Nota = 5,
-            Texto = "A peça chegou bem feita e na cor combinada.",
-            FotoDoProduto = true
-        });
+        context.OrcamentosCliente.AddRange(
+            new OrcamentoCliente { Id = "orc-cli-1", UsuarioId = c0.Id, ProdutoId = "sessao-2026-04-14", Titulo = "Peça personalizada — texto Cria", Status = "respondido", Detalhes = "Medida 8 cm, cor teal", ArquivoNome = "referencia.png", Valor = 180, CriadoEm = Utc("2026-10-02T11:00") },
+            new OrcamentoCliente { Id = "orc-cli-2", UsuarioId = c0.Id, ProdutoId = "sessao-2026-03-27", Titulo = "Texto gravado", Status = "aguardando", Detalhes = "Ainda sem preço", CriadoEm = Utc("2026-10-10T09:30") },
+            new OrcamentoCliente { Id = "orc-cli-3", UsuarioId = c1.Id, ProdutoId = "sessao-2026-04-14", Titulo = "Molde mamão", Status = "respondido", Detalhes = "PETG, 2 unidades", Valor = 95, CriadoEm = Utc("2026-09-18T10:00") },
+            new OrcamentoCliente { Id = "orc-cli-4", UsuarioId = c2.Id, ProdutoId = "sessao-2026-03-14", Titulo = "Suporte fone com nome", Status = "aguardando", Detalhes = "Nome: Bruno", CriadoEm = Utc("2026-10-15T09:15") },
+            new OrcamentoCliente { Id = "orc-cli-5", UsuarioId = c5.Id, ProdutoId = "sessao-2026-04-14", Titulo = "Animais Flexi", Status = "respondido", Detalhes = "Kit 3 peças coloridas", Valor = 75, CriadoEm = Utc("2026-10-08T16:00") });
 
-        context.PerguntasProduto.Add(new PerguntaProduto
-        {
-            Id = "per-1",
-            ProdutoId = "sessao-2026-03-14",
-            Autor = "Ana",
-            Texto = "Essa peça pode ser feita em PETG?",
-            CriadoEm = Utc("2026-10-01T14:00")
-        });
+        context.Avaliacoes.AddRange(
+            new Avaliacao { Id = "ava-1", ProdutoId = "sessao-2026-03-14", PedidoId = "ped-entregue", Autor = c0.NomeCompleto, Nota = 5, Texto = "A peça chegou bem feita e na cor combinada.", FotoDoProduto = true },
+            new Avaliacao { Id = "ava-2", ProdutoId = "sessao-2026-03-14", PedidoId = "ped-diego-1", Autor = c4.NomeCompleto, Nota = 5, Texto = "Pikachu ficou lindo, minha filha amou.", FotoDoProduto = true },
+            new Avaliacao { Id = "ava-3", ProdutoId = "sessao-2026-03-27", PedidoId = "ped-ana-1", Autor = c1.NomeCompleto, Nota = 4, Texto = "Boa qualidade; só demorou um pouco na produção.", FotoDoProduto = false },
+            new Avaliacao { Id = "ava-4", ProdutoId = "sessao-2026-03-14", PedidoId = "ped-camila-1", Autor = c3.NomeCompleto, Nota = 5, Texto = "Chaveiros iguais ao pedido, ótimo para a academia.", FotoDoProduto = true },
+            new Avaliacao { Id = "ava-5", ProdutoId = "sessao-2026-04-14", Autor = "Visitante loja", Nota = 4, Texto = "Acabamento profissional nas peças personalizadas.", FotoDoProduto = false },
+            new Avaliacao { Id = "ava-6", ProdutoId = "sessao-2026-04-14", Autor = c5.NomeCompleto, Nota = 5, Texto = "Flexi perfeito para presente.", FotoDoProduto = true });
+
+        context.PerguntasProduto.AddRange(
+            new PerguntaProduto { Id = "per-1", ProdutoId = "sessao-2026-03-14", Autor = c1.NomeCompleto, Texto = "Essa peça pode ser feita em PETG?", Resposta = "Sim, em PETG fica mais resistente. Posso orçar.", CriadoEm = Utc("2026-10-01T14:00") },
+            new PerguntaProduto { Id = "per-2", ProdutoId = "sessao-2026-03-14", Autor = c2.NomeCompleto, Texto = "Tem nas cores preto e branco?", Resposta = "Temos preto, branco e outras sob consulta.", CriadoEm = Utc("2026-10-03T10:20") },
+            new PerguntaProduto { Id = "per-3", ProdutoId = "sessao-2026-03-27", Autor = c3.NomeCompleto, Texto = "Serve como molde para chocolate?", Resposta = "", CriadoEm = Utc("2026-10-11T08:45") },
+            new PerguntaProduto { Id = "per-4", ProdutoId = "sessao-2026-04-14", Autor = c4.NomeCompleto, Texto = "Dá para gravar um nome na base?", Resposta = "Sim, personalizamos com texto na base.", CriadoEm = Utc("2026-09-25T19:00") },
+            new PerguntaProduto { Id = "per-5", ProdutoId = "sessao-2026-04-14", Autor = c5.NomeCompleto, Texto = "Qual o prazo médio para personalizados?", Resposta = "Em geral 5 a 10 dias úteis após aprovação do orçamento.", CriadoEm = Utc("2026-10-07T13:30") },
+            new PerguntaProduto { Id = "per-6", ProdutoId = "sessao-2026-03-14", Autor = "Marina", Texto = "Vocês enviam para todo o Brasil?", Resposta = "", CriadoEm = Utc("2026-10-19T11:10") });
+
+        var agora = DateTime.UtcNow;
+        context.Favoritos.AddRange(
+            new Favorito { UsuarioId = c1.Id, ProdutoId = "sessao-2026-03-14", CriadoEm = agora },
+            new Favorito { UsuarioId = c1.Id, ProdutoId = "sessao-2026-04-14", CriadoEm = agora },
+            new Favorito { UsuarioId = c2.Id, ProdutoId = "sessao-2026-03-27", CriadoEm = agora },
+            new Favorito { UsuarioId = c5.Id, ProdutoId = "sessao-2026-04-14", CriadoEm = agora });
     }
 }
+

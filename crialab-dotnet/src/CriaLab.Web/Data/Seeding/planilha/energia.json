@@ -1,0 +1,47 @@
+[
+ {
+  "competencia": "2026-09",
+  "descricao": "Bambu Lab A1",
+  "valor": 15.5
+ },
+ {
+  "competencia": "2026-09",
+  "descricao": "Kobra S1 e Secadores",
+  "valor": 44.62
+ },
+ {
+  "competencia": "2026-08",
+  "descricao": "Bambu Lab A1",
+  "valor": 33.15
+ },
+ {
+  "competencia": "2026-08",
+  "descricao": "Kobra S1 e Secadores",
+  "valor": 40.86
+ },
+ {
+  "competencia": "2026-07",
+  "descricao": "Energia",
+  "valor": 72.76
+ },
+ {
+  "competencia": "2026-06",
+  "descricao": "Energia",
+  "valor": 56.27
+ },
+ {
+  "competencia": "2026-05",
+  "descricao": "Energia",
+  "valor": 24.06
+ },
+ {
+  "competencia": "2026-04",
+  "descricao": "Energia",
+  "valor": 47.87
+ },
+ {
+  "competencia": "2026-03",
+  "descricao": "Impressora Energia",
+  "valor": 19.26
+ }
+]

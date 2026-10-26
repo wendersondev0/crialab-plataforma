@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <None Update="Data\Seeding\seed-produtos.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Data\Seeding\planilha\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
