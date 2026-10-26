@@ -139,7 +139,7 @@ Form (`formularioProduto()`):
 - [x] Fotos (upload para `wwwroot/fotos/...`)
 - [x] Variações (eixos/opções cor-hex ou texto)
 - [x] Etapas personalização
-- [ ] Preview card
+- [x] Preview card
 
 Página opcional **Personalizados** = atalho filtrado da lista (KPI já filtra).
 
@@ -171,16 +171,16 @@ Página opcional **Personalizados** = atalho filtrado da lista (KPI já filtra).
 - [x] Reusar classes `fin-*` do `admin.css`
 
 ### C8. Fiscal
-- [ ] Lista documentos/pedidos com nota
-- [ ] Export CSV
-- [ ] Marcar pendente / recibo
+- [x] Lista documentos/pedidos com nota
+- [x] Export CSV
+- [x] Marcar pendente / recibo
 
 ### C9. Sistema (`configuracao`)
-- [ ] Form editável: frete grátis, desconto à vista, parcelas, faixas CEP CRUD
-- [ ] Cupons
-- [ ] Tipos de insumo
-- [ ] Identidade da loja (nome, redes, endereço, horário, CNPJ)
-- [ ] Parâmetros custo / margens se presentes no estático
+- [x] Form editável: frete grátis, desconto à vista, parcelas, faixas CEP CRUD
+- [x] Cupons
+- [x] Tipos de insumo
+- [x] Identidade da loja (nome, redes, endereço, horário, CNPJ)
+- [x] Parâmetros custo / margens se presentes no estático
 
 ---
 
@@ -248,9 +248,9 @@ Inventário de páginas estáticas a bater:
 
 ## 9. Próximo passo imediato
 
-**Concluído:** S0–S6 — inclui financeiro (C7).
+**Concluído:** S0–S7 — Fiscal (C8), Sistema (C9), preview ProdutoEdit.
 
-**Seguir com (S7):**
-1. Fiscal (C8) + Sistema/configuração (C9)
-2. Preview card no ProdutoEdit (restante C2)
-3. Fase D (README, watch, checklist)
+**Seguir com (Fase D):**
+1. Documentar `dotnet watch` / mapa de rotas no README
+2. Checklist de aceite por módulo (loja + admin)
+3. Anti-forgery / flash / upload — revisar lacunas se houver

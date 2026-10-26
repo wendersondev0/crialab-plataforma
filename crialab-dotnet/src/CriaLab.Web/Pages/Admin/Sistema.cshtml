@@ -1,10 +1,312 @@
 @page
 @model CriaLab.Web.Pages.Admin.SistemaModel
-@{ ViewData["Title"] = "Sistema"; }
-<h1>Sistema</h1>
-<p>Frete grátis a partir de R$ @Model.Config?.FreteGratisAPartir.ToString("N2")</p>
-<p>Desconto à vista: @(Model.Config != null ? (Model.Config.DescontoAVista * 100).ToString("N0") + "%" : "")</p>
-<h2>Faixas de CEP</h2>
-@foreach (var f in Model.Faixas) { <p>@f.De-@f.Ate · PAC R$ @f.Pac.ToString("N2") · SEDEX R$ @f.Sedex.ToString("N2")</p> }
-<h2>Tipos de insumo</h2>
-<p>@string.Join(", ", Model.TiposInsumo.Select(x => x.Nome))</p>
+@{
+    ViewData["Title"] = "Sistema";
+    var nomeCurto = (Model.Identidade.Nome ?? "Loja").Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "Loja";
+    var cupomPct = Model.Cupom == null ? 0m : Math.Round(Model.Cupom.Percentual * 100m, 1);
+}
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Sistema</h1>
+        <p class="admin-prod-intro m-0 mt-1">Configure a loja, as regras de venda, o frete por CEP e o que aparece no site — sem misturar tudo num formulário só.</p>
+    </div>
+    <a class="botao-linha" asp-page="/Admin/Marketing">Marketing</a>
+</div>
+
+<div class="sys-kpis">
+    <a class="sys-kpi@(Model.Aba == "loja" ? " ativo" : "") no-underline" asp-page="/Admin/Sistema" asp-route-aba="loja"><strong>@nomeCurto</strong><span>Identidade</span></a>
+    <a class="sys-kpi@(Model.Aba == "vendas" ? " ativo" : "") no-underline" asp-page="/Admin/Sistema" asp-route-aba="vendas"><strong>R$ @Model.Config.FreteGratisAPartir.ToString("N0")</strong><span>Frete grátis</span></a>
+    <a class="sys-kpi@(Model.Aba == "frete" ? " ativo" : "") no-underline" asp-page="/Admin/Sistema" asp-route-aba="frete"><strong>@Model.Faixas.Count</strong><span>Faixas de CEP</span></a>
+    <a class="sys-kpi@(Model.Aba == "site" ? " ativo" : "") no-underline" asp-page="/Admin/Sistema" asp-route-aba="site"><strong>@Model.DepoimentosVisiveis/@Model.ParceirosVisiveis</strong><span>Depoim. / Parceiros</span></a>
+    <a class="sys-kpi@(Model.Aba == "avancado" ? " ativo" : "") no-underline" asp-page="/Admin/Sistema" asp-route-aba="avancado"><strong>@Model.TiposInsumo.Count</strong><span>Tipos de insumo</span></a>
+</div>
+
+<div class="fin-abas sys-abas">
+    <a class="fin-aba@(Model.Aba == "loja" ? " ativo" : "")" asp-page="/Admin/Sistema" asp-route-aba="loja">Loja</a>
+    <a class="fin-aba@(Model.Aba == "vendas" ? " ativo" : "")" asp-page="/Admin/Sistema" asp-route-aba="vendas">Vendas</a>
+    <a class="fin-aba@(Model.Aba == "frete" ? " ativo" : "")" asp-page="/Admin/Sistema" asp-route-aba="frete">Frete</a>
+    <a class="fin-aba@(Model.Aba == "site" ? " ativo" : "")" asp-page="/Admin/Sistema" asp-route-aba="site">Publicação</a>
+    <a class="fin-aba@(Model.Aba == "avancado" ? " ativo" : "")" asp-page="/Admin/Sistema" asp-route-aba="avancado">Avançado</a>
+</div>
+
+@if (Model.Avisos.Any())
+{
+    <div class="sys-alerta">
+        @foreach (var a in Model.Avisos) { <span>@a</span> }
+    </div>
+}
+@if (TempData["Ok"] is string ok)
+{
+    <p class="sys-ok">@ok</p>
+}
+
+@if (Model.Aba == "loja")
+{
+    <form method="post" asp-page-handler="Loja" class="sys-card">
+        <div class="sys-card-topo">
+            <h2 class="sys-titulo">Identidade da loja</h2>
+            <span class="sys-selo">Aparece no recibo e no rodapé</span>
+        </div>
+        <div class="sys-grade">
+            <label class="fin-campo"><span>Nome</span><input asp-for="Identidade.Nome" required /></label>
+            <label class="fin-campo"><span>CNPJ</span><input asp-for="Identidade.Cnpj" /></label>
+            <label class="fin-campo"><span>E-mail</span><input asp-for="Identidade.Email" type="email" /></label>
+            <label class="fin-campo"><span>Telefone</span><input asp-for="Identidade.Telefone" /></label>
+            <label class="fin-campo"><span>Site</span><input asp-for="Identidade.Site" /></label>
+            <label class="fin-campo sys-span2"><span>Endereço</span><input asp-for="Identidade.Endereco" placeholder="Rua, número, cidade/UF" /></label>
+            <label class="fin-campo sys-span2"><span>Horário</span><input asp-for="Identidade.Horario" placeholder="Seg a sex, 9h–18h" /></label>
+        </div>
+        <h3 class="sys-subtitulo">Redes e canais</h3>
+        <div class="sys-grade">
+            <label class="fin-campo"><span>WhatsApp</span><input asp-for="Identidade.Whatsapp" /></label>
+            <label class="fin-campo"><span>Instagram</span><input asp-for="Identidade.Instagram" /></label>
+            <label class="fin-campo"><span>TikTok</span><input asp-for="Identidade.Tiktok" /></label>
+            <label class="fin-campo"><span>YouTube</span><input asp-for="Identidade.Youtube" /></label>
+            <label class="fin-campo"><span>Shopee</span><input asp-for="Identidade.Shopee" /></label>
+            <label class="fin-campo"><span>Mercado Livre</span><input asp-for="Identidade.MercadoLivre" /></label>
+        </div>
+        <div class="sys-acoes"><button class="botao" type="submit">Salvar loja</button></div>
+    </form>
+}
+else if (Model.Aba == "vendas")
+{
+    <form method="post" asp-page-handler="Vendas" class="sys-card">
+        <div class="sys-card-topo">
+            <h2 class="sys-titulo">Regras de venda</h2>
+            <span class="sys-selo">Checkout e orçamento</span>
+        </div>
+        <div class="sys-grade">
+            <label class="fin-campo"><span>Frete grátis a partir de (R$)</span><input asp-for="Config.FreteGratisAPartir" type="number" step="0.01" min="0" /></label>
+            <label class="fin-campo"><span>Desconto à vista (%)</span><input asp-for="DescontoAVistaPct" type="number" step="0.5" min="0" max="90" /><small>Ex.: 10 = 10% no PIX/boleto</small></label>
+            <label class="fin-campo"><span>Parcelas no cartão</span><input asp-for="Config.Parcelas" type="number" min="1" max="12" /></label>
+            <label class="fin-campo"><span>Taxa de falha (%)</span><input asp-for="TaxaFalhaPct" type="number" step="0.1" min="0" max="50" /><small>Usada no orçamento de impressão</small></label>
+            <label class="fin-campo"><span>Frete de canal (R$)</span><input asp-for="Config.FreteCanal" type="number" step="0.01" min="0" /><small>Custo extra no orçamento de marketplace</small></label>
+            <label class="sys-check"><input asp-for="Config.RepassarFrete" type="checkbox" /><span>Repassar o frete no líquido da venda</span></label>
+        </div>
+        <div class="sys-cupom-box">
+            <div>
+                <strong>Cupom da loja</strong>
+                <p class="sys-meta m-0">@(Model.Cupom?.Codigo ?? "—") · @cupomPct% · @(Model.Cupom is { Ativo: true } ? "ativo" : "pausado")</p>
+            </div>
+            <a class="botao-linha" asp-page="/Admin/Marketing" asp-route-aba="cupom">Editar no Marketing</a>
+        </div>
+        <div class="sys-acoes"><button class="botao" type="submit">Salvar vendas</button></div>
+        <p class="sys-meta">Pedidos já feitos continuam com o frete e o desconto da hora da compra.</p>
+    </form>
+}
+else if (Model.Aba == "frete")
+{
+    var digitos = new string((Model.Cep ?? "").Where(char.IsDigit).ToArray());
+    <div class="sys-card">
+        <div class="sys-card-topo">
+            <h2 class="sys-titulo">Faixas de CEP</h2>
+            <button class="botao-linha" type="button" id="sys-add-faixa">Nova faixa</button>
+        </div>
+        <div class="sys-frete-topo">
+            <form method="get" class="fin-campo fis-busca">
+                <input type="hidden" name="aba" value="frete" />
+                <span>Testar CEP</span>
+                <input name="cep" type="search" inputmode="numeric" value="@Model.Cep" placeholder="Ex.: 29010-000" />
+            </form>
+            @if (!string.IsNullOrEmpty(digitos))
+            {
+                <p class="sys-meta">@(Model.FaixasVisiveis.Any() ? "Faixa encontrada para o CEP informado." : "Nenhuma faixa cobre este CEP.")</p>
+            }
+            else
+            {
+                <p class="sys-meta">PAC e SEDEX por intervalo de CEP. Pedidos novos usam a tabela salva.</p>
+            }
+        </div>
+        <form method="post" asp-page-handler="Frete" class="sys-faixas" id="sys-frete">
+            <input type="hidden" asp-for="FaixasJson" id="FaixasJson" />
+            <div id="sys-faixas-lista"></div>
+            <div class="sys-acoes"><button class="botao" type="submit">Salvar faixas</button></div>
+        </form>
+    </div>
+}
+else if (Model.Aba == "site")
+{
+    <div class="sys-pub-grade">
+        <section class="sys-card">
+            <div class="sys-card-topo">
+                <h2 class="sys-titulo">Depoimentos</h2>
+                <span class="sys-selo">@Model.DepoimentosVisiveis no site</span>
+            </div>
+            <div class="sys-pub-lista">
+                @foreach (var d in Model.Depoimentos)
+                {
+                    <form method="post" asp-page-handler="PubDepoimento" class="sys-pub-item">
+                        <input type="hidden" name="id" value="@d.Id" />
+                        <label class="sys-pub-item">
+                            <input type="checkbox" name="podeAparecer" value="true" @(d.PodeAparecer ? "checked" : "") onchange="this.form.submit()" />
+                            <span><strong>@d.Autor</strong><small>@d.Texto</small></span>
+                        </label>
+                    </form>
+                }
+            </div>
+        </section>
+        <section class="sys-card">
+            <div class="sys-card-topo">
+                <h2 class="sys-titulo">Parceiros</h2>
+                <span class="sys-selo">@Model.ParceirosVisiveis no site</span>
+            </div>
+            <div class="sys-pub-lista">
+                @foreach (var p in Model.Parceiros)
+                {
+                    <form method="post" asp-page-handler="PubParceiro" class="sys-pub-item">
+                        <input type="hidden" name="id" value="@p.Id" />
+                        <label class="sys-pub-item">
+                            <input type="checkbox" name="podeAparecer" value="true" @(p.PodeAparecer ? "checked" : "") onchange="this.form.submit()" />
+                            @if (!string.IsNullOrWhiteSpace(p.Logo))
+                            {
+                                <img class="sys-pub-logo" src="~/@p.Logo" alt="" />
+                            }
+                            <span><strong>@p.Nome</strong><small>Pode aparecer no rodapé e em Sobre</small></span>
+                        </label>
+                    </form>
+                }
+            </div>
+        </section>
+    </div>
+    <p class="sys-meta">Desligado some na hora da home, do Sobre e do rodapé. Não apaga o cadastro.</p>
+}
+else
+{
+    <div class="sys-card">
+        <div class="sys-card-topo">
+            <h2 class="sys-titulo">Tipos de insumo</h2>
+            <span class="sys-selo">Financeiro e estoque</span>
+        </div>
+        <div class="sys-chips">
+            @foreach (var t in Model.TiposInsumo)
+            {
+                <span class="sys-chip">@t.Nome
+                    <form method="post" asp-page-handler="TipoRm" style="display:inline">
+                        <input type="hidden" name="id" value="@t.Id" />
+                        <button type="submit" aria-label="Remover">×</button>
+                    </form>
+                </span>
+            }
+        </div>
+        <form method="post" asp-page-handler="TipoAdd" class="sys-meta-form">
+            <label class="fin-campo"><span>Novo tipo</span><input name="tipo" required placeholder="Ex.: Verniz fosco" /></label>
+            <button class="botao" type="submit">Adicionar</button>
+        </form>
+    </div>
+
+    @if (Model.Parametros.Any())
+    {
+        <div class="sys-card">
+            <div class="sys-card-topo"><h2 class="sys-titulo">Parâmetros de custo</h2><span class="sys-selo">Orçamento</span></div>
+            <div class="grade grid grid-cols-1 gap-3">
+                @foreach (var p in Model.Parametros)
+                {
+                    <form method="post" asp-page-handler="Parametro" class="sys-grade">
+                        <input type="hidden" name="id" value="@p.Id" />
+                        <label class="fin-campo"><span>@p.Nome (@p.Unidade)</span><input name="preco" type="number" step="0.0001" min="0" value="@p.Preco" /></label>
+                        <label class="sys-check"><input name="travado" type="checkbox" value="true" @(p.Travado ? "checked" : "") /><span>Travado</span></label>
+                        <button class="botao-linha" type="submit">Salvar</button>
+                    </form>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.Margens.Any())
+    {
+        <div class="sys-card">
+            <div class="sys-card-topo"><h2 class="sys-titulo">Margens por canal</h2><span class="sys-selo">Orçamento</span></div>
+            <div class="grade grid grid-cols-1 gap-3">
+                @foreach (var m in Model.Margens)
+                {
+                    <form method="post" asp-page-handler="Margem" class="sys-grade">
+                        <input type="hidden" name="id" value="@m.Id" />
+                        <label class="fin-campo"><span>@m.Nome (%)</span><input name="percentualPct" type="number" step="0.5" min="0" max="95" value="@(Math.Round(m.Percentual * 100m, 1))" /></label>
+                        <label class="sys-check"><input name="ativo" type="checkbox" value="true" @(m.Ativo ? "checked" : "") /><span>Ativo</span></label>
+                        <button class="botao-linha" type="submit">Salvar</button>
+                    </form>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="sys-card sys-perigoso">
+        <div class="sys-card-topo">
+            <h2 class="sys-titulo">Restaurar carga inicial</h2>
+            <span class="sys-selo alerta">Somente desenvolvimento</span>
+        </div>
+        <p class="sys-meta">No Razor a carga inicial vem do seed do Postgres. Para recriar o banco de demonstração, apague o schema e rode a aplicação novamente (ou use o atalho do Painel em Dev).</p>
+        <a class="botao-linha" asp-page="/Admin/Index">Ir ao Painel</a>
+    </div>
+}
+
+@section Scripts {
+@if (Model.Aba == "frete")
+{
+<script>
+(function () {
+  var campo = document.getElementById("FaixasJson");
+  var lista = document.getElementById("sys-faixas-lista");
+  if (!campo || !lista) return;
+  var faixas = [];
+  try { faixas = JSON.parse(campo.value || "[]") || []; } catch (e) { faixas = []; }
+  var digitos = "@(new string((Model.Cep ?? "").Where(char.IsDigit).ToArray()))";
+  var cepN = digitos ? Number(digitos) : 0;
+
+  function sync() { campo.value = JSON.stringify(faixas); }
+
+  function pintar() {
+    if (!faixas.length) {
+      lista.innerHTML = '<p class="sys-meta">Nenhuma faixa cadastrada.</p>';
+      sync();
+      return;
+    }
+    lista.innerHTML = faixas.map(function (f, i) {
+      var destaque = cepN && cepN >= f.de && cepN <= f.ate ? " destaque" : "";
+      if (digitos && !(cepN >= f.de && cepN <= f.ate)) return "";
+      return '<article class="sys-faixa' + destaque + '" data-i="' + i + '">' +
+        '<div class="sys-faixa-cab"><strong>Faixa ' + (i + 1) + '</strong>' +
+        '<button class="botao-linha" type="button" data-rm="' + i + '"' + (faixas.length <= 1 ? " disabled" : "") + '>Remover</button></div>' +
+        '<div class="sys-faixa-grade">' +
+        '<label class="fin-campo"><span>CEP de</span><input data-campo="de" type="number" value="' + f.de + '"></label>' +
+        '<label class="fin-campo"><span>CEP até</span><input data-campo="ate" type="number" value="' + f.ate + '"></label>' +
+        '<label class="fin-campo"><span>PAC (R$)</span><input data-campo="pac" type="number" step="0.01" value="' + f.pac + '"></label>' +
+        '<label class="fin-campo"><span>Dias PAC</span><input data-campo="pacDias" type="number" value="' + f.pacDias + '"></label>' +
+        '<label class="fin-campo"><span>SEDEX (R$)</span><input data-campo="sedex" type="number" step="0.01" value="' + f.sedex + '"></label>' +
+        '<label class="fin-campo"><span>Dias SEDEX</span><input data-campo="sedexDias" type="number" value="' + f.sedexDias + '"></label>' +
+        '</div></article>';
+    }).join("") || '<p class="sys-meta">Nenhuma faixa para mostrar com esse CEP.</p>';
+
+    lista.querySelectorAll("[data-campo]").forEach(function (inp) {
+      inp.addEventListener("change", function () {
+        var art = inp.closest("[data-i]");
+        var i = Number(art.getAttribute("data-i"));
+        var k = inp.getAttribute("data-campo");
+        faixas[i][k] = Number(inp.value) || 0;
+        sync();
+      });
+    });
+    lista.querySelectorAll("[data-rm]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        if (faixas.length <= 1) return;
+        faixas.splice(Number(btn.getAttribute("data-rm")), 1);
+        pintar();
+      });
+    });
+    sync();
+  }
+
+  var add = document.getElementById("sys-add-faixa");
+  if (add) add.addEventListener("click", function () {
+    var ultimo = faixas[faixas.length - 1];
+    var de = ultimo ? Number(ultimo.ate) + 1 : 1000;
+    faixas.push({ de: de, ate: de + 999, pac: 29.9, pacDias: 8, sedex: 49.9, sedexDias: 3 });
+    pintar();
+  });
+
+  document.getElementById("sys-frete").addEventListener("submit", function () { sync(); });
+  pintar();
+})();
+</script>
+}
+}

@@ -3,6 +3,12 @@
 @{
     ViewData["Title"] = Model.Novo || string.IsNullOrWhiteSpace(Model.Produto.Titulo) ? "Novo produto" : "Editar produto";
 }
+@{
+    var fotoPrev = Model.Fotos.OrderBy(f => f.Ordem).FirstOrDefault()?.Arquivo;
+    var modNome = Model.Modalidades.FirstOrDefault(x => x.Value == Model.Produto.ModalidadeId)?.Text ?? Model.Produto.ModalidadeId;
+    var catNome = Model.Categorias.FirstOrDefault(x => x.Value == Model.Produto.CategoriaId)?.Text ?? Model.Produto.CategoriaId;
+    var tagMod = Model.Produto.ModalidadeId == "personalizado" ? "tag-pers" : (Model.Produto.ModalidadeId == "sob-demanda" ? "tag-demanda" : "tag-pronta");
+}
 <div class="admin-prod-cab">
     <div>
         <h1 class="m-0">@ViewData["Title"]</h1>
@@ -11,6 +17,7 @@
     <a class="botao-linha" asp-page="/Admin/Produtos">Voltar à lista</a>
 </div>
 
+<div class="admin-prod-edit-grade">
 <form method="post" enctype="multipart/form-data" class="cartao formulario admin-prod-form" id="form-produto">
     <input type="hidden" asp-for="Produto.Id" />
     <input type="hidden" asp-for="Produto.Sessao" />
@@ -20,7 +27,7 @@
     <div asp-validation-summary="ModelOnly"></div>
 
     <div class="grade grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <label>Título<input asp-for="Produto.Titulo" required /></label>
+        <label>Título<input asp-for="Produto.Titulo" required id="Produto_Titulo" /></label>
         <label>Categoria
             <select asp-for="Produto.CategoriaId" asp-items="Model.Categorias"></select>
         </label>
@@ -104,6 +111,42 @@
     </div>
 </form>
 
+<aside class="admin-prod-preview-lado">
+    <p class="admin-prod-preview-rotulo">Prévia do card</p>
+    <article class="admin-prod-card admin-prod-preview" id="prod-preview" data-foto="@(fotoPrev ?? "")">
+        <div class="admin-prod-foto">
+            @if (!string.IsNullOrWhiteSpace(fotoPrev))
+            {
+                <img class="admin-prod-thumb" id="prev-thumb" src="~/@fotoPrev" alt="" />
+            }
+            else
+            {
+                <span class="admin-prod-thumb vazia" id="prev-thumb-vazia"><span class="ico"><partial name="_SvgIcon" model="@("caixa")" /></span></span>
+            }
+        </div>
+        <div class="admin-prod-info">
+            <div class="admin-prod-topo">
+                <span class="tag @tagMod" id="prev-mod">@modNome</span>
+                <span class="selo-sit @(Model.Produto.Situacao == "publicado" ? "ok" : "pause")" id="prev-sit">@Model.Produto.Situacao</span>
+            </div>
+            <h3 class="admin-prod-titulo" id="prev-titulo">@(string.IsNullOrWhiteSpace(Model.Produto.Titulo) ? "Título do produto" : Model.Produto.Titulo)</h3>
+            <p class="admin-prod-meta" id="prev-meta">@catNome · @(Model.Produto.CriadoEm == default ? DateOnly.FromDateTime(DateTime.Today).ToString("dd/MM/yyyy") : Model.Produto.CriadoEm.ToString("dd/MM/yyyy"))</p>
+            <div class="admin-prod-nums">
+                <span class="admin-prod-preco" id="prev-preco">R$ @Model.Produto.Preco.ToString("N2")</span>
+                <span class="admin-prod-estoque" id="prev-estoque">@(Model.Produto.ModalidadeId == "personalizado" ? "Preço médio" : $"Estoque {Model.Produto.Estoque}")</span>
+                <span class="admin-prod-vendas">@Model.Produto.Vendas vendas</span>
+            </div>
+            <div class="admin-prod-selos" id="prev-selos">
+                @if (Model.Produto.Oferta) { <span class="selo-mod selo-pronta">Oferta</span> }
+                @if (Model.Produto.MaisVendido) { <span class="selo-mod selo-publicado">Mais vendido</span> }
+                @if (Model.Produto.AVista) { <span class="selo-mod selo-demanda">À vista</span> }
+                @if (Model.Produto.Personalizavel) { <span class="selo-mod selo-pers">Personalizável</span> }
+            </div>
+        </div>
+    </article>
+</aside>
+</div>
+
 @section Scripts {
 <script>
 (function () {
@@ -111,6 +154,69 @@
   var etapas = [];
   try { rascunho = JSON.parse(document.getElementById("VariacoesJson").value || "[]") || []; } catch (e) { rascunho = []; }
   try { etapas = JSON.parse(document.getElementById("EtapasJson").value || "[]") || []; } catch (e) { etapas = []; }
+
+  function atualizarPreview() {
+    var form = document.getElementById("form-produto");
+    if (!form) return;
+    var titulo = form.querySelector("[name='Produto.Titulo']");
+    var preco = form.querySelector("[name='Produto.Preco']");
+    var estoque = form.querySelector("[name='Produto.Estoque']");
+    var situacao = form.querySelector("[name='Produto.Situacao']");
+    var modalidade = form.querySelector("[name='Produto.ModalidadeId']");
+    var categoria = form.querySelector("[name='Produto.CategoriaId']");
+    var oferta = form.querySelector("input[type=checkbox][name='Produto.Oferta']");
+    var mais = form.querySelector("input[type=checkbox][name='Produto.MaisVendido']");
+    var vista = form.querySelector("input[type=checkbox][name='Produto.AVista']");
+    var pers = form.querySelector("input[type=checkbox][name='Produto.Personalizavel']");
+
+    var elTitulo = document.getElementById("prev-titulo");
+    var elPreco = document.getElementById("prev-preco");
+    var elEstoque = document.getElementById("prev-estoque");
+    var elSit = document.getElementById("prev-sit");
+    var elMod = document.getElementById("prev-mod");
+    var elMeta = document.getElementById("prev-meta");
+    var elSelos = document.getElementById("prev-selos");
+    if (elTitulo) elTitulo.textContent = (titulo && titulo.value.trim()) || "Título do produto";
+    if (elPreco) {
+      var n = Number(preco && preco.value) || 0;
+      elPreco.textContent = "R$ " + n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    var modVal = modalidade ? modalidade.value : "";
+    if (elEstoque) elEstoque.textContent = modVal === "personalizado" ? "Preço médio" : ("Estoque " + (estoque ? estoque.value : "0"));
+    if (elSit) {
+      var sit = situacao ? situacao.value : "publicado";
+      elSit.textContent = sit;
+      elSit.className = "selo-sit " + (sit === "publicado" ? "ok" : "pause");
+    }
+    if (elMod && modalidade) {
+      var opt = modalidade.options[modalidade.selectedIndex];
+      elMod.textContent = opt ? opt.text : modVal;
+      elMod.className = "tag " + (modVal === "personalizado" ? "tag-pers" : (modVal === "sob-demanda" ? "tag-demanda" : "tag-pronta"));
+    }
+    if (elMeta && categoria) {
+      var copt = categoria.options[categoria.selectedIndex];
+      var catTxt = copt ? copt.text : "";
+      var metaBase = elMeta.textContent.split(" · ");
+      var data = metaBase.length > 1 ? metaBase[1] : "";
+      elMeta.textContent = catTxt + (data ? " · " + data : "");
+    }
+    if (elSelos) {
+      var html = "";
+      if (oferta && oferta.checked) html += '<span class="selo-mod selo-pronta">Oferta</span>';
+      if (mais && mais.checked) html += '<span class="selo-mod selo-publicado">Mais vendido</span>';
+      if (vista && vista.checked) html += '<span class="selo-mod selo-demanda">À vista</span>';
+      if (pers && pers.checked) html += '<span class="selo-mod selo-pers">Personalizável</span>';
+      elSelos.innerHTML = html;
+    }
+  }
+
+  var formPrev = document.getElementById("form-produto");
+  if (formPrev) {
+    formPrev.addEventListener("input", atualizarPreview);
+    formPrev.addEventListener("change", atualizarPreview);
+  }
+  atualizarPreview();
+
 
   function novoId(prefixo) {
     return prefixo + "-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);

@@ -1,6 +1,144 @@
 @page
 @model CriaLab.Web.Pages.Admin.FiscalModel
-@{ ViewData["Title"] = "Fiscal"; }
-<h1>Fiscal</h1>
-<p>CNPJ: @Model.Identidade?.Cnpj</p>
-<p>Pedidos com nota pendente: @Model.PedidosNotaPendente</p>
+@{
+    ViewData["Title"] = "Fiscal";
+}
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Gestão fiscal</h1>
+        <p class="admin-prod-intro m-0 mt-1">CNPJ @(Model.Identidade?.Cnpj ?? "—") · recibos e revisão de nota (sem transmissão).</p>
+    </div>
+    <a class="botao-linha" asp-page="/Admin/Pedidos">Pedidos</a>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+<div class="fis-kpis">
+    <a class="fis-kpi no-underline" asp-page="/Admin/Fiscal"><strong>@Model.TotalPedidos</strong><span>Pedidos</span></a>
+    <a class="fis-kpi no-underline" asp-page="/Admin/Fiscal" asp-route-doc="recibo"><strong>@Model.ComRecibo</strong><span>Com recibo</span></a>
+    <a class="fis-kpi alerta no-underline" asp-page="/Admin/Fiscal" asp-route-doc="recibo" asp-route-nota="pendente"><strong>@Model.Pendentes</strong><span>Notas pendentes</span></a>
+    <a class="fis-kpi ok no-underline" asp-page="/Admin/Fiscal" asp-route-doc="recibo" asp-route-nota="revisada"><strong>@Model.Revisadas</strong><span>Notas revisadas</span></a>
+    <article class="fis-kpi valor"><strong>R$ @Model.TotalComRecibo.ToString("N2")</strong><span>Total com recibo</span></article>
+</div>
+
+<form method="get" class="fis-filtros" id="fis-filtros">
+    <label class="fin-campo fis-busca"><span>Buscar</span><input name="q" type="search" value="@Model.Q" placeholder="Pedido, item ou endereço" /></label>
+    <label class="fin-campo"><span>Status do pedido</span>
+        <select name="status">
+            <option value="">Todos</option>
+            @foreach (var s in Model.StatusDisponiveis)
+            {
+                if (Model.Status == s) { <option value="@s" selected>@s</option> }
+                else { <option value="@s">@s</option> }
+            }
+        </select>
+    </label>
+    <label class="fin-campo"><span>Documento</span>
+        <select name="doc">
+            <option value="">Todos</option>
+            @if (Model.Doc == "recibo") { <option value="recibo" selected>Com recibo</option> } else { <option value="recibo">Com recibo</option> }
+            @if (Model.Doc == "sem-recibo") { <option value="sem-recibo" selected>Sem recibo</option> } else { <option value="sem-recibo">Sem recibo</option> }
+        </select>
+    </label>
+    <label class="fin-campo"><span>Nota fiscal</span>
+        <select name="nota">
+            <option value="">Todas</option>
+            @if (Model.Nota == "pendente") { <option value="pendente" selected>Pendentes</option> } else { <option value="pendente">Pendentes</option> }
+            @if (Model.Nota == "revisada") { <option value="revisada" selected>Revisadas</option> } else { <option value="revisada">Revisadas</option> }
+            @if (Model.Nota == "nao_aplicavel") { <option value="nao_aplicavel" selected>Sem nota</option> } else { <option value="nao_aplicavel">Sem nota</option> }
+        </select>
+    </label>
+    <label class="fin-campo"><span>Ordenar</span>
+        <select name="ordem">
+            @if (Model.Ordem == "data") { <option value="data" selected>Mais recentes</option> } else { <option value="data">Mais recentes</option> }
+            @if (Model.Ordem == "valor") { <option value="valor" selected>Maior valor</option> } else { <option value="valor">Maior valor</option> }
+            @if (Model.Ordem == "id") { <option value="id" selected>Pedido</option> } else { <option value="id">Pedido</option> }
+        </select>
+    </label>
+    <button class="botao" type="submit">Filtrar</button>
+    <a class="botao-linha fis-csv" asp-page="/Admin/Fiscal" asp-page-handler="Csv" asp-route-q="@Model.Q" asp-route-status="@Model.Status" asp-route-doc="@Model.Doc" asp-route-nota="@Model.Nota" asp-route-ordem="@Model.Ordem">CSV</a>
+</form>
+
+<div class="grade grid grid-cols-1 gap-3 mt-4">
+@foreach (var p in Model.Pedidos)
+{
+    var nf = FiscalModel.EstadoNota(p);
+    var temRecibo = FiscalModel.TemRecibo(p);
+    var personalizado = p.Itens.Any(i => i.Tipo == "personalizado");
+    <article class="fis-card cartao p-4">
+        <div class="flex flex-wrap justify-between gap-2">
+            <div>
+                <strong>@p.Id</strong>
+                <button class="botao-linha ml-2" type="button" data-copiar="@p.Id">Copiar ID</button>
+                <p class="discreto m-0">@p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy HH:mm") · @p.Forma</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <span class="@FiscalModel.ClasseStatus(p.Status)">@p.Status</span>
+                <span class="@FiscalModel.ClasseNota(nf)">@FiscalModel.RotuloNota(nf)</span>
+            </div>
+        </div>
+        <p class="m-0 mt-2">@string.Join(", ", p.Itens.Select(i => $"{i.Titulo} × {i.Quantidade}"))</p>
+        <p class="discreto m-0">@p.Endereco</p>
+        <p class="m-0 mt-1"><strong>R$ @p.Total.ToString("N2")</strong></p>
+        <div class="fis-acoes flex flex-wrap gap-2 mt-3">
+            @if (temRecibo)
+            {
+                <a class="botao" asp-page="/Recibo" asp-route-id="@p.Id">Abrir recibo</a>
+                @if (nf == "pendente")
+                {
+                    <form method="post" asp-page-handler="Nota">
+                        <input type="hidden" name="id" value="@p.Id" />
+                        <input type="hidden" name="nota" value="revisada" />
+                        <input type="hidden" name="q" value="@Model.Q" />
+                        <input type="hidden" name="status" value="@Model.Status" />
+                        <input type="hidden" name="doc" value="@Model.Doc" />
+                        <input type="hidden" name="ordem" value="@Model.Ordem" />
+                        <button class="botao-linha" type="submit">Marcar revisada</button>
+                    </form>
+                }
+                @if (nf == "revisada")
+                {
+                    <form method="post" asp-page-handler="Nota">
+                        <input type="hidden" name="id" value="@p.Id" />
+                        <input type="hidden" name="nota" value="pendente" />
+                        <input type="hidden" name="q" value="@Model.Q" />
+                        <input type="hidden" name="status" value="@Model.Status" />
+                        <input type="hidden" name="doc" value="@Model.Doc" />
+                        <input type="hidden" name="ordem" value="@Model.Ordem" />
+                        <button class="botao-linha" type="submit">Voltar para pendente</button>
+                    </form>
+                }
+            }
+            else
+            {
+                <span class="fis-aviso">Recibo liberado após o pagamento</span>
+            }
+            <a class="botao-linha" asp-page="/Admin/Pedidos">Pedidos</a>
+            @if (personalizado)
+            {
+                <a class="botao-linha" asp-page="/Admin/Os" asp-route-id="@p.Id">Ordem de serviço</a>
+            }
+        </div>
+    </article>
+}
+@if (!Model.Pedidos.Any())
+{
+    <div class="vazio cartao"><p>Nenhum pedido com esses filtros.</p></div>
+}
+</div>
+
+@section Scripts {
+<script>
+document.querySelectorAll("[data-copiar]").forEach(function (botao) {
+  botao.addEventListener("click", function () {
+    var id = botao.getAttribute("data-copiar") || "";
+    if (navigator.clipboard) navigator.clipboard.writeText(id);
+    botao.textContent = "Copiado";
+    setTimeout(function () { botao.textContent = "Copiar ID"; }, 1200);
+  });
+});
+</script>
+}
