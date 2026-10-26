@@ -1,0 +1,26 @@
+@model CriaLab.Web.Data.Entities.Produto
+@{
+    var foto = Model.Fotos.OrderBy(f => f.Ordem).FirstOrDefault();
+    var mod = Model.Modalidade?.Nome ?? Model.ModalidadeId;
+    var tagClasse = Model.ModalidadeId == "personalizado" ? "tag-pers" : "";
+}
+<article class="produto">
+    <a class="produto-link" asp-page="/Produto" asp-route-id="@Model.Id">
+        <span class="produto-foto">
+            @if (foto != null)
+            {
+                <img src="~/@foto.Arquivo" alt="@(string.IsNullOrWhiteSpace(foto.Legenda) ? Model.Titulo : foto.Legenda)" />
+            }
+            else
+            {
+                <img src="~/marca/mascote.png" alt="@Model.Titulo" />
+            }
+        </span>
+        <span class="produto-corpo">
+            <span class="tag @tagClasse">@mod</span>
+            <span class="discreto">@(Model.Categoria?.Nome ?? Model.CategoriaId)</span>
+            <h3>@Model.Titulo</h3>
+            <p class="preco-card">R$ @Model.Preco.ToString("N2")</p>
+        </span>
+    </a>
+</article>

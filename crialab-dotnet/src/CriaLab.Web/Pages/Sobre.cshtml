@@ -1,6 +1,26 @@
 @page
 @model CriaLab.Web.Pages.SobreModel
-@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Sobre"; }
-<h1>Sobre a Cria Lab</h1>
-<p>@Model.Ajuda?.Texto</p>
-<p>CNPJ: @Model.Identidade?.Cnpj</p>
+@{
+    ViewData["Title"] = "Sobre";
+}
+<section class="sobre">
+    <div class="passaro-palco">
+        <img class="passaro" src="~/marca/mascote.png" alt="Mascote da Cria Lab DM" />
+        <span class="passaro-sombra"></span>
+    </div>
+    <div class="sobre-texto">
+        <img class="letreiro" src="~/marca/logo-colorida.png" alt="Cria Lab" />
+        <h1>@(Model.Identidade?.Nome ?? "Cria Lab DM")</h1>
+        <p class="sobre-slogan">Oficina de impressão 3D que transforma ideia em peça — pronta, sob demanda ou do seu jeito.</p>
+        <p class="sobre-lead">@(Model.Ajuda?.Texto ?? "Somos uma oficina de impressão 3D: peças prontas, sob demanda e personalizadas do seu jeito.")</p>
+        <div class="sobre-ctas">
+            <a class="botao" asp-page="/Produtos">Ver produtos</a>
+            <a class="botao-teal" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado">Personalizados</a>
+            <a class="botao-linha" asp-page="/Contato">Falar conosco</a>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.Identidade?.Cnpj))
+        {
+            <p class="discreto">CNPJ @Model.Identidade.Cnpj</p>
+        }
+    </div>
+</section>

@@ -1,34 +1,42 @@
+@{
+    var path = Context.Request.Path.Value ?? "";
+    string Ativo(string trecho) => path.Contains(trecho, StringComparison.OrdinalIgnoreCase) ? " ativo" : "";
+}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Admin Cria Lab</title>
+    <title>@ViewData["Title"] · Admin Cria Lab</title>
     <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site-razor.css" asp-append-version="true" />
 </head>
-<body class="admin-body">
-    <div class="admin-shell">
-        <aside class="admin-menu">
-            <h1>Cria Lab</h1>
-            <nav>
-                <a asp-page="/Admin/Index">Painel</a>
-                <a asp-page="/Admin/Produtos">Produtos</a>
-                <a asp-page="/Admin/Pedidos">Pedidos</a>
-                <a asp-page="/Admin/Marketing">Marketing</a>
-                <a asp-page="/Admin/Atendimento">Atendimento</a>
-                <a asp-page="/Admin/Patrimonio">Patrimônio</a>
-                <a asp-page="/Admin/Financeiro">Financeiro</a>
-                <a asp-page="/Admin/Fiscal">Fiscal</a>
-                <a asp-page="/Admin/Sistema">Sistema</a>
-                <a asp-page="/Admin/Impressao">Impressão</a>
-                <a asp-page="/Index">Voltar à loja</a>
-            </nav>
-        </aside>
-        <main class="admin-conteudo">
-            @RenderBody()
-        </main>
-    </div>
-    @await RenderSectionAsync("Scripts", required: false)
+<body>
+<div class="admin-shell">
+    <aside class="admin-menu">
+        <a class="marca" asp-page="/Admin/Index" style="display:inline-block;margin-bottom:12px">
+            <img src="~/marca/logo-colorida.png" alt="Cria Lab" style="height:44px;background:#fff;border-radius:12px;padding:4px" />
+        </a>
+        <h1>Administração</h1>
+        <nav>
+            <a class="@Ativo("/Admin/Index").Trim()" asp-page="/Admin/Index">Painel</a>
+            <a class="@Ativo("/Admin/Produtos")" asp-page="/Admin/Produtos">Produtos</a>
+            <a class="@Ativo("/Admin/Pedidos")" asp-page="/Admin/Pedidos">Pedidos</a>
+            <a class="@Ativo("/Admin/Marketing")" asp-page="/Admin/Marketing">Marketing</a>
+            <a class="@Ativo("/Admin/Atendimento")" asp-page="/Admin/Atendimento">Atendimento</a>
+            <a class="@Ativo("/Admin/Patrimonio")" asp-page="/Admin/Patrimonio">Patrimônio</a>
+            <a class="@Ativo("/Admin/Financeiro")" asp-page="/Admin/Financeiro">Financeiro</a>
+            <a class="@Ativo("/Admin/Fiscal")" asp-page="/Admin/Fiscal">Fiscal</a>
+            <a class="@Ativo("/Admin/Sistema")" asp-page="/Admin/Sistema">Sistema</a>
+            <a class="@Ativo("/Admin/Impressao")" asp-page="/Admin/Impressao">Impressão</a>
+            <a asp-page="/Index">Ver loja</a>
+        </nav>
+    </aside>
+    <main class="admin-conteudo miolo" style="width:auto;margin:0">
+        @RenderBody()
+    </main>
+</div>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

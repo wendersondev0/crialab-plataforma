@@ -1,16 +1,26 @@
 @page
 @model CriaLab.Web.Pages.CarrinhoModel
-@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Carrinho"; }
-<h1>Carrinho</h1>
+@{
+    ViewData["Title"] = "Carrinho";
+}
+<h1 class="mt-0">Carrinho</h1>
 @if (!Model.Itens.Any())
 {
-    <p>Seu carrinho está vazio.</p>
+    <div class="vazio cartao">
+        <p>Seu carrinho está vazio.</p>
+        <a class="botao" asp-page="/Produtos">Ver produtos</a>
+    </div>
 }
 else
 {
-    <table>
+    <table class="tabela-loja">
         <thead>
-            <tr><th>Peça</th><th>Qtd</th><th>Preço</th><th></th></tr>
+            <tr>
+                <th>Peça</th>
+                <th>Qtd</th>
+                <th>Preço</th>
+                <th></th>
+            </tr>
         </thead>
         <tbody>
             @foreach (var i in Model.Itens)
@@ -22,13 +32,16 @@ else
                     <td>
                         <form method="post" asp-page-handler="Remover">
                             <input type="hidden" name="produtoId" value="@i.ProdutoId" />
-                            <button type="submit">Remover</button>
+                            <button class="botao-linha" type="submit">Remover</button>
                         </form>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    <p><strong>Subtotal:</strong> R$ @Model.Subtotal.ToString("N2")</p>
-    <a asp-page="/Checkout">Finalizar pedido</a>
+    <p class="mt-4"><strong>Subtotal:</strong> R$ @Model.Subtotal.ToString("N2")</p>
+    <div class="linha" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <a class="botao" asp-page="/Checkout">Finalizar pedido</a>
+        <a class="botao-linha" asp-page="/Produtos">Continuar comprando</a>
+    </div>
 }

@@ -1,35 +1,42 @@
 @page
 @model CriaLab.Web.Pages.IndexModel
-@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Início"; }
-<section class="vitrine-hero">
-<h1>Impressão 3D do seu jeito</h1>
-<p>Pronta entrega, sob demanda e personalizados.</p>
+@{
+    ViewData["Title"] = "Início";
+}
+<section class="hero cartao">
+    <div>
+        <p class="discreto m-0">Oficina de impressão 3D</p>
+        <h1>Peças prontas, sob demanda e do seu jeito</h1>
+        <p>A Cria Lab DM imprime decoração, chaveiros, utilidades e personalizados a partir da sua ideia.</p>
+        <div class="linha" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px">
+            <a class="botao" asp-page="/Produtos" asp-route-ModalidadeFiltro="pronta-entrega">Ver pronta entrega</a>
+            <a class="botao-teal" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado">Personalizados</a>
+        </div>
+    </div>
+    <img class="mascote" src="~/marca/mascote.png" alt="Mascote Cria Lab" />
 </section>
-<section class="modalidades-atalhos">
-@foreach (var m in Model.Modalidades)
-{
-<div class="modalidade-card">
-<h2>@m.Nome</h2>
-<p>@m.Resumo</p>
-<a asp-page="/Produtos" asp-route-modalidade="@m.Id">Ver peças</a>
-</div>
-}
+
+<section class="mt-6">
+    <div class="titulo-secao"><h2>Como comprar</h2></div>
+    <div class="grade grade-3">
+        @foreach (var m in Model.Modalidades)
+        {
+            <article class="cartao bloco">
+                <h3>@m.Nome</h3>
+                <p>@m.Resumo</p>
+                <p class="discreto">@m.Explicacao</p>
+                <a class="botao-linha" asp-page="/Produtos" asp-route-ModalidadeFiltro="@m.Id">Ver peças</a>
+            </article>
+        }
+    </div>
 </section>
-<section class="grade-produtos">
-<h2>Destaques</h2>
-<div class="produtos-grid">
-@foreach (var p in Model.Produtos)
-{
-<article class="produto-card">
-<a asp-page="/Produto" asp-route-id="@p.Id">
-@if (p.Fotos.Any())
-{
-<img src="/@p.Fotos.OrderBy(f => f.Ordem).First().Arquivo" alt="@p.Titulo" />
-}
-<h3>@p.Titulo</h3>
-<p class="preco">R$ @p.Preco.ToString("N2")</p>
-</a>
-</article>
-}
-</div>
+
+<section class="mt-6">
+    <div class="titulo-secao"><h2>Destaques</h2></div>
+    <div class="grade vitrine">
+        @foreach (var p in Model.Produtos)
+        {
+            <partial name="_ProdutoCard" model="p" />
+        }
+    </div>
 </section>

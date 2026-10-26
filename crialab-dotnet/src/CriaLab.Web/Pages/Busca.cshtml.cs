@@ -23,6 +23,9 @@ public class BuscaModel : PageModel
             return;
         var t = Termo.Trim().ToLower();
         Resultados = await _db.Produtos.AsNoTracking()
+            .Include(x => x.Fotos)
+            .Include(x => x.Modalidade)
+            .Include(x => x.Categoria)
             .Where(x => x.Situacao == "publicado" && (x.Titulo.ToLower().Contains(t) || x.Descricao.ToLower().Contains(t)))
             .Take(50)
             .ToListAsync();

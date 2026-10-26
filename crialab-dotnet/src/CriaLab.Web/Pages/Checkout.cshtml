@@ -1,13 +1,29 @@
 @page
 @model CriaLab.Web.Pages.CheckoutModel
-@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Checkout"; }
-<h1>Checkout</h1>
-@if (Model.Itens.Any()) {
-<p>Subtotal: R$ @Model.Subtotal.ToString("N2")</p>
-<form method="post">
-<label>CEP<input asp-for="Cep" /></label>
-<label>Cupom<input asp-for="Cupom" /></label>
-<button type="submit">Confirmar pedido simulado</button>
-</form>
-} else { <p>Adicione itens ao carrinho primeiro.</p> }
-@if (!string.IsNullOrEmpty(Model.Mensagem)) { <p class="sucesso">@Model.Mensagem</p> }
+@{
+    ViewData["Title"] = "Checkout";
+}
+<h1 class="mt-0">Checkout</h1>
+@if (!string.IsNullOrEmpty(Model.Mensagem))
+{
+    <div class="cartao" style="padding:16px;margin-bottom:16px;border:2px solid var(--teal)">
+        <p class="m-0" style="font-weight:700;color:var(--teal-escuro)">@Model.Mensagem</p>
+        <a class="botao-linha" asp-page="/Conta/Index" style="margin-top:10px;display:inline-flex">Ver meus pedidos</a>
+    </div>
+}
+else if (Model.Itens.Any())
+{
+    <p><strong>Subtotal:</strong> R$ @Model.Subtotal.ToString("N2")</p>
+    <form method="post" class="cartao formulario">
+        <label>CEP<input asp-for="Cep" placeholder="00000-000" /></label>
+        <label>Cupom<input asp-for="Cupom" placeholder="OFICINA10" /></label>
+        <button class="botao" type="submit">Confirmar pedido simulado</button>
+    </form>
+}
+else
+{
+    <div class="vazio cartao">
+        <p>Adicione itens ao carrinho primeiro.</p>
+        <a class="botao" asp-page="/Produtos">Ver produtos</a>
+    </div>
+}

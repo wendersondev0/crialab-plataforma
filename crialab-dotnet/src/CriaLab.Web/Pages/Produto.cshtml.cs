@@ -26,7 +26,10 @@ public class ProdutoModel : PageModel
     {
         if (string.IsNullOrWhiteSpace(id)) return NotFound();
         Produto = await _db.Produtos.AsNoTracking()
-            .Include(x => x.Fotos).Include(x => x.Modalidade).Include(x => x.Variacoes).ThenInclude(v => v.Opcoes)
+            .Include(x => x.Fotos)
+            .Include(x => x.Modalidade)
+            .Include(x => x.Categoria)
+            .Include(x => x.Variacoes).ThenInclude(v => v.Opcoes)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (Produto == null) return NotFound();
         Avaliacoes = await _db.Avaliacoes.AsNoTracking().Where(x => x.ProdutoId == id).ToListAsync();

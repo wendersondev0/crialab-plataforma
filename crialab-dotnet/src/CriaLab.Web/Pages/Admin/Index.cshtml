@@ -1,10 +1,18 @@
 @page
 @model CriaLab.Web.Pages.Admin.IndexModel
-@{ ViewData["Title"] = "Painel"; }
-<h1>Painel administrativo</h1>
-<ul>
-<li>@Model.TotalProdutos produtos publicados</li>
-<li>@Model.TotalPedidos pedidos</li>
-<li>@Model.MensagensAbertas mensagens abertas</li>
-<li>@Model.JobsImpressao jobs de impressão</li>
-</ul>
+@{
+    ViewData["Title"] = "Painel";
+}
+<h1 class="mt-0">Painel administrativo</h1>
+<p class="admin-prod-intro">Resumo rápido da loja e atalhos das áreas.</p>
+<div class="admin-kpis">
+    <article class="admin-kpi"><strong>@Model.TotalProdutos</strong><span>Produtos publicados</span></article>
+    <article class="admin-kpi"><strong>@Model.TotalPedidos</strong><span>Pedidos</span></article>
+    <article class="admin-kpi"><strong>@Model.MensagensAbertas</strong><span>Mensagens abertas</span></article>
+    <article class="admin-kpi"><strong>@Model.JobsImpressao</strong><span>Jobs de impressão</span></article>
+</div>
+<div class="grade grade-3">
+    <a class="cartao bloco" asp-page="/Admin/Produtos" style="text-decoration:none;color:inherit"><h2>Produtos</h2><p>Cadastro e publicação das peças.</p></a>
+    <a class="cartao bloco" asp-page="/Admin/Pedidos" style="text-decoration:none;color:inherit"><h2>Pedidos</h2><p>Acompanhe o que entrou na loja.</p></a>
+    <a class="cartao bloco" asp-page="/Admin/Atendimento" style="text-decoration:none;color:inherit"><h2>Atendimento</h2><p>Mensagens e perguntas dos clientes.</p></a>
+</div>

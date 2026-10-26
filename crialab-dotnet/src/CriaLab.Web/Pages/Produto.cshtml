@@ -1,29 +1,119 @@
 @page "{id}"
 @model CriaLab.Web.Pages.ProdutoModel
-@{ Layout = "_LayoutLoja"; ViewData["Title"] = Model.Produto?.Titulo ?? "Produto"; }
-@if (Model.Produto == null) { <p>Produto não encontrado.</p> }
-else {
-<article class="ficha-produto">
-<h1>@Model.Produto.Titulo</h1>
-<div class="ficha-grid">
-<div class="ficha-fotos">
-@foreach (var f in Model.Produto.Fotos.OrderBy(x => x.Ordem))
-{ <img src="/@f.Arquivo" alt="@f.Legenda" /> }
-</div>
-<div>
-<p>@Model.Produto.Descricao</p>
-<p><strong>Material:</strong> @Model.Produto.Material</p>
-<p><strong>Modalidade:</strong> @Model.Produto.Modalidade?.Nome</p>
-<p class="preco">R$ @Model.Produto.Preco.ToString("N2")</p>
-<form method="post" asp-page-handler="Adicionar">
-<input type="hidden" name="id" value="@Model.Produto.Id" />
-<button type="submit">Adicionar ao carrinho</button>
-</form>
-</div>
-</div>
-<h2>Avaliações</h2>
-@foreach (var a in Model.Avaliacoes) { <div class="avaliacao"><strong>@a.Autor</strong> · @a.Nota/5<p>@a.Texto</p></div> }
-<h2>Perguntas</h2>
-@foreach (var p in Model.Perguntas) { <div class="pergunta"><strong>@p.Autor</strong><p>@p.Texto</p>@if (!string.IsNullOrEmpty(p.Resposta)) { <p class="resposta">@p.Resposta</p> }</div> }
-</article>
+@{
+    ViewData["Title"] = Model.Produto?.Titulo ?? "Produto";
+}
+@if (Model.Produto == null)
+{
+    <div class="vazio cartao"><p>Não encontrei essa peça.</p></div>
+}
+else
+{
+    var produto = Model.Produto;
+    var fotoInicial = produto.Fotos.OrderBy(x => x.Ordem).FirstOrDefault();
+    var tagClasse = produto.ModalidadeId == "personalizado" ? "tag-pers" : "";
+    <div class="ficha grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
+        <div class="galeria">
+            @if (fotoInicial != null)
+            {
+                <img class="galeria-principal rounded-[18px]" src="~/@fotoInicial.Arquivo" alt="@fotoInicial.Legenda" />
+            }
+            else
+            {
+                <img class="galeria-principal rounded-[18px]" src="~/marca/mascote.png" alt="@produto.Titulo" />
+            }
+            <div class="miniaturas">
+                @foreach (var f in produto.Fotos.OrderBy(x => x.Ordem))
+                {
+                    <img src="~/@f.Arquivo" alt="@f.Legenda" style="width:72px;height:72px;object-fit:cover;border-radius:12px" />
+                }
+            </div>
+        </div>
+        <div class="cartao ficha-info">
+            <span class="tag @tagClasse">@(produto.Modalidade?.Nome ?? produto.ModalidadeId)</span>
+            <p class="ficha-categoria discreto">@(produto.Categoria?.Nome ?? produto.CategoriaId)</p>
+            <h1 class="ficha-titulo">@produto.Titulo</h1>
+            <div class="preco-bloco">
+                <p class="preco m-0 text-2xl font-extrabold">R$ @produto.Preco.ToString("N2")</p>
+            </div>
+            <p class="meta-peca">
+                <span>@(produto.Estoque > 0 ? $"{produto.Estoque} em estoque" : "Sob demanda")</span>
+                <span>@produto.Peso g</span>
+                <span>@produto.Medidas</span>
+            </p>
+            <p class="ficha-desc">@produto.Descricao</p>
+
+            @if (produto.Variacoes.Any())
+            {
+                <section class="bloco-ficha">
+                    @foreach (var eixo in produto.Variacoes.OrderBy(x => x.Ordem))
+                    {
+                        <div class="eixo-variacao">
+                            <h2>@eixo.Nome</h2>
+                            @if (eixo.Tipo == "cor")
+                            {
+                                <div class="amostras">
+                                    @foreach (var opc in eixo.Opcoes.OrderBy(x => x.Ordem))
+                                    {
+                                        <span class="amostra" style="background:@opc.Hex" title="@opc.Nome"></span>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="linha" style="display:flex;flex-wrap:wrap;gap:8px">
+                                    @foreach (var opc in eixo.Opcoes.OrderBy(x => x.Ordem))
+                                    {
+                                        <span class="botao-linha">@opc.Nome</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </section>
+            }
+
+            <form method="post" asp-page-handler="Adicionar" class="acoes-ficha">
+                <input type="hidden" name="id" value="@produto.Id" />
+                <button class="botao btn-comprar-agora" type="submit">Adicionar ao carrinho</button>
+            </form>
+        </div>
+    </div>
+
+    <section class="painel-ficha mt-5 grid grid-cols-1 gap-4">
+        <article class="cartao rounded-[18px] bg-white p-4 shadow-cria">
+            <h2 class="mt-0">Perguntas</h2>
+            @if (!Model.Perguntas.Any())
+            {
+                <p>Nenhuma pergunta ainda.</p>
+            }
+            @foreach (var p in Model.Perguntas)
+            {
+                <article class="pergunta">
+                    <strong>@p.Autor</strong>
+                    <p>@p.Texto</p>
+                    @if (!string.IsNullOrWhiteSpace(p.Resposta))
+                    {
+                        <p class="resposta"><strong>Cria Lab</strong><span>@p.Resposta</span></p>
+                    }
+                </article>
+            }
+        </article>
+        <article class="cartao rounded-[18px] bg-white p-4 shadow-cria">
+            <h2 class="mt-0">Avaliações</h2>
+            @if (!Model.Avaliacoes.Any())
+            {
+                <p>Sem avaliações ainda.</p>
+            }
+            @foreach (var a in Model.Avaliacoes)
+            {
+                <article class="avaliacao sem-foto">
+                    <div>
+                        <div class="avaliacao-topo"><strong>@a.Autor</strong><span>@a.Nota/5</span></div>
+                        <p>@a.Texto</p>
+                    </div>
+                </article>
+            }
+        </article>
+    </section>
 }

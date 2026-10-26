@@ -19,6 +19,8 @@ public class IndexModel : PageModel
         Modalidades = await _db.Modalidades.AsNoTracking().OrderBy(x => x.Nome).ToListAsync();
         Produtos = await _db.Produtos.AsNoTracking()
             .Include(x => x.Fotos)
+            .Include(x => x.Modalidade)
+            .Include(x => x.Categoria)
             .Where(x => x.Situacao == "publicado")
             .OrderByDescending(x => x.CriadoEm)
             .Take(12)

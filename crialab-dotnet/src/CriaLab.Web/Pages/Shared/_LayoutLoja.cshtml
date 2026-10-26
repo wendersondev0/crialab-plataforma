@@ -1,51 +1,95 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject CarrinhoService Carrinho
+@{
+    var path = Context.Request.Path.Value ?? "";
+    string Ativo(string trecho) => path.Contains(trecho, StringComparison.OrdinalIgnoreCase) ? " ativo" : "";
+    string AtivoModalidade(string id)
+    {
+        var q = Context.Request.Query["ModalidadeFiltro"].ToString();
+        return string.Equals(q, id, StringComparison.OrdinalIgnoreCase) ? " ativo" : "";
+    }
+}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Cria Lab DM</title>
+    <title>@ViewData["Title"] · Cria Lab DM</title>
+    <link rel="stylesheet" href="~/css/tailwind.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/vitrine.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site-razor.css" asp-append-version="true" />
 </head>
-<body class="vitrine-body">
-    <header class="vitrine-topo">
-        <div class="vitrine-topo-inner">
-            <a class="marca-link" asp-page="/Index">
-                <img src="~/marca/logo-colorida.png" alt="Cria Lab DM" class="marca-logo" />
+<body class="text-tinta font-cria antialiased">
+<header id="topo" class="topo-loja">
+    <div class="loja-faixa">
+        <div class="barra loja-barra">
+            <a class="marca" asp-page="/Index">
+                <img src="~/marca/logo-colorida.png" alt="Cria Lab DM" />
             </a>
-            <nav class="vitrine-nav">
-                <a asp-page="/Produtos" asp-route-ModalidadeFiltro="pronta-entrega">Pronta Entrega</a>
-                <a asp-page="/Produtos" asp-route-ModalidadeFiltro="sob-demanda">Sob Demanda</a>
-                <a asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado">Personalizados</a>
-                <a asp-page="/Busca">Busca</a>
-                <a asp-page="/Carrinho">Carrinho (@Carrinho.QuantidadeTotal())</a>
-                <a asp-page="/Contato">Contato</a>
-                <a asp-page="/Sobre">Sobre</a>
+            <div class="loja-acoes" style="margin-left:auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+                <a class="nav-link@(Ativo("/Busca"))" asp-page="/Busca">Busca</a>
+                <a class="nav-link@(Ativo("/Carrinho"))" asp-page="/Carrinho">Carrinho (@Carrinho.QuantidadeTotal())</a>
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <a asp-page="/Conta/Index">Minha conta</a>
+                    <a class="nav-link@(Ativo("/Conta"))" asp-page="/Conta/Index">Minha conta</a>
                     @if (User.IsInRole("Administrador"))
                     {
-                        <a asp-page="/Admin/Index">Admin</a>
+                        <a class="nav-link" asp-page="/Admin/Index">Admin</a>
                     }
-                    <a asp-page="/Conta/Logout">Sair</a>
+                    <a class="nav-link" asp-page="/Conta/Logout">Sair</a>
                 }
                 else
                 {
-                    <a asp-page="/Conta/Login">Entrar</a>
+                    <a class="nav-link@(Ativo("/Conta/Login"))" asp-page="/Conta/Login">Entrar</a>
                 }
-            </nav>
+            </div>
         </div>
-    </header>
-    <main class="vitrine-main">
-        @RenderBody()
-    </main>
-    <footer class="vitrine-rodape">
-        <p>Oficina de impressão 3D · Vitória/ES</p>
-    </footer>
-    @await RenderSectionAsync("Scripts", required: false)
+        <nav class="menu menu-loja">
+            <a class="nav-link@(AtivoModalidade("pronta-entrega"))" asp-page="/Produtos" asp-route-ModalidadeFiltro="pronta-entrega">Pronta Entrega</a>
+            <a class="nav-link@(AtivoModalidade("sob-demanda"))" asp-page="/Produtos" asp-route-ModalidadeFiltro="sob-demanda">Sob Demanda</a>
+            <a class="nav-link@(AtivoModalidade("personalizado"))" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado">Personalizados</a>
+            <a class="nav-link@(Ativo("/Contato"))" asp-page="/Contato">Contato</a>
+            <a class="nav-link@(Ativo("/Sobre"))" asp-page="/Sobre">Sobre</a>
+        </nav>
+    </div>
+</header>
+<main id="conteudo" class="miolo">
+    @RenderBody()
+</main>
+<footer id="rodape" class="rodape-loja">
+    <div class="rodape-miolo">
+        <div class="rodape-grade">
+            <div class="rodape-marca">
+                <img src="~/marca/logo-colorida.png" alt="Cria Lab DM" />
+                <strong class="rodape-nome">Cria Lab DM</strong>
+                <p class="rodape-meta">Oficina de impressão 3D · peças prontas, sob demanda e personalizadas.</p>
+            </div>
+            <div class="rodape-bloco">
+                <h2 class="rodape-titulo">Loja</h2>
+                <nav class="rodape-nav">
+                    <a class="rodape-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="pronta-entrega">Pronta Entrega</a>
+                    <a class="rodape-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="sob-demanda">Sob Demanda</a>
+                    <a class="rodape-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado">Personalizados</a>
+                    <a class="rodape-link" asp-page="/Sobre">Sobre</a>
+                </nav>
+            </div>
+            <div class="rodape-bloco">
+                <h2 class="rodape-titulo">Ajuda</h2>
+                <nav class="rodape-nav">
+                    <a class="rodape-link" asp-page="/Contato">Contato</a>
+                    <a class="rodape-link" asp-page="/Conta/Login">Minha conta</a>
+                    <a class="rodape-link" asp-page="/Carrinho">Carrinho</a>
+                </nav>
+            </div>
+        </div>
+        <div class="rodape-base">
+            <span>© @DateTime.UtcNow.Year Cria Lab DM</span>
+            <span>CNPJ 68.914.190/0001-96</span>
+        </div>
+    </div>
+</footer>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

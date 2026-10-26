@@ -23,7 +23,11 @@ public class ProdutosModel : PageModel
     {
         var modalidades = await _db.Modalidades.AsNoTracking().OrderBy(x => x.Nome).ToListAsync();
         ModalidadeOpcoes = new SelectList(modalidades, "Id", "Nome", ModalidadeFiltro);
-        var q = _db.Produtos.AsNoTracking().Include(x => x.Fotos).Include(x => x.Modalidade).Where(x => x.Situacao == "publicado");
+        var q = _db.Produtos.AsNoTracking()
+            .Include(x => x.Fotos)
+            .Include(x => x.Modalidade)
+            .Include(x => x.Categoria)
+            .Where(x => x.Situacao == "publicado");
         if (!string.IsNullOrWhiteSpace(ModalidadeFiltro))
             q = q.Where(x => x.ModalidadeId == ModalidadeFiltro);
         Produtos = await q.OrderBy(x => x.Titulo).ToListAsync();

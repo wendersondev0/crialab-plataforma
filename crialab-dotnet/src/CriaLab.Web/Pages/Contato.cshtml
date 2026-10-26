@@ -1,13 +1,29 @@
 @page
 @model CriaLab.Web.Pages.ContatoModel
-@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Contato"; }
-<h1>Contato</h1>
-<p>@Model.Identidade?.Telefone · @Model.Identidade?.Email</p>
-<form method="post">
-<label>Nome<input asp-for="Nome" required /></label>
-<label>E-mail<input asp-for="Email" type="email" required /></label>
-<label>Tipo<select asp-for="Tipo"><option value="duvida">Dúvida</option><option value="elogio">Elogio</option><option value="reclamacao">Reclamação</option><option value="orcamento">Orçamento</option></select></label>
-<label>Mensagem<textarea asp-for="Texto" required></textarea></label>
-<button type="submit">Enviar</button>
+@{
+    ViewData["Title"] = "Contato";
+}
+<h1 class="mt-0">Contato</h1>
+<p class="intro-pagina">Fale com a oficina. Dúvida, elogio, reclamação ou orçamento.</p>
+@if (!string.IsNullOrWhiteSpace(Model.Identidade?.Telefone) || !string.IsNullOrWhiteSpace(Model.Identidade?.Email))
+{
+    <p class="discreto">@Model.Identidade?.Telefone · @Model.Identidade?.Email</p>
+}
+<form method="post" class="cartao formulario">
+    <label>Nome<input asp-for="Nome" required /></label>
+    <label>E-mail<input asp-for="Email" type="email" required /></label>
+    <label>Tipo
+        <select asp-for="Tipo">
+            <option value="duvida">Dúvida</option>
+            <option value="elogio">Elogio</option>
+            <option value="reclamacao">Reclamação</option>
+            <option value="orcamento">Orçamento</option>
+        </select>
+    </label>
+    <label>Mensagem<textarea asp-for="Texto" required></textarea></label>
+    <button class="botao" type="submit">Enviar</button>
 </form>
-@if (Model.Enviado) { <p class="sucesso">Mensagem enviada. Obrigado!</p> }
+@if (Model.Enviado)
+{
+    <p class="sys-ok" style="margin-top:12px;color:var(--teal-escuro);font-weight:700">Mensagem enviada. Obrigado!</p>
+}

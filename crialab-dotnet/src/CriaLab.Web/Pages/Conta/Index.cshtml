@@ -1,24 +1,55 @@
 @page
 @model CriaLab.Web.Pages.Conta.IndexModel
-@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Minha conta"; }
-<h1>Olá, @Model.Usuario?.NomeCompleto</h1>
-<section>
-    <h2>Pedidos</h2>
-    @if (!Model.Pedidos.Any()) { <p>Nenhum pedido ainda.</p> }
-    @foreach (var p in Model.Pedidos)
+@{
+    ViewData["Title"] = "Minha conta";
+}
+<h1 class="mt-0">Olá, @(Model.Usuario?.NomeCompleto ?? "cliente")</h1>
+
+<section class="cartao" style="padding:18px;margin-bottom:16px">
+    <h2 class="mt-0">Pedidos</h2>
+    @if (!Model.Pedidos.Any())
     {
-        <article><strong>@p.Id</strong> · @p.Status · R$ @p.Total.ToString("N2") · @p.CriadoEm.ToLocalTime()</article>
+        <p>Nenhum pedido ainda.</p>
+    }
+    else
+    {
+        <table class="tabela-loja">
+            <thead><tr><th>Pedido</th><th>Status</th><th>Total</th><th>Data</th></tr></thead>
+            <tbody>
+            @foreach (var p in Model.Pedidos)
+            {
+                <tr>
+                    <td>@p.Id</td>
+                    <td>@p.Status</td>
+                    <td>R$ @p.Total.ToString("N2")</td>
+                    <td>@p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
     }
 </section>
-<section>
-    <h2>Orçamentos</h2>
+
+<section class="cartao" style="padding:18px;margin-bottom:16px">
+    <h2 class="mt-0">Orçamentos</h2>
+    @if (!Model.Orcamentos.Any())
+    {
+        <p>Nenhum orçamento.</p>
+    }
     @foreach (var o in Model.Orcamentos)
     {
-        <article>@o.Titulo · @o.Status · @(o.Valor.HasValue ? "R$ " + o.Valor.Value.ToString("N2") : "Aguardando valor")</article>
+        <article style="padding:10px 0;border-top:1px solid var(--linha)">
+            <strong>@o.Titulo</strong> · @o.Status · @(o.Valor.HasValue ? "R$ " + o.Valor.Value.ToString("N2") : "Aguardando valor")
+        </article>
     }
 </section>
-<section>
-    <h2>Endereços</h2>
+
+<section class="cartao" style="padding:18px">
+    <h2 class="mt-0">Endereços</h2>
+    @if (!Model.Enderecos.Any())
+    {
+        <p>Nenhum endereço cadastrado.</p>
+    }
     @foreach (var e in Model.Enderecos)
     {
         <p><strong>@e.Rotulo</strong> · CEP @e.Cep · @e.Linha</p>

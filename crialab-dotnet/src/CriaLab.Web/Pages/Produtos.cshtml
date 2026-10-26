@@ -1,21 +1,37 @@
 @page
 @model CriaLab.Web.Pages.ProdutosModel
-@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Produtos"; }
-<h1>Produtos</h1>
-<form method="get" class="filtros">
-<select name="modalidade" asp-for="ModalidadeFiltro" asp-items="Model.ModalidadeOpcoes"></select>
-<button type="submit">Filtrar</button>
-</form>
-<div class="produtos-grid">
-@foreach (var p in Model.Produtos)
-{
-<article class="produto-card">
-<a asp-page="/Produto" asp-route-id="@p.Id">
-@if (p.Fotos.Any()) { <img src="/@p.Fotos.OrderBy(f => f.Ordem).First().Arquivo" alt="@p.Titulo" /> }
-<h3>@p.Titulo</h3>
-<p>@p.Modalidade?.Nome</p>
-<p class="preco">R$ @p.Preco.ToString("N2")</p>
-</a>
-</article>
+@{
+    ViewData["Title"] = string.IsNullOrWhiteSpace(Model.ModalidadeFiltro)
+        ? "Produtos"
+        : (Model.ModalidadeOpcoes.FirstOrDefault(x => x.Value == Model.ModalidadeFiltro)?.Text ?? "Produtos");
 }
-</div>
+<h1 class="mt-0">@ViewData["Title"]</h1>
+@if (!string.IsNullOrWhiteSpace(Model.ModalidadeFiltro))
+{
+    <p class="intro-modalidade">Filtrando por modalidade. Use o seletor para ver outras peças.</p>
+}
+
+<form method="get" class="filtros-loja">
+    <label>
+        Modalidade
+        <select asp-for="ModalidadeFiltro" asp-items="Model.ModalidadeOpcoes">
+            <option value="">Todas</option>
+        </select>
+    </label>
+    <button class="botao" type="submit">Filtrar</button>
+    <a class="botao-linha" asp-page="/Produtos">Limpar</a>
+</form>
+
+@if (!Model.Produtos.Any())
+{
+    <div class="vazio cartao"><p>Nenhuma peça encontrada nesta modalidade.</p></div>
+}
+else
+{
+    <div class="grade vitrine">
+        @foreach (var p in Model.Produtos)
+        {
+            <partial name="_ProdutoCard" model="p" />
+        }
+    </div>
+}
