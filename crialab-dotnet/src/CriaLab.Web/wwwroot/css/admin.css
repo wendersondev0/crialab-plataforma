@@ -633,12 +633,23 @@
   box-shadow: 0 0 0 4px rgba(20, 143, 147, 0.12);
 }
 
+.admin-prod-kpis.pat-kpis,
 .pat-kpis {
+  display: grid;
   margin-bottom: 12px;
   grid-template-columns: repeat(6, minmax(0, 1fr));
 }
+.admin-prod-kpis.pat-kpis a.admin-prod-kpi {
+  text-decoration: none;
+  color: inherit;
+}
 @media (max-width: 1200px) {
+  .admin-prod-kpis.pat-kpis,
   .pat-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .admin-prod-kpis.pat-kpis,
+  .pat-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 .fin-filtros {
   display: flex;

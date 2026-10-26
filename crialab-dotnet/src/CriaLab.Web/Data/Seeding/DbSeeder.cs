@@ -45,6 +45,7 @@ public static class DbSeeder
         {
             await SeedUsersAsync(userManager);
             await EnsureInsumosPlanilhaAsync(context);
+            await EnsureMaquinasPlanilhaAsync(context);
             return;
         }
 
@@ -433,50 +434,7 @@ public static class DbSeeder
 
     private static void SeedOperacoes(ApplicationDbContext context)
     {
-        context.Maquinas.AddRange(
-            new Maquina
-            {
-                Id = "maq-bambu",
-                Nome = "Bambu Lab A1 com AMS Lite",
-                Categoria = "impressora",
-                Imagem = "marca/patrimonio/pat-bambu-a1.jpg",
-                Watts = 150,
-                DepreciacaoPorMinuto = 0.02m,
-                ManutencaoPorMinuto = 0.01m,
-                EnergiaPorMinuto = 0.005m,
-                ControlaHora = true,
-                CompraCompetencia = "2026-03",
-                AdquiridoEm = DateOnly.Parse("2026-03-14"),
-                CompraValor = 4437.66m,
-                Marca = "Bambu Lab",
-                Modelo = "A1 + AMS Lite",
-                Serial = "A1-AMS-001",
-                Local = "Mesa principal",
-                Status = "ativa",
-                Notas = "Impressora principal com troca automática de cores."
-            },
-            new Maquina
-            {
-                Id = "maq-kobra",
-                Nome = "Anycubic Kobra S1",
-                Categoria = "impressora",
-                Imagem = "marca/patrimonio/pat-kobra-s1.jpg",
-                Watts = 200,
-                DepreciacaoPorMinuto = 0.02m,
-                ManutencaoPorMinuto = 0.01m,
-                EnergiaPorMinuto = 0.005m,
-                ControlaHora = true,
-                CompraCompetencia = "2026-07",
-                AdquiridoEm = DateOnly.Parse("2026-07-08"),
-                CompraValor = 5359.93m,
-                Marca = "Anycubic",
-                Modelo = "Kobra S1",
-                Serial = "KS1-002",
-                Local = "Mesa secundária",
-                Status = "ativa",
-                Notas = "Câmara fechada para PETG e peças maiores."
-            });
-
+        context.Maquinas.AddRange(CriarMaquinasPlanilha());
         context.EstoqueInsumos.AddRange(CriarInsumosPlanilha());
 
         context.ImpressaoJobs.AddRange(
@@ -517,6 +475,217 @@ public static class DbSeeder
         context.EstoqueInsumos.AddRange(faltando);
         await context.SaveChangesAsync();
     }
+
+    private static async Task EnsureMaquinasPlanilhaAsync(ApplicationDbContext context)
+    {
+        var existentes = await context.Maquinas.AsNoTracking().Select(x => x.Id).ToListAsync();
+        var set = existentes.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var faltando = CriarMaquinasPlanilha().Where(x => !set.Contains(x.Id)).ToList();
+        if (faltando.Count == 0) return;
+        context.Maquinas.AddRange(faltando);
+        await context.SaveChangesAsync();
+    }
+
+    private static List<Maquina> CriarMaquinasPlanilha() =>
+    [
+        new Maquina
+        {
+            Id = "maq-bambu",
+            Nome = "Bambu Lab A1 com AMS Lite",
+            Categoria = "impressora",
+            Imagem = "marca/patrimonio/pat-bambu-a1.jpg",
+            Watts = 150,
+            DepreciacaoPorMinuto = 0.02m,
+            ManutencaoPorMinuto = 0.01m,
+            EnergiaPorMinuto = 0.005m,
+            ControlaHora = true,
+            CompraCompetencia = "2026-03",
+            AdquiridoEm = DateOnly.Parse("2026-03-14"),
+            CompraValor = 4437.66m,
+            Marca = "Bambu Lab",
+            Modelo = "A1 + AMS Lite",
+            Serial = "A1-AMS-001",
+            Local = "Mesa principal",
+            Status = "ativa",
+            Notas = "Impressora principal com troca automática de cores. Planilha: mensalidade energia em setembro."
+        },
+        new Maquina
+        {
+            Id = "maq-kobra",
+            Nome = "Anycubic Kobra S1",
+            Categoria = "impressora",
+            Imagem = "marca/patrimonio/pat-kobra-s1.jpg",
+            Watts = 200,
+            DepreciacaoPorMinuto = 0.02m,
+            ManutencaoPorMinuto = 0.01m,
+            EnergiaPorMinuto = 0.005m,
+            ControlaHora = true,
+            CompraCompetencia = "2026-07",
+            AdquiridoEm = DateOnly.Parse("2026-07-08"),
+            CompraValor = 5359.93m,
+            Marca = "Anycubic",
+            Modelo = "Kobra S1",
+            Serial = "KS1-002",
+            Local = "Mesa secundária",
+            Status = "ativa",
+            Notas = "Câmara fechada para PETG e peças maiores."
+        },
+        new Maquina
+        {
+            Id = "maq-secador",
+            Nome = "Secador de filamento",
+            Categoria = "secador",
+            Imagem = "marca/patrimonio/pat-secador.jpg",
+            Watts = 85,
+            DepreciacaoPorMinuto = 0.02m,
+            ManutencaoPorMinuto = 0.01m,
+            EnergiaPorMinuto = 0.005m,
+            ControlaHora = true,
+            AdquiridoEm = DateOnly.Parse("2026-02-20"),
+            Marca = "Genérico",
+            Modelo = "Box dryer",
+            Local = "Prateleira de filamentos",
+            Status = "ativa",
+            Notas = "Usado antes de imprimir PETG e TPU."
+        },
+        new Maquina
+        {
+            Id = "maq-epson",
+            Nome = "Epson EcoTank L3250",
+            Categoria = "impressora-tinta",
+            Imagem = "marca/patrimonio/pat-epson.jpg",
+            CompraCompetencia = "2026-08",
+            AdquiridoEm = DateOnly.Parse("2026-08-12"),
+            CompraValor = 1071m,
+            Marca = "Epson",
+            Modelo = "EcoTank L3250",
+            Serial = "L3250-01",
+            Local = "Bancada de acabamento",
+            Status = "ativa",
+            Notas = "Etiquetas, recibos e artes auxiliares."
+        },
+        new Maquina
+        {
+            Id = "eq-secador-creality",
+            Nome = "Secador Creality",
+            Categoria = "secador",
+            Imagem = "marca/patrimonio/pat-secador.jpg",
+            CompraCompetencia = "2026-03",
+            AdquiridoEm = DateOnly.Parse("2026-03-05"),
+            CompraValor = 396.36m,
+            Marca = "Creality",
+            Modelo = "Space Pi",
+            Local = "Prateleira de filamentos",
+            Status = "ativa",
+            Notas = "Backup do secador principal."
+        },
+        new Maquina
+        {
+            Id = "eq-macarico",
+            Nome = "Maçarico mini portátil",
+            Categoria = "ferramenta",
+            Imagem = "marca/patrimonio/pat-macarico.jpg",
+            CompraCompetencia = "2026-08",
+            AdquiridoEm = DateOnly.Parse("2026-08-19"),
+            CompraValor = 19.99m,
+            Modelo = "Recarregável",
+            Local = "Kit de acabamento",
+            Status = "ativa",
+            Notas = "Compra agosto/2026 na planilha de gastos."
+        },
+        new Maquina
+        {
+            Id = "eq-retifica",
+            Nome = "Mini retífica sem fio",
+            Categoria = "ferramenta",
+            Imagem = "marca/patrimonio/pat-retifica.jpg",
+            CompraCompetencia = "2026-03",
+            AdquiridoEm = DateOnly.Parse("2026-03-12"),
+            CompraValor = 101.14m,
+            Modelo = "Sem fio",
+            Local = "Kit de acabamento",
+            Status = "ativa",
+            Notas = "Compra março/2026 · lixa e remoção de suporte."
+        },
+        new Maquina
+        {
+            Id = "eq-paquimetro",
+            Nome = "Paquímetro digital",
+            Categoria = "ferramenta",
+            Imagem = "marca/patrimonio/pat-pinca.jpg",
+            CompraCompetencia = "2026-08",
+            AdquiridoEm = DateOnly.Parse("2026-08-12"),
+            CompraValor = 26.36m,
+            Modelo = "Digital",
+            Local = "Kit de mesa",
+            Status = "ativa",
+            Notas = "Medição de peças e moldes · agosto/2026."
+        },
+        new Maquina
+        {
+            Id = "eq-pinca",
+            Nome = "Pinça",
+            Categoria = "ferramenta",
+            Imagem = "marca/patrimonio/pat-pinca.jpg",
+            AdquiridoEm = DateOnly.Parse("2025-09-15"),
+            Modelo = "Ponta fina",
+            Local = "Kit de mesa",
+            Status = "ativa",
+            Notas = "Remoção de stringing e suporte fino."
+        },
+        new Maquina
+        {
+            Id = "eq-alicate",
+            Nome = "Alicate",
+            Categoria = "ferramenta",
+            Imagem = "marca/patrimonio/pat-alicate.jpg",
+            AdquiridoEm = DateOnly.Parse("2025-09-15"),
+            Modelo = "Flush cutter",
+            Local = "Kit de mesa",
+            Status = "ativa",
+            Notas = "Corte de sobras e brim."
+        },
+        new Maquina
+        {
+            Id = "eq-tomada",
+            Nome = "Tomada inteligente",
+            Categoria = "acessorio",
+            Imagem = "marca/patrimonio/pat-tomada.jpg",
+            AdquiridoEm = DateOnly.Parse("2026-01-22"),
+            Modelo = "Wi-Fi plug",
+            Local = "Circuito das impressoras",
+            Status = "ativa",
+            Notas = "Medição e corte de energia remoto."
+        },
+        new Maquina
+        {
+            Id = "eq-luminaria-garra",
+            Nome = "Luminária de mesa com garra",
+            Categoria = "acessorio",
+            Imagem = "marca/patrimonio/pat-led.jpg",
+            CompraCompetencia = "2026-09",
+            AdquiridoEm = DateOnly.Parse("2026-09-01"),
+            CompraValor = 32.995m,
+            Modelo = "Garra",
+            Local = "Bancada",
+            Status = "ativa",
+            Notas = "Compra setembro/2026 · usa lâmpada LED do estoque."
+        },
+        new Maquina
+        {
+            Id = "eq-caneta-rebarbador",
+            Nome = "Caneta rebarbador",
+            Categoria = "ferramenta",
+            Imagem = "marca/patrimonio/pat-alicate.jpg",
+            CompraCompetencia = "2026-03",
+            AdquiridoEm = DateOnly.Parse("2026-03-14"),
+            CompraValor = 25.49m,
+            Modelo = "Rebarbador",
+            Local = "Kit de acabamento",
+            Status = "ativa",
+            Notas = "Compra março/2026."
+        }
+    ];
 
     private static List<EstoqueInsumo> CriarInsumosPlanilha()
     {
