@@ -19,6 +19,10 @@ else
             <article class="cartao flex flex-wrap items-center justify-between gap-3 p-4">
                 <div>
                     <strong class="block text-tinta">@i.Titulo</strong>
+                    @if (!string.IsNullOrWhiteSpace(i.Detalhes))
+                    {
+                        <span class="discreto block">@i.Detalhes</span>
+                    }
                     <span class="discreto">@i.Quantidade × R$ @i.PrecoUnitario.ToString("N2")</span>
                 </div>
                 <div class="flex items-center gap-3">

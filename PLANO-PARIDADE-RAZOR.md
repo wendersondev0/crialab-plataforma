@@ -85,17 +85,17 @@ Referência de verdade do front: HTML/CSS/JS em `estatico/` (`casca.js`, `vitrin
 Ordem sugerida (impacto no cliente):
 
 ### B1. Ficha de produto (alta)
-- [ ] Galeria + zoom + miniaturas ativas
-- [ ] Variações clicáveis (cor/tamanho) persistindo escolha no add-to-cart
-- [ ] Stepper quantidade
-- [ ] Preço à vista / parcelas / comparativo / oferta
-- [ ] Simulador frete CEP (PAC/SEDEX) via faixas seed
-- [ ] Canais Shopee / Mercado Livre
-- [ ] Favoritar (Identity ou cookie autenticado)
-- [ ] Pedir orçamento → `OrcamentoCliente`
-- [ ] Perguntas/avaliações UI completa
-- [ ] Relacionados da mesma categoria
-- [ ] Toast “adicionado ao carrinho”
+- [x] Galeria + zoom + miniaturas ativas
+- [x] Variações clicáveis (cor/tamanho) persistindo escolha no add-to-cart
+- [x] Stepper quantidade
+- [x] Preço à vista / parcelas / comparativo / oferta
+- [x] Simulador frete CEP (PAC/SEDEX) via faixas seed
+- [x] Canais Shopee / Mercado Livre
+- [x] Favoritar (Identity ou cookie autenticado)
+- [x] Pedir orçamento → `OrcamentoCliente`
+- [x] Perguntas/avaliações UI completa
+- [x] Relacionados da mesma categoria
+- [x] Toast “adicionado ao carrinho”
 
 ### B2. Busca
 - [ ] Filtros: categoria, preço min/max, frete grátis, à vista, personalizável, nota, ordem
@@ -103,10 +103,10 @@ Ordem sugerida (impacto no cliente):
 - [ ] Querystring compartilhável (paridade com estático)
 
 ### B3. Carrinho + Checkout + Recibo
-- [ ] Carrinho visual tipo cards (já parcialmente)
-- [ ] Cupom, CEP, escolha PAC/SEDEX
-- [ ] Checkout com endereço, forma de pagamento simulada, totais
-- [ ] Página Recibo (`/Recibo/{id}`) espelhando `recibo.html`
+- [x] Carrinho visual tipo cards (já parcialmente)
+- [x] Cupom, CEP, escolha PAC/SEDEX
+- [x] Checkout com endereço, forma de pagamento simulada, totais
+- [x] Página Recibo (`/Recibo/{id}`) espelhando `recibo.html`
 
 ### B4. Conta
 - [ ] Abas: Pedidos, Orçamentos, Favoritos, Endereços, Perguntas, Meus dados
@@ -136,9 +136,9 @@ Lista (`produtos()`):
 
 Form (`formularioProduto()`):
 - [x] Campos: título, categoria, modalidade, tipo, preços, estoque, medidas, material, prazo, descrição, situação, flags (oferta, mais vendido, personalizável, a vista, com arquivo)
-- [ ] Fotos (upload para `wwwroot/fotos/...`)
-- [ ] Variações (eixos/opções cor-hex ou texto)
-- [ ] Etapas personalização
+- [x] Fotos (upload para `wwwroot/fotos/...`)
+- [x] Variações (eixos/opções cor-hex ou texto)
+- [x] Etapas personalização
 - [ ] Preview card
 
 Página opcional **Personalizados** = atalho filtrado da lista (KPI já filtra).
@@ -248,9 +248,9 @@ Inventário de páginas estáticas a bater:
 
 ## 9. Próximo passo imediato
 
-**Concluído:** Fase A + C2 lista/form básico.
+**Concluído:** Fase A + C2 (lista + form com fotos/variações/etapas) + B1 ficha + B3 checkout/recibo (MVP S0–S2).
 
-**Seguir com:**
-1. Upload de fotos + variações/etapas no `ProdutoEdit`
-2. Sprint S2 loja: ficha completa + checkout/recibo (Fase B1/B3)
-3. Pedidos/OS/Orçamentos (C3)
+**Seguir com (S3):**
+1. Pedidos/OS/Orçamentos admin (C3)
+2. Conta cliente completa (B4)
+3. Preview card no ProdutoEdit (restante C2)

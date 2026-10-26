@@ -3,27 +3,89 @@
 @{
     ViewData["Title"] = "Checkout";
 }
-<h1 class="mt-0">Checkout</h1>
-@if (!string.IsNullOrEmpty(Model.Mensagem))
-{
-    <div class="cartao" style="padding:16px;margin-bottom:16px;border:2px solid var(--teal)">
-        <p class="m-0" style="font-weight:700;color:var(--teal-escuro)">@Model.Mensagem</p>
-        <a class="botao-linha" asp-page="/Conta/Index" style="margin-top:10px;display:inline-flex">Ver meus pedidos</a>
-    </div>
-}
-else if (Model.Itens.Any())
-{
-    <p><strong>Subtotal:</strong> R$ @Model.Subtotal.ToString("N2")</p>
-    <form method="post" class="cartao formulario">
-        <label>CEP<input asp-for="Cep" placeholder="00000-000" /></label>
-        <label>Cupom<input asp-for="Cupom" placeholder="OFICINA10" /></label>
-        <button class="botao" type="submit">Confirmar pedido simulado</button>
-    </form>
-}
-else
+<h1 class="mt-0 text-3xl font-extrabold text-tinta">Checkout</h1>
+
+@if (!Model.Itens.Any())
 {
     <div class="vazio cartao">
         <p>Adicione itens ao carrinho primeiro.</p>
         <a class="botao" asp-page="/Produtos">Ver produtos</a>
+    </div>
+}
+else
+{
+    <div class="grade grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <section class="cartao p-4">
+            <h2 class="mt-0">Seu pedido</h2>
+            @foreach (var i in Model.Itens)
+            {
+                <article class="flex flex-wrap items-center justify-between gap-2 border-b border-linha py-3">
+                    <div>
+                        <strong class="block">@i.Titulo</strong>
+                        @if (!string.IsNullOrWhiteSpace(i.Detalhes))
+                        {
+                            <span class="discreto">@i.Detalhes</span>
+                        }
+                        <span class="discreto block">@i.Quantidade × R$ @i.PrecoUnitario.ToString("N2")</span>
+                    </div>
+                    <strong>R$ @((i.PrecoUnitario * i.Quantidade).ToString("N2"))</strong>
+                </article>
+            }
+            <dl class="mt-4 grid gap-2">
+                <div class="flex justify-between"><dt>Subtotal</dt><dd>R$ @Model.Subtotal.ToString("N2")</dd></div>
+                <div class="flex justify-between"><dt>Cupom</dt><dd>− R$ @Model.DescontoCupom.ToString("N2")</dd></div>
+                <div class="flex justify-between"><dt>Desconto à vista</dt><dd>− R$ @Model.DescontoAVista.ToString("N2")</dd></div>
+                <div class="flex justify-between"><dt>Frete @(string.IsNullOrWhiteSpace(Model.FreteNome) ? "" : $"({Model.FreteNome})")</dt><dd>R$ @Model.FreteCobrado.ToString("N2")</dd></div>
+                <div class="flex justify-between text-xl font-extrabold"><dt>Total</dt><dd>R$ @Model.Total.ToString("N2")</dd></div>
+            </dl>
+            @if (Model.Subtotal < Model.FreteGratisAPartir)
+            {
+                <p class="discreto mt-2">Frete grátis a partir de R$ @Model.FreteGratisAPartir.ToString("N2").</p>
+            }
+        </section>
+
+        <form method="post" class="cartao formulario p-4">
+            <div asp-validation-summary="All"></div>
+            <label>Endereço completo
+                <textarea asp-for="Endereco" rows="3" required placeholder="Rua, número, bairro, cidade"></textarea>
+            </label>
+            <label>CEP
+                <input asp-for="Cep" placeholder="00000-000" />
+            </label>
+            <label>Cupom
+                <input asp-for="Cupom" placeholder="OFICINA10" />
+            </label>
+            <label>Forma de pagamento
+                <select asp-for="Forma">
+                    <option value="pix">PIX (à vista)</option>
+                    <option value="boleto">Boleto (à vista)</option>
+                    <option value="cartao">Cartão</option>
+                </select>
+            </label>
+
+            @if (Model.OpcoesFrete.Any())
+            {
+                <fieldset class="grid gap-2">
+                    <legend class="font-bold">Frete</legend>
+                    @foreach (var op in Model.OpcoesFrete)
+                    {
+                        var preco = Model.Subtotal >= Model.FreteGratisAPartir ? 0 : op.Preco;
+                        <label class="flex items-center gap-2 font-semibold">
+                            <input type="radio" asp-for="FreteId" value="@op.Id" style="width:auto;min-height:auto" />
+                            @op.Nome · @(preco == 0 ? "grátis" : $"R$ {preco:N2}") · @op.Dias dias úteis
+                        </label>
+                    }
+                </fieldset>
+            }
+            else if (!string.IsNullOrWhiteSpace(Model.ErroFrete))
+            {
+                <p class="erro">@Model.ErroFrete</p>
+            }
+
+            <div class="flex flex-wrap gap-2 mt-3">
+                <button class="botao-linha" type="submit" name="Acao" value="cotar">Atualizar frete / cupom</button>
+                <button class="botao" type="submit" name="Acao" value="finalizar">Confirmar pedido</button>
+            </div>
+        </form>
     </div>
 }

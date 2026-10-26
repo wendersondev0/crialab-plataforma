@@ -10,6 +10,7 @@ public class CarrinhoItem
     public int Quantidade { get; set; }
     public string? Cor { get; set; }
     public string? Tamanho { get; set; }
+    public string? Detalhes { get; set; }
 }
 
 public class CarrinhoService
@@ -47,7 +48,8 @@ public class CarrinhoService
         var existente = itens.FirstOrDefault(x =>
             x.ProdutoId == item.ProdutoId &&
             x.Cor == item.Cor &&
-            x.Tamanho == item.Tamanho);
+            x.Tamanho == item.Tamanho &&
+            x.Detalhes == item.Detalhes);
         if (existente != null)
             existente.Quantidade += item.Quantidade;
         else

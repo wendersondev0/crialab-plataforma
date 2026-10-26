@@ -4,6 +4,8 @@
 @{
     ViewData["Title"] = Model.Produto?.Titulo ?? "Produto";
     var freteGratis = ViewData["FreteGratisAPartir"] is decimal f ? f : 200m;
+    var descontoAVista = Model.Config?.DescontoAVista ?? 0.05m;
+    var parcelas = Model.Config?.Parcelas > 0 ? Model.Config.Parcelas : 3;
 }
 @if (Model.Produto == null)
 {
@@ -12,10 +14,16 @@
 else
 {
     var produto = Model.Produto;
-    var fotoInicial = produto.Fotos.OrderBy(x => x.Ordem).FirstOrDefault();
+    var fotos = produto.Fotos.OrderBy(x => x.Ordem).ToList();
+    var fotoInicial = fotos.FirstOrDefault();
     var tagClasse = LojaVitrineHelper.ClasseTag(produto.ModalidadeId);
     var entrega = LojaVitrineHelper.TextoEntrega(produto, freteGratis);
     var personalizado = string.Equals(produto.ModalidadeId, "personalizado", StringComparison.OrdinalIgnoreCase);
+    var sobDemanda = string.Equals(produto.ModalidadeId, "sob-demanda", StringComparison.OrdinalIgnoreCase);
+    var esgotado = !personalizado && !sobDemanda && (produto.Situacao == "esgotado" || produto.Estoque <= 0);
+    var precoVista = produto.Preco * (1 - descontoAVista);
+    var parcelaValor = parcelas > 0 ? produto.Preco / parcelas : produto.Preco;
+    var whats = (Model.Identidade?.Whatsapp ?? "https://wa.me/") + "?text=" + Uri.EscapeDataString("Olá, quero saber sobre " + produto.Titulo);
     <div class="ficha grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
         <div class="galeria revela visivel">
             @if (fotoInicial != null)
@@ -24,31 +32,47 @@ else
             }
             else
             {
-                <img class="galeria-principal rounded-[18px]" src="~/marca/mascote.png" alt="@produto.Titulo" />
+                <img class="galeria-principal rounded-[18px]" id="foto-principal" src="~/marca/mascote.png" alt="@produto.Titulo" />
             }
             <div class="miniaturas">
-                @foreach (var foto in produto.Fotos.OrderBy(x => x.Ordem))
+                @foreach (var foto in fotos)
                 {
-                    <button class="miniatura" type="button" data-src="@Url.Content("~/" + foto.Arquivo)" data-legenda="@foto.Legenda">
+                    <button class="miniatura@(foto == fotoInicial ? " ativa" : "")" type="button" data-src="@Url.Content("~/" + foto.Arquivo)" data-legenda="@foto.Legenda">
                         <img src="~/@foto.Arquivo" alt="@foto.Legenda" />
                     </button>
                 }
             </div>
+            <p class="discreto" id="legenda-foto">@(fotoInicial?.Legenda ?? produto.Titulo) · sessão @produto.Sessao</p>
         </div>
         <div class="cartao ficha-info revela visivel">
             <span class="tag @tagClasse">@(produto.Modalidade?.Nome ?? produto.ModalidadeId)</span>
             <p class="ficha-categoria discreto m-0">@(produto.Categoria?.Nome ?? produto.CategoriaId)</p>
             <h1 class="ficha-titulo mt-0">@produto.Titulo</h1>
             <div class="preco-bloco">
-                <p class="preco m-0 text-2xl font-extrabold">R$ @produto.Preco.ToString("N2")</p>
+                @if (produto.Oferta && produto.PrecoComparativo > produto.Preco)
+                {
+                    <span class="selo-oferta">Oferta</span>
+                }
+                <div class="preco-linha flex flex-wrap items-end gap-2">
+                    <p class="preco m-0 text-2xl font-extrabold">R$ @produto.Preco.ToString("N2")</p>
+                    @if (produto.PrecoComparativo > produto.Preco)
+                    {
+                        <s class="preco-riscado text-base font-medium text-tinta/45">R$ @produto.PrecoComparativo.ToString("N2")</s>
+                    }
+                </div>
                 @if (personalizado)
                 {
                     <p class="vista m-0 font-bold text-teal-escuro">Preço médio. O valor final sai depois do orçamento.</p>
                 }
+                else if (produto.AVista)
+                {
+                    <p class="vista m-0 font-bold text-teal-escuro">À vista R$ @precoVista.ToString("N2") no PIX ou boleto</p>
+                    <p class="discreto m-0 text-tinta/60">@parcelas x de R$ @parcelaValor.ToString("N2") no cartão, sem o desconto à vista</p>
+                }
                 <p class="entrega-card m-0 text-sm text-tinta">@Html.Raw(entrega)</p>
             </div>
             <p class="meta-peca m-0">
-                <span>@(produto.Estoque > 0 ? $"{produto.Estoque} em estoque" : (personalizado ? "Sob encomenda" : "Impressão após o pedido"))</span>
+                <span>@(personalizado ? "Sob encomenda" : (sobDemanda ? "Impressão após o pedido" : (esgotado ? "Sem unidade pronta" : $"{produto.Estoque} em estoque")))</span>
                 <span>@produto.Peso g</span>
                 <span>@produto.Medidas</span>
             </p>
@@ -56,17 +80,18 @@ else
 
             @if (produto.Variacoes.Any())
             {
-                <section class="bloco-ficha">
+                <section class="bloco-ficha" id="variacoes-ficha">
                     @foreach (var eixo in produto.Variacoes.OrderBy(x => x.Ordem))
                     {
-                        <div class="eixo-variacao">
-                            <h2>@eixo.Nome</h2>
+                        var primeira = eixo.Opcoes.OrderBy(x => x.Ordem).FirstOrDefault();
+                        <div class="eixo-variacao grid gap-2" data-eixo-bloco="@eixo.Id" data-eixo-nome="@eixo.Nome" data-eixo-tipo="@eixo.Tipo">
+                            <h2 class="mt-0 text-lg font-extrabold">@eixo.Nome</h2>
                             @if (eixo.Tipo == "cor")
                             {
                                 <div class="amostras">
                                     @foreach (var opc in eixo.Opcoes.OrderBy(x => x.Ordem))
                                     {
-                                        <span class="amostra" style="background:@opc.Hex" title="@opc.Nome"></span>
+                                        <button type="button" class="amostra@(opc == primeira ? " ativa" : "")" style="background:@opc.Hex" title="@opc.Nome" data-eixo="@eixo.Id" data-opcao="@opc.Nome"></button>
                                     }
                                 </div>
                             }
@@ -75,31 +100,129 @@ else
                                 <div class="linha flex flex-wrap gap-2">
                                     @foreach (var opc in eixo.Opcoes.OrderBy(x => x.Ordem))
                                     {
-                                        <span class="botao-linha">@opc.Nome</span>
+                                        <button type="button" class="botao-linha@(opc == primeira ? " ativo" : "")" data-eixo="@eixo.Id" data-opcao="@opc.Nome">@opc.Nome</button>
                                     }
                                 </div>
                             }
+                            <p class="opcao-escolhida m-0 text-tinta/80" data-rotulo="@eixo.Id">@(primeira?.Nome ?? "")</p>
                         </div>
                     }
                 </section>
             }
 
-            <form method="post" asp-page-handler="Adicionar" class="acoes-ficha">
-                <input type="hidden" name="id" value="@produto.Id" />
-                <div class="qtd-ficha-box">
-                    <span class="qtd-ficha-rotulo">Quantidade</span>
-                    <div class="qtd-stepper">
-                        <input id="qtd" name="quantidade" type="number" min="1" value="1" aria-label="Quantidade" />
+            @if (produto.Personalizavel && produto.EtapasPersonalizacao.Any())
+            {
+                <section class="bloco-ficha">
+                    <h2>Personalização</h2>
+                    <div class="formulario" id="etapas-ficha">
+                        @foreach (var etapa in produto.EtapasPersonalizacao)
+                        {
+                            <label>@etapa.Nome@(etapa.Acresce > 0 ? $" · +R$ {etapa.Acresce:N2}" : "")
+                                @if (etapa.Tipo == "arquivo")
+                                {
+                                    <span class="arquivo-ref">
+                                        <input type="file" accept="image/*" data-etapa="@etapa.Id" data-acresce="@etapa.Acresce" data-nome="@etapa.Nome" />
+                                        <span class="botao-linha">Escolher imagem</span>
+                                        <span class="arquivo-nome">Nenhuma imagem</span>
+                                    </span>
+                                }
+                                else if (etapa.Tipo == "numero")
+                                {
+                                    <input data-etapa="@etapa.Id" data-acresce="@etapa.Acresce" data-nome="@etapa.Nome" type="number" min="1" />
+                                }
+                                else
+                                {
+                                    <input data-etapa="@etapa.Id" data-acresce="@etapa.Acresce" data-nome="@etapa.Nome" type="text" />
+                                }
+                            </label>
+                        }
                     </div>
+                </section>
+            }
+
+            <div class="acoes-ficha">
+                @if (!personalizado)
+                {
+                    <div class="qtd-ficha-box">
+                        <span class="qtd-ficha-rotulo">Quantidade</span>
+                        <div class="qtd-stepper">
+                            <button type="button" id="qtd-menos" aria-label="Diminuir quantidade">−</button>
+                            <input id="qtd" type="number" min="1" value="1" aria-label="Quantidade" />
+                            <button type="button" id="qtd-mais" aria-label="Aumentar quantidade">+</button>
+                        </div>
+                    </div>
+                    <div class="acoes-compra">
+                        <form method="post" asp-page-handler="Adicionar" id="form-comprar" class="m-0">
+                            <input type="hidden" name="id" value="@produto.Id" />
+                            <input type="hidden" name="quantidade" id="qtd-hidden" value="1" />
+                            <input type="hidden" name="cor" id="cor-hidden" />
+                            <input type="hidden" name="tamanho" id="tamanho-hidden" />
+                            <input type="hidden" name="detalhes" id="detalhes-hidden" />
+                            <input type="hidden" name="destino" value="checkout" />
+                            <button class="botao btn-comprar-agora" type="submit" @(esgotado ? "disabled" : null)>@(esgotado ? "Esgotado" : "Comprar agora")</button>
+                        </form>
+                        <form method="post" asp-page-handler="Adicionar" id="form-carrinho" class="m-0">
+                            <input type="hidden" name="id" value="@produto.Id" />
+                            <input type="hidden" name="quantidade" id="qtd-hidden-2" value="1" />
+                            <input type="hidden" name="cor" id="cor-hidden-2" />
+                            <input type="hidden" name="tamanho" id="tamanho-hidden-2" />
+                            <input type="hidden" name="detalhes" id="detalhes-hidden-2" />
+                            <input type="hidden" name="destino" value="toast" />
+                            <button class="botao-linha btn-add-carrinho" type="submit" @(esgotado ? "disabled" : null)>Adicionar ao carrinho</button>
+                        </form>
+                    </div>
+                }
+                <div class="acoes-dupla">
+                    <form method="post" asp-page-handler="Favorito">
+                        <input type="hidden" name="id" value="@produto.Id" />
+                        <button class="btn-favorito-ficha@(Model.Favorito ? " ativo" : "")" type="submit" aria-pressed="@(Model.Favorito ? "true" : "false")">
+                            <span id="favorito-rotulo">@(Model.Favorito ? "Nos favoritos" : "Salvar nos favoritos")</span>
+                        </button>
+                    </form>
+                    <a class="botao-linha btn-whats-ficha" href="@whats" target="_blank" rel="noopener">WhatsApp</a>
                 </div>
-                <button class="botao btn-comprar-agora" type="submit">Adicionar ao carrinho</button>
-            </form>
+                @if (produto.Personalizavel || personalizado)
+                {
+                    <form method="post" asp-page-handler="Orcamento" id="form-orcamento">
+                        <input type="hidden" name="id" value="@produto.Id" />
+                        <input type="hidden" name="detalhes" id="orc-detalhes" />
+                        <button class="botao-teal inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border-2 border-teal bg-teal px-4 font-bold text-white" type="submit">Pedir orçamento</button>
+                    </form>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Identidade?.Shopee) || !string.IsNullOrWhiteSpace(Model.Identidade?.MercadoLivre))
+                {
+                    <aside class="canais-ficha" aria-label="Outros canais de venda">
+                        <p class="canais-ficha-rotulo">Disponível também em:</p>
+                        <div class="canais-ficha-links">
+                            @if (!string.IsNullOrWhiteSpace(Model.Identidade?.Shopee))
+                            {
+                                <a class="canal-ficha-link" href="@Model.Identidade.Shopee" target="_blank" rel="noopener"><span>Shopee</span></a>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.Identidade?.MercadoLivre))
+                            {
+                                <a class="canal-ficha-link" href="@Model.Identidade.MercadoLivre" target="_blank" rel="noopener"><span>Mercado Livre</span></a>
+                            }
+                        </div>
+                    </aside>
+                }
+            </div>
+
+            <section class="frete-caixa">
+                <h2 id="frete-titulo">Calcular frete</h2>
+                <form id="frete-ficha" class="frete-form">
+                    <input name="cep" type="text" inputmode="numeric" placeholder="00000-000" maxlength="9" aria-label="CEP" />
+                    <button class="botao" type="submit">Cotar</button>
+                </form>
+                <div id="frete-resultado"></div>
+            </section>
         </div>
     </div>
 
+    <div id="toast-carrinho" class="toast-carrinho" hidden role="status"></div>
+
     <section class="painel-ficha mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <article class="cartao rounded-[18px] bg-white p-4 shadow-cria">
-            <h2 class="mt-0">Perguntas</h2>
+            <h2 class="mt-0 text-xl font-extrabold">Perguntas</h2>
             @if (!Model.Perguntas.Any())
             {
                 <p class="discreto">Nenhuma pergunta ainda.</p>
@@ -113,11 +236,22 @@ else
                     {
                         <p class="resposta"><strong>Cria Lab</strong><span>@p.Resposta</span></p>
                     }
+                    else
+                    {
+                        <p class="discreto">Aguardando resposta</p>
+                    }
                 </article>
             }
+            <form method="post" asp-page-handler="Pergunta" class="formulario mt-3 grid gap-3">
+                <input type="hidden" name="id" value="@produto.Id" />
+                <label class="grid gap-1.5 font-bold">Sua pergunta
+                    <input class="min-h-12 w-full rounded-full border-2 border-linha bg-white px-4.5 py-2.5" name="texto" type="text" required placeholder="Escreva sua pergunta" />
+                </label>
+                <button class="botao inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-laranja px-4 font-bold text-white" type="submit">Enviar</button>
+            </form>
         </article>
         <article class="cartao rounded-[18px] bg-white p-4 shadow-cria">
-            <h2 class="mt-0">Avaliações</h2>
+            <h2 class="mt-0 text-xl font-extrabold">Avaliações</h2>
             @if (!Model.Avaliacoes.Any())
             {
                 <p class="discreto">Sem avaliações ainda.</p>
@@ -133,16 +267,171 @@ else
             }
         </article>
     </section>
+
+    @if (Model.Relacionados.Any())
+    {
+        <section class="trilho mt-5">
+            <h2 class="mt-0 text-xl font-extrabold">Relacionados</h2>
+            <div class="grade grade-produtos grid grid-cols-2 gap-3 md:grid-cols-4">
+                @foreach (var rel in Model.Relacionados)
+                {
+                    <partial name="_ProdutoCard" model="rel" />
+                }
+            </div>
+        </section>
+    }
 }
 @section Scripts {
 <script>
-document.querySelectorAll(".miniatura").forEach(function (botao) {
-  botao.addEventListener("click", function () {
-    var img = document.getElementById("foto-principal");
-    if (!img) return;
-    img.src = botao.getAttribute("data-src");
-    img.alt = botao.getAttribute("data-legenda") || "";
+(function () {
+  var produtoId = "@(Model.Produto?.Id ?? "")";
+  var estoqueMax = @(Model.Produto?.Estoque > 0 ? Model.Produto.Estoque : 99);
+  var showToast = @(Model.ToastCarrinho ? "true" : "false");
+
+  function coletarEscolhas() {
+    var partes = [];
+    var cor = "";
+    var tamanho = "";
+    document.querySelectorAll("[data-eixo-bloco]").forEach(function (bloco) {
+      var nomeEixo = bloco.getAttribute("data-eixo-nome") || "";
+      var tipo = bloco.getAttribute("data-eixo-tipo") || "";
+      var rotulo = bloco.querySelector("[data-rotulo]");
+      var valor = rotulo ? String(rotulo.textContent || "").trim() : "";
+      if (!valor) return;
+      partes.push(nomeEixo + ": " + valor);
+      if (tipo === "cor" && !cor) cor = valor;
+      else if (!tamanho) tamanho = valor;
+    });
+    document.querySelectorAll("#etapas-ficha [data-etapa]").forEach(function (campo) {
+      var nome = campo.getAttribute("data-nome") || "";
+      if (campo.type === "file") {
+        if (campo.files && campo.files[0]) partes.push(nome + ": " + campo.files[0].name);
+      } else if (campo.value) {
+        partes.push(nome + ": " + campo.value);
+      }
+    });
+    return { detalhes: partes.join(" · "), cor: cor, tamanho: tamanho };
+  }
+
+  function syncHidden() {
+    var e = coletarEscolhas();
+    var qtd = document.getElementById("qtd");
+    var n = Math.max(1, Number(qtd && qtd.value) || 1);
+    ["qtd-hidden", "qtd-hidden-2"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.value = String(n);
+    });
+    [["cor-hidden", e.cor], ["cor-hidden-2", e.cor], ["tamanho-hidden", e.tamanho], ["tamanho-hidden-2", e.tamanho], ["detalhes-hidden", e.detalhes], ["detalhes-hidden-2", e.detalhes], ["orc-detalhes", e.detalhes || "Sem detalhes"]].forEach(function (par) {
+      var el = document.getElementById(par[0]);
+      if (el) el.value = par[1];
+    });
+  }
+
+  var caixa = document.getElementById("variacoes-ficha");
+  if (caixa) {
+    caixa.addEventListener("click", function (evento) {
+      var botao = evento.target.closest("[data-opcao]");
+      if (!botao) return;
+      var eixoId = botao.getAttribute("data-eixo");
+      var nome = botao.getAttribute("data-opcao");
+      var bloco = caixa.querySelector('[data-eixo-bloco="' + eixoId + '"]');
+      if (!bloco) return;
+      bloco.querySelectorAll("[data-opcao]").forEach(function (el) {
+        el.classList.remove("ativa");
+        el.classList.remove("ativo");
+      });
+      if (botao.classList.contains("amostra")) botao.classList.add("ativa");
+      else botao.classList.add("ativo");
+      var rotulo = bloco.querySelector("[data-rotulo]");
+      if (rotulo) rotulo.textContent = nome;
+      syncHidden();
+    });
+  }
+
+  document.querySelectorAll(".miniatura").forEach(function (botao) {
+    botao.addEventListener("click", function () {
+      var img = document.getElementById("foto-principal");
+      if (!img) return;
+      img.src = botao.getAttribute("data-src");
+      img.alt = botao.getAttribute("data-legenda") || "";
+      document.querySelectorAll(".miniatura").forEach(function (el) { el.classList.remove("ativa"); });
+      botao.classList.add("ativa");
+      var leg = document.getElementById("legenda-foto");
+      if (leg) leg.textContent = (botao.getAttribute("data-legenda") || "") + " · sessão @(Model.Produto?.Sessao)";
+    });
   });
-});
+
+  var fotoPrincipal = document.getElementById("foto-principal");
+  if (fotoPrincipal) {
+    fotoPrincipal.addEventListener("click", function () {
+      var camada = document.createElement("div");
+      camada.className = "zoom";
+      camada.innerHTML = '<img src="' + fotoPrincipal.src + '" alt="">';
+      camada.addEventListener("click", function () { camada.remove(); });
+      document.body.appendChild(camada);
+    });
+  }
+
+  function definirQuantidade(valor) {
+    var campo = document.getElementById("qtd");
+    if (!campo) return;
+    var n = Math.max(1, Math.min(estoqueMax, Number(valor) || 1));
+    campo.value = String(n);
+    syncHidden();
+  }
+  var menos = document.getElementById("qtd-menos");
+  var mais = document.getElementById("qtd-mais");
+  if (menos) menos.addEventListener("click", function () { definirQuantidade((Number(document.getElementById("qtd").value) || 1) - 1); });
+  if (mais) mais.addEventListener("click", function () { definirQuantidade((Number(document.getElementById("qtd").value) || 1) + 1); });
+  var campoQtd = document.getElementById("qtd");
+  if (campoQtd) campoQtd.addEventListener("change", function () { definirQuantidade(campoQtd.value); });
+
+  document.querySelectorAll(".arquivo-ref input").forEach(function (campoArquivo) {
+    campoArquivo.addEventListener("change", function () {
+      var nome = campoArquivo.files && campoArquivo.files[0] ? campoArquivo.files[0].name : "Nenhuma imagem";
+      var alvo = campoArquivo.parentElement.querySelector(".arquivo-nome");
+      if (alvo) alvo.textContent = nome;
+      syncHidden();
+    });
+  });
+
+  ["form-comprar", "form-carrinho", "form-orcamento"].forEach(function (id) {
+    var form = document.getElementById(id);
+    if (form) form.addEventListener("submit", syncHidden);
+  });
+
+  var freteForm = document.getElementById("frete-ficha");
+  if (freteForm) {
+    freteForm.addEventListener("submit", function (evento) {
+      evento.preventDefault();
+      var cep = new FormData(freteForm).get("cep");
+      var caixaRes = document.getElementById("frete-resultado");
+      fetch("?handler=CotarFrete&id=" + encodeURIComponent(produtoId) + "&cep=" + encodeURIComponent(cep || ""))
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data.erro) { caixaRes.innerHTML = '<p class="erro">' + data.erro + "</p>"; return; }
+          caixaRes.innerHTML = (data.opcoes || []).map(function (op) {
+            return "<p><strong>" + op.nome + "</strong> · " + (op.gratis || op.preco === 0 ? "grátis" : ("R$ " + Number(op.preco).toFixed(2).replace(".", ","))) + " · " + op.dias + " dias úteis</p>";
+          }).join("");
+        })
+        .catch(function () { caixaRes.innerHTML = '<p class="erro">Não foi possível cotar agora.</p>'; });
+    });
+  }
+
+  if (showToast) {
+    var toast = document.getElementById("toast-carrinho");
+    if (toast) {
+      toast.hidden = false;
+      toast.classList.add("visivel");
+      toast.innerHTML = '<strong>Adicionado ao carrinho</strong><a href="@Url.Page("/Carrinho")">Ver carrinho</a><a class="toast-checkout" href="@Url.Page("/Checkout")">Finalizar</a>';
+      window.setTimeout(function () {
+        toast.classList.remove("visivel");
+        toast.hidden = true;
+      }, 4200);
+    }
+  }
+
+  syncHidden();
+})();
 </script>
 }

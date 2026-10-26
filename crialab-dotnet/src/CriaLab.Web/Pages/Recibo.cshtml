@@ -1,0 +1,46 @@
+@page "{id}"
+@model CriaLab.Web.Pages.ReciboModel
+@{
+    ViewData["Title"] = Model.Pedido == null ? "Recibo" : "Recibo " + Model.Pedido.Id;
+}
+@if (Model.Pedido == null)
+{
+    <div class="vazio cartao"><p>Recibo não encontrado.</p></div>
+}
+else
+{
+    var p = Model.Pedido;
+    var id = Model.Identidade;
+    <article class="cartao recibo-folha">
+        <img src="~/marca/logo-preta.svg" alt="Cria Lab DM" style="height:64px" />
+        <h1>Recibo</h1>
+        <p>@(id?.Nome ?? "Cria Lab DM") · CNPJ @(id?.Cnpj ?? "—")</p>
+        <p>@p.Id · @p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</p>
+        <p class="discreto">@p.Endereco · CEP @p.Cep · @p.Forma · frete @p.FreteNome</p>
+        <table class="w-full">
+            <tbody>
+            @foreach (var item in p.Itens)
+            {
+                <tr>
+                    <td>
+                        @item.Titulo
+                        @if (!string.IsNullOrWhiteSpace(item.CorEscolhida) || !string.IsNullOrWhiteSpace(item.TamanhoEscolhido))
+                        {
+                            <span class="discreto">(@item.CorEscolhida @item.TamanhoEscolhido)</span>
+                        }
+                    </td>
+                    <td>@item.Quantidade</td>
+                    <td>R$ @((item.PrecoUnitario * item.Quantidade).ToString("N2"))</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <p>Desconto cupom R$ @p.DescontoCupom.ToString("N2")</p>
+        <p>Desconto à vista R$ @p.DescontoAVista.ToString("N2")</p>
+        <p>Frete R$ @p.FreteCobrado.ToString("N2")</p>
+        <p class="numero-grande">Total R$ @p.Total.ToString("N2")</p>
+        <p>Nota fiscal: pendente de transmissão</p>
+        <button class="botao no-print" type="button" onclick="print()">Imprimir</button>
+        <a class="botao-linha no-print" asp-page="/Conta/Index">Minha conta</a>
+    </article>
+}

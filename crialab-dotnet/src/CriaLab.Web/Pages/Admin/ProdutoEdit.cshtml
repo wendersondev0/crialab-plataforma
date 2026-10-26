@@ -6,15 +6,17 @@
 <div class="admin-prod-cab">
     <div>
         <h1 class="m-0">@ViewData["Title"]</h1>
-        <p class="admin-prod-intro m-0 mt-1">Cadastre a peça com preço, estoque, modalidade e situação de publicação.</p>
+        <p class="admin-prod-intro m-0 mt-1">Cadastre a peça com preço, estoque, fotos, variações e personalização.</p>
     </div>
     <a class="botao-linha" asp-page="/Admin/Produtos">Voltar à lista</a>
 </div>
 
-<form method="post" class="cartao formulario admin-prod-form">
+<form method="post" enctype="multipart/form-data" class="cartao formulario admin-prod-form" id="form-produto">
     <input type="hidden" asp-for="Produto.Id" />
     <input type="hidden" asp-for="Produto.Sessao" />
     <input type="hidden" asp-for="Produto.CriadoEm" />
+    <input type="hidden" asp-for="VariacoesJson" id="VariacoesJson" />
+    <input type="hidden" asp-for="EtapasJson" id="EtapasJson" />
     <div asp-validation-summary="ModelOnly"></div>
 
     <div class="grade grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -29,6 +31,7 @@
             <select asp-for="Produto.Situacao">
                 <option value="publicado">publicado</option>
                 <option value="pausado">pausado</option>
+                <option value="esgotado">esgotado</option>
             </select>
         </label>
         <label>Preço (R$)<input asp-for="Produto.Preco" type="number" step="0.01" min="0" /></label>
@@ -51,8 +54,221 @@
         <label class="flex items-center gap-2 font-semibold"><input asp-for="Produto.ComArquivo" type="checkbox" style="width:auto;min-height:auto" /> Com arquivo</label>
     </div>
 
-    <div class="flex flex-wrap gap-2">
+    <section class="var-admin" id="variacoes-admin">
+        <div class="var-admin-topo">
+            <div>
+                <h2 class="m-0">Variações</h2>
+                <p class="var-admin-ajuda m-0">Cadastre eixos como Cor, Tamanho ou Acabamento. O cliente escolhe um de cada na ficha.</p>
+            </div>
+            <button class="botao-linha" type="button" id="var-add-eixo">+ Variação</button>
+        </div>
+        <div id="var-lista"></div>
+    </section>
+
+    <section class="var-admin" id="etapas-admin">
+        <div class="var-admin-topo">
+            <div>
+                <h2 class="m-0">Personalização</h2>
+                <p class="var-admin-ajuda m-0">Etapas pedidas ao cliente em produtos personalizáveis (medida, cor, arquivo…).</p>
+            </div>
+            <button class="botao-linha" type="button" id="etp-add">+ Etapa</button>
+        </div>
+        <div id="etp-lista"></div>
+    </section>
+
+    <h2>Fotos</h2>
+    @if (Model.Fotos.Any())
+    {
+        <div class="grade grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            @for (var i = 0; i < Model.Fotos.Count; i++)
+            {
+                var foto = Model.Fotos[i];
+                <article class="cartao p-3">
+                    <img src="~/@foto.Arquivo" alt="@foto.Legenda" style="width:100%;height:140px;object-fit:cover;border-radius:12px" />
+                    <input type="hidden" name="FotoLegendas[@i].Id" value="@foto.Id" />
+                    <label class="mt-2">Legenda
+                        <input name="FotoLegendas[@i].Legenda" value="@foto.Legenda" />
+                    </label>
+                    <button class="botao-linha mt-2" type="submit" formaction="?handler=RemoverFoto&id=@Model.Produto.Id&fotoId=@foto.Id" formnovalidate>Remover</button>
+                </article>
+            }
+        </div>
+    }
+    <label class="mt-3">Novas fotos
+        <input asp-for="NovasFotos" type="file" accept="image/*" multiple />
+    </label>
+
+    <div class="flex flex-wrap gap-2 mt-4">
         <button class="botao" type="submit">Salvar</button>
         <a class="botao-linha" asp-page="/Admin/Produtos">Cancelar</a>
     </div>
 </form>
+
+@section Scripts {
+<script>
+(function () {
+  var rascunho = [];
+  var etapas = [];
+  try { rascunho = JSON.parse(document.getElementById("VariacoesJson").value || "[]") || []; } catch (e) { rascunho = []; }
+  try { etapas = JSON.parse(document.getElementById("EtapasJson").value || "[]") || []; } catch (e) { etapas = []; }
+
+  function novoId(prefixo) {
+    return prefixo + "-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  }
+
+  function coletarVariacoes() {
+    var lista = document.getElementById("var-lista");
+    if (!lista) return;
+    lista.querySelectorAll("[data-eixo-i]").forEach(function (card) {
+      var i = Number(card.getAttribute("data-eixo-i"));
+      if (!rascunho[i]) return;
+      var nome = card.querySelector("[data-campo=nome]");
+      var tipo = card.querySelector("[data-campo=tipo]");
+      if (nome) rascunho[i].nome = String(nome.value || "").trim() || "Variação";
+      if (tipo) rascunho[i].tipo = tipo.value === "cor" ? "cor" : "texto";
+      card.querySelectorAll("[data-opcao-i]").forEach(function (linha) {
+        var j = Number(linha.getAttribute("data-opcao-i"));
+        if (!rascunho[i].opcoes[j]) return;
+        var opNome = linha.querySelector("[data-campo=op-nome]");
+        var opHex = linha.querySelector("[data-campo=op-hex]");
+        if (opNome) rascunho[i].opcoes[j].nome = String(opNome.value || "").trim() || ("Opção " + (j + 1));
+        if (opHex) rascunho[i].opcoes[j].hex = String(opHex.value || "#cccccc");
+      });
+    });
+  }
+
+  function pintarVariacoes() {
+    var lista = document.getElementById("var-lista");
+    if (!lista) return;
+    if (!rascunho.length) {
+      lista.innerHTML = '<p class="var-admin-vazia">Nenhuma variação ainda. Ex.: adicione <strong>Cor</strong> e depois <strong>Tamanho</strong>.</p>';
+      return;
+    }
+    lista.innerHTML = rascunho.map(function (eixo, i) {
+      if (!eixo.opcoes) eixo.opcoes = [];
+      var opcoes = eixo.opcoes.map(function (opcao, j) {
+        return '<div class="var-opcao" data-opcao-i="' + j + '">' +
+          '<input data-campo="op-nome" type="text" value="' + esc(opcao.nome) + '" placeholder="Nome da opção">' +
+          (eixo.tipo === "cor" ? '<input data-campo="op-hex" type="color" value="' + esc(opcao.hex || "#cccccc") + '">' : "") +
+          '<button class="botao-linha" type="button" data-rm-opcao="' + i + "-" + j + '"' + (eixo.opcoes.length <= 1 ? " disabled" : "") + ">Remover</button>" +
+          "</div>";
+      }).join("");
+      return '<article class="var-eixo" data-eixo-i="' + i + '">' +
+        '<div class="var-eixo-cab">' +
+        '<label class="fin-campo"><span>Nome da variação</span><input data-campo="nome" type="text" value="' + esc(eixo.nome) + '" placeholder="Ex.: Cor, Tamanho"></label>' +
+        '<label class="fin-campo"><span>Como mostrar</span><select data-campo="tipo"><option value="cor"' + (eixo.tipo === "cor" ? " selected" : "") + '>Amostra de cor</option><option value="texto"' + (eixo.tipo !== "cor" ? " selected" : "") + ">Botões de texto</option></select></label>" +
+        '<button class="botao-linha" type="button" data-rm-eixo="' + i + '">Remover variação</button>' +
+        "</div>" +
+        '<div class="var-opcoes">' + opcoes + "</div>" +
+        '<button class="botao-linha" type="button" data-add-opcao="' + i + '">+ Opção</button>' +
+        "</article>";
+    }).join("");
+
+    lista.querySelectorAll("[data-campo=nome], [data-campo=tipo], [data-campo=op-nome], [data-campo=op-hex]").forEach(function (campo) {
+      campo.addEventListener("change", function () {
+        coletarVariacoes();
+        if (campo.getAttribute("data-campo") === "tipo") pintarVariacoes();
+      });
+    });
+    lista.querySelectorAll("[data-rm-eixo]").forEach(function (botao) {
+      botao.addEventListener("click", function () {
+        coletarVariacoes();
+        rascunho.splice(Number(botao.getAttribute("data-rm-eixo")), 1);
+        pintarVariacoes();
+      });
+    });
+    lista.querySelectorAll("[data-add-opcao]").forEach(function (botao) {
+      botao.addEventListener("click", function () {
+        coletarVariacoes();
+        var i = Number(botao.getAttribute("data-add-opcao"));
+        if (!rascunho[i]) return;
+        rascunho[i].opcoes.push({ id: novoId("opc"), nome: rascunho[i].tipo === "cor" ? "Nova cor" : "Nova opção", hex: "#e8772a" });
+        pintarVariacoes();
+      });
+    });
+    lista.querySelectorAll("[data-rm-opcao]").forEach(function (botao) {
+      botao.addEventListener("click", function () {
+        coletarVariacoes();
+        var partes = String(botao.getAttribute("data-rm-opcao") || "").split("-");
+        var i = Number(partes[0]);
+        var j = Number(partes[1]);
+        if (!rascunho[i] || !rascunho[i].opcoes || rascunho[i].opcoes.length <= 1) return;
+        rascunho[i].opcoes.splice(j, 1);
+        pintarVariacoes();
+      });
+    });
+  }
+
+  function coletarEtapas() {
+    var lista = document.getElementById("etp-lista");
+    if (!lista) return;
+    lista.querySelectorAll("[data-etp-i]").forEach(function (card) {
+      var i = Number(card.getAttribute("data-etp-i"));
+      if (!etapas[i]) return;
+      var nome = card.querySelector("[data-campo=nome]");
+      var tipo = card.querySelector("[data-campo=tipo]");
+      var acresce = card.querySelector("[data-campo=acresce]");
+      if (nome) etapas[i].nome = String(nome.value || "").trim() || "Etapa";
+      if (tipo) etapas[i].tipo = tipo.value;
+      if (acresce) etapas[i].acresce = Number(acresce.value) || 0;
+    });
+  }
+
+  function pintarEtapas() {
+    var lista = document.getElementById("etp-lista");
+    if (!lista) return;
+    if (!etapas.length) {
+      lista.innerHTML = '<p class="var-admin-vazia">Nenhuma etapa. Use em produtos personalizáveis.</p>';
+      return;
+    }
+    lista.innerHTML = etapas.map(function (e, i) {
+      return '<article class="var-eixo" data-etp-i="' + i + '"><div class="var-eixo-cab">' +
+        '<label class="fin-campo"><span>Nome</span><input data-campo="nome" type="text" value="' + esc(e.nome) + '"></label>' +
+        '<label class="fin-campo"><span>Tipo</span><select data-campo="tipo">' +
+        '<option value="texto"' + (e.tipo === "texto" ? " selected" : "") + ">Texto</option>" +
+        '<option value="numero"' + (e.tipo === "numero" ? " selected" : "") + ">Número</option>" +
+        '<option value="arquivo"' + (e.tipo === "arquivo" ? " selected" : "") + ">Arquivo</option>" +
+        "</select></label>" +
+        '<label class="fin-campo"><span>Acréscimo R$</span><input data-campo="acresce" type="number" step="0.01" value="' + (e.acresce || 0) + '"></label>' +
+        '<button class="botao-linha" type="button" data-rm-etp="' + i + '">Remover</button>' +
+        "</div></article>";
+    }).join("");
+    lista.querySelectorAll("[data-rm-etp]").forEach(function (botao) {
+      botao.addEventListener("click", function () {
+        coletarEtapas();
+        etapas.splice(Number(botao.getAttribute("data-rm-etp")), 1);
+        pintarEtapas();
+      });
+    });
+  }
+
+  document.getElementById("var-add-eixo").addEventListener("click", function () {
+    coletarVariacoes();
+    rascunho.push({
+      id: novoId("var"),
+      nome: rascunho.length ? "Tamanho" : "Cor",
+      tipo: rascunho.length ? "texto" : "cor",
+      opcoes: [{ id: novoId("opc"), nome: rascunho.length ? "M" : "Laranja", hex: "#e8772a" }]
+    });
+    pintarVariacoes();
+  });
+  document.getElementById("etp-add").addEventListener("click", function () {
+    coletarEtapas();
+    etapas.push({ id: novoId("etp"), nome: "Nova etapa", tipo: "texto", acresce: 0 });
+    pintarEtapas();
+  });
+  document.getElementById("form-produto").addEventListener("submit", function () {
+    coletarVariacoes();
+    coletarEtapas();
+    document.getElementById("VariacoesJson").value = JSON.stringify(rascunho);
+    document.getElementById("EtapasJson").value = JSON.stringify(etapas);
+  });
+
+  pintarVariacoes();
+  pintarEtapas();
+})();
+</script>
+}

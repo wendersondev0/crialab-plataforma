@@ -44,6 +44,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddScoped<CarrinhoService>();
+builder.Services.AddScoped<FreteService>();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
