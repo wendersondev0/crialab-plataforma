@@ -1774,6 +1774,7 @@
   gap: 10px;
   margin-bottom: 12px;
 }
+a.imp-kpi { text-decoration: none; }
 .imp-kpi {
   display: block;
   width: 100%;

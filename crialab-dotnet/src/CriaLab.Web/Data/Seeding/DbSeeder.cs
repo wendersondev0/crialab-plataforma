@@ -46,6 +46,7 @@ public static class DbSeeder
             await SeedUsersAsync(userManager);
             await EnsureInsumosPlanilhaAsync(context);
             await EnsureMaquinasPlanilhaAsync(context);
+            await EnsureImpressoesPlanilhaAsync(context);
             return;
         }
 
@@ -437,33 +438,90 @@ public static class DbSeeder
         context.Maquinas.AddRange(CriarMaquinasPlanilha());
         context.EstoqueInsumos.AddRange(CriarInsumosPlanilha());
 
-        context.ImpressaoJobs.AddRange(
+        context.ImpressaoJobs.AddRange(CriarImpressoesPlanilha());
+    }
+
+    private static async Task EnsureImpressoesPlanilhaAsync(ApplicationDbContext context)
+    {
+        var existentes = await context.ImpressaoJobs.AsNoTracking().Select(x => x.Id).ToListAsync();
+        var set = existentes.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var faltando = CriarImpressoesPlanilha().Where(x => !set.Contains(x.Id)).ToList();
+        if (faltando.Count == 0) return;
+        context.ImpressaoJobs.AddRange(faltando);
+        await context.SaveChangesAsync();
+    }
+
+    private static List<ImpressaoJob> CriarImpressoesPlanilha()
+    {
+        var agora = DateTime.UtcNow;
+        return
+        [
             new ImpressaoJob
             {
                 Id = "imp-1",
                 MaquinaId = "maq-bambu",
-                ProdutoId = "sessao-2026-03-14",
-                Titulo = "Peça da oficina — 14/03/2026",
+                ProdutoId = "",
+                Titulo = "Peça em andamento — Bambu",
                 PesoPrevisto = 40,
                 Kwh = 0.4m,
-                Inicio = Utc("2026-10-19T09:00"),
-                Fim = Utc("2026-10-19T12:00"),
+                Inicio = agora.AddHours(-1),
+                Fim = agora.AddHours(2),
                 Status = "imprimindo"
+            },
+            new ImpressaoJob
+            {
+                Id = "imp-2",
+                MaquinaId = "maq-kobra",
+                ProdutoId = "",
+                Titulo = "Peça em andamento — Kobra",
+                PesoPrevisto = 18,
+                Kwh = 0.3m,
+                Inicio = agora.AddHours(-0.5),
+                Fim = agora.AddHours(1.5),
+                Status = "imprimindo"
+            },
+            new ImpressaoJob
+            {
+                Id = "imp-3",
+                MaquinaId = "maq-bambu",
+                ProdutoId = "",
+                Titulo = "Peça na fila",
+                PesoPrevisto = 80,
+                Kwh = 0.6m,
+                Inicio = agora.AddHours(2),
+                Fim = agora.AddHours(5),
+                Status = "na fila"
             },
             new ImpressaoJob
             {
                 Id = "imp-4",
                 MaquinaId = "maq-bambu",
-                ProdutoId = "sessao-2026-03-14",
-                Titulo = "Peça da oficina — 14/03/2026",
+                ProdutoId = "",
+                Titulo = "Peça concluída",
                 PesoPrevisto = 40,
                 PesoReal = 42,
                 Sucesso = true,
                 Kwh = 0.35m,
-                Inicio = Utc("2026-10-10T08:00"),
-                Fim = Utc("2026-10-10T11:00"),
+                Inicio = agora.AddDays(-9),
+                Fim = agora.AddDays(-9).AddHours(3),
                 Status = "concluida"
-            });
+            },
+            new ImpressaoJob
+            {
+                Id = "imp-5",
+                MaquinaId = "maq-kobra",
+                ProdutoId = "",
+                Titulo = "Peça com falha",
+                PesoPrevisto = 18,
+                PesoReal = 20,
+                Sucesso = false,
+                Motivo = "Descolou da mesa",
+                Kwh = 0.12m,
+                Inicio = agora.AddDays(-8),
+                Fim = agora.AddDays(-8).AddHours(1),
+                Status = "concluida"
+            }
+        ];
     }
 
     private static async Task EnsureInsumosPlanilhaAsync(ApplicationDbContext context)
