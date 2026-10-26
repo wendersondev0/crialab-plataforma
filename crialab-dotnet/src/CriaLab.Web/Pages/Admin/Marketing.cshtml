@@ -1,10 +1,142 @@
 @page
 @model CriaLab.Web.Pages.Admin.MarketingModel
-@{ ViewData["Title"] = "Marketing"; }
-<h1>Marketing</h1>
-<h2>Depoimentos</h2>
-@foreach (var d in Model.Depoimentos) { <p>@d.Autor: @d.Texto</p> }
-<h2>Parceiros</h2>
-@foreach (var p in Model.Parceiros) { <p>@p.Nome</p> }
-<h2>Cupons</h2>
-@foreach (var c in Model.Cupons) { <p>@c.Codigo · @(c.Ativo ? "ativo" : "inativo")</p> }
+@{
+    ViewData["Title"] = "Marketing";
+    var pct = Model.PercentualPct;
+    var selo = pct > 0 ? $"-{pct:0.#}%" : "0%";
+}
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Marketing</h1>
+        <p class="admin-prod-intro m-0 mt-1">Cupom da loja, parceiros e textos de ajuda da vitrine.</p>
+    </div>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok mkt-ok">@ok</p>
+}
+
+<div class="cta-abas mb-4">
+    <a class="cta-aba@(Model.Aba == "cupom" ? " ativo" : "")" asp-page="/Admin/Marketing" asp-route-aba="cupom">Cupom</a>
+    <a class="cta-aba@(Model.Aba == "parceiros" ? " ativo" : "")" asp-page="/Admin/Marketing" asp-route-aba="parceiros">Parceiros</a>
+    <a class="cta-aba@(Model.Aba == "ajuda" ? " ativo" : "")" asp-page="/Admin/Marketing" asp-route-aba="ajuda">Menus ajuda</a>
+</div>
+
+@if (Model.Aba == "cupom")
+{
+    <div class="mkt-grade">
+        <form method="post" asp-page-handler="Cupom" class="mkt-card cartao" id="cupom">
+            <div class="mkt-card-topo">
+                <span class="mkt-badge">Cupom da loja</span>
+                <label class="mkt-switch">
+                    <input type="checkbox" asp-for="Ativo" />
+                    <span>Cupom ativo</span>
+                </label>
+            </div>
+            <div class="mkt-campos">
+                <label class="mkt-campo"><span>Código</span><input asp-for="Codigo" maxlength="24" autocomplete="off" placeholder="OFICINA10" id="cupom-codigo" /></label>
+                <label class="mkt-campo"><span>Desconto</span>
+                    <span class="mkt-pct">
+                        <input asp-for="PercentualPct" type="number" step="0.5" min="0" max="90" id="cupom-pct" />
+                        <span class="mkt-pct-sufixo">%</span>
+                    </span>
+                    <small>Informe 10 para 10% de desconto</small>
+                </label>
+            </div>
+            <div class="mkt-atalhos">
+                <button class="chip-pct" type="button" data-pct="5">5%</button>
+                <button class="chip-pct" type="button" data-pct="10">10%</button>
+                <button class="chip-pct" type="button" data-pct="15">15%</button>
+                <button class="chip-pct" type="button" data-pct="20">20%</button>
+            </div>
+            <div class="mkt-acoes"><button class="botao" type="submit">Salvar cupom</button></div>
+        </form>
+        <aside class="mkt-lado">
+            <div class="mkt-preview@(Model.Ativo ? "" : " off")" id="mkt-preview">
+                <div class="mkt-preview-selo">@selo</div>
+                <div class="mkt-preview-corpo">
+                    <p class="mkt-preview-rotulo">Prévia no checkout</p>
+                    <p class="mkt-preview-codigo">@(string.IsNullOrWhiteSpace(Model.Codigo) ? "CUPOM" : Model.Codigo)</p>
+                    <p class="mkt-preview-txt">@(Model.Ativo ? "Cupom ativo · desconto no fechamento do pedido" : "Cupom pausado · não vale no checkout")</p>
+                </div>
+            </div>
+            <div class="mkt-dica cartao">
+                <h2 class="mkt-dica-titulo">Como funciona</h2>
+                <ul class="mkt-lista">
+                    <li>O código vale só na loja própria, no checkout.</li>
+                    <li>Digite o percentual em números (ex.: <strong>10</strong> = 10%).</li>
+                    <li>Desative o cupom sem apagar o código.</li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+}
+else if (Model.Aba == "parceiros")
+{
+    <form method="post" asp-page-handler="Parceiro" enctype="multipart/form-data" class="cartao formulario p-4 mb-4">
+        <h2 class="mt-0">Novo parceiro</h2>
+        <label>Nome<input name="nome" required /></label>
+        <label>Logo<input name="logo" type="file" accept="image/*" /></label>
+        <label class="flex items-center gap-2 font-semibold"><input name="podeAparecer" type="checkbox" value="true" checked style="width:auto;min-height:auto" /> Pode aparecer no Sobre</label>
+        <button class="botao" type="submit">Salvar</button>
+    </form>
+    <div class="grade grid grid-cols-1 gap-3 md:grid-cols-2">
+    @foreach (var p in Model.Parceiros)
+    {
+        <article class="cartao p-4 flex flex-wrap items-center gap-3">
+            @if (!string.IsNullOrWhiteSpace(p.Logo))
+            {
+                <img src="~/@p.Logo" alt="@p.Nome" style="height:48px;object-fit:contain" />
+            }
+            <div class="grow">
+                <strong>@p.Nome</strong>
+                <span class="@(p.PodeAparecer ? "cta-selo ok" : "cta-selo mute")">@(p.PodeAparecer ? "No site" : "Oculto")</span>
+            </div>
+            <form method="post" asp-page-handler="ToggleParceiro">
+                <input type="hidden" name="id" value="@p.Id" />
+                <button class="botao-linha" type="submit">@(p.PodeAparecer ? "Ocultar" : "Publicar")</button>
+            </form>
+            <form method="post" asp-page-handler="RemoverParceiro">
+                <input type="hidden" name="id" value="@p.Id" />
+                <button class="botao-linha" type="submit">Remover</button>
+            </form>
+        </article>
+    }
+    </div>
+}
+else
+{
+    <div class="grade grid grid-cols-1 gap-3">
+    @foreach (var m in Model.MenusAjuda)
+    {
+        <form method="post" asp-page-handler="Ajuda" class="cartao formulario p-4">
+            <input type="hidden" name="id" value="@m.Id" />
+            <label>Ajuda · @m.Id
+                <textarea name="texto" rows="3">@m.Texto</textarea>
+            </label>
+            <button class="botao" type="submit">Salvar</button>
+        </form>
+    }
+    @if (!Model.MenusAjuda.Any())
+    {
+        <div class="vazio cartao"><p>Nenhum menu de ajuda no seed.</p></div>
+    }
+    </div>
+}
+
+@section Scripts {
+@if (Model.Aba == "cupom")
+{
+<script>
+document.querySelectorAll(".chip-pct").forEach(function (b) {
+  b.addEventListener("click", function () {
+    document.getElementById("cupom-pct").value = b.getAttribute("data-pct");
+  });
+});
+document.getElementById("cupom-codigo").addEventListener("input", function (e) {
+  e.target.value = String(e.target.value || "").toUpperCase().replace(/\s+/g, "");
+});
+</script>
+}
+}

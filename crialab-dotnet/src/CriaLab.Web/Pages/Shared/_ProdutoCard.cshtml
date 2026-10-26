@@ -11,8 +11,17 @@
         anterior = Math.Round(Model.Preco * 1.18m, 2);
     var temDesconto = !personalizado && anterior > Model.Preco;
     var entrega = LojaVitrineHelper.TextoEntrega(Model, freteGratis);
+    var favIds = ViewData["FavoritosIds"] as HashSet<string> ?? new HashSet<string>();
+    var ehFav = favIds.Contains(Model.Id);
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
 }
 <article class="produto revela visivel">
+    <form method="post" asp-page="/Favorito" class="produto-fav-form">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="hidden" name="returnUrl" value="@returnUrl" />
+        <button class="btn-favorito-card@(ehFav ? " ativo" : "")" type="submit" aria-label="@(ehFav ? "Remover dos favoritos" : "Salvar nos favoritos")" aria-pressed="@(ehFav ? "true" : "false")">♥</button>
+    </form>
     <a class="produto-link" asp-page="/Produto" asp-route-id="@Model.Id">
         <span class="produto-foto">
             @if (foto != null)
@@ -27,6 +36,10 @@
             {
                 var pct = Math.Max(1, (int)Math.Round((1 - Model.Preco / anterior) * 100));
                 <span class="selo-oferta">-@pct%</span>
+            }
+            else if (Model.Oferta)
+            {
+                <span class="selo-oferta">Oferta</span>
             }
         </span>
         <span class="produto-corpo">

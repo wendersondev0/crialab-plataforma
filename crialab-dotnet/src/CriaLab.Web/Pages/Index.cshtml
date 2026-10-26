@@ -51,6 +51,15 @@
             <a class="chip revela visivel inline-flex min-h-11 items-center rounded-full border-2 border-linha bg-white px-3.5 font-bold text-tinta no-underline" asp-page="/Produtos" asp-route-ModalidadeFiltro="@m.Id" title="@m.Resumo">@m.Nome</a>
         }
     </div>
+    <div class="intro-modalidades-grade mt-3 grid grid-cols-1 gap-2 md:grid-cols-3">
+        @foreach (var m in Model.Modalidades)
+        {
+            <a class="cartao p-3 no-underline text-tinta revela visivel" asp-page="/Produtos" asp-route-ModalidadeFiltro="@m.Id">
+                <strong class="block">@m.Nome</strong>
+                <span class="discreto text-sm">@(string.IsNullOrWhiteSpace(m.Explicacao) ? m.Resumo : m.Explicacao)</span>
+            </a>
+        }
+    </div>
 </section>
 
 <section class="faixa-categorias my-3">

@@ -98,9 +98,9 @@ Ordem sugerida (impacto no cliente):
 - [x] Toast “adicionado ao carrinho”
 
 ### B2. Busca
-- [ ] Filtros: categoria, preço min/max, frete grátis, à vista, personalizável, nota, ordem
-- [ ] Sugestões ao digitar
-- [ ] Querystring compartilhável (paridade com estático)
+- [x] Filtros: categoria, preço min/max, frete grátis, à vista, personalizável, nota, ordem
+- [x] Sugestões ao digitar
+- [x] Querystring compartilhável (paridade com estático)
 
 ### B3. Carrinho + Checkout + Recibo
 - [x] Carrinho visual tipo cards (já parcialmente)
@@ -115,9 +115,9 @@ Ordem sugerida (impacto no cliente):
 - [x] Login/Register já existem — alinhar visual `entrada`/cartão
 
 ### B5. Polish loja
-- [ ] Cards: favorito no card, selo oferta, entrega
-- [ ] Intro modalidades iguais ao estático
-- [ ] Contato/Sobre revisão final de classes
+- [x] Cards: favorito no card, selo oferta, entrega
+- [x] Intro modalidades iguais ao estático
+- [x] Contato/Sobre revisão final de classes
 
 ---
 
@@ -149,14 +149,14 @@ Página opcional **Personalizados** = atalho filtrado da lista (KPI já filtra).
 - [x] `Admin/Orcamentos` + `Admin/OrcamentoEdit/{id}`: lista e editor (cálculo simplificado; paridade total do `orcamento.js` fica para polish)
 
 ### C4. Atendimento
-- [ ] Mensagens contato (abrir/responder/fechar)
-- [ ] Perguntas de produto
-- [ ] Depoimentos (CRUD + `podeAparecer`) — página própria ou aba
+- [x] Mensagens contato (abrir/responder/fechar)
+- [x] Perguntas de produto
+- [x] Depoimentos (CRUD + `podeAparecer`) — página própria ou aba
 
 ### C5. Marketing
-- [ ] Parceiros (logo, nome, pode aparecer)
-- [ ] Conteúdos/menus ajuda se existirem no estático
-- [ ] O que o `marketing()` do estático gerencia (revisar e portar 1:1)
+- [x] Parceiros (logo, nome, pode aparecer)
+- [x] Conteúdos/menus ajuda se existirem no estático
+- [x] O que o `marketing()` do estático gerencia (revisar e portar 1:1)
 
 ### C6. Patrimônio + Estoque + Impressão
 - [ ] Máquinas / patrimônio (`oficina.js` patrimônio)
@@ -248,9 +248,9 @@ Inventário de páginas estáticas a bater:
 
 ## 9. Próximo passo imediato
 
-**Concluído:** S0–S3 — casca admin, produtos, ficha/checkout/recibo, Pedidos/OS/Orçamentos e Conta.
+**Concluído:** S0–S4 — loja comercial + atendimento/marketing + busca/polish.
 
-**Seguir com (S4):**
-1. Atendimento (C4) + Marketing (C5)
-2. Busca filtros (B2) e polish loja (B5)
-3. Preview card no ProdutoEdit (restante C2)
+**Seguir com (S5):**
+1. Patrimônio / Estoque / Impressão (C6)
+2. Preview card no ProdutoEdit (restante C2)
+3. Financeiro (C7) na sequência

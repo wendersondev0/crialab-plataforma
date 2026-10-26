@@ -4,24 +4,92 @@
     ViewData["Title"] = "Busca";
 }
 <h1 class="mt-0">Busca</h1>
-<form method="get" class="filtros-loja">
-    <label style="flex:1;min-width:220px">
-        Buscar peça
-        <input type="search" name="q" value="@Model.Termo" placeholder="Nome, material ou categoria" />
+<p class="intro-pagina mb-3 max-w-3xl text-tinta/75">@Model.Ajuda</p>
+
+<form method="get" id="filtros" class="cartao filtros formulario mb-4" autocomplete="off">
+    <label>Texto
+        <input type="search" name="q" id="q" value="@Model.Termo" placeholder="Nome, material ou categoria" />
     </label>
-    @if (!string.IsNullOrWhiteSpace(Model.Categoria))
-    {
-        <input type="hidden" name="categoria" value="@Model.Categoria" />
-    }
-    <button class="botao" type="submit">Buscar</button>
+    <div id="sugestoes"></div>
+    <label>Categoria
+        <select name="categoria" asp-items="Model.Categorias">
+            <option value="">Todas</option>
+        </select>
+    </label>
+    <div class="grade-3">
+        <label>Preço mínimo<input name="precoMin" type="number" min="0" step="0.01" value="@Model.PrecoMin" /></label>
+        <label>Preço máximo<input name="precoMax" type="number" min="0" step="0.01" value="@Model.PrecoMax" /></label>
+        <label>Ordenar
+            <select name="ordem">
+                <option value="relevancia" selected="@(Model.Ordem is null or "relevancia" ? "selected" : null)">Relevância</option>
+                <option value="preco" selected="@(Model.Ordem == "preco" ? "selected" : null)">Preço</option>
+                <option value="vendas" selected="@(Model.Ordem == "vendas" ? "selected" : null)">Vendas</option>
+                <option value="novidade" selected="@(Model.Ordem == "novidade" ? "selected" : null)">Novidade</option>
+            </select>
+        </label>
+    </div>
+    <div class="linha flex flex-wrap gap-4">
+        <label class="flex items-center gap-2 font-semibold">
+            @if (Model.FreteGratis == "1")
+            {
+                <input type="checkbox" name="freteGratis" value="1" checked style="width:auto;min-height:auto" />
+            }
+            else
+            {
+                <input type="checkbox" name="freteGratis" value="1" style="width:auto;min-height:auto" />
+            }
+            Frete grátis
+        </label>
+        <label class="flex items-center gap-2 font-semibold">
+            @if (Model.AVista == "1")
+            {
+                <input type="checkbox" name="aVista" value="1" checked style="width:auto;min-height:auto" />
+            }
+            else
+            {
+                <input type="checkbox" name="aVista" value="1" style="width:auto;min-height:auto" />
+            }
+            À vista
+        </label>
+        <label class="flex items-center gap-2 font-semibold">
+            @if (Model.Personalizavel == "1")
+            {
+                <input type="checkbox" name="personalizavel" value="1" checked style="width:auto;min-height:auto" />
+            }
+            else
+            {
+                <input type="checkbox" name="personalizavel" value="1" style="width:auto;min-height:auto" />
+            }
+            Personalizável
+        </label>
+        <label>Nota mínima
+            <select name="nota">
+                <option value="">Qualquer</option>
+                @if (Model.Nota == "4")
+                {
+                    <option value="4" selected>4 ou mais</option>
+                }
+                else
+                {
+                    <option value="4">4 ou mais</option>
+                }
+                @if (Model.Nota == "5")
+                {
+                    <option value="5" selected>5</option>
+                }
+                else
+                {
+                    <option value="5">5</option>
+                }
+            </select>
+        </label>
+    </div>
+    <button class="botao" type="submit">Aplicar filtros</button>
 </form>
-@if (!string.IsNullOrWhiteSpace(Model.Categoria))
+
+@if (Model.TemFiltro && !Model.Resultados.Any())
 {
-    <p class="discreto">Filtro de tema: <strong>@Model.Categoria</strong></p>
-}
-@if (( !string.IsNullOrWhiteSpace(Model.Termo) || !string.IsNullOrWhiteSpace(Model.Categoria) ) && !Model.Resultados.Any())
-{
-    <div class="vazio cartao"><p>Nada encontrado@(string.IsNullOrWhiteSpace(Model.Termo) ? "." : $" para “{Model.Termo}”.")</p></div>
+    <div class="vazio cartao"><p>Nenhuma peça com esses filtros.</p></div>
 }
 else if (Model.Resultados.Any())
 {
@@ -31,4 +99,33 @@ else if (Model.Resultados.Any())
             <partial name="_ProdutoCard" model="p" />
         }
     </div>
+}
+
+@section Scripts {
+<script>
+(function () {
+  var campo = document.getElementById("q");
+  var caixa = document.getElementById("sugestoes");
+  var timer;
+  if (!campo || !caixa) return;
+  campo.addEventListener("input", function () {
+    window.clearTimeout(timer);
+    var valor = campo.value.trim();
+    if (valor.length < 2) { caixa.innerHTML = ""; return; }
+    timer = window.setTimeout(function () {
+      fetch("?handler=Sugestoes&q=" + encodeURIComponent(valor))
+        .then(function (r) { return r.json(); })
+        .then(function (lista) {
+          if (!lista.length) { caixa.innerHTML = ""; return; }
+          caixa.innerHTML = '<div class="sugestoes">' + lista.map(function (p) {
+            return '<a class="sugestao" href="/Produto/' + encodeURIComponent(p.id) + '">' +
+              (p.foto ? '<img src="/' + p.foto + '" alt="">' : "") +
+              '<span><strong>' + p.titulo + '</strong><em>R$ ' + Number(p.preco).toFixed(2).replace(".", ",") + '</em></span></a>';
+          }).join("") + "</div>";
+        })
+        .catch(function () { caixa.innerHTML = ""; });
+    }, 220);
+  });
+})();
+</script>
 }

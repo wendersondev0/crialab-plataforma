@@ -1,8 +1,158 @@
 @page
 @model CriaLab.Web.Pages.Admin.AtendimentoModel
-@{ ViewData["Title"] = "Atendimento"; }
-<h1>Atendimento</h1>
-<h2>Mensagens</h2>
-@foreach (var m in Model.Mensagens) { <article>@m.Tipo · @m.Nome · @m.Status<p>@m.Texto</p></article> }
-<h2>Perguntas</h2>
-@foreach (var p in Model.Perguntas) { <article>@p.ProdutoId · @p.Autor<p>@p.Texto</p></article> }
+@{
+    ViewData["Title"] = "Atendimento";
+    string Kpi(string aba, string? status, bool ativo) =>
+        "admin-prod-kpi" + (ativo ? " ativo" : "");
+}
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Atendimento ao cliente</h1>
+        <p class="admin-prod-intro m-0 mt-1">Mensagens do contato, perguntas da vitrine e depoimentos.</p>
+    </div>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+<div class="admin-prod-kpis">
+    <a class="@Kpi("mensagens", null, Model.Aba == "mensagens" && string.IsNullOrEmpty(Model.StatusFiltro))" asp-page="/Admin/Atendimento" asp-route-aba="mensagens"><strong>@Model.TotalMensagens</strong><span>Mensagens</span></a>
+    <a class="@Kpi("mensagens", "aberto", Model.Aba == "mensagens" && Model.StatusFiltro == "aberto")" asp-page="/Admin/Atendimento" asp-route-aba="mensagens" asp-route-status="aberto"><strong>@Model.Abertas</strong><span>Abertas</span></a>
+    <a class="@Kpi("mensagens", "em atendimento", Model.Aba == "mensagens" && Model.StatusFiltro == "em atendimento")" asp-page="/Admin/Atendimento" asp-route-aba="mensagens" asp-route-status="em atendimento"><strong>@Model.EmAtendimento</strong><span>Em atendimento</span></a>
+    <a class="@Kpi("perguntas", null, Model.Aba == "perguntas")" asp-page="/Admin/Atendimento" asp-route-aba="perguntas"><strong>@Model.PerguntasPendentes</strong><span>Perguntas pendentes</span></a>
+</div>
+
+<div class="cta-abas mt-3 mb-3">
+    <a class="cta-aba@(Model.Aba == "mensagens" ? " ativo" : "")" asp-page="/Admin/Atendimento" asp-route-aba="mensagens">Mensagens do contato</a>
+    <a class="cta-aba@(Model.Aba == "perguntas" ? " ativo" : "")" asp-page="/Admin/Atendimento" asp-route-aba="perguntas">Perguntas da vitrine</a>
+    <a class="cta-aba@(Model.Aba == "depoimentos" ? " ativo" : "")" asp-page="/Admin/Atendimento" asp-route-aba="depoimentos">Depoimentos</a>
+</div>
+
+<form method="get" class="at-busca mb-4">
+    <input type="hidden" name="aba" value="@Model.Aba" />
+    @if (!string.IsNullOrEmpty(Model.StatusFiltro))
+    {
+        <input type="hidden" name="status" value="@Model.StatusFiltro" />
+    }
+    <label class="campo-busca">
+        <input name="q" type="search" value="@Model.Q" placeholder="@(Model.Aba == "perguntas" ? "Buscar pergunta, peça ou autor" : "Buscar mensagem, nome ou e-mail")" />
+    </label>
+</form>
+
+@if (Model.Aba == "mensagens")
+{
+    <div class="grade grid grid-cols-1 gap-3">
+    @foreach (var m in Model.Mensagens)
+    {
+        <article class="cartao p-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                    <span class="at-tipo">@m.Tipo</span>
+                    <strong class="ml-2">@m.Nome</strong>
+                    <span class="discreto"> · @m.Email · @m.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                </div>
+                <span class="cta-selo">@m.Status</span>
+            </div>
+            <p>@m.Texto</p>
+            <div class="linha flex flex-wrap gap-2">
+                @if (m.Status != "em atendimento")
+                {
+                    <form method="post" asp-page-handler="StatusMensagem">
+                        <input type="hidden" name="id" value="@m.Id" />
+                        <input type="hidden" name="status" value="em atendimento" />
+                        <button class="botao-linha" type="submit">Em atendimento</button>
+                    </form>
+                }
+                @if (m.Status != "fechado")
+                {
+                    <form method="post" asp-page-handler="StatusMensagem">
+                        <input type="hidden" name="id" value="@m.Id" />
+                        <input type="hidden" name="status" value="fechado" />
+                        <button class="botao" type="submit">Fechar</button>
+                    </form>
+                }
+                @if (m.Status == "fechado")
+                {
+                    <form method="post" asp-page-handler="StatusMensagem">
+                        <input type="hidden" name="id" value="@m.Id" />
+                        <input type="hidden" name="status" value="aberto" />
+                        <button class="botao-linha" type="submit">Reabrir</button>
+                    </form>
+                }
+            </div>
+        </article>
+    }
+    @if (!Model.Mensagens.Any())
+    {
+        <div class="vazio cartao"><p>Nenhuma mensagem.</p></div>
+    }
+    </div>
+}
+else if (Model.Aba == "perguntas")
+{
+    <div class="grade grid grid-cols-1 gap-3">
+    @foreach (var p in Model.Perguntas)
+    {
+        <article class="cartao p-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                    <strong>@p.Autor</strong>
+                    <span class="discreto"> · @p.ProdutoId · @p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                </div>
+                <span class="@(string.IsNullOrWhiteSpace(p.Resposta) ? "cta-selo alerta" : "cta-selo ok")">@(string.IsNullOrWhiteSpace(p.Resposta) ? "Pendente" : "Respondida")</span>
+            </div>
+            <p>@p.Texto</p>
+            @if (!string.IsNullOrWhiteSpace(p.Resposta))
+            {
+                <p class="resposta"><strong>Resposta:</strong> @p.Resposta</p>
+            }
+            <form method="post" asp-page-handler="ResponderPergunta" class="formulario mt-2">
+                <input type="hidden" name="id" value="@p.Id" />
+                <label>Resposta
+                    <textarea name="resposta" rows="2" required>@p.Resposta</textarea>
+                </label>
+                <button class="botao" type="submit">Publicar resposta</button>
+                <a class="botao-linha" asp-page="/Produto" asp-route-id="@p.ProdutoId">Ver produto</a>
+            </form>
+        </article>
+    }
+    @if (!Model.Perguntas.Any())
+    {
+        <div class="vazio cartao"><p>Nenhuma pergunta.</p></div>
+    }
+    </div>
+}
+else
+{
+    <form method="post" asp-page-handler="Depoimento" class="cartao formulario p-4 mb-4">
+        <h2 class="mt-0">Novo depoimento</h2>
+        <label>Autor<input name="autor" required /></label>
+        <label>Texto<textarea name="texto" rows="3" required></textarea></label>
+        <label class="flex items-center gap-2 font-semibold"><input name="podeAparecer" type="checkbox" value="true" checked style="width:auto;min-height:auto" /> Pode aparecer no site</label>
+        <button class="botao" type="submit">Salvar</button>
+    </form>
+    <div class="grade grid grid-cols-1 gap-3 md:grid-cols-2">
+    @foreach (var d in Model.Depoimentos)
+    {
+        <article class="cartao p-4">
+            <div class="flex flex-wrap justify-between gap-2">
+                <strong>@d.Autor</strong>
+                <span class="@(d.PodeAparecer ? "cta-selo ok" : "cta-selo mute")">@(d.PodeAparecer ? "No site" : "Oculto")</span>
+            </div>
+            <p>@d.Texto</p>
+            <div class="linha flex flex-wrap gap-2">
+                <form method="post" asp-page-handler="ToggleDepoimento">
+                    <input type="hidden" name="id" value="@d.Id" />
+                    <button class="botao-linha" type="submit">@(d.PodeAparecer ? "Ocultar" : "Publicar")</button>
+                </form>
+                <form method="post" asp-page-handler="RemoverDepoimento">
+                    <input type="hidden" name="id" value="@d.Id" />
+                    <button class="botao-linha" type="submit">Remover</button>
+                </form>
+            </div>
+        </article>
+    }
+    </div>
+}

@@ -21,13 +21,17 @@
     var ajudaCarrinho = (await Db.MenusAjuda.AsNoTracking().FirstOrDefaultAsync(x => x.Id == "carrinho"))?.Texto;
 
     var nomeConta = "Conta";
+    var favoritosIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     if (SignInManager.IsSignedIn(User))
     {
         var user = await UserManager.GetUserAsync(User);
         nomeConta = string.IsNullOrWhiteSpace(user?.NomeCompleto) ? (user?.Email ?? "Conta") : user!.NomeCompleto;
         if (nomeConta.Contains(' '))
             nomeConta = nomeConta.Split(' ')[0];
+        if (user != null)
+            favoritosIds = (await Db.Favoritos.AsNoTracking().Where(x => x.UsuarioId == user.Id).Select(x => x.ProdutoId).ToListAsync()).ToHashSet(StringComparer.OrdinalIgnoreCase);
     }
+    ViewData["FavoritosIds"] = favoritosIds;
     var qtd = Carrinho.QuantidadeTotal();
     var ehAdmin = User.IsInRole("Administrador");
     if (ViewData["FreteGratisAPartir"] == null)
