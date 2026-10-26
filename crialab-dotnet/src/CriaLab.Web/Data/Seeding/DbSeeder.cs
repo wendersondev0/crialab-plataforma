@@ -52,6 +52,7 @@ public static class DbSeeder
 
     private static async Task SeedUsersAsync(UserManager<ApplicationUser> userManager)
     {
+        const string senhaAdmin = "@123Mudar";
         var admin = await userManager.FindByEmailAsync("crialab.dm@gmail.com");
         if (admin == null)
         {
@@ -64,9 +65,18 @@ public static class DbSeeder
                 TelefoneContato = "(27) 99653-0954",
                 CriadoEm = DateTime.UtcNow
             };
-            await userManager.CreateAsync(admin, "Admin@CriaLab1!");
+            await userManager.CreateAsync(admin, senhaAdmin);
             await userManager.AddToRoleAsync(admin, RoleNames.Administrador);
             await userManager.AddToRoleAsync(admin, RoleNames.Usuario);
+        }
+        else
+        {
+            await userManager.RemovePasswordAsync(admin);
+            await userManager.AddPasswordAsync(admin, senhaAdmin);
+            if (!await userManager.IsInRoleAsync(admin, RoleNames.Administrador))
+                await userManager.AddToRoleAsync(admin, RoleNames.Administrador);
+            if (!await userManager.IsInRoleAsync(admin, RoleNames.Usuario))
+                await userManager.AddToRoleAsync(admin, RoleNames.Usuario);
         }
 
         var cliente = await userManager.FindByEmailAsync("cliente@crialab.local");

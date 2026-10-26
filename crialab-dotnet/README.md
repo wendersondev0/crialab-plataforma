@@ -35,7 +35,7 @@ Na subida a aplicação:
 
 | Perfil | E-mail | Senha |
 |--------|--------|-------|
-| Administrador | crialab.dm@gmail.com | Admin@CriaLab1! |
+| Administrador | crialab.dm@gmail.com | @123Mudar |
 | Cliente | cliente@crialab.local | Cliente@123! |
 
 Cadastro público em `/Conta/Register` recebe o papel **Usuario**. Painel em `/Admin` exige **Administrador**.
