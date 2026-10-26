@@ -1,5 +1,115 @@
 @page
 @model CriaLab.Web.Pages.Admin.PedidosModel
-@{ ViewData["Title"] = "Pedidos"; }
-<h1>Pedidos</h1>
-@foreach (var p in Model.Pedidos) { <article>@p.Id · @p.Status · R$ @p.Total.ToString("N2") · @p.CriadoEm</article> }
+@{
+    ViewData["Title"] = "Pedidos";
+}
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Pedidos</h1>
+        <p class="admin-prod-intro m-0 mt-1">Acompanhe status, recibo, OS e orçamentos de personalizados.</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+        <a class="botao-linha" asp-page="/Admin/Os">Ordens de serviço</a>
+        <a class="botao-linha" asp-page="/Admin/Orcamentos">Orçamentos internos</a>
+    </div>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+<div class="grade grid grid-cols-1 gap-3">
+@foreach (var p in Model.Pedidos)
+{
+    var liquido = p.Total - (Model.RepassarFrete ? p.FreteCobrado : 0);
+    var temPersonalizado = p.Itens.Any(i => string.Equals(i.Tipo, "personalizado", StringComparison.OrdinalIgnoreCase));
+    <article class="cartao p-4">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+                <strong class="text-lg">@p.Id</strong>
+                <button class="botao-linha ml-2" type="button" data-copiar="@p.Id">Copiar ID</button>
+                <p class="discreto m-0 mt-1">@p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy HH:mm") · @p.Forma · CEP @p.Cep</p>
+            </div>
+            <span class="cta-selo">@p.Status</span>
+        </div>
+        <p class="m-0 mt-2">Total R$ @p.Total.ToString("N2") · Líquido R$ @liquido.ToString("N2")</p>
+        <p class="discreto m-0">@string.Join(", ", p.Itens.Select(i => $"{i.Titulo} × {i.Quantidade}"))</p>
+        <p class="discreto m-0">Nota fiscal: @(string.IsNullOrWhiteSpace(p.Nota) ? "pendente de transmissão" : p.Nota)</p>
+        <form method="post" asp-page-handler="Status" class="linha flex flex-wrap items-end gap-2 mt-3">
+            <input type="hidden" name="id" value="@p.Id" />
+            <label class="m-0">Status
+                <select name="status">
+                    @foreach (var s in new[] { "novo", "aguardando pagamento", "pago", "em produção", "enviado", "entregue", "cancelado", "devolvido" })
+                    {
+                        if (p.Status == s)
+                        {
+                            <option value="@s" selected>@s</option>
+                        }
+                        else
+                        {
+                            <option value="@s">@s</option>
+                        }
+                    }
+                </select>
+            </label>
+            <button class="botao" type="submit">Atualizar</button>
+        </form>
+        <form method="post" asp-page-handler="Nota" class="linha flex flex-wrap items-end gap-2 mt-2">
+            <input type="hidden" name="id" value="@p.Id" />
+            <label class="m-0 grow">Nota / observação
+                <input name="nota" value="@p.Nota" placeholder="pendente, transmitida…" />
+            </label>
+            <button class="botao-linha" type="submit">Salvar nota</button>
+        </form>
+        <div class="linha flex flex-wrap gap-2 mt-3">
+            <a class="botao-linha" asp-page="/Recibo" asp-route-id="@p.Id">Recibo</a>
+            @if (temPersonalizado || p.Os != null)
+            {
+                <a class="botao-linha" asp-page="/Admin/Os" asp-route-id="@p.Id">Ordem de serviço</a>
+            }
+        </div>
+    </article>
+}
+@if (!Model.Pedidos.Any())
+{
+    <div class="vazio cartao"><p>Nenhum pedido ainda.</p></div>
+}
+</div>
+
+<h2 class="mt-6">Personalizados aguardando preço</h2>
+@if (!Model.OrcamentosPendentes.Any())
+{
+    <p class="discreto">Nenhum personalizado pendente.</p>
+}
+else
+{
+    <div class="grade grid grid-cols-1 gap-3">
+    @foreach (var o in Model.OrcamentosPendentes)
+    {
+        <form method="post" asp-page-handler="ResponderOrcamento" class="cartao formulario p-4">
+            <input type="hidden" name="id" value="@o.Id" />
+            <strong>@o.Titulo</strong>
+            <span class="cta-selo">@o.Status</span>
+            <p>@o.Detalhes</p>
+            <label>Valor (R$)
+                <input name="valor" type="number" step="0.01" min="0" value="@(o.Valor?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" required />
+            </label>
+            <button class="botao" type="submit">Devolver o valor</button>
+        </form>
+    }
+    </div>
+}
+
+@section Scripts {
+<script>
+document.querySelectorAll("[data-copiar]").forEach(function (botao) {
+  botao.addEventListener("click", function () {
+    var id = botao.getAttribute("data-copiar") || "";
+    if (navigator.clipboard) navigator.clipboard.writeText(id);
+    botao.textContent = "Copiado";
+    setTimeout(function () { botao.textContent = "Copiar ID"; }, 1200);
+  });
+});
+</script>
+}

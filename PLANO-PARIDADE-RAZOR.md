@@ -109,10 +109,10 @@ Ordem sugerida (impacto no cliente):
 - [x] Página Recibo (`/Recibo/{id}`) espelhando `recibo.html`
 
 ### B4. Conta
-- [ ] Abas: Pedidos, Orçamentos, Favoritos, Endereços, Perguntas, Meus dados
-- [ ] CRUD endereço, editar perfil
-- [ ] Ação “pagar” / status pedido
-- [ ] Login/Register já existem — alinhar visual `entrada`/cartão
+- [x] Abas: Pedidos, Orçamentos, Favoritos, Endereços, Perguntas, Meus dados
+- [x] CRUD endereço, editar perfil
+- [x] Ação “pagar” / status pedido
+- [x] Login/Register já existem — alinhar visual `entrada`/cartão
 
 ### B5. Polish loja
 - [ ] Cards: favorito no card, selo oferta, entrega
@@ -144,9 +144,9 @@ Form (`formularioProduto()`):
 Página opcional **Personalizados** = atalho filtrado da lista (KPI já filtra).
 
 ### C3. Pedidos + OS + Orçamentos
-- [ ] `Admin/Pedidos`: lista, status, nota, recibo, copiar ID
-- [ ] `Admin/Os`: ordens de serviço ligadas a pedidos
-- [ ] `Admin/Orcamentos` + `Admin/Orcamento/{id}`: lista e editor (espelhar `orcamento.js`)
+- [x] `Admin/Pedidos`: lista, status, nota, recibo, copiar ID
+- [x] `Admin/Os`: ordens de serviço ligadas a pedidos
+- [x] `Admin/Orcamentos` + `Admin/OrcamentoEdit/{id}`: lista e editor (cálculo simplificado; paridade total do `orcamento.js` fica para polish)
 
 ### C4. Atendimento
 - [ ] Mensagens contato (abrir/responder/fechar)
@@ -248,9 +248,9 @@ Inventário de páginas estáticas a bater:
 
 ## 9. Próximo passo imediato
 
-**Concluído:** Fase A + C2 (lista + form com fotos/variações/etapas) + B1 ficha + B3 checkout/recibo (MVP S0–S2).
+**Concluído:** S0–S3 — casca admin, produtos, ficha/checkout/recibo, Pedidos/OS/Orçamentos e Conta.
 
-**Seguir com (S3):**
-1. Pedidos/OS/Orçamentos admin (C3)
-2. Conta cliente completa (B4)
+**Seguir com (S4):**
+1. Atendimento (C4) + Marketing (C5)
+2. Busca filtros (B2) e polish loja (B5)
 3. Preview card no ProdutoEdit (restante C2)

@@ -88,7 +88,7 @@ public class CheckoutModel : PageModel
         {
             Id = pedidoId,
             UsuarioId = userId,
-            Status = "novo",
+            Status = "aguardando pagamento",
             CriadoEm = DateTime.UtcNow,
             Subtotal = Subtotal,
             DescontoCupom = DescontoCupom,

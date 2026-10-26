@@ -1,0 +1,69 @@
+@page "{id?}"
+@model CriaLab.Web.Pages.Admin.OsModel
+@{
+    ViewData["Title"] = Model.Pedido == null ? "Ordens de serviço" : "OS " + Model.Pedido.Id;
+}
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">@(Model.Pedido == null ? "Ordens de serviço" : "Ordem de serviço")</h1>
+        <p class="admin-prod-intro m-0 mt-1">OS ligadas a pedidos personalizados ou sob demanda.</p>
+    </div>
+    <a class="botao-linha" asp-page="/Admin/Pedidos">Voltar aos pedidos</a>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+@if (Model.Pedido == null)
+{
+    <div class="grade grid grid-cols-1 gap-3">
+    @foreach (var p in Model.Lista)
+    {
+        <article class="cartao p-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <strong>@p.Id</strong>
+                <p class="discreto m-0">@p.Status · OS @(p.Os?.Status ?? "sem OS")</p>
+            </div>
+            <a class="botao-linha" asp-page="/Admin/Os" asp-route-id="@p.Id">Abrir</a>
+        </article>
+    }
+    @if (!Model.Lista.Any())
+    {
+        <div class="vazio cartao"><p>Nenhuma OS pendente.</p></div>
+    }
+    </div>
+}
+else
+{
+    var p = Model.Pedido;
+    <article class="cartao p-4">
+        <p class="m-0"><strong>@p.Id</strong></p>
+        <p>
+            @foreach (var item in p.Itens)
+            {
+                @($"{item.Titulo} · R$ {item.PrecoUnitario:N2} × {item.Quantidade}")<br />
+            }
+        </p>
+        <p>Status do pedido: @p.Status</p>
+        <p>Status da OS: @(p.Os?.Status ?? "não aberta") · insumo @(p.Os?.InsumoBaixado == true ? "baixado" : "pendente")</p>
+        <div class="linha flex flex-wrap gap-2">
+            @if (p.Os == null)
+            {
+                <form method="post" asp-page-handler="Abrir">
+                    <input type="hidden" name="id" value="@p.Id" />
+                    <button class="botao-linha" type="submit">Abrir OS</button>
+                </form>
+            }
+            @if (p.Os?.Status != "concluida")
+            {
+                <form method="post" asp-page-handler="Concluir">
+                    <input type="hidden" name="id" value="@p.Id" />
+                    <button class="botao" type="submit">Concluir ordem</button>
+                </form>
+            }
+            <a class="botao-linha" asp-page="/Recibo" asp-route-id="@p.Id">Recibo</a>
+        </div>
+    </article>
+}

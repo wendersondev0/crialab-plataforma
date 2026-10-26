@@ -2,61 +2,247 @@
 @model CriaLab.Web.Pages.Conta.IndexModel
 @{
     ViewData["Title"] = "Minha conta";
+    string ClasseAba(string nome) => "cta-aba" + (Model.Aba == nome ? " ativo" : "");
+    string ClasseKpi(string nome) => "cta-kpi" + (Model.Aba == nome ? " ativo" : "");
+    string Selo(string status) => status switch
+    {
+        "aguardando pagamento" or "aguardando" or "novo" => "cta-selo alerta",
+        "pago" or "entregue" or "respondido" or "aceito" => "cta-selo ok",
+        "cancelado" or "devolvido" or "recusado" => "cta-selo mute",
+        _ => "cta-selo"
+    };
 }
-<h1 class="mt-0 text-3xl font-extrabold text-tinta">Olá, @(Model.Usuario?.NomeCompleto ?? "cliente")</h1>
-<p class="intro-pagina text-tinta/75">Pedidos, orçamentos e endereços da sua conta.</p>
+<div class="cta-cab">
+    <div class="cta-cab-txt">
+        <p class="cta-eyebrow">Minha conta</p>
+        <h1 class="cta-nome">@(Model.Usuario?.NomeCompleto ?? "Cliente")</h1>
+        <p class="cta-intro">Pedidos, orçamentos, favoritos e endereços em um só lugar.</p>
+    </div>
+    <a class="botao-linha" asp-page="/Conta/Logout">Sair</a>
+</div>
 
-<section class="cartao mb-4 p-4">
-    <h2 class="mt-0">Pedidos</h2>
+<div class="cta-kpis">
+    <a class="@ClasseKpi("pedidos")" asp-page="/Conta/Index" asp-route-aba="pedidos"><strong>@Model.Pedidos.Count</strong><span>Pedidos</span></a>
+    <a class="@ClasseKpi("orcamentos")" asp-page="/Conta/Index" asp-route-aba="orcamentos"><strong>@Model.Orcamentos.Count</strong><span>Orçamentos</span></a>
+    <a class="@ClasseKpi("favoritos")" asp-page="/Conta/Index" asp-route-aba="favoritos"><strong>@Model.Favoritos.Count</strong><span>Favoritos</span></a>
+    <a class="@ClasseKpi("enderecos")" asp-page="/Conta/Index" asp-route-aba="enderecos"><strong>@Model.Enderecos.Count</strong><span>Endereços</span></a>
+    <a class="@ClasseKpi("perguntas")" asp-page="/Conta/Index" asp-route-aba="perguntas"><strong>@Model.Perguntas.Count</strong><span>Perguntas</span></a>
+</div>
+
+<div class="cta-abas">
+    <a class="@ClasseAba("pedidos")" asp-page="/Conta/Index" asp-route-aba="pedidos">Pedidos</a>
+    <a class="@ClasseAba("orcamentos")" asp-page="/Conta/Index" asp-route-aba="orcamentos">Orçamentos</a>
+    <a class="@ClasseAba("favoritos")" asp-page="/Conta/Index" asp-route-aba="favoritos">Favoritos</a>
+    <a class="@ClasseAba("enderecos")" asp-page="/Conta/Index" asp-route-aba="enderecos">Endereços</a>
+    <a class="@ClasseAba("perguntas")" asp-page="/Conta/Index" asp-route-aba="perguntas">Perguntas</a>
+    <a class="@ClasseAba("dados")" asp-page="/Conta/Index" asp-route-aba="dados">Meus dados</a>
+</div>
+
+@{
+    var aguardando = Model.Pedidos.Count(p => p.Status is "aguardando pagamento" or "novo");
+    var orcPend = Model.Orcamentos.Count(o => o.Status is "respondido" or "aguardando");
+}
+@if (aguardando > 0 || orcPend > 0)
+{
+    <div class="cta-alertas">
+        @if (aguardando > 0)
+        {
+            <a class="cta-alerta" asp-page="/Conta/Index" asp-route-aba="pedidos">@aguardando pedido(s) aguardando pagamento</a>
+        }
+        @if (orcPend > 0)
+        {
+            <a class="cta-alerta" asp-page="/Conta/Index" asp-route-aba="orcamentos">@orcPend orçamento(s) para olhar</a>
+        }
+    </div>
+}
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+<div class="cta-corpo">
+@if (Model.Aba == "pedidos")
+{
+    <div class="cta-lista">
     @if (!Model.Pedidos.Any())
     {
-        <p class="discreto">Nenhum pedido ainda.</p>
-        <a class="botao" asp-page="/Produtos">Ver produtos</a>
+        <div class="vazio cartao"><p>Nenhum pedido por aqui.</p><a class="botao" asp-page="/Produtos">Ver produtos</a></div>
     }
-    else
+    @foreach (var p in Model.Pedidos)
     {
-        <div class="grade grid grid-cols-1 gap-2">
-            @foreach (var p in Model.Pedidos)
-            {
-                <article class="flex flex-wrap items-center justify-between gap-2 border-b border-linha py-3">
-                    <div>
-                        <strong>@p.Id</strong>
-                        <span class="discreto block">@p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</span>
-                    </div>
-                    <span>@p.Status</span>
-                    <strong>R$ @p.Total.ToString("N2")</strong>
-                </article>
-            }
-        </div>
+        <article class="cta-card">
+            <div class="cta-card-topo">
+                <div>
+                    <strong class="cta-id">@p.Id</strong>
+                    <p class="cta-meta">@p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")@(string.IsNullOrWhiteSpace(p.Forma) ? "" : " · " + p.Forma)</p>
+                </div>
+                <span class="@Selo(p.Status)">@p.Status</span>
+            </div>
+            <p class="cta-itens">@(p.Itens.Any() ? string.Join(", ", p.Itens.Select(i => $"{i.Titulo} × {i.Quantidade}")) : "Sem itens")</p>
+            <div class="cta-total"><span>Total</span><strong>R$ @p.Total.ToString("N2")</strong></div>
+            <div class="cta-acoes">
+                @if (p.Status is "aguardando pagamento" or "novo")
+                {
+                    <form method="post" asp-page-handler="Pagar" class="inline">
+                        <input type="hidden" name="id" value="@p.Id" />
+                        <input type="hidden" name="aba" value="pedidos" />
+                        <button class="botao" type="submit">Simular pagamento</button>
+                    </form>
+                    <form method="post" asp-page-handler="Cancelar" class="inline">
+                        <input type="hidden" name="id" value="@p.Id" />
+                        <input type="hidden" name="aba" value="pedidos" />
+                        <button class="botao-linha" type="submit">Cancelar</button>
+                    </form>
+                }
+                @if (p.Status == "entregue")
+                {
+                    <form method="post" asp-page-handler="Devolver" class="inline">
+                        <input type="hidden" name="id" value="@p.Id" />
+                        <input type="hidden" name="aba" value="pedidos" />
+                        <button class="botao-linha" type="submit">Pedir devolução</button>
+                    </form>
+                }
+                @if (p.Status is not ("aguardando pagamento" or "novo" or "cancelado"))
+                {
+                    <a class="botao-linha" asp-page="/Recibo" asp-route-id="@p.Id">Recibo</a>
+                }
+            </div>
+        </article>
     }
-</section>
-
-<section class="cartao mb-4 p-4">
-    <h2 class="mt-0">Orçamentos</h2>
+    </div>
+}
+else if (Model.Aba == "orcamentos")
+{
+    <div class="cta-lista">
     @if (!Model.Orcamentos.Any())
     {
-        <p class="discreto">Nenhum orçamento.</p>
+        <div class="vazio cartao"><p>Nenhum orçamento.</p></div>
     }
     @foreach (var o in Model.Orcamentos)
     {
-        <article class="border-b border-linha py-3">
-            <strong>@o.Titulo</strong>
-            <span class="discreto"> · @o.Status · @(o.Valor.HasValue ? "R$ " + o.Valor.Value.ToString("N2") : "Aguardando valor")</span>
+        <article class="cta-card">
+            <div class="cta-card-topo">
+                <div>
+                    <strong class="cta-id">@o.Titulo</strong>
+                    <p class="cta-meta">@o.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</p>
+                </div>
+                <span class="@Selo(o.Status)">@o.Status</span>
+            </div>
+            <p class="cta-itens">@o.Detalhes</p>
+            @if (o.Valor.HasValue)
+            {
+                <div class="cta-total"><span>Valor proposto</span><strong>R$ @o.Valor.Value.ToString("N2")</strong></div>
+            }
+            else
+            {
+                <p class="cta-meta">Aguardando o valor da oficina.</p>
+            }
+            @if (o.Status == "respondido")
+            {
+                <div class="cta-acoes">
+                    <form method="post" asp-page-handler="AceitarOrcamento" class="inline">
+                        <input type="hidden" name="id" value="@o.Id" />
+                        <button class="botao" type="submit">Aceitar R$ @o.Valor!.Value.ToString("N2")</button>
+                    </form>
+                    <form method="post" asp-page-handler="RecusarOrcamento" class="inline">
+                        <input type="hidden" name="id" value="@o.Id" />
+                        <button class="botao-linha" type="submit">Recusar</button>
+                    </form>
+                </div>
+            }
         </article>
     }
-</section>
-
-<section class="cartao p-4">
-    <h2 class="mt-0">Endereços</h2>
-    @if (!Model.Enderecos.Any())
+    </div>
+}
+else if (Model.Aba == "favoritos")
+{
+    @if (!Model.Favoritos.Any())
     {
-        <p class="discreto">Nenhum endereço cadastrado.</p>
+        <div class="vazio cartao"><p>Nenhum favorito.</p></div>
     }
-    @foreach (var e in Model.Enderecos)
+    else
     {
-        <p class="m-0 py-2"><strong>@e.Rotulo</strong> · CEP @e.Cep · @e.Linha</p>
+        <div class="cta-fav-grade">
+        @foreach (var prod in Model.Favoritos)
+        {
+            var foto = prod.Fotos.OrderBy(f => f.Ordem).FirstOrDefault();
+            <a class="cta-fav" asp-page="/Produto" asp-route-id="@prod.Id">
+                <img src="~/@((foto?.Arquivo) ?? "marca/mascote.png")" alt="@prod.Titulo" />
+                <div>
+                    <strong>@prod.Titulo</strong>
+                    <span>R$ @prod.Preco.ToString("N2")</span>
+                </div>
+            </a>
+        }
+        </div>
     }
-    <form method="post" asp-page-handler="Logout" class="mt-4">
-        <a class="botao-linha" asp-page="/Conta/Logout">Sair</a>
+}
+else if (Model.Aba == "enderecos")
+{
+    <div class="cta-endereco-layout">
+        <div class="cta-lista">
+        @if (!Model.Enderecos.Any())
+        {
+            <div class="vazio cartao"><p>Nenhum endereço guardado.</p></div>
+        }
+        @foreach (var e in Model.Enderecos)
+        {
+            <article class="cta-card cta-end">
+                <div class="cta-card-topo">
+                    <strong class="cta-id">@e.Rotulo</strong>
+                    <form method="post" asp-page-handler="RemoverEndereco">
+                        <input type="hidden" name="id" value="@e.Id" />
+                        <button class="botao-linha" type="submit">Remover</button>
+                    </form>
+                </div>
+                <p class="cta-itens m-0">@e.Linha</p>
+                <p class="cta-meta m-0">CEP @e.Cep</p>
+            </article>
+        }
+        </div>
+        <form method="post" asp-page-handler="Endereco" class="cta-card cta-form">
+            <h2 class="cta-titulo">Novo endereço</h2>
+            <label class="cta-campo"><span>Apelido</span><input asp-for="Rotulo" placeholder="Casa, Trabalho…" /></label>
+            <label class="cta-campo"><span>Endereço completo</span><input asp-for="Linha" required placeholder="Rua, número, bairro, cidade/UF" /></label>
+            <label class="cta-campo"><span>CEP</span><input asp-for="Cep" required inputmode="numeric" placeholder="29000-000" /></label>
+            <button class="botao" type="submit">Guardar endereço</button>
+        </form>
+    </div>
+}
+else if (Model.Aba == "perguntas")
+{
+    <div class="cta-lista">
+    @if (!Model.Perguntas.Any())
+    {
+        <div class="vazio cartao"><p>Você ainda não fez perguntas nos anúncios.</p></div>
+    }
+    @foreach (var p in Model.Perguntas)
+    {
+        <article class="cta-card">
+            <div class="cta-card-topo">
+                <strong class="cta-id">@p.ProdutoId</strong>
+                <span class="@(string.IsNullOrWhiteSpace(p.Resposta) ? "cta-selo alerta" : "cta-selo ok")">@(string.IsNullOrWhiteSpace(p.Resposta) ? "Aguardando" : "Respondida")</span>
+            </div>
+            <p class="cta-itens">@p.Texto</p>
+            <p class="cta-meta">@(string.IsNullOrWhiteSpace(p.Resposta) ? "A oficina ainda não respondeu." : p.Resposta)</p>
+            <a class="botao-linha" asp-page="/Produto" asp-route-id="@p.ProdutoId">Ver produto</a>
+        </article>
+    }
+    </div>
+}
+else
+{
+    <form method="post" asp-page-handler="Dados" class="cta-card cta-form cta-dados">
+        <h2 class="cta-titulo">Dados pessoais</h2>
+        <p class="cta-meta">Atualize nome, telefone e documento da conta.</p>
+        <div class="cta-grade">
+            <label class="cta-campo"><span>Nome</span><input asp-for="NomeCompleto" /></label>
+            <label class="cta-campo"><span>E-mail</span><input value="@(Model.Usuario?.Email)" disabled /></label>
+            <label class="cta-campo"><span>Telefone</span><input asp-for="TelefoneContato" /></label>
+            <label class="cta-campo"><span>Documento</span><input asp-for="Documento" /></label>
+        </div>
+        <button class="botao" type="submit">Salvar dados</button>
     </form>
-</section>
+}
+</div>

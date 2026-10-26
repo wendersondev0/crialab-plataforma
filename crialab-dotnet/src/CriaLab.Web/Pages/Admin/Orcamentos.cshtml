@@ -1,0 +1,50 @@
+@page
+@model CriaLab.Web.Pages.Admin.OrcamentosModel
+@{
+    ViewData["Title"] = "Orçamentos";
+}
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Orçamentos</h1>
+        <p class="admin-prod-intro m-0 mt-1">Cálculos internos da oficina e pedidos de orçamento da loja.</p>
+    </div>
+    <form method="post" asp-page-handler="Novo">
+        <button class="botao" type="submit">Novo orçamento interno</button>
+    </form>
+</div>
+
+<h2>Internos</h2>
+<div class="grade grid grid-cols-1 gap-3 md:grid-cols-2">
+@foreach (var o in Model.Internos)
+{
+    <article class="cartao p-4">
+        <strong>@o.Nome</strong>
+        <p class="discreto m-0">@o.Id · @o.Material · @o.Minutos min · @o.PesoG g</p>
+        <p class="m-0 mt-1">@(o.Enviado ? "Enviado" : "Rascunho") · margem @(o.MargemSite * 100)%</p>
+        <a class="botao-linha mt-3 inline-flex" asp-page="/Admin/OrcamentoEdit" asp-route-id="@o.Id">Editar</a>
+    </article>
+}
+@if (!Model.Internos.Any())
+{
+    <div class="vazio cartao"><p>Nenhum orçamento interno.</p></div>
+}
+</div>
+
+<h2 class="mt-6">Da loja (cliente)</h2>
+<div class="grade grid grid-cols-1 gap-3">
+@foreach (var o in Model.Clientes)
+{
+    <article class="cartao p-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <strong>@o.Titulo</strong>
+            <p class="discreto m-0">@o.Status · @(o.Valor.HasValue ? $"R$ {o.Valor:N2}" : "sem valor") · @o.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</p>
+            <p class="m-0">@o.Detalhes</p>
+        </div>
+        <a class="botao-linha" asp-page="/Admin/Pedidos">Responder em Pedidos</a>
+    </article>
+}
+@if (!Model.Clientes.Any())
+{
+    <div class="vazio cartao"><p>Nenhum orçamento de cliente.</p></div>
+}
+</div>
