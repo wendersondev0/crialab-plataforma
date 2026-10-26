@@ -1,0 +1,6 @@
+@page
+@model CriaLab.Web.Pages.SobreModel
+@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Sobre"; }
+<h1>Sobre a Cria Lab</h1>
+<p>@Model.Ajuda?.Texto</p>
+<p>CNPJ: @Model.Identidade?.Cnpj</p>

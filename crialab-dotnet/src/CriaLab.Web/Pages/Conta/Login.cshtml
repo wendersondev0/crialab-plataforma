@@ -1,0 +1,12 @@
+@page
+@model CriaLab.Web.Pages.Conta.LoginModel
+@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Entrar"; }
+<h1>Entrar</h1>
+<form method="post">
+    <div asp-validation-summary="All"></div>
+    <label>E-mail<input asp-for="Email" type="email" required /></label>
+    <label>Senha<input asp-for="Senha" type="password" required /></label>
+    <label><input asp-for="Lembrar" type="checkbox" /> Lembrar de mim</label>
+    <button type="submit">Entrar</button>
+</form>
+<p>Ainda não tem conta? <a asp-page="/Conta/Register">Cadastre-se</a></p>

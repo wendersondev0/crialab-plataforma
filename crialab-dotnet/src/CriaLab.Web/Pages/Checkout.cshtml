@@ -1,0 +1,13 @@
+@page
+@model CriaLab.Web.Pages.CheckoutModel
+@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Checkout"; }
+<h1>Checkout</h1>
+@if (Model.Itens.Any()) {
+<p>Subtotal: R$ @Model.Subtotal.ToString("N2")</p>
+<form method="post">
+<label>CEP<input asp-for="Cep" /></label>
+<label>Cupom<input asp-for="Cupom" /></label>
+<button type="submit">Confirmar pedido simulado</button>
+</form>
+} else { <p>Adicione itens ao carrinho primeiro.</p> }
+@if (!string.IsNullOrEmpty(Model.Mensagem)) { <p class="sucesso">@Model.Mensagem</p> }

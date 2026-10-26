@@ -6,7 +6,7 @@ Site estático da loja da própria Cria Lab. Cada fase abaixo é uma entrega que
 | --- | --- |
 | Produto | Cria Lab DM |
 | Site | https://crialabdm.com.br |
-| Pasta | `d:\projetos\ctgi\crialab-plataforma` |
+| Pasta | `d:\projetos\ctgi\crialab-plataforma\estatico` |
 | Nesta etapa | HTML, CSS e JavaScript, sem framework e sem backend |
 | CNPJ | 68.914.190/0001-96 |
 | E-mail | crialab.dm@gmail.com |
@@ -68,14 +68,16 @@ Ficam de fora, em todas as fases: loja de terceiro, slug de outro vendedor, selo
 
 ```text
 crialab-plataforma/
-  index.html
-  css/
-  js/
-  dados/
-  paginas/
-  paginas/admin/
-  marca/
-  fotos/
+  estatico/
+    index.html
+    css/
+    js/
+    dados/
+    paginas/
+    paginas/admin/
+    marca/
+    fotos/
+  crialab-dotnet/
 ```
 
 `dados/*.js` é a carga inicial. O que o usuário muda na tela vai para `localStorage`. Recarregar mantém a alteração. Na home da administração, um botão discreto “Restaurar carga inicial” apaga essa memória e volta aos arquivos.

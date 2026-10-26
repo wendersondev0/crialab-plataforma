@@ -1,0 +1,6 @@
+@page
+@model CriaLab.Web.Pages.Admin.FiscalModel
+@{ ViewData["Title"] = "Fiscal"; }
+<h1>Fiscal</h1>
+<p>CNPJ: @Model.Identidade?.Cnpj</p>
+<p>Pedidos com nota pendente: @Model.PedidosNotaPendente</p>

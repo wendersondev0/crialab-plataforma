@@ -1,0 +1,34 @@
+@page
+@model CriaLab.Web.Pages.CarrinhoModel
+@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Carrinho"; }
+<h1>Carrinho</h1>
+@if (!Model.Itens.Any())
+{
+    <p>Seu carrinho está vazio.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr><th>Peça</th><th>Qtd</th><th>Preço</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model.Itens)
+            {
+                <tr>
+                    <td>@i.Titulo</td>
+                    <td>@i.Quantidade</td>
+                    <td>R$ @((i.PrecoUnitario * i.Quantidade).ToString("N2"))</td>
+                    <td>
+                        <form method="post" asp-page-handler="Remover">
+                            <input type="hidden" name="produtoId" value="@i.ProdutoId" />
+                            <button type="submit">Remover</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p><strong>Subtotal:</strong> R$ @Model.Subtotal.ToString("N2")</p>
+    <a asp-page="/Checkout">Finalizar pedido</a>
+}

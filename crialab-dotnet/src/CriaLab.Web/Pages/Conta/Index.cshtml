@@ -1,0 +1,26 @@
+@page
+@model CriaLab.Web.Pages.Conta.IndexModel
+@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Minha conta"; }
+<h1>Olá, @Model.Usuario?.NomeCompleto</h1>
+<section>
+    <h2>Pedidos</h2>
+    @if (!Model.Pedidos.Any()) { <p>Nenhum pedido ainda.</p> }
+    @foreach (var p in Model.Pedidos)
+    {
+        <article><strong>@p.Id</strong> · @p.Status · R$ @p.Total.ToString("N2") · @p.CriadoEm.ToLocalTime()</article>
+    }
+</section>
+<section>
+    <h2>Orçamentos</h2>
+    @foreach (var o in Model.Orcamentos)
+    {
+        <article>@o.Titulo · @o.Status · @(o.Valor.HasValue ? "R$ " + o.Valor.Value.ToString("N2") : "Aguardando valor")</article>
+    }
+</section>
+<section>
+    <h2>Endereços</h2>
+    @foreach (var e in Model.Enderecos)
+    {
+        <p><strong>@e.Rotulo</strong> · CEP @e.Cep · @e.Linha</p>
+    }
+</section>

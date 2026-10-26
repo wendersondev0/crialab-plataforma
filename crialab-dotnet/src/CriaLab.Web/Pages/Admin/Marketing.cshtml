@@ -1,0 +1,10 @@
+@page
+@model CriaLab.Web.Pages.Admin.MarketingModel
+@{ ViewData["Title"] = "Marketing"; }
+<h1>Marketing</h1>
+<h2>Depoimentos</h2>
+@foreach (var d in Model.Depoimentos) { <p>@d.Autor: @d.Texto</p> }
+<h2>Parceiros</h2>
+@foreach (var p in Model.Parceiros) { <p>@p.Nome</p> }
+<h2>Cupons</h2>
+@foreach (var c in Model.Cupons) { <p>@c.Codigo · @(c.Ativo ? "ativo" : "inativo")</p> }

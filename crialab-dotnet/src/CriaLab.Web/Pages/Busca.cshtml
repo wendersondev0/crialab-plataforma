@@ -1,0 +1,19 @@
+@page
+@model CriaLab.Web.Pages.BuscaModel
+@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Busca"; }
+<h1>Busca</h1>
+<form method="get">
+    <input type="search" name="q" value="@Model.Termo" placeholder="Buscar peças..." />
+    <button type="submit">Buscar</button>
+</form>
+<div class="produtos-grid">
+    @foreach (var p in Model.Resultados)
+    {
+        <article>
+            <a asp-page="/Produto" asp-route-id="@p.Id">
+                <h3>@p.Titulo</h3>
+                <p>R$ @p.Preco.ToString("N2")</p>
+            </a>
+        </article>
+    }
+</div>

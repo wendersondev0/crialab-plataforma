@@ -1,0 +1,14 @@
+@page "{id?}"
+@model CriaLab.Web.Pages.Admin.ProdutoEditModel
+@{ ViewData["Title"] = "Editar produto"; }
+<h1>Editar produto</h1>
+@if (Model.Produto == null) { <p>Produto não encontrado.</p> } else {
+<form method="post">
+<input type="hidden" asp-for="Produto.Id" />
+<label>Título<input asp-for="Produto.Titulo" /></label>
+<label>Preço<input asp-for="Produto.Preco" /></label>
+<label>Estoque<input asp-for="Produto.Estoque" /></label>
+<label>Situação<input asp-for="Produto.Situacao" /></label>
+<button type="submit">Salvar</button>
+</form>
+}

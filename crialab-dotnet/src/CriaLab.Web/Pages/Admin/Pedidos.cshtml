@@ -1,0 +1,5 @@
+@page
+@model CriaLab.Web.Pages.Admin.PedidosModel
+@{ ViewData["Title"] = "Pedidos"; }
+<h1>Pedidos</h1>
+@foreach (var p in Model.Pedidos) { <article>@p.Id · @p.Status · R$ @p.Total.ToString("N2") · @p.CriadoEm</article> }

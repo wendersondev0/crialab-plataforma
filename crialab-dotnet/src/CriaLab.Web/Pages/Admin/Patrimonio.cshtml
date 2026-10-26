@@ -1,0 +1,8 @@
+@page
+@model CriaLab.Web.Pages.Admin.PatrimonioModel
+@{ ViewData["Title"] = "Patrimônio"; }
+<h1>Patrimônio</h1>
+<h2>Máquinas</h2>
+@foreach (var m in Model.Maquinas) { <article>@m.Nome · @m.Status · @m.Local</article> }
+<h2>Estoque de insumos</h2>
+@foreach (var i in Model.Insumos) { <article>@i.Nome · @i.Saldo @i.Unidade</article> }

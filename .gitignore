@@ -4,3 +4,17 @@ node_modules/
 .dev.vars
 *.log
 *.tmp.jpg
+.DS_Store
+Thumbs.db
+
+estatico/node_modules/
+estatico/.wrangler/
+estatico/.wrangler-dry/
+
+crialab-dotnet/**/bin/
+crialab-dotnet/**/obj/
+crialab-dotnet/.vs/
+crialab-dotnet/**/*.user
+crialab-dotnet/**/*.suo
+crialab-dotnet/.idea/
+crialab-dotnet/**/appsettings.*.local.json

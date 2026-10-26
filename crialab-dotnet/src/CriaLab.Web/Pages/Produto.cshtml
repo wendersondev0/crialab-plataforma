@@ -1,0 +1,29 @@
+@page "{id}"
+@model CriaLab.Web.Pages.ProdutoModel
+@{ Layout = "_LayoutLoja"; ViewData["Title"] = Model.Produto?.Titulo ?? "Produto"; }
+@if (Model.Produto == null) { <p>Produto não encontrado.</p> }
+else {
+<article class="ficha-produto">
+<h1>@Model.Produto.Titulo</h1>
+<div class="ficha-grid">
+<div class="ficha-fotos">
+@foreach (var f in Model.Produto.Fotos.OrderBy(x => x.Ordem))
+{ <img src="/@f.Arquivo" alt="@f.Legenda" /> }
+</div>
+<div>
+<p>@Model.Produto.Descricao</p>
+<p><strong>Material:</strong> @Model.Produto.Material</p>
+<p><strong>Modalidade:</strong> @Model.Produto.Modalidade?.Nome</p>
+<p class="preco">R$ @Model.Produto.Preco.ToString("N2")</p>
+<form method="post" asp-page-handler="Adicionar">
+<input type="hidden" name="id" value="@Model.Produto.Id" />
+<button type="submit">Adicionar ao carrinho</button>
+</form>
+</div>
+</div>
+<h2>Avaliações</h2>
+@foreach (var a in Model.Avaliacoes) { <div class="avaliacao"><strong>@a.Autor</strong> · @a.Nota/5<p>@a.Texto</p></div> }
+<h2>Perguntas</h2>
+@foreach (var p in Model.Perguntas) { <div class="pergunta"><strong>@p.Autor</strong><p>@p.Texto</p>@if (!string.IsNullOrEmpty(p.Resposta)) { <p class="resposta">@p.Resposta</p> }</div> }
+</article>
+}

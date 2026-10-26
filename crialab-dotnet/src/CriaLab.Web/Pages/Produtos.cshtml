@@ -1,0 +1,21 @@
+@page
+@model CriaLab.Web.Pages.ProdutosModel
+@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Produtos"; }
+<h1>Produtos</h1>
+<form method="get" class="filtros">
+<select name="modalidade" asp-for="ModalidadeFiltro" asp-items="Model.ModalidadeOpcoes"></select>
+<button type="submit">Filtrar</button>
+</form>
+<div class="produtos-grid">
+@foreach (var p in Model.Produtos)
+{
+<article class="produto-card">
+<a asp-page="/Produto" asp-route-id="@p.Id">
+@if (p.Fotos.Any()) { <img src="/@p.Fotos.OrderBy(f => f.Ordem).First().Arquivo" alt="@p.Titulo" /> }
+<h3>@p.Titulo</h3>
+<p>@p.Modalidade?.Nome</p>
+<p class="preco">R$ @p.Preco.ToString("N2")</p>
+</a>
+</article>
+}
+</div>

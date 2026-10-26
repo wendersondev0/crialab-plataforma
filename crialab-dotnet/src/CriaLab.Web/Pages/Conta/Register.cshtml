@@ -1,0 +1,13 @@
+@page
+@model CriaLab.Web.Pages.Conta.RegisterModel
+@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Cadastro"; }
+<h1>Criar conta</h1>
+<form method="post">
+    <div asp-validation-summary="All"></div>
+    <label>Nome completo<input asp-for="NomeCompleto" required /></label>
+    <label>E-mail<input asp-for="Email" type="email" required /></label>
+    <label>Telefone<input asp-for="Telefone" /></label>
+    <label>Senha<input asp-for="Senha" type="password" required /></label>
+    <label>Confirmar senha<input asp-for="ConfirmarSenha" type="password" required /></label>
+    <button type="submit">Cadastrar</button>
+</form>

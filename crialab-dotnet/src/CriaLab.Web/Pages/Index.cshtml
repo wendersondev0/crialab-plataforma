@@ -1,0 +1,35 @@
+@page
+@model CriaLab.Web.Pages.IndexModel
+@{ Layout = "_LayoutLoja"; ViewData["Title"] = "Início"; }
+<section class="vitrine-hero">
+<h1>Impressão 3D do seu jeito</h1>
+<p>Pronta entrega, sob demanda e personalizados.</p>
+</section>
+<section class="modalidades-atalhos">
+@foreach (var m in Model.Modalidades)
+{
+<div class="modalidade-card">
+<h2>@m.Nome</h2>
+<p>@m.Resumo</p>
+<a asp-page="/Produtos" asp-route-modalidade="@m.Id">Ver peças</a>
+</div>
+}
+</section>
+<section class="grade-produtos">
+<h2>Destaques</h2>
+<div class="produtos-grid">
+@foreach (var p in Model.Produtos)
+{
+<article class="produto-card">
+<a asp-page="/Produto" asp-route-id="@p.Id">
+@if (p.Fotos.Any())
+{
+<img src="/@p.Fotos.OrderBy(f => f.Ordem).First().Arquivo" alt="@p.Titulo" />
+}
+<h3>@p.Titulo</h3>
+<p class="preco">R$ @p.Preco.ToString("N2")</p>
+</a>
+</article>
+}
+</div>
+</section>

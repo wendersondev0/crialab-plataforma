@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@source "../**/*.html";
+@source "../js/**/*.js";
+
+@theme {
+  --color-laranja: #e8772a;
+  --color-laranja-escuro: #c85e16;
+  --color-teal: #148f93;
+  --color-teal-escuro: #0e6d70;
+  --color-creme: #f6f1e7;
+  --color-tinta: #1b2430;
+  --color-linha: rgba(27, 36, 48, 0.12);
+  --font-cria: "Segoe UI", "Trebuchet MS", sans-serif;
+  --shadow-cria: 0 14px 40px rgba(27, 36, 48, 0.08);
+  --shadow-cria-forte: 0 22px 48px rgba(27, 36, 48, 0.16);
+  --radius-cria: 18px;
+}

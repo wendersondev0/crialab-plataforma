@@ -1,0 +1,10 @@
+@page
+@model CriaLab.Web.Pages.Admin.SistemaModel
+@{ ViewData["Title"] = "Sistema"; }
+<h1>Sistema</h1>
+<p>Frete grátis a partir de R$ @Model.Config?.FreteGratisAPartir.ToString("N2")</p>
+<p>Desconto à vista: @(Model.Config != null ? (Model.Config.DescontoAVista * 100).ToString("N0") + "%" : "")</p>
+<h2>Faixas de CEP</h2>
+@foreach (var f in Model.Faixas) { <p>@f.De-@f.Ate · PAC R$ @f.Pac.ToString("N2") · SEDEX R$ @f.Sedex.ToString("N2")</p> }
+<h2>Tipos de insumo</h2>
+<p>@string.Join(", ", Model.TiposInsumo.Select(x => x.Nome))</p>

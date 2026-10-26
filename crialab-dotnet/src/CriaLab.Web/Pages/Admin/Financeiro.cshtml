@@ -1,0 +1,8 @@
+@page
+@model CriaLab.Web.Pages.Admin.FinanceiroModel
+@{ ViewData["Title"] = "Financeiro"; }
+<h1>Financeiro</h1>
+<h2>Contas</h2>
+@foreach (var c in Model.Contas) { <p>@c.Tipo · @c.Descricao · R$ @c.Valor.ToString("N2")</p> }
+<h2>Lançamentos recentes</h2>
+@foreach (var l in Model.Lancamentos) { <p>@l.Competencia · @l.Categoria · @l.Descricao · R$ @l.Valor.ToString("N2")</p> }

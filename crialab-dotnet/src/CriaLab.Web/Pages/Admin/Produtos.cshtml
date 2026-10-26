@@ -1,0 +1,10 @@
+@page
+@model CriaLab.Web.Pages.Admin.ProdutosModel
+@{ ViewData["Title"] = "Produtos"; }
+<h1>Produtos</h1>
+<table><thead><tr><th>Título</th><th>Categoria</th><th>Modalidade</th><th>Preço</th><th></th></tr></thead><tbody>
+@foreach (var p in Model.Produtos) {
+<tr><td>@p.Titulo</td><td>@p.CategoriaId</td><td>@p.ModalidadeId</td><td>R$ @p.Preco.ToString("N2")</td>
+<td><a asp-page="/Admin/ProdutoEdit" asp-route-id="@p.Id">Editar</a></td></tr>
+}
+</tbody></table>

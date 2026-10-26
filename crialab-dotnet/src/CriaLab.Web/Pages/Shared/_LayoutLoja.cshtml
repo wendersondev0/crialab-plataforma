@@ -1,0 +1,51 @@
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject CarrinhoService Carrinho
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cria Lab DM</title>
+    <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/vitrine.css" asp-append-version="true" />
+</head>
+<body class="vitrine-body">
+    <header class="vitrine-topo">
+        <div class="vitrine-topo-inner">
+            <a class="marca-link" asp-page="/Index">
+                <img src="~/marca/logo-colorida.png" alt="Cria Lab DM" class="marca-logo" />
+            </a>
+            <nav class="vitrine-nav">
+                <a asp-page="/Produtos" asp-route-ModalidadeFiltro="pronta-entrega">Pronta Entrega</a>
+                <a asp-page="/Produtos" asp-route-ModalidadeFiltro="sob-demanda">Sob Demanda</a>
+                <a asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado">Personalizados</a>
+                <a asp-page="/Busca">Busca</a>
+                <a asp-page="/Carrinho">Carrinho (@Carrinho.QuantidadeTotal())</a>
+                <a asp-page="/Contato">Contato</a>
+                <a asp-page="/Sobre">Sobre</a>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a asp-page="/Conta/Index">Minha conta</a>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a asp-page="/Admin/Index">Admin</a>
+                    }
+                    <a asp-page="/Conta/Logout">Sair</a>
+                }
+                else
+                {
+                    <a asp-page="/Conta/Login">Entrar</a>
+                }
+            </nav>
+        </div>
+    </header>
+    <main class="vitrine-main">
+        @RenderBody()
+    </main>
+    <footer class="vitrine-rodape">
+        <p>Oficina de impressão 3D · Vitória/ES</p>
+    </footer>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

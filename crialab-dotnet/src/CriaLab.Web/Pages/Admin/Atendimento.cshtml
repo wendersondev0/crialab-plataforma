@@ -1,0 +1,8 @@
+@page
+@model CriaLab.Web.Pages.Admin.AtendimentoModel
+@{ ViewData["Title"] = "Atendimento"; }
+<h1>Atendimento</h1>
+<h2>Mensagens</h2>
+@foreach (var m in Model.Mensagens) { <article>@m.Tipo · @m.Nome · @m.Status<p>@m.Texto</p></article> }
+<h2>Perguntas</h2>
+@foreach (var p in Model.Perguntas) { <article>@p.ProdutoId · @p.Autor<p>@p.Texto</p></article> }

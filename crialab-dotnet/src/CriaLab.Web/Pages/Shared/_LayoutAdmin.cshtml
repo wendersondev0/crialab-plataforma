@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Cria Lab</title>
+    <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+    <div class="admin-shell">
+        <aside class="admin-menu">
+            <h1>Cria Lab</h1>
+            <nav>
+                <a asp-page="/Admin/Index">Painel</a>
+                <a asp-page="/Admin/Produtos">Produtos</a>
+                <a asp-page="/Admin/Pedidos">Pedidos</a>
+                <a asp-page="/Admin/Marketing">Marketing</a>
+                <a asp-page="/Admin/Atendimento">Atendimento</a>
+                <a asp-page="/Admin/Patrimonio">Patrimônio</a>
+                <a asp-page="/Admin/Financeiro">Financeiro</a>
+                <a asp-page="/Admin/Fiscal">Fiscal</a>
+                <a asp-page="/Admin/Sistema">Sistema</a>
+                <a asp-page="/Admin/Impressao">Impressão</a>
+                <a asp-page="/Index">Voltar à loja</a>
+            </nav>
+        </aside>
+        <main class="admin-conteudo">
+            @RenderBody()
+        </main>
+    </div>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
