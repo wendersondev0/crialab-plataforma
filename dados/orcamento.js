@@ -5,11 +5,23 @@ window.CriaDados.parametrosCusto = [
   { id: "par-tpu", nome: "TPU", unidade: "kg", preco: 80, travado: true },
   { id: "par-saco-p", nome: "Saco kraft pequeno", unidade: "un", preco: 0.5 },
   { id: "par-saco-g", nome: "Saco kraft grande", unidade: "un", preco: 1.1286 },
+  { id: "par-caixa-p", nome: "Caixa P", unidade: "un", preco: 0.69 },
+  { id: "par-caixa-m", nome: "Caixa M", unidade: "un", preco: 0.69 },
+  { id: "par-caixa-g", nome: "Caixa G", unidade: "un", preco: 1.33 },
   { id: "par-cartao", nome: "Cartão", unidade: "un", preco: 0.4 },
   { id: "par-ima-8", nome: "Ímã 8×2 mm", unidade: "un", preco: 0.35 },
   { id: "par-ima-10", nome: "Ímã 10×2 mm", unidade: "un", preco: 0.48 },
   { id: "par-argola", nome: "Argola", unidade: "un", preco: 0.3 },
-  { id: "par-cola", nome: "Cola", unidade: "un", preco: 0.2 }
+  { id: "par-cola", nome: "Cola", unidade: "un", preco: 0.2 },
+  { id: "par-nfc", nome: "Tag NFC", unidade: "un", preco: 0.72 },
+  { id: "par-copo", nome: "Copo alumínio 500 ml", unidade: "un", preco: 3.89 },
+  { id: "par-led", nome: "Lâmpada LED", unidade: "un", preco: 14.93 },
+  { id: "par-verniz", nome: "Verniz", unidade: "un", preco: 15 },
+  { id: "par-papel-foto", nome: "Papel fotográfico (cartão presente)", unidade: "un", preco: 0.41 },
+  { id: "par-barbante", nome: "Barbante", unidade: "m", preco: 0.36 },
+  { id: "par-fita", nome: "Fita de embalagem", unidade: "un", preco: 8 },
+  { id: "par-bolha", nome: "Plástico bolha", unidade: "m", preco: 2.5 },
+  { id: "par-saco-zip", nome: "Saco zip", unidade: "un", preco: 0.33 }
 ];
 window.CriaDados.margens = [
   { id: "marketplace", nome: "Marketplace", percentual: 0.25, ativo: true },

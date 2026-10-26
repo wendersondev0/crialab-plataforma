@@ -56,8 +56,16 @@
     caminhao: svg('<path' + traco + ' d="M3 7h11v8H3z"/><path' + traco + ' d="M14 10h4l3 3v2h-7z"/><circle' + traco + ' cx="7" cy="17.5" r="1.5"/><circle' + traco + ' cx="17" cy="17.5" r="1.5"/>'),
     documento: svg('<path' + traco + ' d="M7 3h7l5 5v13H7z"/><path' + traco + ' d="M14 3v5h5"/><path' + traco + ' d="M10 13h6M10 17h6"/>'),
     caixa: svg('<path' + traco + ' d="M4 8 12 4l8 4-8 4-8-4z"/><path' + traco + ' d="M4 8v8l8 4 8-4V8"/><path' + traco + ' d="M12 12v8"/>'),
-    estoque: svg('<path' + traco + ' d="M4 7h16M4 12h16M4 17h16"/><path' + traco + ' d="M8 7v10M16 7v10"/>')
+    estoque: svg('<path' + traco + ' d="M4 7h16M4 12h16M4 17h16"/><path' + traco + ' d="M8 7v10M16 7v10"/>'),
+    menu: svg('<path' + traco + ' d="M4 7h16M4 12h16M4 17h16"/>'),
+    fechar: svg('<path' + traco + ' d="M6 6l12 12M18 6 6 18"/>'),
+    sair: svg('<path' + traco + ' d="M10 5H6a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4"/><path' + traco + ' d="M14 12H8"/><path' + traco + ' d="m16 8 4 4-4 4"/>'),
+    pedidos: svg('<path' + traco + ' d="M7 4h10l1 4H6z"/><path' + traco + ' d="M6 8h12v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/><path' + traco + ' d="M10 12h4"/>')
   };
+
+  function icoSpan(nome) {
+    return '<span class="ico inline-flex h-5 w-5 shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full [&>img]:h-5 [&>img]:w-auto [&>img]:max-w-7 [&>img]:object-contain">' + (icones[nome] || "") + "</span>";
+  }
 
   function ativo(href) {
     var caminho = location.pathname.replace(/\\/g, "/");
@@ -65,7 +73,7 @@
     return caminho.endsWith("/" + href);
   }
 
-  function link(href, texto, variante) {
+  function link(href, texto, variante, dica) {
     var rotulo = texto;
     var qtd = "";
     var carrinho = /^Carrinho \((\d+)\)$/.exec(texto);
@@ -74,11 +82,19 @@
       if (Number(carrinho[1]) > 0) qtd = '<span class="selo-qtd ml-1 inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-laranja px-1.5 text-[0.75rem] font-extrabold text-white">' + carrinho[1] + "</span>";
     }
     var chave = carrinho ? "carrinho" : texto;
-    var mapa = { "Início": "casa", "Produtos": "caixa", "Personalizados": "admin", "carrinho": "carrinho", "Conta": "conta", "Contato": "contato", "Sobre": "sobre", "Administração": "admin", "Painel": "casa", "Painel Gerencial": "casa", "Gestão Produtos": "caixa", "Gestão Personalizados": "admin", "Marketing": "tiktok", "Atendimento": "contato", "Patrimônio": "estoque", "Patrimônio e Estoque": "estoque", "Financeiro": "carrinho", "Gestão Financeira": "carrinho", "Fiscal": "email", "Gestão Fiscal": "email", "Sistema": "admin", "Impressão": "admin", "Impressão 3D": "admin", "Ver loja": "casa" };
+    var mapa = { "Início": "casa", "Produtos": "caixa", "Pronta Entrega": "caixa", "Sob Demanda": "caminhao", "Personalizados": "admin", "carrinho": "carrinho", "Conta": "conta", "Contato": "contato", "Sobre": "sobre", "Sobre a Cria Lab": "sobre", "Administração": "admin", "Painel": "casa", "Painel Gerencial": "casa", "Gestão Produtos": "caixa", "Gestão Personalizados": "admin", "Marketing": "tiktok", "Atendimento": "contato", "Patrimônio": "estoque", "Patrimônio e Estoque": "estoque", "Financeiro": "carrinho", "Gestão Financeira": "carrinho", "Fiscal": "email", "Gestão Fiscal": "email", "Sistema": "admin", "Impressão": "admin", "Impressão 3D": "admin", "Ver loja": "casa" };
     var desenho = icones[mapa[chave]] ? '<span class="ico inline-flex h-5 w-5 shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full">' + icones[mapa[chave]] + "</span>" : "";
     var base = "nav-link inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-bold no-underline transition";
+    var title = dica ? ' title="' + esc(dica) + '"' : "";
+    var rotuloHtml = '<span class="nav-texto">' + esc(rotulo) + "</span>";
+    if (texto === "Sobre a Cria Lab") {
+      rotuloHtml = '<span class="nav-texto nav-texto-longo">Sobre a Cria Lab</span><span class="nav-texto nav-texto-curto">Sobre</span>';
+    }
+    if (carrinho) {
+      rotuloHtml = '<span class="nav-texto nav-texto-carrinho">' + esc(rotulo) + "</span>";
+    }
     if (texto === "Ver loja" || variante === "ver-loja") {
-      return '<a class="' + base + ' bg-laranja text-white hover:bg-laranja-escuro" href="' + url(href) + '">' + desenho + esc(rotulo) + qtd + "</a>";
+      return '<a class="' + base + ' bg-laranja text-white hover:bg-laranja-escuro" href="' + url(href) + '"' + title + ">" + desenho + rotuloHtml + qtd + "</a>";
     }
     var estadoClasse;
     if (variante === "loja") {
@@ -88,7 +104,7 @@
     } else {
       estadoClasse = ativo(href) ? " ativo bg-tinta text-white" : " text-tinta hover:bg-teal/15";
     }
-    return '<a class="' + base + estadoClasse + '" href="' + url(href) + '">' + desenho + esc(rotulo) + qtd + "</a>";
+    return '<a class="' + base + estadoClasse + '" href="' + url(href) + '"' + title + ">" + desenho + rotuloHtml + qtd + "</a>";
   }
 
   function redes(identidade, claro) {
@@ -138,21 +154,38 @@
     return lista.slice(0, 6);
   }
 
-  function faixaLoja(estado) {
-    var identidade = estado.identidade;
+  function utilitariosLoja(estado) {
     var vazio = estado.perfil === "vazia";
     var avisos = listaNotificacoes(estado);
-    var itemPopup = 'flex min-h-11 w-full items-center rounded-lg px-3 text-left font-bold text-tinta no-underline hover:bg-teal/15';
+    var itemPopup = "item-popup-topo flex min-h-11 w-full items-center gap-2.5 rounded-lg px-3 text-left font-bold text-tinta no-underline hover:bg-teal/15";
     var itensAviso = avisos.length ? avisos.map(function (texto) {
-      return '<a class="' + itemPopup + '" href="' + url("paginas/conta.html") + '">' + esc(texto) + "</a>";
+      return '<a class="' + itemPopup + '" href="' + url("paginas/conta.html") + '">' + icoSpan("sino") + '<span>' + esc(texto) + "</span></a>";
     }).join("") : '<p class="popup-vazio m-2 text-sm text-tinta">Nenhuma notificação.</p>';
     var selo = avisos.length ? '<span class="selo-qtd ml-1 inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-laranja px-1.5 text-[0.75rem] font-extrabold text-white">' + avisos.length + "</span>" : "";
     var sair = vazio ? "Entrar" : "Sair";
     var admin = !vazio && estado.cliente && estado.cliente.admin;
-    var itemAdmin = admin ? '<a class="' + itemPopup + '" href="' + url("paginas/admin/index.html") + '">Administração</a>' : "";
+    var itemAdmin = admin ? '<a class="' + itemPopup + '" href="' + url("paginas/admin/index.html") + '">' + icoSpan("admin") + "<span>Administração</span></a>" : "";
     var atalho = "atalho inline-flex min-h-11 items-center gap-1.5 rounded-full px-2.5 text-[0.92rem] font-bold text-white no-underline hover:bg-white/20";
-    var popup = "popup-topo absolute top-[calc(100%-6px)] right-0 z-30 hidden min-w-[220px] grid-cols-1 gap-0 rounded-xl bg-white p-2 text-tinta shadow-cria";
-    return '<div class="faixa-fina bg-laranja-escuro"><div class="barra faixa-fina-barra mx-auto flex min-h-11 w-[min(1120px,calc(100%-32px))] items-center justify-between gap-3"><div class="siga flex items-center gap-2"><span class="text-[0.92rem] font-bold text-white">Siga a Cria Lab</span>' + iconesSociais(identidade) + '</div><div class="faixa-direita flex items-center gap-2"><div class="menu-suspenso relative"><button class="' + atalho + '" type="button" aria-expanded="false" aria-haspopup="true"><span class="ico inline-flex h-5 w-5 [&>svg]:h-full [&>svg]:w-full">' + icones.sino + "</span>Notificações" + selo + '</button><div class="' + popup + '" role="menu">' + itensAviso + '</div></div><a class="' + atalho + '" href="' + url("paginas/contato.html") + '">Ajuda</a><div class="menu-suspenso menu-conta relative"><button class="' + atalho + '" type="button" id="abrir-conta" aria-expanded="false" aria-haspopup="true"><span class="ico inline-flex h-5 w-5 [&>svg]:h-full [&>svg]:w-full">' + icones.conta + "</span>" + esc(vazio ? "Conta" : estado.cliente.nome) + '</button><div class="' + popup + '" role="menu"><a class="' + itemPopup + '" href="' + url("paginas/conta.html") + '">Minha conta</a><a class="' + itemPopup + '" href="' + url("paginas/conta.html#pedidos") + '">Meus pedidos</a>' + itemAdmin + '<button class="' + itemPopup + ' cursor-pointer border-0 bg-transparent" type="button" id="sair-conta">' + sair + "</button></div></div></div></div></div>";
+    var popup = "popup-topo absolute top-[calc(100%-6px)] right-0 z-30 hidden min-w-[240px] grid-cols-1 gap-0 rounded-xl bg-white p-2 text-tinta shadow-cria";
+    var nomeConta = vazio ? "Conta" : estado.cliente.nome;
+    var menuConta = [
+      '<a class="' + itemPopup + '" href="' + url("paginas/conta.html") + '">' + icoSpan("conta") + "<span>Minha conta</span></a>",
+      '<a class="' + itemPopup + '" href="' + url("paginas/conta.html#pedidos") + '">' + icoSpan("pedidos") + "<span>Meus pedidos</span></a>",
+      itemAdmin,
+      '<button class="' + itemPopup + ' cursor-pointer border-0 bg-transparent" type="button" id="sair-conta">' + icoSpan("sair") + "<span>" + sair + "</span></button>"
+    ].join("");
+    return {
+      selo: selo,
+      bloco: [
+        '<div class="menu-suspenso relative"><button class="' + atalho + '" type="button" aria-label="Notificações" aria-expanded="false" aria-haspopup="true">' + icoSpan("sino") + '<span class="atalho-texto">Notificações</span>' + selo + '</button><div class="' + popup + '" role="menu">' + itensAviso + "</div></div>",
+        '<a class="' + atalho + '" href="' + url("paginas/contato.html") + '" aria-label="Ajuda">' + icoSpan("contato") + '<span class="atalho-texto">Ajuda</span></a>',
+        '<div class="menu-suspenso menu-conta relative"><button class="' + atalho + '" type="button" id="abrir-conta" aria-label="' + esc(nomeConta) + '" aria-expanded="false" aria-haspopup="true">' + icoSpan("conta") + '<span class="atalho-texto">' + esc(nomeConta) + '</span></button><div class="' + popup + '" role="menu">' + menuConta + "</div></div>"
+      ].join("")
+    };
+  }
+
+  function faixaLoja(estado) {
+    return '<div class="faixa-fina bg-laranja-escuro"><div class="barra faixa-fina-barra mx-auto flex min-h-11 w-[min(1120px,calc(100%-32px))] items-center justify-between gap-3"><div class="siga flex items-center gap-2"><span class="siga-texto text-[0.92rem] font-bold text-white">Siga a Cria Lab</span>' + iconesSociais(estado.identidade) + '</div></div></div>';
   }
 
   function ligarMenus(topo) {
@@ -171,11 +204,31 @@
         });
       });
     });
-    var sair = document.getElementById("sair-conta");
-    if (sair) sair.addEventListener("click", function () {
-      Cria.alterar(function (atual) { atual.perfil = atual.perfil === "vazia" ? "exemplo" : "vazia"; });
-      location.href = url("paginas/conta.html");
+    topo.querySelectorAll("#sair-conta").forEach(function (sair) {
+      sair.addEventListener("click", function () {
+        Cria.alterar(function (atual) { atual.perfil = atual.perfil === "vazia" ? "exemplo" : "vazia"; });
+        location.href = url("paginas/conta.html");
+      });
     });
+    var gaveta = document.getElementById("menu-gaveta");
+    var abrir = topo.querySelector("#abrir-menu");
+    var fechar = gaveta ? gaveta.querySelector("#fechar-menu") : null;
+    var fundo = gaveta ? gaveta.querySelector(".menu-gaveta-fundo") : null;
+    function setMenu(aberto) {
+      if (!gaveta || !abrir) return;
+      gaveta.classList.toggle("aberta", aberto);
+      document.body.classList.toggle("menu-aberto", aberto);
+      abrir.setAttribute("aria-expanded", aberto ? "true" : "false");
+    }
+    if (abrir) abrir.addEventListener("click", function () { setMenu(true); });
+    if (fechar) fechar.addEventListener("click", function () { setMenu(false); });
+    if (fundo) fundo.addEventListener("click", function () { setMenu(false); });
+    if (!root._criaEscMenu) {
+      root._criaEscMenu = true;
+      document.addEventListener("keydown", function (evento) {
+        if (evento.key === "Escape") setMenu(false);
+      });
+    }
   }
 
   function montar() {
@@ -192,7 +245,6 @@
       var menuAdmin = [
         link("paginas/admin/index.html", "Painel", "admin"),
         link("paginas/admin/produtos.html", "Produtos", "admin"),
-        link("paginas/admin/personalizados.html", "Personalizados", "admin"),
         link("paginas/admin/marketing.html", "Marketing", "admin"),
         link("paginas/admin/contato.html", "Atendimento", "admin"),
         link("paginas/admin/patrimonio.html", "Patrimônio", "admin"),
@@ -204,18 +256,91 @@
       topo.className = "topo-admin sticky top-0 z-20 border-b border-linha bg-white shadow-cria";
       topo.innerHTML = '<div class="barra barra-admin mx-auto flex min-h-[68px] w-[min(1120px,calc(100%-32px))] items-center justify-between gap-4"><a class="marca" href="' + url("paginas/admin/index.html") + '"><img class="h-11 rounded-xl bg-creme p-1" src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a><div class="admin-acoes">' + link("index.html", "Ver loja", "ver-loja") + '</div></div><nav class="menu menu-admin mx-auto flex w-[min(1120px,calc(100%-32px))] flex-wrap gap-1.5 overflow-visible pb-3.5">' + menuAdmin + "</nav>";
     } else {
+      var modalidades = estado.modalidades || [];
+      function dicaModalidade(id) {
+        var item = modalidades.find(function (m) { return m.id === id; });
+        return item ? item.resumo : "";
+      }
+      var ajuda = estado.menusAjuda || {};
       var menuLoja = [
-        link("index.html", "Início", "loja"),
-        link("paginas/produtos.html", "Produtos", "loja"),
-        link("paginas/personalizados.html", "Personalizados", "loja")
+        link("index.html", "Início", "loja", ajuda.inicio),
+        link("paginas/pronta-entrega.html", "Pronta Entrega", "loja", dicaModalidade("pronta-entrega")),
+        link("paginas/sob-demanda.html", "Sob Demanda", "loja", dicaModalidade("sob-demanda")),
+        link("paginas/personalizados.html", "Personalizados", "loja", dicaModalidade("personalizado")),
+        link("paginas/sobre.html", "Sobre a Cria Lab", "loja", ajuda.sobre)
+      ].join("");
+      var util = utilitariosLoja(estado);
+      var qtd = quantidadeCarrinho();
+      var menuGaveta = [
+        link("index.html", "Início", "", ajuda.inicio),
+        link("paginas/pronta-entrega.html", "Pronta Entrega", "", dicaModalidade("pronta-entrega")),
+        link("paginas/sob-demanda.html", "Sob Demanda", "", dicaModalidade("sob-demanda")),
+        link("paginas/personalizados.html", "Personalizados", "", dicaModalidade("personalizado")),
+        link("paginas/sobre.html", "Sobre a Cria Lab", "", ajuda.sobre),
+        link("paginas/contato.html", "Ajuda / Contato", "", ajuda.contato),
+        link("paginas/conta.html", "Minha conta", "", ajuda.conta),
+        link("paginas/carrinho.html", "Carrinho (" + qtd + ")", "", ajuda.carrinho)
       ].join("");
       topo.className = "topo-loja sticky top-0 z-20 bg-laranja";
-      topo.innerHTML = faixaLoja(estado) + '<div class="loja-faixa"><div class="barra loja-barra mx-auto flex min-h-[76px] w-[min(1120px,calc(100%-32px))] items-center gap-3"><a class="marca" href="' + url("index.html") + '"><img class="h-11 rounded-xl bg-white p-1" src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a><form class="busca-topo flex min-w-0 flex-1 items-center gap-2 rounded-full bg-white py-1 pl-4 pr-1" action="' + url("paginas/busca.html") + '" method="get"><input class="min-h-10 min-w-0 flex-1 border-0 bg-transparent outline-none" name="q" type="search" placeholder="Buscar na Cria Lab" aria-label="Buscar na Cria Lab"><button class="botao inline-flex min-h-10 items-center justify-center rounded-full bg-laranja px-4 font-bold text-white hover:bg-laranja-escuro" type="submit">Buscar</button></form><div class="loja-acoes">' + link("paginas/carrinho.html", "Carrinho (" + quantidadeCarrinho() + ")", "loja") + '</div></div><nav class="menu menu-loja mx-auto flex w-[min(1120px,calc(100%-32px))] flex-wrap gap-2 overflow-visible pb-2.5">' + menuLoja + "</nav></div>";
+      topo.innerHTML = faixaLoja(estado)
+        + '<div class="loja-faixa"><div class="barra loja-barra mx-auto flex min-h-[76px] w-[min(1120px,calc(100%-32px))] items-center gap-3">'
+        + '<button class="botao-hamburguer" type="button" id="abrir-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-gaveta"><span class="ico">' + icones.menu + "</span></button>"
+        + '<a class="marca" href="' + url("index.html") + '"><img class="h-11 rounded-xl bg-white p-1" src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a>'
+        + '<form class="busca-topo flex min-w-0 flex-1 items-center gap-2 rounded-full bg-white py-1 pl-3 pr-1" action="' + url("paginas/busca.html") + '" method="get"><input class="min-h-10 min-w-0 flex-1 border-0 bg-transparent outline-none" name="q" type="search" placeholder="Buscar na Cria Lab" aria-label="Buscar na Cria Lab"><button class="botao botao-busca inline-flex min-h-10 items-center justify-center rounded-full bg-laranja px-4 font-bold text-white hover:bg-laranja-escuro" type="submit" aria-label="Buscar"><span class="botao-busca-texto">Buscar</span><span class="botao-busca-ico ico inline-flex h-5 w-5 [&>svg]:h-full [&>svg]:w-full" aria-hidden="true">' + icones.busca + "</span></button></form>"
+        + '<div class="loja-acoes"><div class="acoes-util flex items-center gap-0">' + util.bloco + "</div>"
+        + link("paginas/carrinho.html", "Carrinho (" + qtd + ")", "loja", ajuda.carrinho)
+        + "</div></div>"
+        + '<nav class="menu menu-loja mx-auto flex w-[min(1120px,calc(100%-32px))] flex-nowrap gap-1.5 overflow-x-auto overflow-y-visible pb-2.5">' + menuLoja + "</nav></div>";
+      var gavetaAntiga = document.getElementById("menu-gaveta");
+      if (gavetaAntiga) gavetaAntiga.remove();
+      var gaveta = document.createElement("div");
+      gaveta.className = "menu-gaveta";
+      gaveta.id = "menu-gaveta";
+      gaveta.innerHTML = '<button class="menu-gaveta-fundo" type="button" aria-label="Fechar menu"></button><aside class="menu-gaveta-painel" role="dialog" aria-modal="true" aria-label="Menu da loja"><div class="menu-gaveta-topo"><strong>Menu</strong><button class="botao-fechar-menu" type="button" id="fechar-menu" aria-label="Fechar menu"><span class="ico">' + icones.fechar + '</span></button></div><nav class="menu-gaveta-lista">' + menuGaveta + "</nav></aside>";
+      document.body.appendChild(gaveta);
       ligarMenus(topo);
     }
-    var local = (identidade.endereco ? "<p class=\"m-0\">" + esc(identidade.endereco) + "</p>" : "") + (identidade.horario ? "<p class=\"m-0\">" + esc(identidade.horario) + "</p>" : "");
-    rodape.className = "mt-12 bg-tinta px-0 py-8 text-white";
-    rodape.innerHTML = '<div class="rodape-grade mx-auto grid w-[min(1120px,calc(100%-32px))] grid-cols-1 gap-6 md:grid-cols-[1.2fr_1.4fr_0.8fr]"><div><img class="logo-rodape mb-2 h-12 w-auto rounded-xl bg-white p-1.5" src="' + url("marca/logo-colorida.png") + '" alt=""><strong>' + esc(identidade.nome) + '</strong><p class="m-0">CNPJ ' + esc(identidade.cnpj) + "</p>" + local + '</div><div class="contatos grid gap-2 content-start"><a class="contato-linha inline-flex w-fit items-center gap-2 rounded-full px-3 no-underline text-white hover:bg-white/12" href="mailto:' + esc(identidade.email) + '"><span class="ico inline-flex h-5 w-5 [&>svg]:h-full [&>svg]:w-full">' + icones.email + "</span>" + esc(identidade.email) + '</a><a class="contato-linha inline-flex w-fit items-center gap-2 rounded-full px-3 no-underline text-white hover:bg-white/12" href="tel:+5527996530954"><span class="ico inline-flex h-5 w-5 [&>svg]:h-full [&>svg]:w-full">' + icones.telefone + "</span>" + esc(identidade.telefone) + "</a>" + redes(identidade, true) + '</div><div class="menu flex flex-wrap gap-2">' + link("paginas/sobre.html", "Sobre") + link("paginas/admin/index.html", "Administração") + "</div></div>";
+    var local = (identidade.endereco ? "<p class=\"rodape-meta m-0\">" + esc(identidade.endereco) + "</p>" : "") + (identidade.horario ? "<p class=\"rodape-meta m-0\">" + esc(identidade.horario) + "</p>" : "");
+    var parceirosVisiveis = (estado.parceiros || []).filter(function (item) { return item.podeAparecer; });
+    var faixaParceiros = parceirosVisiveis.length
+      ? '<section class="rodape-parceiros"><p class="rodape-parceiros-titulo">Parceiros</p><div class="parceiros parceiros-rodape">' + parceirosVisiveis.map(function (item) {
+        var marca = item.logo
+          ? '<img src="' + url(item.logo) + '" alt="' + esc(item.nome) + '">'
+          : "<span>" + esc(item.nome) + "</span>";
+        return '<figure class="parceiro parceiro-rodape" title="' + esc(item.nome) + '">' + marca + "</figure>";
+      }).join("") + "</div></section>"
+      : "";
+    var redesCompactas = [
+      ["whatsapp", "WhatsApp", identidade.whatsapp],
+      ["instagram", "Instagram", identidade.instagram],
+      ["tiktok", "TikTok", identidade.tiktok],
+      ["youtube", "YouTube", identidade.youtube],
+      ["shopee", "Shopee", identidade.shopee],
+      ["mercadolivre", "Mercado Livre", identidade.mercadoLivre]
+    ].map(function (item) {
+      return '<a class="rodape-rede" href="' + esc(item[2]) + '" target="_blank" rel="noopener" aria-label="' + esc(item[1]) + '">' + desenhoRede(item[0], true) + "</a>";
+    }).join("");
+    var linksLoja = [
+      ["paginas/pronta-entrega.html", "Pronta Entrega", "caixa"],
+      ["paginas/sob-demanda.html", "Sob Demanda", "caminhao"],
+      ["paginas/personalizados.html", "Personalizados", "admin"],
+      ["paginas/sobre.html", "Sobre a Cria Lab", "sobre"],
+      ["paginas/contato.html", "Contato", "contato"]
+    ].map(function (item) {
+      return '<a class="rodape-link" href="' + url(item[0]) + '">' + icoSpan(item[2]) + "<span>" + esc(item[1]) + "</span></a>";
+    }).join("");
+    rodape.className = "rodape-loja";
+    rodape.innerHTML = [
+      '<div class="rodape-miolo">',
+      faixaParceiros,
+      '<div class="rodape-grade">',
+      '<div class="rodape-marca"><img class="logo-rodape" src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab"><div><strong class="rodape-nome">' + esc(identidade.nome) + '</strong><p class="rodape-meta m-0">Impressão 3D com cara de oficina</p>' + local + "</div></div>",
+      '<div class="rodape-bloco"><p class="rodape-titulo">Contato</p><a class="rodape-link" href="mailto:' + esc(identidade.email) + '">' + icoSpan("email") + "<span>" + esc(identidade.email) + '</span></a><a class="rodape-link" href="tel:+5527996530954">' + icoSpan("telefone") + "<span>" + esc(identidade.telefone) + '</span></a><div class="rodape-redes">' + redesCompactas + "</div></div>",
+      '<div class="rodape-bloco"><p class="rodape-titulo">Loja</p><nav class="rodape-nav">' + linksLoja + "</nav></div>",
+      "</div>",
+      '<div class="rodape-base"><span>© ' + new Date().getFullYear() + " " + esc(identidade.nome) + "</span><span>CNPJ " + esc(identidade.cnpj) + "</span></div>",
+      "</div>"
+    ].join("");
   }
 
   function vazio(texto) {
@@ -225,6 +350,15 @@
   function nomeCategoria(id) {
     var categoria = (root.Cria.estado.categorias || []).find(function (item) { return item.id === id; });
     return categoria ? categoria.nome : id;
+  }
+
+  function nomeModalidade(id) {
+    var item = (root.Cria.estado.modalidades || []).find(function (m) { return m.id === id; });
+    return item ? item.nome : id;
+  }
+
+  function modalidadeInfo(id) {
+    return (root.Cria.estado.modalidades || []).find(function (m) { return m.id === id; }) || null;
   }
 
   function revelar(escopo) {
@@ -248,7 +382,17 @@
     });
   }
 
-  root.CriaUi = { url: url, esc: esc, vazio: vazio, nomeCategoria: nomeCategoria, revelar: revelar, icone: function (nome) { return icones[nome] || ""; }, redes: function () { return redes(root.Cria.estado.identidade, false); } };
+  root.CriaUi = {
+    url: url,
+    esc: esc,
+    vazio: vazio,
+    nomeCategoria: nomeCategoria,
+    nomeModalidade: nomeModalidade,
+    modalidadeInfo: modalidadeInfo,
+    revelar: revelar,
+    icone: function (nome) { return icones[nome] || ""; },
+    redes: function () { return redes(root.Cria.estado.identidade, false); }
+  };
   root.CriaCasca = { montar: montar, atualizar: montar, ehAdmin: ehAdmin };
   montar();
 })(window);

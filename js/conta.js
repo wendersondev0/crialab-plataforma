@@ -6,138 +6,347 @@
 
   function estado() { return Cria.estado; }
 
+  function ico(nome) {
+    return '<span class="ico inline-flex h-4 w-4 shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full">' + (ui.icone ? ui.icone(nome) : "") + "</span>";
+  }
+
   function conta() {
-    document.title = "Conta · Cria Lab DM";
-    var vazio = estado().perfil === "vazia";
-    var cliente = estado().cliente;
-    var pedidos = vazio ? [] : estado().pedidos;
-    var orcamentos = vazio ? [] : estado().orcamentosCliente;
-    var favoritos = vazio ? [] : estado().favoritos.map(function (id) {
-      return estado().produtos.find(function (produto) { return produto.id === id; });
-    }).filter(Boolean);
-    var perguntas = vazio ? [] : estado().perguntas.filter(function (item) { return item.autor === cliente.nome; });
-    raiz.innerHTML = '<div class="linha"><h1>Conta</h1><button class="botao-linha" type="button" id="trocar-perfil">' + (vazio ? "Voltar à conta exemplo" : "Ver conta vazia") + '</button></div><section class="cartao"><h2>Dados pessoais</h2><form id="dados" class="formulario"><label>Nome<input name="nome" value="' + ui.esc(vazio ? "" : cliente.nome) + '"></label><label>E-mail<input name="email" type="email" value="' + ui.esc(vazio ? "" : cliente.email) + '"></label><label>Telefone<input name="telefone" value="' + ui.esc(vazio ? "" : cliente.telefone) + '"></label><label>Documento<input name="documento" value="' + ui.esc(vazio ? "" : cliente.documento) + '"></label><button class="botao" type="submit">Salvar</button></form></section><section><h2>Pedidos</h2><div id="pedidos"></div></section><section class="cartao"><h2>Orçamentos</h2><div id="orcamentos"></div></section><section class="cartao"><h2>Endereços</h2><div id="enderecos"></div><form id="novo-endereco" class="formulario"><label>Novo endereço<input name="linha" required></label><label>CEP<input name="cep" required></label><button class="botao-linha" type="submit">Guardar endereço</button></form></section><section><h2>Favoritos</h2><div id="favoritos" class="grade"></div></section><section class="cartao"><h2>Perguntas</h2><div id="perguntas"></div></section>';
-    document.getElementById("pedidos").innerHTML = pedidos.length ? pedidos.map(function (pedido) {
-      var devolver = pedido.status === "entregue" ? '<button class="botao-linha" type="button" data-devolver="' + ui.esc(pedido.id) + '">Pedir devolução</button>' : "";
-      var recibo = pedido.status !== "aguardando pagamento" && pedido.status !== "cancelado" ? '<a class="botao-linha" href="' + ui.url("paginas/recibo.html?id=" + encodeURIComponent(pedido.id)) + '">Recibo</a>' : "";
-      var pagar = pedido.status === "aguardando pagamento" ? '<button class="botao" type="button" data-pagar="' + ui.esc(pedido.id) + '">Simular pagamento</button>' : "";
-      var cancelar = pedido.status === "aguardando pagamento" ? '<button class="botao-linha" type="button" data-cancelar="' + ui.esc(pedido.id) + '">Cancelar pedido</button>' : "";
-      return '<article class="cartao"><strong>' + ui.esc(pedido.id) + "</strong><p>" + ui.esc(pedido.status) + " · " + dinheiro.real(pedido.total) + "</p><p>" + pedido.itens.map(function (item) { return ui.esc(item.titulo) + " × " + item.quantidade; }).join(", ") + "</p><div class=\"linha\">" + pagar + cancelar + devolver + recibo + "</div></article>";
-    }).join("") : ui.vazio("Nenhum pedido por aqui.");
-    document.getElementById("orcamentos").innerHTML = orcamentos.length ? orcamentos.map(function (item) {
-      var acoes = item.status === "respondido" ? '<button class="botao" type="button" data-aceitar="' + ui.esc(item.id) + '">Aceitar ' + dinheiro.real(item.valor) + '</button><button class="botao-linha" type="button" data-recusar="' + ui.esc(item.id) + '">Recusar</button>' : "";
-      return "<article><strong>" + ui.esc(item.titulo) + "</strong><p>" + ui.esc(item.status) + "</p><p>" + ui.esc(item.detalhes) + "</p>" + (item.valor ? "<p>" + dinheiro.real(item.valor) + "</p>" : "") + '<div class="linha">' + acoes + "</div></article>";
-    }).join("") : "<p>Nenhum orçamento.</p>";
-    document.getElementById("enderecos").innerHTML = vazio || !estado().enderecos.length ? "<p>Nenhum endereço.</p>" : estado().enderecos.map(function (item) {
-      return "<p><strong>" + ui.esc(item.rotulo) + "</strong> · " + ui.esc(item.linha) + " · " + ui.esc(item.cep) + "</p>";
-    }).join("");
-    document.getElementById("favoritos").innerHTML = favoritos.length ? favoritos.map(function (produto) {
-      var foto = produto.fotos[0];
-      return '<a class="produto" href="' + ui.url("paginas/produto.html?id=" + encodeURIComponent(produto.id)) + '"><img src="' + ui.url(foto.arquivo) + '" alt=""><div><h3>' + ui.esc(produto.titulo) + "</h3></div></a>";
-    }).join("") : ui.vazio("Nenhum favorito.");
-    document.getElementById("perguntas").innerHTML = perguntas.length ? perguntas.map(function (item) {
-      return "<p><strong>" + ui.esc(item.texto) + "</strong><br>" + ui.esc(item.resposta || "Aguardando resposta") + "</p>";
-    }).join("") : "<p>Nenhuma pergunta.</p>";
-    document.getElementById("trocar-perfil").addEventListener("click", function () {
-      Cria.alterar(function (atual) { atual.perfil = atual.perfil === "vazia" ? "exemplo" : "vazia"; });
-      conta();
-    });
-    document.getElementById("dados").addEventListener("submit", function (evento) {
-      evento.preventDefault();
-      var dados = new FormData(evento.target);
-      Cria.alterar(function (atual) {
-        atual.cliente.nome = String(dados.get("nome") || "");
-        atual.cliente.email = String(dados.get("email") || "");
-        atual.cliente.telefone = String(dados.get("telefone") || "");
-        atual.cliente.documento = String(dados.get("documento") || "");
-      });
-    });
-    if (!raiz.dataset.contaCliques) {
-      raiz.dataset.contaCliques = "1";
-      raiz.addEventListener("click", cliqueConta);
+    document.title = "Minha conta · Cria Lab DM";
+    var params = new URLSearchParams(location.search);
+    var abasOk = { pedidos: 1, orcamentos: 1, favoritos: 1, enderecos: 1, dados: 1, perguntas: 1 };
+    var vista = {
+      aba: abasOk[params.get("aba")] ? params.get("aba") : "pedidos",
+      ok: ""
+    };
+
+    function sincronizarUrl() {
+      var url = new URL(location.href);
+      url.searchParams.set("aba", vista.aba);
+      history.replaceState(null, "", url.pathname + url.search);
     }
-    function cliqueConta(evento) {
-      var pagar = evento.target.getAttribute && evento.target.getAttribute("data-pagar");
-      var devolver = evento.target.getAttribute && evento.target.getAttribute("data-devolver");
-      var aceitar = evento.target.getAttribute && evento.target.getAttribute("data-aceitar");
-      var recusar = evento.target.getAttribute && evento.target.getAttribute("data-recusar");
-      var cancelar = evento.target.getAttribute && evento.target.getAttribute("data-cancelar");
-      if (pagar) {
-        Cria.alterar(function (atual) {
-          var pedido = atual.pedidos.find(function (item) { return item.id === pagar; });
-          if (!pedido) return;
-          pedido.status = "pago";
-          pedido.itens.forEach(function (item) {
-            if (!item.fisico || item.tipo === "personalizado") return;
-            var produto = atual.produtos.find(function (cadastro) { return cadastro.id === item.produtoId; });
-            if (produto) produto.estoque = Math.max(0, produto.estoque - item.quantidade);
-          });
-        });
-        conta();
-      }
-      if (devolver) {
-        Cria.alterar(function (atual) {
-          var pedido = atual.pedidos.find(function (item) { return item.id === devolver; });
-          if (pedido) pedido.status = "devolvido";
-        });
-        conta();
-      }
-      if (aceitar) {
-        Cria.alterar(function (atual) {
-          var orcamento = atual.orcamentosCliente.find(function (item) { return item.id === aceitar; });
-          if (!orcamento || orcamento.status !== "respondido") return;
-          orcamento.status = "aceito";
-          atual.pedidos.push({
-            id: CriaCarrinho.novoId("ped"),
-            status: "pago",
-            criadoEm: dinheiro.agoraSP(),
-            itens: [{ id: CriaCarrinho.novoId("item"), produtoId: orcamento.produtoId, titulo: orcamento.titulo, tipo: "personalizado", fisico: true, arquivo: false, quantidade: 1, precoUnitario: orcamento.valor, detalhes: orcamento.detalhes }],
-            subtotal: orcamento.valor,
-            descontoCupom: 0,
-            descontoAVista: 0,
-            freteCobrado: 0,
-            total: orcamento.valor,
-            forma: "pix",
-            endereco: (atual.enderecos[0] && atual.enderecos[0].linha) || "",
-            cep: (atual.enderecos[0] && atual.enderecos[0].cep) || "",
-            freteNome: "A combinar",
-            cupom: "",
-            repassarFrete: atual.configuracao.repassarFrete,
-            nota: "pendente",
-            os: { status: "aberta", insumoBaixado: false }
-          });
-        });
-        conta();
-      }
-      if (recusar) {
-        Cria.alterar(function (atual) {
-          var orcamento = atual.orcamentosCliente.find(function (item) { return item.id === recusar; });
-          if (orcamento) orcamento.status = "recusado";
-        });
-        conta();
-      }
-      if (cancelar) {
-        Cria.alterar(function (atual) {
-          var pedido = atual.pedidos.find(function (item) { return item.id === cancelar; });
-          if (pedido && pedido.status === "aguardando pagamento") pedido.status = "cancelado";
-        });
-        conta();
-      }
+
+    function flash(msg) {
+      vista.ok = msg;
+      pintar();
+      window.setTimeout(function () {
+        if (vista.ok === msg) { vista.ok = ""; pintar(); }
+      }, 2200);
     }
-    var formEndereco = document.getElementById("novo-endereco");
-    formEndereco.addEventListener("submit", function (evento) {
-      evento.preventDefault();
-      var dados = new FormData(formEndereco);
-      Cria.alterar(function (atual) {
-        atual.enderecos.push({ id: CriaCarrinho.novoId("end"), rotulo: "Extra", linha: String(dados.get("linha")), cep: String(dados.get("cep")).replace(/\D/g, "") });
+
+    function seloStatus(status) {
+      var mapa = {
+        "aguardando pagamento": "cta-selo alerta",
+        pago: "cta-selo ok",
+        "em produção": "cta-selo",
+        enviado: "cta-selo",
+        entregue: "cta-selo ok",
+        cancelado: "cta-selo mute",
+        devolvido: "cta-selo mute",
+        aguardando: "cta-selo alerta",
+        respondido: "cta-selo ok",
+        aceito: "cta-selo ok",
+        recusado: "cta-selo mute"
+      };
+      return mapa[status] || "cta-selo";
+    }
+
+    function pintar() {
+      sincronizarUrl();
+      var vazio = estado().perfil === "vazia";
+      var cliente = estado().cliente || {};
+      var pedidos = vazio ? [] : (estado().pedidos || []).slice().sort(function (a, b) {
+        return String(b.criadoEm || "").localeCompare(String(a.criadoEm || ""));
       });
-      conta();
-    });
+      var orcamentos = vazio ? [] : (estado().orcamentosCliente || []).slice();
+      var favoritos = vazio ? [] : (estado().favoritos || []).map(function (id) {
+        return estado().produtos.find(function (produto) { return produto.id === id; });
+      }).filter(Boolean);
+      var enderecos = vazio ? [] : (estado().enderecos || []);
+      var perguntas = vazio ? [] : (estado().perguntas || []).filter(function (item) {
+        return item.autor === cliente.nome;
+      });
+      var aguardando = pedidos.filter(function (item) { return item.status === "aguardando pagamento"; }).length;
+      var orcPend = orcamentos.filter(function (item) { return item.status === "respondido" || item.status === "aguardando"; }).length;
+      var nomeExib = vazio ? "Conta vazia" : (cliente.nome || "Cliente");
+
+      var kpis = '<div class="cta-kpis">' +
+        '<button class="cta-kpi' + (vista.aba === "pedidos" ? " ativo" : "") + '" type="button" data-aba="pedidos"><strong>' + pedidos.length + '</strong><span>Pedidos</span></button>' +
+        '<button class="cta-kpi' + (vista.aba === "orcamentos" ? " ativo" : "") + '" type="button" data-aba="orcamentos"><strong>' + orcamentos.length + '</strong><span>Orçamentos</span></button>' +
+        '<button class="cta-kpi' + (vista.aba === "favoritos" ? " ativo" : "") + '" type="button" data-aba="favoritos"><strong>' + favoritos.length + '</strong><span>Favoritos</span></button>' +
+        '<button class="cta-kpi' + (vista.aba === "enderecos" ? " ativo" : "") + '" type="button" data-aba="enderecos"><strong>' + enderecos.length + '</strong><span>Endereços</span></button>' +
+        '<button class="cta-kpi' + (vista.aba === "perguntas" ? " ativo" : "") + '" type="button" data-aba="perguntas"><strong>' + perguntas.length + '</strong><span>Perguntas</span></button>' +
+        "</div>";
+
+      var abas = '<div class="cta-abas">' +
+        [["pedidos", "Pedidos"], ["orcamentos", "Orçamentos"], ["favoritos", "Favoritos"], ["enderecos", "Endereços"], ["perguntas", "Perguntas"], ["dados", "Meus dados"]].map(function (par) {
+          return '<button class="cta-aba' + (vista.aba === par[0] ? " ativo" : "") + '" type="button" data-aba="' + par[0] + '">' + par[1] + "</button>";
+        }).join("") + "</div>";
+
+      var alerta = "";
+      if (!vazio && aguardando) alerta += '<button class="cta-alerta" type="button" data-aba="pedidos">' + aguardando + " pedido" + (aguardando === 1 ? "" : "s") + " aguardando pagamento</button>";
+      if (!vazio && orcPend) alerta += '<button class="cta-alerta" type="button" data-aba="orcamentos">' + orcPend + " orçamento" + (orcPend === 1 ? "" : "s") + " para olhar</button>";
+      if (alerta) alerta = '<div class="cta-alertas">' + alerta + "</div>";
+
+      var okHtml = vista.ok ? '<p class="cta-ok">' + ui.esc(vista.ok) + "</p>" : "";
+      var corpo = "";
+
+      if (vista.aba === "pedidos") {
+        corpo = '<div class="cta-lista">' + (pedidos.length ? pedidos.map(function (pedido) {
+          var itens = (pedido.itens || []).map(function (item) {
+            return ui.esc(item.titulo) + " × " + item.quantidade;
+          }).join(", ");
+          var acoes = '<div class="cta-acoes">';
+          if (pedido.status === "aguardando pagamento") {
+            acoes += '<button class="botao" type="button" data-pagar="' + ui.esc(pedido.id) + '">' + ico("carrinho") + "<span>Simular pagamento</span></button>";
+            acoes += '<button class="botao-linha" type="button" data-cancelar="' + ui.esc(pedido.id) + '"><span>Cancelar</span></button>';
+          }
+          if (pedido.status === "entregue") {
+            acoes += '<button class="botao-linha" type="button" data-devolver="' + ui.esc(pedido.id) + '"><span>Pedir devolução</span></button>';
+          }
+          if (pedido.status !== "aguardando pagamento" && pedido.status !== "cancelado") {
+            acoes += '<a class="botao-linha" href="' + ui.url("paginas/recibo.html?id=" + encodeURIComponent(pedido.id)) + '">' + ico("documento") + "<span>Recibo</span></a>";
+          }
+          acoes += "</div>";
+          return '<article class="cta-card">' +
+            '<div class="cta-card-topo">' +
+              '<div><strong class="cta-id">' + ui.esc(pedido.id) + "</strong>" +
+              '<p class="cta-meta">' + ui.esc(dinheiro.dataBR(String(pedido.criadoEm || "").slice(0, 10))) +
+              (pedido.forma ? " · " + ui.esc(pedido.forma) : "") + "</p></div>" +
+              '<span class="' + seloStatus(pedido.status) + '">' + ui.esc(pedido.status) + "</span>" +
+            "</div>" +
+            '<p class="cta-itens">' + (itens || "Sem itens") + "</p>" +
+            '<div class="cta-total"><span>Total</span><strong>' + dinheiro.real(pedido.total) + "</strong></div>" +
+            acoes +
+            "</article>";
+        }).join("") : ui.vazio("Nenhum pedido por aqui.")) + "</div>";
+      } else if (vista.aba === "orcamentos") {
+        corpo = '<div class="cta-lista">' + (orcamentos.length ? orcamentos.map(function (item) {
+          var acoes = '<div class="cta-acoes">';
+          if (item.status === "respondido") {
+            acoes += '<button class="botao" type="button" data-aceitar="' + ui.esc(item.id) + '">' + ico("carrinho") + "<span>Aceitar " + dinheiro.real(item.valor) + "</span></button>";
+            acoes += '<button class="botao-linha" type="button" data-recusar="' + ui.esc(item.id) + '"><span>Recusar</span></button>';
+          }
+          acoes += "</div>";
+          return '<article class="cta-card">' +
+            '<div class="cta-card-topo">' +
+              '<div><strong class="cta-id">' + ui.esc(item.titulo) + "</strong>" +
+              '<p class="cta-meta">' + ui.esc(dinheiro.dataBR(String(item.criadoEm || "").slice(0, 10))) + "</p></div>" +
+              '<span class="' + seloStatus(item.status) + '">' + ui.esc(item.status) + "</span>" +
+            "</div>" +
+            '<p class="cta-itens">' + ui.esc(item.detalhes || "") + "</p>" +
+            (item.valor != null ? '<div class="cta-total"><span>Valor proposto</span><strong>' + dinheiro.real(item.valor) + "</strong></div>" : '<p class="cta-meta">Aguardando o valor da oficina.</p>') +
+            acoes +
+            "</article>";
+        }).join("") : ui.vazio("Nenhum orçamento.")) + "</div>";
+      } else if (vista.aba === "favoritos") {
+        corpo = favoritos.length
+          ? '<div class="cta-fav-grade">' + favoritos.map(function (produto) {
+            var foto = (produto.fotos && produto.fotos[0]) || { arquivo: "marca/mascote.png", legenda: "" };
+            return '<a class="cta-fav" href="' + ui.url("paginas/produto.html?id=" + encodeURIComponent(produto.id)) + '">' +
+              '<img src="' + ui.url(foto.arquivo) + '" alt="' + ui.esc(foto.legenda || produto.titulo) + '">' +
+              '<div><strong>' + ui.esc(produto.titulo) + "</strong>" +
+              '<span>' + dinheiro.real(produto.preco) + "</span></div></a>";
+          }).join("") + "</div>"
+          : ui.vazio("Nenhum favorito.");
+      } else if (vista.aba === "enderecos") {
+        corpo = '<div class="cta-endereco-layout">' +
+          '<div class="cta-lista">' + (enderecos.length ? enderecos.map(function (item) {
+            return '<article class="cta-card cta-end">' +
+              '<div class="cta-card-topo"><strong class="cta-id">' + ui.esc(item.rotulo || "Endereço") + "</strong>" +
+              '<button class="botao-linha" type="button" data-apagar-end="' + ui.esc(item.id) + '">Remover</button></div>' +
+              '<p class="cta-itens m-0">' + ui.esc(item.linha) + "</p>" +
+              '<p class="cta-meta m-0">CEP ' + ui.esc(item.cep) + "</p></article>";
+          }).join("") : ui.vazio("Nenhum endereço guardado.")) + "</div>" +
+          '<form id="novo-endereco" class="cta-card cta-form">' +
+          '<h2 class="cta-titulo">Novo endereço</h2>' +
+          '<label class="cta-campo"><span>Apelido</span><input name="rotulo" placeholder="Casa, Trabalho…" value="Extra"></label>' +
+          '<label class="cta-campo"><span>Endereço completo</span><input name="linha" required placeholder="Rua, número, bairro, cidade/UF"></label>' +
+          '<label class="cta-campo"><span>CEP</span><input name="cep" required inputmode="numeric" placeholder="29000-000"></label>' +
+          '<button class="botao" type="submit">' + ico("caminhao") + "<span>Guardar endereço</span></button>" +
+          "</form></div>";
+      } else if (vista.aba === "perguntas") {
+        corpo = '<div class="cta-lista">' + (perguntas.length ? perguntas.map(function (item) {
+          var produto = estado().produtos.find(function (p) { return p.id === item.produtoId; });
+          return '<article class="cta-card">' +
+            '<div class="cta-card-topo">' +
+              '<strong class="cta-id">' + ui.esc(produto ? produto.titulo : "Produto") + "</strong>" +
+              '<span class="' + (item.resposta ? "cta-selo ok" : "cta-selo alerta") + '">' + (item.resposta ? "Respondida" : "Aguardando") + "</span>" +
+            "</div>" +
+            '<p class="cta-itens">' + ui.esc(item.texto) + "</p>" +
+            '<p class="cta-meta">' + ui.esc(item.resposta || "A oficina ainda não respondeu.") + "</p>" +
+            (produto ? '<a class="botao-linha" href="' + ui.url("paginas/produto.html?id=" + encodeURIComponent(produto.id)) + '">Ver produto</a>' : "") +
+            "</article>";
+        }).join("") : ui.vazio("Você ainda não fez perguntas nos anúncios.")) + "</div>";
+      } else {
+        corpo = '<form id="dados" class="cta-card cta-form cta-dados">' +
+          '<h2 class="cta-titulo">Dados pessoais</h2>' +
+          '<p class="cta-meta">Sem senha nesta etapa da loja estática. Os dados ficam neste navegador.</p>' +
+          '<div class="cta-grade">' +
+          '<label class="cta-campo"><span>Nome</span><input name="nome" value="' + ui.esc(vazio ? "" : (cliente.nome || "")) + '"></label>' +
+          '<label class="cta-campo"><span>E-mail</span><input name="email" type="email" value="' + ui.esc(vazio ? "" : (cliente.email || "")) + '"></label>' +
+          '<label class="cta-campo"><span>Telefone</span><input name="telefone" value="' + ui.esc(vazio ? "" : (cliente.telefone || "")) + '"></label>' +
+          '<label class="cta-campo"><span>Documento</span><input name="documento" value="' + ui.esc(vazio ? "" : (cliente.documento || "")) + '"></label>' +
+          "</div>" +
+          '<button class="botao" type="submit">' + ico("conta") + "<span>Salvar dados</span></button>" +
+          "</form>";
+      }
+
+      raiz.innerHTML =
+        '<div class="cta-cab">' +
+          '<div class="cta-cab-txt">' +
+            '<p class="cta-eyebrow">Minha conta</p>' +
+            '<h1 class="cta-nome">' + ui.esc(nomeExib) + "</h1>" +
+            '<p class="cta-intro">' + (vazio
+              ? "Demonstração sem pedidos. Volte à conta exemplo para ver o fluxo completo."
+              : "Pedidos, orçamentos, favoritos e endereços em um só lugar.") + "</p>" +
+          "</div>" +
+          '<button class="botao-linha cta-trocar" type="button" id="trocar-perfil">' +
+            ico("conta") + "<span>" + (vazio ? "Voltar à conta exemplo" : "Ver conta vazia") + "</span></button>" +
+        "</div>" +
+        kpis + abas + alerta + okHtml + '<div class="cta-corpo">' + corpo + "</div>";
+
+      raiz.querySelectorAll("[data-aba]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+          vista.aba = botao.getAttribute("data-aba") || "pedidos";
+          vista.ok = "";
+          pintar();
+        });
+      });
+
+      document.getElementById("trocar-perfil").addEventListener("click", function () {
+        Cria.alterar(function (atual) { atual.perfil = atual.perfil === "vazia" ? "exemplo" : "vazia"; });
+        vista.aba = "pedidos";
+        flash(estado().perfil === "vazia" ? "Conta vazia ativa." : "Conta exemplo ativa.");
+      });
+
+      var formDados = document.getElementById("dados");
+      if (formDados) formDados.addEventListener("submit", function (evento) {
+        evento.preventDefault();
+        var dados = new FormData(evento.target);
+        Cria.alterar(function (atual) {
+          atual.cliente.nome = String(dados.get("nome") || "");
+          atual.cliente.email = String(dados.get("email") || "");
+          atual.cliente.telefone = String(dados.get("telefone") || "");
+          atual.cliente.documento = String(dados.get("documento") || "");
+          atual.perfil = "exemplo";
+        });
+        flash("Dados salvos neste navegador.");
+      });
+
+      var formEndereco = document.getElementById("novo-endereco");
+      if (formEndereco) formEndereco.addEventListener("submit", function (evento) {
+        evento.preventDefault();
+        var dados = new FormData(formEndereco);
+        Cria.alterar(function (atual) {
+          atual.enderecos.push({
+            id: CriaCarrinho.novoId("end"),
+            rotulo: String(dados.get("rotulo") || "Extra").trim() || "Extra",
+            linha: String(dados.get("linha")),
+            cep: String(dados.get("cep")).replace(/\D/g, "")
+          });
+          atual.perfil = "exemplo";
+        });
+        flash("Endereço guardado.");
+      });
+
+      raiz.querySelectorAll("[data-apagar-end]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+          var id = botao.getAttribute("data-apagar-end");
+          Cria.alterar(function (atual) {
+            atual.enderecos = (atual.enderecos || []).filter(function (item) { return item.id !== id; });
+          });
+          flash("Endereço removido.");
+        });
+      });
+
+      raiz.querySelectorAll("[data-pagar]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+          var id = botao.getAttribute("data-pagar");
+          Cria.alterar(function (atual) {
+            var pedido = atual.pedidos.find(function (item) { return item.id === id; });
+            if (!pedido) return;
+            pedido.status = "pago";
+            pedido.itens.forEach(function (item) {
+              if (!item.fisico || item.tipo === "personalizado") return;
+              var produto = atual.produtos.find(function (cadastro) { return cadastro.id === item.produtoId; });
+              if (produto) produto.estoque = Math.max(0, produto.estoque - item.quantidade);
+            });
+          });
+          flash("Pagamento simulado. Pedido marcado como pago.");
+        });
+      });
+      raiz.querySelectorAll("[data-cancelar]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+          var id = botao.getAttribute("data-cancelar");
+          Cria.alterar(function (atual) {
+            var pedido = atual.pedidos.find(function (item) { return item.id === id; });
+            if (pedido && pedido.status === "aguardando pagamento") pedido.status = "cancelado";
+          });
+          flash("Pedido cancelado.");
+        });
+      });
+      raiz.querySelectorAll("[data-devolver]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+          var id = botao.getAttribute("data-devolver");
+          Cria.alterar(function (atual) {
+            var pedido = atual.pedidos.find(function (item) { return item.id === id; });
+            if (pedido) pedido.status = "devolvido";
+          });
+          flash("Devolução pedida.");
+        });
+      });
+      raiz.querySelectorAll("[data-aceitar]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+          var id = botao.getAttribute("data-aceitar");
+          Cria.alterar(function (atual) {
+            var orcamento = atual.orcamentosCliente.find(function (item) { return item.id === id; });
+            if (!orcamento || orcamento.status !== "respondido") return;
+            orcamento.status = "aceito";
+            atual.pedidos.push({
+              id: CriaCarrinho.novoId("ped"),
+              status: "pago",
+              criadoEm: dinheiro.agoraSP(),
+              itens: [{ id: CriaCarrinho.novoId("item"), produtoId: orcamento.produtoId, titulo: orcamento.titulo, tipo: "personalizado", fisico: true, arquivo: false, quantidade: 1, precoUnitario: orcamento.valor, detalhes: orcamento.detalhes }],
+              subtotal: orcamento.valor,
+              descontoCupom: 0,
+              descontoAVista: 0,
+              freteCobrado: 0,
+              total: orcamento.valor,
+              forma: "pix",
+              endereco: (atual.enderecos[0] && atual.enderecos[0].linha) || "",
+              cep: (atual.enderecos[0] && atual.enderecos[0].cep) || "",
+              freteNome: "A combinar",
+              cupom: "",
+              repassarFrete: atual.configuracao.repassarFrete,
+              nota: "pendente",
+              os: { status: "aberta", insumoBaixado: false }
+            });
+          });
+          vista.aba = "pedidos";
+          flash("Orçamento aceito. Pedido criado.");
+        });
+      });
+      raiz.querySelectorAll("[data-recusar]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+          var id = botao.getAttribute("data-recusar");
+          Cria.alterar(function (atual) {
+            var orcamento = atual.orcamentosCliente.find(function (item) { return item.id === id; });
+            if (orcamento) orcamento.status = "recusado";
+          });
+          flash("Orçamento recusado.");
+        });
+      });
+
+      ui.revelar(raiz);
+    }
+
+    pintar();
   }
 
   function contato() {
     document.title = "Contato · Cria Lab DM";
-    raiz.innerHTML = '<h1>Contato</h1><form id="contato" class="cartao formulario"><label>Nome<input name="nome" required value="' + ui.esc(estado().cliente.nome) + '"></label><label>E-mail<input name="email" type="email" required value="' + ui.esc(estado().cliente.email) + '"></label><label>Tipo<select name="tipo"><option>dúvida</option><option>sugestão</option><option>elogio</option><option>reclamação</option><option>orçamento</option><option>outro</option></select></label><label>Mensagem<textarea name="texto" required></textarea></label><button class="botao" type="submit">Enviar</button><p id="confirma"></p></form>';
+    var ajuda = (estado().menusAjuda || {}).contato || "";
+    raiz.innerHTML = '<h1 title="' + ui.esc(ajuda) + '">Contato</h1><p class="intro-pagina mb-3 max-w-3xl text-tinta/75">' + ui.esc(ajuda) + '</p><form id="contato" class="cartao formulario"><label>Nome<input name="nome" required value="' + ui.esc(estado().cliente.nome) + '"></label><label>E-mail<input name="email" type="email" required value="' + ui.esc(estado().cliente.email) + '"></label><label>Tipo<select name="tipo"><option>dúvida</option><option>sugestão</option><option>elogio</option><option>reclamação</option><option>orçamento</option><option>outro</option></select></label><label>Mensagem<textarea name="texto" required></textarea></label><button class="botao" type="submit">Enviar</button><p id="confirma"></p></form>';
     document.getElementById("contato").addEventListener("submit", function (evento) {
       evento.preventDefault();
       var dados = new FormData(evento.target);

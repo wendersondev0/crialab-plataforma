@@ -29,10 +29,12 @@
     document.title = "Carrinho · Cria Lab DM";
     var linhas = estado().carrinho;
     if (!linhas.length) {
-      raiz.innerHTML = "<h1>Carrinho</h1>" + ui.vazio("O carrinho está vazio.");
+      var ajudaVazio = (estado().menusAjuda || {}).carrinho || "";
+      raiz.innerHTML = "<h1>Carrinho</h1><p class=\"intro-pagina max-w-3xl text-tinta/75\" title=\"" + ui.esc(ajudaVazio) + "\">" + ui.esc(ajudaVazio) + "</p>" + ui.vazio("O carrinho está vazio.");
       return;
     }
-    raiz.innerHTML = "<h1>Carrinho</h1><div id=\"linhas\"></div><p class=\"acao-carrinho\"><a class=\"botao\" href=\"" + ui.url("paginas/checkout.html") + "\">" + ico("carrinho") + "Finalizar pedido</a></p>";
+    var ajuda = (estado().menusAjuda || {}).carrinho || "";
+    raiz.innerHTML = "<h1>Carrinho</h1><p class=\"intro-pagina mb-3 max-w-3xl text-tinta/75\" title=\"" + ui.esc(ajuda) + "\">" + ui.esc(ajuda) + "</p><div id=\"linhas\"></div><p class=\"acao-carrinho\"><a class=\"botao\" href=\"" + ui.url("paginas/checkout.html") + "\">" + ico("carrinho") + "Finalizar pedido</a></p>";
     pintarLinhas();
   }
 
@@ -40,7 +42,7 @@
     var caixa = document.getElementById("linhas");
     if (!caixa) return;
     caixa.innerHTML = estado().carrinho.map(function (item) {
-      return '<article class="cartao item-carrinho"><div><strong>' + ui.esc(item.titulo) + "</strong><p>" + ui.esc(item.tipo === "personalizado" ? "Personalizado" : "Produto") + (item.detalhes ? " · " + ui.esc(item.detalhes) : "") + "</p><p class=\"preco\">" + dinheiro.real(item.precoUnitario) + "</p></div><label class=\"qtd-ficha\">Quantidade<input data-qtd=\"" + ui.esc(item.id) + "\" type=\"number\" min=\"1\" value=\"" + item.quantidade + "\"></label><button class=\"botao-linha\" type=\"button\" data-remover=\"" + ui.esc(item.id) + "\">Tirar</button></article>";
+      return '<article class="cartao item-carrinho"><div><strong>' + ui.esc(item.titulo) + "</strong><p>" + ui.esc(item.tipo === "personalizado" ? "Personalizado" : "Peça") + (item.detalhes ? " · " + ui.esc(item.detalhes) : "") + "</p><p class=\"preco\">" + dinheiro.real(item.precoUnitario) + "</p></div><label class=\"qtd-ficha\">Quantidade<input data-qtd=\"" + ui.esc(item.id) + "\" type=\"number\" min=\"1\" value=\"" + item.quantidade + "\"></label><button class=\"botao-linha\" type=\"button\" data-remover=\"" + ui.esc(item.id) + "\">Tirar</button></article>";
     }).join("");
     caixa.querySelectorAll("[data-qtd]").forEach(function (campo) {
       campo.addEventListener("change", function () {
@@ -67,12 +69,14 @@
   function checkout() {
     document.title = "Fechamento · Cria Lab DM";
     if (!estado().carrinho.length) {
-      raiz.innerHTML = "<h1>Fechamento</h1>" + ui.vazio("O carrinho está vazio.");
+      var ajudaVazio = (estado().menusAjuda || {}).checkout || "";
+      raiz.innerHTML = "<h1>Fechamento</h1><p class=\"intro-pagina max-w-3xl text-tinta/75\">" + ui.esc(ajudaVazio) + "</p>" + ui.vazio("O carrinho está vazio.");
       return;
     }
+    var ajudaCheckout = (estado().menusAjuda || {}).checkout || "";
     var rascunho = lerRascunho();
     var endereco = (estado().enderecos[0] && estado().enderecos[0].linha) || "";
-    raiz.innerHTML = '<h1>Fechamento</h1><div class="checkout"><form id="fechamento" class="cartao formulario"><h2>Entrega e pagamento</h2><label>Endereço<input name="endereco" value="' + ui.esc(rascunho.endereco || endereco) + '" required></label><label>CEP<input name="cep" inputmode="numeric" value="' + ui.esc(rascunho.cep || "") + '" required></label><div id="opcoes-frete"></div><label>Cupom da loja<input name="cupom" value="' + ui.esc(rascunho.cupom || "") + '" placeholder="OFICINA10"></label><label>Pagamento<select name="forma"><option value="pix">PIX</option><option value="boleto">Boleto</option><option value="cartao">Cartão</option></select></label><p id="mensagem"></p><button class="botao" type="submit">' + ico("carrinho") + 'Confirmar pedido</button></form><aside class="cartao resumo" id="resumo"></aside></div><div class="barra-mobile" id="barra-mobile"></div><div id="depois"></div>';
+    raiz.innerHTML = '<h1>Fechamento</h1><p class="intro-pagina mb-3 max-w-3xl text-tinta/75" title="' + ui.esc(ajudaCheckout) + '">' + ui.esc(ajudaCheckout) + '</p><div class="checkout"><form id="fechamento" class="cartao formulario"><h2>Entrega e pagamento</h2><label>Endereço<input name="endereco" value="' + ui.esc(rascunho.endereco || endereco) + '" required></label><label>CEP<input name="cep" inputmode="numeric" value="' + ui.esc(rascunho.cep || "") + '" required></label><div id="opcoes-frete"></div><label>Cupom da loja<input name="cupom" value="' + ui.esc(rascunho.cupom || "") + '" placeholder="OFICINA10"></label><label>Pagamento<select name="forma"><option value="pix">PIX</option><option value="boleto">Boleto</option><option value="cartao">Cartão</option></select></label><p id="mensagem"></p><button class="botao" type="submit">' + ico("carrinho") + 'Confirmar pedido</button></form><aside class="cartao resumo" id="resumo"></aside></div><div class="barra-mobile" id="barra-mobile"></div><div id="depois"></div>';
     var form = document.getElementById("fechamento");
     if (rascunho.forma) form.forma.value = rascunho.forma;
     function dadosForm() {
