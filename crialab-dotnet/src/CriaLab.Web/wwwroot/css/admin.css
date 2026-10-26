@@ -850,6 +850,14 @@
   border-color: var(--tinta);
   transform: translateY(-1px);
 }
+.fin-kpi[title],
+.fin-mini[title],
+.fin-comp-linha[title],
+.fin-graf[title],
+.fin-ref-grade article[title],
+.admin-prod-kpis a[title] {
+  cursor: help;
+}
 .fin-kpi span, .fin-mini span {
   display: block;
   font-size: 0.78rem;
