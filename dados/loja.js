@@ -49,7 +49,7 @@ window.CriaDados.menusAjuda = {
   checkout: "Informe CEP, escolha PAC ou SEDEX, use cupom se tiver e confirme o pagamento simulado.",
   conta: "Pedidos, orçamentos, favoritos e dados do cliente de exemplo. Sem senha nesta etapa da loja estática.",
   contato: "Envie dúvida, sugestão, elogio, reclamação ou orçamento. A mensagem aparece na lista do admin.",
-  sobre: "Conheça a oficina, o CNPJ, as redes e os parceiros que confiam na Cria Lab DM.",
+  sobre: "Somos uma oficina de impressão 3D: peças prontas, sob demanda e personalizadas do seu jeito.",
   produto: "Na ficha você escolhe cor e tamanho, calcula frete, abre Shopee ou Mercado Livre e compra ou pede orçamento."
 };
 window.CriaDados.configuracao = {

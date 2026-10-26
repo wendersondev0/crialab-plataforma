@@ -592,8 +592,69 @@
       return '<figure class="parceiro revela m-0 flex min-h-[100px] items-center justify-center rounded-[18px] border-2 border-linha bg-white px-4 py-3">' + marca + "</figure>";
     }).join("");
     var local = (id.endereco ? "<p class=\"m-0\">" + ui.esc(id.endereco) + "</p>" : "") + (id.horario ? "<p class=\"m-0\">" + ui.esc(id.horario) + "</p>" : "");
-    var ajuda = (estado().menusAjuda || {}).sobre || "";
-    raiz.innerHTML = '<section class="sobre grid justify-items-center gap-4 py-2 text-center"><div class="passaro-palco relative grid min-h-[300px] w-[min(380px,100%)] items-end justify-items-center"><img class="passaro relative z-[1] w-[min(300px,78vw)]" src="' + ui.url("marca/mascote.png") + '" alt="Mascote da Cria Lab DM"><span class="passaro-sombra"></span></div><div class="sobre-texto revela grid w-[min(720px,100%)] justify-items-center gap-1.5"><img class="letreiro w-[min(280px,80%)] rounded-[18px] bg-white px-4 py-2.5 shadow-cria" src="' + ui.url("marca/logo-colorida.png") + '" alt="Cria Lab"><h1 class="mt-2" title="' + ui.esc(ajuda) + '">' + ui.esc(id.nome) + '</h1><p class="intro-pagina m-0 max-w-xl text-tinta/75">' + ui.esc(ajuda) + '</p><p class="m-0">CNPJ ' + ui.esc(id.cnpj) + '</p><p class="m-0"><a href="mailto:' + ui.esc(id.email) + '">' + ui.esc(id.email) + '</a></p><p class="m-0"><a href="tel:+5527996530954">' + ui.esc(id.telefone) + "</a></p>" + local + '<div class="mt-3.5">' + redes() + "</div></div></section>" + (parceiros ? '<section class="cartao revela mt-4 rounded-[18px] bg-white p-4 shadow-cria"><h2 class="mt-0">Parceiros</h2><div class="parceiros flex flex-wrap items-center justify-center gap-4">' + parceiros + "</div></section>" : "");
+    var pilares = [
+      { ico: "admin", titulo: "Impressão 3D de verdade", texto: "Projetamos e imprimimos na oficina: do protótipo à peça acabada, com material e acabamento combinados com você." },
+      { ico: "caixa", titulo: "Pronta entrega", texto: "Chaveiros, decoração e utilidades já saídos da impressora, prontos para enviar ou retirar sem espera de produção." },
+      { ico: "caminhao", titulo: "Sob demanda", texto: "O modelo já existe na vitrine; depois do pedido a gente imprime a sua unidade no prazo combinado." },
+      { ico: "documento", titulo: "100% personalizado", texto: "Tem ideia, foto, logo ou medida? A gente transforma em peça. Orçamento sem compromisso antes de produzir." }
+    ].map(function (item) {
+      return '<article class="sobre-pilar revela"><span class="sobre-pilar-ico">' + ico(item.ico) + "</span><h3>" + ui.esc(item.titulo) + "</h3><p>" + ui.esc(item.texto) + "</p></article>";
+    }).join("");
+    var produtos = [
+      ["Decoração", "Quadros, letras, enfeites e peças que dão cara ao ambiente."],
+      ["Chaveiros e brindes", "Para presente, empresa, evento ou o dia a dia com a sua cara."],
+      ["Utilidades", "Suportes, organizadores e soluções práticas impressas sob medida."],
+      ["Moldes e peças técnicas", "Para quem precisa de forma, encaixe ou reposição que não acha pronta."],
+      ["Pintura e acabamento", "Quando a peça pede cor, verniz ou aquele detalhe a mais."]
+    ].map(function (par) {
+      return "<li><strong>" + ui.esc(par[0]) + "</strong><span>" + ui.esc(par[1]) + "</span></li>";
+    }).join("");
+    var mensagens = [
+      { titulo: "Não achou na loja?", texto: "Manda referência no WhatsApp. Se der para imprimir, a gente faz — e se precisar adaptar, a gente adapta." },
+      { titulo: "Do rascunho à mão", texto: "Trabalhamos com ideia solta, arquivo 3D ou só uma foto. O importante é você sair com a peça que imaginou." },
+      { titulo: "Para pessoa e para negócio", texto: "Presente, uso pessoal, brindes de marca ou peça sob encomenda para a sua empresa: a oficina atende os dois mundos." }
+    ].map(function (item) {
+      return '<article class="sobre-mensagem revela"><h3>' + ui.esc(item.titulo) + "</h3><p>" + ui.esc(item.texto) + "</p></article>";
+    }).join("");
+    var whats = (id.whatsapp || "") + "?text=" + encodeURIComponent("Olá! Quero saber mais sobre impressão 3D e peças personalizadas na Cria Lab.");
+    raiz.innerHTML =
+      '<section class="sobre">' +
+        '<div class="passaro-palco"><img class="passaro" src="' + ui.url("marca/mascote.png") + '" alt="Mascote da Cria Lab DM"><span class="passaro-sombra"></span></div>' +
+        '<div class="sobre-texto revela">' +
+          '<img class="letreiro" src="' + ui.url("marca/logo-colorida.png") + '" alt="Cria Lab">' +
+          "<h1>" + ui.esc(id.nome) + "</h1>" +
+          '<p class="sobre-slogan">Oficina de impressão 3D que transforma ideia em peça — pronta, sob demanda ou do seu jeito.</p>' +
+          '<p class="sobre-lead">A Cria Lab DM nasce da bancada: filamento, impressora e muita vontade de criar. Fazemos decoração, chaveiros, utilidades, moldes e o que mais couber na sua imaginação. Se dá para modelar e imprimir, a gente conversa.</p>' +
+          '<div class="sobre-ctas">' +
+            '<a class="botao" href="' + ui.url("paginas/produtos.html") + '">' + ico("caixa") + "Ver produtos</a>" +
+            '<a class="botao-teal" href="' + ui.url("paginas/personalizados.html") + '">' + ico("admin") + "Peças personalizadas</a>" +
+            '<a class="botao-linha" href="' + ui.esc(whats) + '" target="_blank" rel="noopener">' + ico("whatsapp") + "Falar no WhatsApp</a>" +
+          "</div>" +
+        "</div>" +
+      "</section>" +
+      '<section class="sobre-bloco revela">' +
+        '<div class="sobre-bloco-cab"><h2>O que fazemos</h2><p>Impressão 3D com cara de oficina: do estoque da mesa ao projeto sob encomenda.</p></div>' +
+        '<div class="sobre-pilares">' + pilares + "</div>" +
+      "</section>" +
+      '<section class="sobre-bloco revela">' +
+        '<div class="sobre-bloco-cab"><h2>Produtos que saem da nossa impressora</h2><p>Uma vitrine ampla — e espaço para o que ainda não está nela.</p></div>' +
+        '<ul class="sobre-produtos">' + produtos + "</ul>" +
+      "</section>" +
+      '<section class="sobre-bloco revela">' +
+        '<div class="sobre-bloco-cab"><h2>Por que pedir na Cria Lab</h2><p>Mensagens diretas para quem quer criar, presentear ou resolver um problema com uma peça impressa.</p></div>' +
+        '<div class="sobre-mensagens">' + mensagens + "</div>" +
+      "</section>" +
+      '<section class="sobre-bloco sobre-contato revela">' +
+        '<div class="sobre-bloco-cab"><h2>Fale com a oficina</h2><p>Tire dúvida, peça orçamento ou conte o que você quer criar.</p></div>' +
+        '<div class="sobre-contato-grade">' +
+          "<p><strong>CNPJ</strong><span>" + ui.esc(id.cnpj) + "</span></p>" +
+          '<p><strong>E-mail</strong><a href="mailto:' + ui.esc(id.email) + '">' + ui.esc(id.email) + "</a></p>" +
+          '<p><strong>Telefone</strong><a href="tel:+5527996530954">' + ui.esc(id.telefone) + "</a></p>" +
+          (local ? '<div class="sobre-local">' + local + "</div>" : "") +
+        "</div>" +
+        '<div class="sobre-redes">' + redes() + "</div>" +
+      "</section>" +
+      (parceiros ? '<section class="cartao revela sobre-parceiros"><h2 class="mt-0">Parceiros</h2><p class="sobre-parceiros-intro">Quem caminha com a gente.</p><div class="parceiros">' + parceiros + "</div></section>" : "");
     ui.revelar(raiz);
   }
 
