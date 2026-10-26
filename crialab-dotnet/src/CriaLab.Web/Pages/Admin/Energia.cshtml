@@ -1,0 +1,92 @@
+@page
+@model CriaLab.Web.Pages.Admin.EnergiaModel
+@{
+    ViewData["Title"] = "Energia";
+}
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Fechamento de energia</h1>
+        <p class="admin-prod-intro m-0 mt-1">Confirme o preço do kWh e lance o consumo das impressoras.</p>
+    </div>
+    <a class="botao-linha" asp-page="/Admin/Financeiro">Voltar ao Financeiro</a>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+@if (!Model.Confirmado)
+{
+    <form method="post" asp-page-handler="ConfirmarPreco" class="cartao formulario p-4">
+        <label>Preço atual do kWh
+            <input asp-for="PrecoInformado" type="number" step="0.0001" min="0" />
+        </label>
+        <p class="discreto">O valor aberto é só o último preço, como ponto de partida.</p>
+        <button class="botao" type="submit">Confirmar preço do kWh</button>
+    </form>
+}
+else
+{
+    <p class="discreto mb-3">Preço confirmado: <strong>R$ @Model.PrecoKwh.ToString("N4")</strong> / kWh</p>
+    <form method="post" asp-page-handler="Fechar" class="formulario" id="fechar-energia">
+        @for (var i = 0; i < Model.Linhas.Count; i++)
+        {
+            var m = Model.Maquinas.FirstOrDefault(x => x.Id == Model.Linhas[i].MaquinaId);
+            <section class="cartao p-4 mb-3">
+                <h2 class="mt-0">@(m?.Nome ?? Model.Linhas[i].MaquinaId)</h2>
+                <input type="hidden" asp-for="Linhas[i].MaquinaId" />
+                <div class="grade grid grid-cols-1 gap-3 md:grid-cols-4">
+                    <label>kWh<input asp-for="Linhas[i].Kwh" type="number" step="0.01" min="0" data-campo="kwh" data-i="@i" /></label>
+                    <label>Potência (W)<input asp-for="Linhas[i].Watts" type="number" step="1" min="0" data-campo="watts" data-i="@i" /></label>
+                    <label>Custo<input asp-for="Linhas[i].Custo" type="number" step="0.01" min="0" data-campo="custo" data-i="@i" /></label>
+                    <label>R$/min<input asp-for="Linhas[i].EnergiaPorMinuto" type="number" step="0.000001" min="0" data-campo="minuto" data-i="@i" /></label>
+                </div>
+            </section>
+        }
+        <button class="botao" type="submit">Salvar fechamento</button>
+        <a class="botao-linha" asp-page="/Admin/Financeiro">Cancelar</a>
+    </form>
+}
+
+@if (Model.Historico.Any())
+{
+    <h2 class="mt-6">Histórico</h2>
+    <div class="grade grid grid-cols-1 gap-2">
+    @foreach (var f in Model.Historico)
+    {
+        <article class="fin-card p-3 flex flex-wrap justify-between gap-2">
+            <span>@f.Competencia · @f.KwhTotal.ToString("0.##") kWh · tarifa R$ @f.Tarifa.ToString("N4")</span>
+            <strong>R$ @f.Valor.ToString("N2")</strong>
+        </article>
+    }
+    </div>
+}
+
+@section Scripts {
+@if (Model.Confirmado)
+{
+<script>
+(function () {
+  var preco = @Model.PrecoKwh.ToString(System.Globalization.CultureInfo.InvariantCulture);
+  var form = document.getElementById("fechar-energia");
+  if (!form) return;
+  form.addEventListener("input", function (evento) {
+    var alvo = evento.target;
+    var campo = alvo.getAttribute("data-campo");
+    var i = alvo.getAttribute("data-i");
+    if ((campo !== "kwh" && campo !== "watts") || i == null) return;
+    var kwh = Number(form.querySelector('[data-campo="kwh"][data-i="' + i + '"]').value) || 0;
+    var watts = Number(form.querySelector('[data-campo="watts"][data-i="' + i + '"]').value) || 0;
+    var custo = form.querySelector('[data-campo="custo"][data-i="' + i + '"]');
+    var minuto = form.querySelector('[data-campo="minuto"][data-i="' + i + '"]');
+    if (document.activeElement !== custo) custo.value = String((kwh * preco).toFixed(2));
+    if (!minuto.dataset.manual) minuto.value = String(((watts / 1000) * preco / 60).toFixed(6));
+  });
+  form.querySelectorAll('[data-campo="minuto"]').forEach(function (campo) {
+    campo.addEventListener("input", function () { campo.dataset.manual = "1"; });
+  });
+})();
+</script>
+}
+}

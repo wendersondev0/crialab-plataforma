@@ -1,0 +1,120 @@
+@page
+@model CriaLab.Web.Pages.Admin.MesModel
+@using CriaLab.Web.Services
+@{
+    ViewData["Title"] = "Caderno · " + Model.Mes;
+}
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Caderno do mês</h1>
+        <p class="admin-prod-intro m-0 mt-1">Mesmo caderno da planilha, com filtro de ano, mês e categoria.</p>
+    </div>
+    <a class="botao-linha" asp-page="/Admin/Financeiro" asp-route-mes="@Model.Mes" asp-route-aba="resumo">Voltar ao Financeiro</a>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+<div class="fin-filtros cartao p-3 mb-3">
+    <form method="get" class="flex flex-wrap gap-3 items-end">
+        <label class="fin-campo"><span>Ano</span>
+            <select name="ano" onchange="this.form.submit()">
+                @foreach (var a in Model.Anos)
+                {
+                    if (a == Model.Ano) { <option value="@a" selected>@a</option> }
+                    else { <option value="@a">@a</option> }
+                }
+            </select>
+        </label>
+        <div class="fin-meses-chips">
+        @foreach (var m in Model.MesesAno)
+        {
+            <a class="fin-chip@(m == Model.Mes ? " ativo" : "")" asp-page="/Admin/Mes" asp-route-ano="@Model.Ano" asp-route-mes="@m" asp-route-categoria="@Model.Categoria" asp-route-q="@Model.Texto">@m[5..]</a>
+        }
+        </div>
+        <input type="hidden" name="mes" value="@Model.Mes" />
+        <label class="fin-campo fin-busca"><span>Busca</span><input name="q" value="@Model.Texto" /></label>
+        <label class="fin-campo"><span>Ordem</span>
+            <select name="ordem">
+                @foreach (var o in new[] { ("data", "Data"), ("valor", "Valor"), ("descricao", "Descrição") })
+                {
+                    if (Model.Ordem == o.Item1) { <option value="@o.Item1" selected>@o.Item2</option> }
+                    else { <option value="@o.Item1">@o.Item2</option> }
+                }
+            </select>
+        </label>
+        <button class="botao" type="submit">Filtrar</button>
+    </form>
+</div>
+
+<div class="fin-kpis fin-caderno-totais">
+    <div class="fin-kpi"><span>Receita</span><strong>R$ @Model.Resumo.Receita.ToString("N2")</strong></div>
+    <div class="fin-kpi"><span>Despesa</span><strong>R$ @Model.Resumo.DespesaOperacional.ToString("N2")</strong></div>
+    <div class="fin-kpi"><span>Resultado</span><strong class="@(Model.Resumo.Resultado < 0 ? "neg" : "")">R$ @Model.Resumo.Resultado.ToString("N2")</strong></div>
+</div>
+
+<div class="fin-cat-chips mb-3">
+    <a class="fin-cat@(string.IsNullOrEmpty(Model.Categoria) ? " ativo" : "")" asp-page="/Admin/Mes" asp-route-ano="@Model.Ano" asp-route-mes="@Model.Mes" asp-route-q="@Model.Texto">Todas</a>
+    @foreach (var cat in FinanceiroResumo.Categorias)
+    {
+        <a class="fin-cat@(Model.Categoria == cat ? " ativo" : "")" asp-page="/Admin/Mes" asp-route-ano="@Model.Ano" asp-route-mes="@Model.Mes" asp-route-categoria="@cat" asp-route-q="@Model.Texto">@FinanceiroResumo.NomeCategoria(cat)</a>
+    }
+</div>
+
+<form method="post" asp-page-handler="Lancamento" class="cartao formulario fin-compra-form p-4 mb-4">
+    <h2 class="mt-0">Novo lançamento</h2>
+    <input type="hidden" asp-for="LanCompetencia" />
+    <div class="grade grid grid-cols-1 gap-3 md:grid-cols-3">
+        <label>Descrição<input asp-for="LanDescricao" required /></label>
+        <label>Categoria
+            <select asp-for="LanCategoria">
+                @foreach (var cat in FinanceiroResumo.Categorias)
+                {
+                    <option value="@cat">@FinanceiroResumo.NomeCategoria(cat)</option>
+                }
+            </select>
+        </label>
+        <label>Tipo insumo
+            <select asp-for="LanTipoInsumo">
+                <option value="">—</option>
+                @foreach (var t in Model.TiposInsumo)
+                {
+                    <option value="@t.Nome">@t.Nome</option>
+                }
+            </select>
+        </label>
+        <label>Data<input asp-for="LanData" type="date" /></label>
+        <label>Quantidade<input asp-for="LanQuantidade" type="number" step="0.01" min="0" /></label>
+        <label>Valor (R$)<input asp-for="LanValor" type="number" step="0.01" min="0.01" required /></label>
+    </div>
+    <button class="botao mt-2" type="submit">Salvar no caderno</button>
+</form>
+
+<section class="fin-caderno">
+@foreach (var l in Model.Lancamentos)
+{
+    <article class="fin-card p-3">
+        <div class="fin-caderno-cab flex flex-wrap justify-between gap-2">
+            <div>
+                <strong>@l.Descricao</strong>
+                <p class="discreto m-0">@FinanceiroResumo.NomeCategoria(l.Categoria)@(string.IsNullOrWhiteSpace(l.TipoInsumo) ? "" : " · " + l.TipoInsumo) · @(l.Data?.ToString("dd/MM/yyyy") ?? "—") · qtd @l.Quantidade.ToString("0.##")</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <strong class="@(l.Categoria == "receita" ? "" : "neg")">R$ @l.Valor.ToString("N2")</strong>
+                <form method="post" asp-page-handler="Estornar">
+                    <input type="hidden" name="id" value="@l.Id" />
+                    <input type="hidden" name="mes" value="@Model.Mes" />
+                    <input type="hidden" name="ano" value="@Model.Ano" />
+                    <button class="botao-linha" type="submit">Estornar</button>
+                </form>
+            </div>
+        </div>
+    </article>
+}
+@if (!Model.Lancamentos.Any())
+{
+    <div class="fin-vazio cartao"><p>Nenhum lançamento com esses filtros.</p></div>
+}
+</section>

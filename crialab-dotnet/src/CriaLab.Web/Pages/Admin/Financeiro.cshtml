@@ -1,8 +1,143 @@
 @page
 @model CriaLab.Web.Pages.Admin.FinanceiroModel
-@{ ViewData["Title"] = "Financeiro"; }
-<h1>Financeiro</h1>
-<h2>Contas</h2>
-@foreach (var c in Model.Contas) { <p>@c.Tipo · @c.Descricao · R$ @c.Valor.ToString("N2")</p> }
-<h2>Lançamentos recentes</h2>
-@foreach (var l in Model.Lancamentos) { <p>@l.Competencia · @l.Categoria · @l.Descricao · R$ @l.Valor.ToString("N2")</p> }
+@using CriaLab.Web.Services
+@{
+    ViewData["Title"] = "Financeiro";
+    string AbaCls(string a) => "fin-aba" + (Model.Aba == a ? " ativo" : "");
+    var maxReceita = Math.Max(1m, Model.Historico.Max(x => Math.Abs(x.Receita)));
+}
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Gestão financeira</h1>
+        <p class="admin-prod-intro m-0 mt-1">Resumo, contas, caderno do mês, energia e conciliação.</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+        <a class="botao-linha" asp-page="/Admin/Mes" asp-route-mes="@Model.Mes">Caderno do mês</a>
+        <a class="botao-linha" asp-page="/Admin/Energia">Energia</a>
+        <a class="botao-linha" asp-page="/Admin/Conciliacao">Conciliação</a>
+    </div>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+<div class="fin-meses-chips mb-3">
+@foreach (var c in Model.Competencias)
+{
+    <a class="fin-chip@(c == Model.Mes ? " ativo" : "")" asp-page="/Admin/Financeiro" asp-route-aba="@Model.Aba" asp-route-mes="@c">@c</a>
+}
+</div>
+
+<div class="fin-abas mb-3">
+    <a class="@AbaCls("resumo")" asp-page="/Admin/Financeiro" asp-route-aba="resumo" asp-route-mes="@Model.Mes">Resumo</a>
+    <a class="@AbaCls("contas")" asp-page="/Admin/Financeiro" asp-route-aba="contas" asp-route-mes="@Model.Mes">Contas</a>
+    <a class="@AbaCls("lancamentos")" asp-page="/Admin/Financeiro" asp-route-aba="lancamentos" asp-route-mes="@Model.Mes">Lançamentos</a>
+    <a class="@AbaCls("metas")" asp-page="/Admin/Financeiro" asp-route-aba="metas" asp-route-mes="@Model.Mes">Metas</a>
+</div>
+
+@if (Model.Aba == "resumo")
+{
+    <div class="fin-kpis">
+        <div class="fin-kpi"><span>Receita @Model.Mes</span><strong>R$ @Model.ResumoMes.Receita.ToString("N2")</strong>@if (Model.MetaMes > 0){<small>meta R$ @Model.MetaMes.ToString("N2")</small>}</div>
+        <div class="fin-kpi"><span>Despesa operacional</span><strong>R$ @Model.ResumoMes.DespesaOperacional.ToString("N2")</strong></div>
+        <div class="fin-kpi"><span>Resultado</span><strong class="@(Model.ResumoMes.Resultado < 0 ? "neg" : "")">R$ @Model.ResumoMes.Resultado.ToString("N2")</strong></div>
+        <div class="fin-kpi"><span>A pagar / a receber</span><strong>R$ @Model.APagar.ToString("N2") / R$ @Model.AReceber.ToString("N2")</strong></div>
+    </div>
+
+    <div class="fin-detalhe-grid mt-3">
+        <div class="fin-mini"><span>Fixos</span><strong>R$ @Model.ResumoMes.GastoFixo.ToString("N2")</strong></div>
+        <div class="fin-mini"><span>Filamento</span><strong>R$ @Model.ResumoMes.Filamento.ToString("N2")</strong></div>
+        <div class="fin-mini"><span>Outros insumos</span><strong>R$ @Model.ResumoMes.OutroInsumo.ToString("N2")</strong></div>
+        <div class="fin-mini"><span>Energia</span><strong>R$ @Model.ResumoMes.Energia.ToString("N2")</strong></div>
+        <div class="fin-mini"><span>Investimento</span><strong>R$ @Model.ResumoMes.Investimento.ToString("N2")</strong></div>
+        <div class="fin-mini"><span>Qtd vendas</span><strong>@Model.ResumoMes.Quantidade.ToString("0.##")</strong></div>
+    </div>
+
+    <section class="fin-card mt-4">
+        <div class="fin-card-topo"><h2 class="fin-titulo">Receita por mês</h2></div>
+        <div class="barras fin-barras">
+        @foreach (var h in Model.Historico)
+        {
+            var altura = Math.Max(4, (int)Math.Round(Math.Abs(h.Receita) / maxReceita * 120));
+            <div class="barra-mes@(h.Receita < 0 ? " neg" : "")">
+                <span style="height:@(altura)px;background:var(--teal)"></span>
+                <small>@h.Competencia[5..]</small>
+                <small>R$ @h.Receita.ToString("N0")</small>
+            </div>
+        }
+        </div>
+    </section>
+}
+else if (Model.Aba == "contas")
+{
+    <form method="post" asp-page-handler="NovaConta" class="cartao formulario p-4 mb-4">
+        <input type="hidden" name="mes" value="@Model.Mes" />
+        <h2 class="mt-0">Nova conta</h2>
+        <div class="grade grid grid-cols-1 gap-3 md:grid-cols-4">
+            <label>Tipo
+                <select asp-for="ContaTipo">
+                    <option value="pagar">A pagar</option>
+                    <option value="receber">A receber</option>
+                </select>
+            </label>
+            <label>Descrição<input asp-for="ContaDescricao" required /></label>
+            <label>Valor<input asp-for="ContaValor" type="number" step="0.01" min="0.01" /></label>
+            <label>Vencimento<input asp-for="ContaVencimento" type="date" /></label>
+        </div>
+        <button class="botao mt-2" type="submit">Salvar</button>
+    </form>
+    <div class="grade grid grid-cols-1 gap-3">
+    @foreach (var c in Model.Contas)
+    {
+        <article class="fin-card p-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <strong>@c.Descricao</strong>
+                <p class="discreto m-0">@c.Tipo · vence @c.Vencimento.ToString("dd/MM/yyyy") · @(c.Baixada ? "baixada" : "aberta")</p>
+            </div>
+            <strong>R$ @c.Valor.ToString("N2")</strong>
+            @if (!c.Baixada)
+            {
+                <form method="post" asp-page-handler="BaixarConta">
+                    <input type="hidden" name="id" value="@c.Id" />
+                    <input type="hidden" name="aba" value="contas" />
+                    <input type="hidden" name="mes" value="@Model.Mes" />
+                    <button class="botao-linha" type="submit">Baixar</button>
+                </form>
+            }
+        </article>
+    }
+    </div>
+}
+else if (Model.Aba == "lancamentos")
+{
+    <div class="fin-caderno">
+    @foreach (var l in Model.Lancamentos.Where(x => x.Competencia == Model.Mes).Take(50))
+    {
+        <article class="fin-card p-3 @(l.Estornado ? "fin-estorno" : "")">
+            <div class="flex flex-wrap justify-between gap-2">
+                <div>
+                    <strong>@l.Descricao</strong>
+                    <p class="discreto m-0">@FinanceiroResumo.NomeCategoria(l.Categoria) · @(l.Data?.ToString("dd/MM") ?? "—") · @l.Origem</p>
+                </div>
+                <strong class="@(l.Categoria == "receita" ? "" : "neg")">@(l.Categoria == "receita" ? "" : "−")R$ @l.Valor.ToString("N2")</strong>
+            </div>
+        </article>
+    }
+    @if (!Model.Lancamentos.Any(x => x.Competencia == Model.Mes))
+    {
+        <div class="fin-vazio cartao"><p>Sem lançamentos neste mês. Use o caderno para registrar.</p></div>
+    }
+    <a class="botao mt-2 inline-flex" asp-page="/Admin/Mes" asp-route-mes="@Model.Mes">Abrir caderno</a>
+    </div>
+}
+else
+{
+    <form method="post" asp-page-handler="Meta" class="cartao formulario p-4">
+        <h2 class="mt-0">Meta de receita — @Model.Mes</h2>
+        <input type="hidden" name="competencia" value="@Model.Mes" />
+        <label>Valor (R$)<input name="valor" type="number" step="0.01" min="0" value="@Model.MetaMes" /></label>
+        <button class="botao" type="submit">Salvar meta</button>
+    </form>
+}

@@ -1,0 +1,31 @@
+@page
+@model CriaLab.Web.Pages.Admin.ConciliacaoModel
+@{
+    ViewData["Title"] = "Conciliação";
+}
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Conciliação</h1>
+        <p class="admin-prod-intro m-0 mt-1">Compara a janela da aba Total com o histórico da competência selecionada.</p>
+    </div>
+    <a class="botao-linha" asp-page="/Admin/Financeiro">Voltar ao Financeiro</a>
+</div>
+
+<section class="cartao p-4">
+    <p>A aba Total usa a janela @string.Join(", ", Model.MesesJanela). O painel financeiro usa o histórico completo das competências com movimento.</p>
+    <div class="tabela-rolagem">
+        <table>
+            <thead>
+                <tr><th></th><th>Aba Total</th><th>Histórico completo</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>PLA mediana</td><td>R$ @Model.MedianaPlaAba.ToString("N2")/kg</td><td>R$ @Model.MedianaPlaHist.ToString("N2")/kg</td></tr>
+                <tr><td>PETG mediana</td><td>R$ @Model.MedianaPetgAba.ToString("N2")/kg</td><td>R$ @Model.MedianaPetgHist.ToString("N2")/kg</td></tr>
+                <tr><td>Quantidade</td><td>@Model.QuantidadeAba.ToString("0.##")</td><td>@Model.QuantidadeHist.ToString("0.##")</td></tr>
+                <tr><td>Receita</td><td>R$ @Model.ReceitaAba.ToString("N2")</td><td>R$ @Model.ReceitaHist.ToString("N2")</td></tr>
+                <tr><td>Despesa</td><td>R$ @Model.DespesaAba.ToString("N2")</td><td>R$ @Model.DespesaHist.ToString("N2")</td></tr>
+                <tr><td>Gastos</td><td>R$ @Model.DespesaAba.ToString("N2")</td><td>R$ @Model.DespesaHist.ToString("N2")</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>

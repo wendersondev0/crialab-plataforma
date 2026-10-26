@@ -164,11 +164,11 @@ Página opcional **Personalizados** = atalho filtrado da lista (KPI já filtra).
 - [x] Jobs impressão + lista impressões
 
 ### C7. Financeiro
-- [ ] Painel financeiro (contas, lançamentos, metas)
-- [ ] Visão por mês (`mes.html`)
-- [ ] Energia (`energia.html`)
-- [ ] Conciliação (`conciliacao.html`)
-- [ ] Reusar classes `fin-*` do `admin.css`
+- [x] Painel financeiro (contas, lançamentos, metas)
+- [x] Visão por mês (`mes.html`)
+- [x] Energia (`energia.html`)
+- [x] Conciliação (`conciliacao.html`)
+- [x] Reusar classes `fin-*` do `admin.css`
 
 ### C8. Fiscal
 - [ ] Lista documentos/pedidos com nota
@@ -248,9 +248,9 @@ Inventário de páginas estáticas a bater:
 
 ## 9. Próximo passo imediato
 
-**Concluído:** S0–S5 — inclui patrimônio, estoque e impressão (C6).
+**Concluído:** S0–S6 — inclui financeiro (C7).
 
-**Seguir com (S6):**
-1. Financeiro (C7): contas, mês, energia, conciliação
+**Seguir com (S7):**
+1. Fiscal (C8) + Sistema/configuração (C9)
 2. Preview card no ProdutoEdit (restante C2)
-3. Fiscal (C8) e Sistema (C9) em seguida
+3. Fase D (README, watch, checklist)
