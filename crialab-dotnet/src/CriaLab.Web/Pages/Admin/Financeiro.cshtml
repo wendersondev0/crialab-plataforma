@@ -204,38 +204,51 @@
     }
     else
     {
+        var movimentos = new (string Titulo, decimal Valor, string Cor)[]
+        {
+            ("Receita", Model.Resumo.Receita, "#e8772a"),
+            ("Filamentos", Model.Resumo.Filamentos, "#148f93"),
+            ("Outros insumos", Model.Resumo.Outros, "#148f93"),
+            ("Energia", Model.Resumo.Energia, "#e8772a"),
+            ("Gastos fixos", Model.Resumo.GastosFixos, "#1b2430"),
+            ("Investimento", Model.Resumo.Investimento, "#1b2430")
+        };
+        var resultados = new (string Titulo, decimal Valor)[]
+        {
+            ("Resultado operacional", Model.Resumo.ResultadoOperacional),
+            ("Resultado de caixa", Model.Resumo.ResultadoCaixa),
+            ("Lucro", Model.Resumo.Lucro)
+        };
+        var maxMov = Math.Max(1m, movimentos.Select(c => Math.Abs(c.Valor)).DefaultIfEmpty(1).Max());
+        var maxRes = Math.Max(1m, resultados.Select(c => Math.Abs(c.Valor)).DefaultIfEmpty(1).Max());
         <section class="fin-card">
             <h2 class="fin-titulo">Composição · @Model.RotuloPeriodo</h2>
-            <div class="fin-graficos">
-                @{
-                    var comps = new (string Titulo, decimal Valor, string Cor)[]
-                    {
-                        ("Receita", Model.Resumo.Receita, "#e8772a"),
-                        ("Operação", Model.Resumo.DespesaOperacional, "#148f93"),
-                        ("Gastos fixos", Model.Resumo.GastosFixos, "#1b2430"),
-                        ("Energia", Model.Resumo.Energia, "#e8772a"),
-                        ("Filamentos", Model.Resumo.Filamentos, "#148f93"),
-                        ("Investimento", Model.Resumo.Investimento, "#1b2430"),
-                        ("Operacional", Model.Resumo.ResultadoOperacional, "#148f93"),
-                        ("Caixa", Model.Resumo.ResultadoCaixa, "#1b2430"),
-                        ("Lucro", Model.Resumo.Lucro, "#e8772a")
-                    };
-                    var maxComp = Math.Max(1m, comps.Select(c => Math.Abs(c.Valor)).DefaultIfEmpty(1).Max());
+            <div class="fin-comp">
+                <h3 class="fin-comp-titulo">Movimentos</h3>
+                <ul class="fin-comp-lista">
+                @foreach (var c in movimentos)
+                {
+                    var pct = (int)Math.Min(100, Math.Round(Math.Abs(c.Valor) / maxMov * 100));
+                    <li class="fin-comp-linha">
+                        <span class="fin-comp-nome">@c.Titulo</span>
+                        <span class="fin-comp-trilha" aria-hidden="true"><span style="width:@(pct)%;background:@c.Cor"></span></span>
+                        <strong class="fin-comp-valor">@FinanceiroModel.FormatarReal(c.Valor)</strong>
+                    </li>
                 }
-                <div class="fin-graf">
-                    <h3>Indicadores do mês</h3>
-                    <div class="barras fin-barras">
-                    @foreach (var c in comps)
-                    {
-                        var altura = Math.Max(4, (int)Math.Round(Math.Abs(c.Valor) / maxComp * 120));
-                        <div class="barra-mes@(c.Valor < 0 ? " neg" : "")">
-                            <span style="height:@(altura)px;background:@c.Cor"></span>
-                            <small>@c.Titulo</small>
-                            <small>@FinanceiroModel.FormatarReal(c.Valor)</small>
-                        </div>
-                    }
-                    </div>
-                </div>
+                </ul>
+                <h3 class="fin-comp-titulo">Resultados</h3>
+                <ul class="fin-comp-lista">
+                @foreach (var c in resultados)
+                {
+                    var pct = (int)Math.Min(100, Math.Round(Math.Abs(c.Valor) / maxRes * 100));
+                    var cor = c.Valor < 0 ? "#a40a2e" : "#148f93";
+                    <li class="fin-comp-linha@(c.Valor < 0 ? " neg" : "")">
+                        <span class="fin-comp-nome">@c.Titulo</span>
+                        <span class="fin-comp-trilha" aria-hidden="true"><span style="width:@(pct)%;background:@cor"></span></span>
+                        <strong class="fin-comp-valor">@FinanceiroModel.FormatarReal(c.Valor)</strong>
+                    </li>
+                }
+                </ul>
             </div>
         </section>
     }
