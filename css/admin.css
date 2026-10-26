@@ -1908,6 +1908,46 @@
   .imp-span2 { grid-column: auto; }
   .imp-maq-topo { grid-template-columns: 48px minmax(0, 1fr); }
   .imp-maq-topo .imp-selo { grid-column: 1 / -1; justify-self: start; }
+  .fin-kpis, .fin-graficos, .fin-refs .fin-ref-grade, .fin-lancar-grade { grid-template-columns: 1fr; }
+  .fin-detalhe-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fin-filtros, .fis-filtros, .imp-filtros, .sys-frete-topo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .fin-meses-chips, .fin-cat-chips, .fin-abas, .sys-abas, .cta-abas {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .fin-meses-chips::-webkit-scrollbar,
+  .fin-cat-chips::-webkit-scrollbar,
+  .fin-abas::-webkit-scrollbar,
+  .sys-abas::-webkit-scrollbar { display: none; }
+  .fin-chip, .fin-aba, .sys-abas .fin-aba { flex: 0 0 auto; }
+  .admin-prod-cab, .cta-cab {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-prod-cab .botao,
+  .admin-prod-cab .botao-linha,
+  .cta-trocar { width: 100%; justify-content: center; }
+  .admin-prod-fluxo {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    scrollbar-width: none;
+  }
+  .admin-prod-fluxo::-webkit-scrollbar { display: none; }
+  .admin-prod-fluxo .admin-fluxo,
+  .admin-prod-fluxo .botao-linha { flex: 0 0 auto; }
+  .painel-grade { grid-template-columns: 1fr 1fr; }
+  .tabela-rolagem {
+    margin: 0 -4px;
+    padding: 0 4px;
+  }
 }
 .admin-prod-titulo {
   margin: 0;
@@ -1966,4 +2006,115 @@
 
 @media (max-width: 640px) {
   .admin-prod-filtros { grid-template-columns: 1fr; }
+  .kpis,
+  .admin-prod-kpis,
+  .fin-kpis,
+  .fis-kpis,
+  .sys-kpis,
+  .imp-kpis,
+  .imp-hist-kpis,
+  .at-kpis,
+  .painel-grade,
+  .fin-detalhe-grid { grid-template-columns: 1fr; }
+  .fin-campo select,
+  .fin-campo input,
+  .fis-busca input,
+  .cta-campo input { width: 100%; min-width: 0; }
+  .miolo {
+    width: min(100% - 20px, 1120px);
+    padding-top: 12px;
+    padding-bottom: 28px;
+  }
+  h1 { font-size: 1.45rem; }
+  .admin-prod-intro,
+  .cta-intro { font-size: 0.92rem; }
+  .guia .cartao { width: min(100%, 560px); }
+  .var-eixo-cab { grid-template-columns: 1fr; }
+  .var-opcao { grid-template-columns: 1fr; }
+}
+
+.var-admin {
+  display: grid;
+  gap: 14px;
+  margin: 8px 0 18px;
+  padding: 16px;
+  border: 2px solid var(--linha);
+  border-radius: 18px;
+  background: #fffaf6;
+}
+.var-admin-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.var-admin-ajuda {
+  margin-top: 4px !important;
+  color: rgba(27, 36, 48, 0.65);
+  font-size: 0.9rem;
+  max-width: 36rem;
+}
+.var-admin-vazia {
+  margin: 0;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  color: rgba(27, 36, 48, 0.7);
+}
+#var-lista { display: grid; gap: 12px; }
+.var-eixo {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--linha);
+  background: #fff;
+  box-shadow: var(--sombra);
+}
+.var-eixo-cab {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+.var-opcoes { display: grid; gap: 8px; }
+.var-opcao {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 52px auto;
+  gap: 8px;
+  align-items: center;
+}
+.var-opcao input[type="text"] {
+  min-height: 42px;
+  border: 2px solid var(--linha);
+  border-radius: 12px;
+  padding: 0 12px;
+  font: inherit;
+  font-weight: 600;
+}
+.var-opcao input[type="color"] {
+  width: 52px;
+  height: 42px;
+  padding: 4px;
+  border: 2px solid var(--linha);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+.var-eixo .fin-campo { display: grid; gap: 4px; margin: 0; }
+.var-eixo .fin-campo span {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: rgba(27, 36, 48, 0.62);
+}
+.var-eixo .fin-campo input,
+.var-eixo .fin-campo select {
+  min-height: 42px;
+  border: 2px solid var(--linha);
+  border-radius: 12px;
+  padding: 0 12px;
+  font: inherit;
+  font-weight: 600;
+  background: #fff;
 }

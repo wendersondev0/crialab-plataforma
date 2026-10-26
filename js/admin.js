@@ -273,8 +273,10 @@
   function formularioProduto() {
     var id = new URLSearchParams(location.search).get("id");
     var produto = estado().produtos.find(function (item) { return item.id === id; }) || {
-      id: "", titulo: "", descricao: "", tipo: "pronto", modalidade: "pronta-entrega", comArquivo: false, categoria: "decoracao", preco: 0, precoComparativo: 0, precoArquivo: 0, estoque: 0, minimo: 1, medidas: "", peso: 0, material: "PLA", prazoDias: 5, situacao: "publicado", fotos: [], cores: [{ nome: "PLA laranja", hex: "#e8772a" }], tamanhos: ["Único"], personalizavel: false, etapas: [], sessao: "", oferta: false, maisVendido: false, aVista: true, vendas: 0, nota: 0, criadoEm: dinheiro.hojeISO(), arquivo: null
+      id: "", titulo: "", descricao: "", tipo: "pronto", modalidade: "pronta-entrega", comArquivo: false, categoria: "decoracao", preco: 0, precoComparativo: 0, precoArquivo: 0, estoque: 0, minimo: 1, medidas: "", peso: 0, material: "PLA", prazoDias: 5, situacao: "publicado", fotos: [], cores: [{ nome: "Laranja", hex: "#e8772a" }], tamanhos: ["Único"], variacoes: [{ id: "var-cor", nome: "Cor", tipo: "cor", opcoes: [{ id: "opc-1", nome: "Laranja", hex: "#e8772a" }] }], personalizavel: false, etapas: [], sessao: "", oferta: false, maisVendido: false, aVista: true, vendas: 0, nota: 0, criadoEm: dinheiro.hojeISO(), arquivo: null
     };
+    if (Cria.normalizarVariacoesProduto) Cria.normalizarVariacoesProduto(produto);
+    var rascunho = JSON.parse(JSON.stringify(produto.variacoes || []));
     document.title = (produto.id ? "Editar" : "Novo") + " produto";
     var categorias = estado().categorias.map(function (categoria) {
       return '<option value="' + ui.esc(categoria.id) + '"' + (produto.categoria === categoria.id ? " selected" : "") + ">" + ui.esc(categoria.nome) + "</option>";
@@ -282,10 +284,108 @@
     var fotos = (produto.fotos || []).map(function (foto, indice) {
       return '<label>Legenda da sessão ' + ui.esc(dinheiro.dataBR(foto.sessao || produto.sessao)) + '<input data-legenda="' + indice + '" value="' + ui.esc(foto.legenda) + '"></label><img src="' + ui.url(foto.arquivo) + '" alt="" style="width:120px;height:120px;object-fit:cover;border-radius:12px">';
     }).join("");
-    raiz.innerHTML = '<h1>' + ui.esc(produto.titulo || "Novo produto") + '</h1><form id="produto" class="cartao formulario"><label>Título<input name="titulo" required value="' + ui.esc(produto.titulo) + '"></label><label>Descrição<textarea name="descricao">' + ui.esc(produto.descricao) + '</textarea></label><label>Modalidade<select name="modalidade"><option value="pronta-entrega">Pronta Entrega</option><option value="sob-demanda">Sob Demanda</option><option value="personalizado">Personalizado</option></select></label><label>Tipo legado<select name="tipo"><option value="pronto">pronto</option><option value="personalizado">personalizado</option></select></label><label>Categoria<select name="categoria">' + categorias + '</select></label><div class="grade-3"><label>Preço<input name="preco" type="number" step="0.01" value="' + produto.preco + '"></label><label>Preço comparativo<input name="precoComparativo" type="number" step="0.01" value="' + (produto.precoComparativo || 0) + '"></label><label>Estoque<input name="estoque" type="number" value="' + produto.estoque + '"></label><label>Peso (g)<input name="peso" type="number" step="0.01" value="' + produto.peso + '"></label><label>Prazo (dias)<input name="prazoDias" type="number" value="' + produto.prazoDias + '"></label></div><label>Medidas<input name="medidas" value="' + ui.esc(produto.medidas) + '"></label><label>Material<input name="material" value="' + ui.esc(produto.material) + '"></label><h2>Fotos</h2>' + fotos + '<div class="linha"><button class="botao" type="submit">Salvar</button><button class="botao-teal" type="button" id="publicar">Publicar</button><button class="botao-linha" type="button" id="pausar">Pausar</button><button class="botao-linha" type="button" id="esgotar">Esgotar</button></div></form>';
+    raiz.innerHTML = '<h1>' + ui.esc(produto.titulo || "Novo produto") + '</h1><form id="produto" class="cartao formulario"><label>Título<input name="titulo" required value="' + ui.esc(produto.titulo) + '"></label><label>Descrição<textarea name="descricao">' + ui.esc(produto.descricao) + '</textarea></label><label>Modalidade<select name="modalidade"><option value="pronta-entrega">Pronta Entrega</option><option value="sob-demanda">Sob Demanda</option><option value="personalizado">Personalizado</option></select></label><label>Tipo legado<select name="tipo"><option value="pronto">pronto</option><option value="personalizado">personalizado</option></select></label><label>Categoria<select name="categoria">' + categorias + '</select></label><div class="grade-3"><label>Preço<input name="preco" type="number" step="0.01" value="' + produto.preco + '"></label><label>Preço comparativo<input name="precoComparativo" type="number" step="0.01" value="' + (produto.precoComparativo || 0) + '"></label><label>Estoque<input name="estoque" type="number" value="' + produto.estoque + '"></label><label>Peso (g)<input name="peso" type="number" step="0.01" value="' + produto.peso + '"></label><label>Prazo (dias)<input name="prazoDias" type="number" value="' + produto.prazoDias + '"></label></div><label>Medidas<input name="medidas" value="' + ui.esc(produto.medidas) + '"></label><label>Material<input name="material" value="' + ui.esc(produto.material) + '"></label><section class="var-admin" id="variacoes-admin"><div class="var-admin-topo"><div><h2 class="m-0">Variações</h2><p class="var-admin-ajuda m-0">Cadastre eixos como Cor, Tamanho ou Acabamento. O cliente escolhe um de cada no detalhe do produto.</p></div><button class="botao-linha" type="button" id="var-add-eixo">+ Variação</button></div><div id="var-lista"></div></section><h2>Fotos</h2>' + fotos + '<div class="linha"><button class="botao" type="submit">Salvar</button><button class="botao-teal" type="button" id="publicar">Publicar</button><button class="botao-linha" type="button" id="pausar">Pausar</button><button class="botao-linha" type="button" id="esgotar">Esgotar</button></div></form>';
     var modAtual = produto.modalidade || (produto.tipo === "personalizado" ? "personalizado" : "pronta-entrega");
     document.querySelector("[name=modalidade]").value = modAtual;
     document.querySelector("[name=tipo]").value = modAtual === "personalizado" ? "personalizado" : "pronto";
+    function novoIdLocal(prefixo) {
+      return prefixo + "-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    }
+    function coletarCamposVariacao() {
+      var lista = document.getElementById("var-lista");
+      if (!lista) return;
+      lista.querySelectorAll("[data-eixo-i]").forEach(function (card) {
+        var i = Number(card.getAttribute("data-eixo-i"));
+        if (!rascunho[i]) return;
+        var nome = card.querySelector("[data-campo=nome]");
+        var tipo = card.querySelector("[data-campo=tipo]");
+        if (nome) rascunho[i].nome = String(nome.value || "").trim() || "Variação";
+        if (tipo) rascunho[i].tipo = tipo.value === "cor" ? "cor" : "texto";
+        card.querySelectorAll("[data-opcao-i]").forEach(function (linha) {
+          var j = Number(linha.getAttribute("data-opcao-i"));
+          if (!rascunho[i].opcoes[j]) return;
+          var opNome = linha.querySelector("[data-campo=op-nome]");
+          var opHex = linha.querySelector("[data-campo=op-hex]");
+          if (opNome) rascunho[i].opcoes[j].nome = String(opNome.value || "").trim() || ("Opção " + (j + 1));
+          if (opHex) rascunho[i].opcoes[j].hex = String(opHex.value || "#cccccc");
+        });
+      });
+    }
+    function pintarVariacoes() {
+      var lista = document.getElementById("var-lista");
+      if (!lista) return;
+      if (!rascunho.length) {
+        lista.innerHTML = '<p class="var-admin-vazia">Nenhuma variação ainda. Ex.: adicione <strong>Cor</strong> e depois <strong>Tamanho</strong>.</p>';
+        return;
+      }
+      lista.innerHTML = rascunho.map(function (eixo, i) {
+        var opcoes = (eixo.opcoes || []).map(function (opcao, j) {
+          return '<div class="var-opcao" data-opcao-i="' + j + '">' +
+            '<input data-campo="op-nome" type="text" value="' + ui.esc(opcao.nome) + '" placeholder="Nome da opção" aria-label="Nome da opção">' +
+            (eixo.tipo === "cor" ? '<input data-campo="op-hex" type="color" value="' + ui.esc(opcao.hex || "#cccccc") + '" aria-label="Cor">' : "") +
+            '<button class="botao-linha" type="button" data-rm-opcao="' + i + "-" + j + '"' + ((eixo.opcoes || []).length <= 1 ? " disabled" : "") + ">Remover</button>" +
+            "</div>";
+        }).join("");
+        return '<article class="var-eixo" data-eixo-i="' + i + '">' +
+          '<div class="var-eixo-cab">' +
+          '<label class="fin-campo"><span>Nome da variação</span><input data-campo="nome" type="text" value="' + ui.esc(eixo.nome) + '" placeholder="Ex.: Cor, Tamanho"></label>' +
+          '<label class="fin-campo"><span>Como mostrar</span><select data-campo="tipo"><option value="cor"' + (eixo.tipo === "cor" ? " selected" : "") + '>Amostra de cor</option><option value="texto"' + (eixo.tipo !== "cor" ? " selected" : "") + ">Botões de texto</option></select></label>" +
+          '<button class="botao-linha" type="button" data-rm-eixo="' + i + '">Remover variação</button>' +
+          "</div>" +
+          '<div class="var-opcoes">' + opcoes + "</div>" +
+          '<button class="botao-linha" type="button" data-add-opcao="' + i + '">+ Opção</button>' +
+          "</article>";
+      }).join("");
+      lista.querySelectorAll("[data-campo=nome], [data-campo=tipo], [data-campo=op-nome], [data-campo=op-hex]").forEach(function (campo) {
+        campo.addEventListener("change", function () {
+          coletarCamposVariacao();
+          if (campo.getAttribute("data-campo") === "tipo") pintarVariacoes();
+        });
+      });
+      lista.querySelectorAll("[data-rm-eixo]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+          coletarCamposVariacao();
+          rascunho.splice(Number(botao.getAttribute("data-rm-eixo")), 1);
+          pintarVariacoes();
+        });
+      });
+      lista.querySelectorAll("[data-add-opcao]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+          coletarCamposVariacao();
+          var i = Number(botao.getAttribute("data-add-opcao"));
+          if (!rascunho[i]) return;
+          rascunho[i].opcoes.push({
+            id: novoIdLocal("opc"),
+            nome: rascunho[i].tipo === "cor" ? "Nova cor" : "Nova opção",
+            hex: "#e8772a"
+          });
+          pintarVariacoes();
+        });
+      });
+      lista.querySelectorAll("[data-rm-opcao]").forEach(function (botao) {
+        botao.addEventListener("click", function () {
+          coletarCamposVariacao();
+          var partes = String(botao.getAttribute("data-rm-opcao") || "").split("-");
+          var i = Number(partes[0]);
+          var j = Number(partes[1]);
+          if (!rascunho[i] || !rascunho[i].opcoes) return;
+          if (rascunho[i].opcoes.length <= 1) return;
+          rascunho[i].opcoes.splice(j, 1);
+          pintarVariacoes();
+        });
+      });
+    }
+    pintarVariacoes();
+    document.getElementById("var-add-eixo").addEventListener("click", function () {
+      coletarCamposVariacao();
+      rascunho.push({
+        id: novoIdLocal("var"),
+        nome: rascunho.length ? "Tamanho" : "Cor",
+        tipo: rascunho.length ? "texto" : "cor",
+        opcoes: [{ id: novoIdLocal("opc"), nome: rascunho.length ? "M" : "Laranja", hex: "#e8772a" }]
+      });
+      pintarVariacoes();
+    });
     document.getElementById("produto").addEventListener("submit", function (evento) {
       evento.preventDefault();
       salvar("manter");
@@ -294,7 +394,22 @@
     document.getElementById("pausar").addEventListener("click", function () { salvar("pausado"); });
     document.getElementById("esgotar").addEventListener("click", function () { salvar("esgotado"); });
     function salvar(situacao) {
+      coletarCamposVariacao();
       var dados = new FormData(document.getElementById("produto"));
+      var variacoesSalvas = rascunho.map(function (eixo, indiceEixo) {
+        return {
+          id: eixo.id || novoIdLocal("var"),
+          nome: String(eixo.nome || "Variação").trim() || "Variação",
+          tipo: eixo.tipo === "cor" ? "cor" : "texto",
+          opcoes: (eixo.opcoes || []).map(function (opcao, indiceOpcao) {
+            return {
+              id: opcao.id || novoIdLocal("opc"),
+              nome: String(opcao.nome || "").trim() || ("Opção " + (indiceOpcao + 1)),
+              hex: opcao.hex || "#cccccc"
+            };
+          }).filter(function (opcao) { return opcao.nome; })
+        };
+      }).filter(function (eixo) { return eixo.opcoes.length; });
       Cria.alterar(function (atual) {
         var alvo = atual.produtos.find(function (item) { return item.id === produto.id; });
         if (!alvo) {
@@ -319,6 +434,8 @@
         alvo.prazoDias = Number(dados.get("prazoDias")) || 0;
         alvo.medidas = String(dados.get("medidas"));
         alvo.material = String(dados.get("material"));
+        alvo.variacoes = variacoesSalvas;
+        if (Cria.sincronizarLegadoVariacoes) Cria.sincronizarLegadoVariacoes(alvo);
         document.querySelectorAll("[data-legenda]").forEach(function (campo) {
           var foto = alvo.fotos[Number(campo.getAttribute("data-legenda"))];
           if (foto) foto.legenda = campo.value;

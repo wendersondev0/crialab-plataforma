@@ -336,12 +336,22 @@
     var miniaturas = produto.fotos.map(function (foto, indice) {
       return '<button type="button" class="' + (indice === 0 ? "ativa" : "") + '" data-foto="' + ui.esc(foto.arquivo) + '"><img src="' + ui.url(foto.arquivo) + '" alt="' + ui.esc(foto.legenda) + '"></button>';
     }).join("");
-    var amostras = produto.cores.map(function (cor, indice) {
-      return '<button type="button" class="amostra' + (indice === 0 ? " ativa" : "") + '" style="background:' + ui.esc(cor.hex) + '" data-cor="' + ui.esc(cor.nome) + '" title="' + ui.esc(cor.nome) + '"></button>';
-    }).join("");
-    var tamanhos = produto.tamanhos.map(function (tamanho, indice) {
-      return '<button type="button" class="botao-linha' + (indice === 0 ? " ativo" : "") + '" data-tamanho="' + ui.esc(tamanho) + '">' + ui.esc(tamanho) + "</button>";
-    }).join("");
+    if (Cria.normalizarVariacoesProduto) Cria.normalizarVariacoesProduto(produto);
+    var eixos = Array.isArray(produto.variacoes) ? produto.variacoes : [];
+    var escolhas = {};
+    eixos.forEach(function (eixo) {
+      escolhas[eixo.id] = eixo.opcoes[0] ? eixo.opcoes[0].nome : "";
+    });
+    var htmlVariacoes = eixos.length ? '<section class="bloco-ficha grid gap-3" id="variacoes-ficha">' + eixos.map(function (eixo) {
+      var opcoesHtml = eixo.tipo === "cor"
+        ? '<div class="amostras">' + eixo.opcoes.map(function (opcao, indice) {
+          return '<button type="button" class="amostra' + (indice === 0 ? " ativa" : "") + '" style="background:' + ui.esc(opcao.hex || "#cccccc") + '" data-eixo="' + ui.esc(eixo.id) + '" data-opcao="' + ui.esc(opcao.nome) + '" title="' + ui.esc(opcao.nome) + '"></button>';
+        }).join("") + "</div>"
+        : '<div class="linha opcoes-texto">' + eixo.opcoes.map(function (opcao, indice) {
+          return '<button type="button" class="botao-linha' + (indice === 0 ? " ativo" : "") + '" data-eixo="' + ui.esc(eixo.id) + '" data-opcao="' + ui.esc(opcao.nome) + '">' + ui.esc(opcao.nome) + "</button>";
+        }).join("") + "</div>";
+      return '<div class="eixo-variacao grid gap-2" data-eixo-bloco="' + ui.esc(eixo.id) + '"><h2 class="mt-0 text-lg font-extrabold">' + ui.esc(eixo.nome) + "</h2>" + opcoesHtml + '<p class="opcao-escolhida m-0 text-tinta/80" data-rotulo="' + ui.esc(eixo.id) + '">' + ui.esc(escolhas[eixo.id] || "") + "</p></div>";
+    }).join("") + "</section>" : "";
     var etapas = produto.personalizavel ? produto.etapas.map(function (etapa) {
       var campo = etapa.tipo === "arquivo" ? '<span class="arquivo-ref"><input type="file" accept="image/*" data-etapa="' + ui.esc(etapa.id) + '"><span class="botao-linha">' + ico("documento") + "Escolher imagem</span><span class=\"arquivo-nome\">Nenhuma imagem</span></span>" : '<input data-etapa="' + ui.esc(etapa.id) + '" ' + (etapa.tipo === "numero" ? 'type="number" min="1"' : 'type="text"') + ">";
       var extra = etapa.acresce ? " · +" + dinheiro.real(etapa.acresce) : "";
@@ -375,7 +385,7 @@
     var lojas = canaisFicha();
     var orcamento = (produto.personalizavel || sobMedida) ? '<button class="botao-teal inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border-2 border-teal bg-teal px-4 font-bold text-white" type="button" id="pedir-orcamento">' + ico("documento") + "Pedir orçamento</button>" : "";
     var acoes = '<div class="acoes-ficha mt-3 grid gap-2">' + compraPeca + '<div class="acoes-dupla grid grid-cols-1 gap-2 sm:grid-cols-2"><button class="btn-favorito-ficha' + (favoritoAtivo ? " ativo" : "") + '" type="button" id="favorito" aria-pressed="' + (favoritoAtivo ? "true" : "false") + '">' + ico("coracao") + '<span id="favorito-rotulo">' + (favoritoAtivo ? "Nos favoritos" : "Salvar nos favoritos") + '</span></button><a class="botao-linha inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border-2 border-tinta bg-white px-4 font-bold no-underline" href="' + ui.esc(whats) + '" target="_blank" rel="noopener">' + ico("whatsapp") + "WhatsApp</a></div>" + orcamento + "</div>";
-    raiz.innerHTML = '<div class="ficha grid grid-cols-1 items-start gap-5 lg:grid-cols-2"><div class="galeria revela"><img class="galeria-principal rounded-[18px]" id="foto-principal" src="' + ui.url(fotoInicial.arquivo) + '" alt="' + ui.esc(fotoInicial.legenda) + '"><div class="miniaturas">' + miniaturas + '</div><p class="discreto" id="legenda-foto">' + ui.esc(fotoInicial.legenda) + " · sessão " + ui.esc(dinheiro.dataBR(produto.sessao)) + '</p></div><div class="cartao ficha-info revela grid gap-3 rounded-[18px] bg-white p-4 shadow-cria">' + tag + '<p class="discreto m-0 text-tinta/60">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h1 class=\"mt-0 text-2xl font-extrabold\">" + ui.esc(produto.titulo) + "</h1>" + precoBloco + '<p class="meta-peca m-0 flex flex-wrap gap-x-3 gap-y-1 text-sm text-tinta/70"><span>' + estoqueLinha + "</span><span>" + ui.esc(produto.peso) + " g</span><span>" + ui.esc(produto.medidas) + "</span></p><p class=\"m-0\">" + ui.esc(produto.descricao) + "</p>" + lojas + '<section class="bloco-ficha grid gap-2"><h2 class="mt-0 text-lg font-extrabold">Filamento</h2><div class="amostras" id="amostras">' + amostras + '</div><p id="cor-nome">' + ui.esc(produto.cores[0].nome) + '</p><div class="linha" id="tamanhos">' + tamanhos + "</div></section>" + (etapas ? '<section class="bloco-ficha"><h2>Personalização</h2><div class="formulario">' + etapas + "</div></section>" : "") + '<label class="qtd-ficha">Quantidade<input id="qtd" type="number" min="1" value="1"></label>' + acoes + '<section class="frete-caixa"><h2 id="frete-titulo">Calcular frete</h2><form id="frete-ficha" class="frete-form"><input name="cep" type="text" inputmode="numeric" placeholder="00000-000" maxlength="9" aria-label="CEP"><button class="botao" type="submit">' + ico("caminhao") + 'Cotar</button></form><div id="frete-resultado"></div></section></div></div><section class="painel-ficha mt-5 grid grid-cols-1 gap-4"><article class="cartao rounded-[18px] bg-white p-4 shadow-cria"><h2 class="mt-0 text-xl font-extrabold">Perguntas</h2>' + perguntas + '<form id="nova-pergunta" class="formulario mt-3 grid gap-3"><label class="grid gap-1.5 font-bold">Sua pergunta<input class="min-h-12 w-full rounded-full border-2 border-linha bg-white px-4.5 py-2.5" name="texto" type="text" required placeholder="Escreva sua pergunta"></label><button class="botao inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-laranja px-4 font-bold text-white" type="submit">' + ico("contato") + "Enviar</button></form></article><article class=\"cartao rounded-[18px] bg-white p-4 shadow-cria\"><h2 class=\"mt-0 text-xl font-extrabold\">Avaliações</h2>" + avaliacoes + "</article></section>" + trilho("Relacionados", relacionados);
+    raiz.innerHTML = '<div class="ficha grid grid-cols-1 items-start gap-5 lg:grid-cols-2"><div class="galeria revela"><img class="galeria-principal rounded-[18px]" id="foto-principal" src="' + ui.url(fotoInicial.arquivo) + '" alt="' + ui.esc(fotoInicial.legenda) + '"><div class="miniaturas">' + miniaturas + '</div><p class="discreto" id="legenda-foto">' + ui.esc(fotoInicial.legenda) + " · sessão " + ui.esc(dinheiro.dataBR(produto.sessao)) + '</p></div><div class="cartao ficha-info revela grid gap-3 rounded-[18px] bg-white p-4 shadow-cria">' + tag + '<p class="discreto m-0 text-tinta/60">' + ui.esc(ui.nomeCategoria(produto.categoria)) + "</p><h1 class=\"mt-0 text-2xl font-extrabold\">" + ui.esc(produto.titulo) + "</h1>" + precoBloco + '<p class="meta-peca m-0 flex flex-wrap gap-x-3 gap-y-1 text-sm text-tinta/70"><span>' + estoqueLinha + "</span><span>" + ui.esc(produto.peso) + " g</span><span>" + ui.esc(produto.medidas) + "</span></p><p class=\"m-0\">" + ui.esc(produto.descricao) + "</p>" + lojas + htmlVariacoes + (etapas ? '<section class="bloco-ficha"><h2>Personalização</h2><div class="formulario">' + etapas + "</div></section>" : "") + '<label class="qtd-ficha">Quantidade<input id="qtd" type="number" min="1" value="1"></label>' + acoes + '<section class="frete-caixa"><h2 id="frete-titulo">Calcular frete</h2><form id="frete-ficha" class="frete-form"><input name="cep" type="text" inputmode="numeric" placeholder="00000-000" maxlength="9" aria-label="CEP"><button class="botao" type="submit">' + ico("caminhao") + 'Cotar</button></form><div id="frete-resultado"></div></section></div></div><section class="painel-ficha mt-5 grid grid-cols-1 gap-4"><article class="cartao rounded-[18px] bg-white p-4 shadow-cria"><h2 class="mt-0 text-xl font-extrabold">Perguntas</h2>' + perguntas + '<form id="nova-pergunta" class="formulario mt-3 grid gap-3"><label class="grid gap-1.5 font-bold">Sua pergunta<input class="min-h-12 w-full rounded-full border-2 border-linha bg-white px-4.5 py-2.5" name="texto" type="text" required placeholder="Escreva sua pergunta"></label><button class="botao inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-laranja px-4 font-bold text-white" type="submit">' + ico("contato") + "Enviar</button></form></article><article class=\"cartao rounded-[18px] bg-white p-4 shadow-cria\"><h2 class=\"mt-0 text-xl font-extrabold\">Avaliações</h2>" + avaliacoes + "</article></section>" + trilho("Relacionados", relacionados);
     document.querySelectorAll(".arquivo-ref input").forEach(function (campoArquivo) {
       campoArquivo.addEventListener("change", function () {
         var nome = campoArquivo.files && campoArquivo.files[0] ? campoArquivo.files[0].name : "Nenhuma imagem";
@@ -383,23 +393,35 @@
         if (alvo) alvo.textContent = nome;
       });
     });
-    var cor = produto.cores[0].nome;
-    var tamanho = produto.tamanhos[0];
-    document.getElementById("amostras").addEventListener("click", function (evento) {
-      var botao = evento.target.closest(".amostra");
-      if (!botao) return;
-      cor = botao.getAttribute("data-cor");
-      document.querySelectorAll(".amostra").forEach(function (el) { el.classList.remove("ativa"); });
-      botao.classList.add("ativa");
-      document.getElementById("cor-nome").textContent = cor;
-    });
-    document.getElementById("tamanhos").addEventListener("click", function (evento) {
-      var botao = evento.target.closest("[data-tamanho]");
-      if (!botao) return;
-      tamanho = botao.getAttribute("data-tamanho");
-      document.querySelectorAll("[data-tamanho]").forEach(function (el) { el.classList.remove("ativo"); });
-      botao.classList.add("ativo");
-    });
+    function textoEscolhas() {
+      return eixos.map(function (eixo) {
+        var nome = escolhas[eixo.id];
+        return nome ? eixo.nome + ": " + nome : "";
+      }).filter(Boolean).join(" · ");
+    }
+    function assinaturaEscolhas() {
+      return eixos.map(function (eixo) { return escolhas[eixo.id] || ""; }).join("|");
+    }
+    var caixaVariacoes = document.getElementById("variacoes-ficha");
+    if (caixaVariacoes) {
+      caixaVariacoes.addEventListener("click", function (evento) {
+        var botao = evento.target.closest("[data-opcao]");
+        if (!botao) return;
+        var eixoId = botao.getAttribute("data-eixo");
+        var nome = botao.getAttribute("data-opcao");
+        escolhas[eixoId] = nome;
+        var bloco = caixaVariacoes.querySelector('[data-eixo-bloco="' + eixoId + '"]');
+        if (!bloco) return;
+        bloco.querySelectorAll("[data-opcao]").forEach(function (el) {
+          el.classList.remove("ativa");
+          el.classList.remove("ativo");
+        });
+        if (botao.classList.contains("amostra")) botao.classList.add("ativa");
+        else botao.classList.add("ativo");
+        var rotulo = bloco.querySelector("[data-rotulo]");
+        if (rotulo) rotulo.textContent = nome;
+      });
+    }
     document.querySelector(".miniaturas").addEventListener("click", function (evento) {
       var botao = evento.target.closest("[data-foto]");
       if (!botao) return;
@@ -448,9 +470,9 @@
         arquivo: false,
         quantidade: qtd,
         precoUnitario: produto.preco + personalizacao.extra,
-        detalhes: [cor, tamanho, personalizacao.texto].filter(Boolean).join(" · "),
+        detalhes: [textoEscolhas(), personalizacao.texto].filter(Boolean).join(" · "),
         arquivoNome: personalizacao.arquivoNome,
-        assinatura: produto.tipo === "personalizado" ? CriaCarrinho.novoId("pers") : cor + "|" + tamanho
+        assinatura: produto.tipo === "personalizado" ? CriaCarrinho.novoId("pers") : assinaturaEscolhas()
       });
       location.href = ui.url("paginas/carrinho.html");
     });
@@ -480,7 +502,7 @@
           produtoId: produto.id,
           titulo: produto.titulo,
           status: "aguardando",
-          detalhes: personalizacao.texto || "Sem detalhes",
+          detalhes: [textoEscolhas(), personalizacao.texto].filter(Boolean).join(" · ") || "Sem detalhes",
           arquivoNome: personalizacao.arquivoNome,
           valor: null,
           criadoEm: dinheiro.agoraSP()

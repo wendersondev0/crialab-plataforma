@@ -5,8 +5,84 @@
     return JSON.parse(JSON.stringify(valor));
   }
 
+  function soTamanhoUnico(tamanhos) {
+    return Array.isArray(tamanhos) && tamanhos.length === 1 && String(tamanhos[0]).toLowerCase() === "único";
+  }
+
+  function sincronizarLegadoVariacoes(produto) {
+    var eixos = Array.isArray(produto.variacoes) ? produto.variacoes : [];
+    var eixoCor = eixos.find(function (eixo) { return eixo.tipo === "cor"; });
+    if (eixoCor) {
+      produto.cores = eixoCor.opcoes.map(function (opcao) {
+        return { nome: opcao.nome, hex: opcao.hex || "#cccccc" };
+      });
+    } else if (!Array.isArray(produto.cores)) {
+      produto.cores = [];
+    }
+    var eixoTam = eixos.find(function (eixo) {
+      return eixo.tipo === "texto" && /^tamanho$/i.test(String(eixo.nome || ""));
+    });
+    if (eixoTam) {
+      produto.tamanhos = eixoTam.opcoes.map(function (opcao) { return opcao.nome; });
+    } else if (!Array.isArray(produto.tamanhos) || !produto.tamanhos.length) {
+      produto.tamanhos = ["Único"];
+    }
+  }
+
+  function normalizarVariacoesProduto(produto) {
+    if (!produto) return produto;
+    if (Array.isArray(produto.variacoes)) {
+      produto.variacoes = produto.variacoes.map(function (eixo, indiceEixo) {
+        return {
+          id: eixo.id || ("var-" + indiceEixo),
+          nome: String(eixo.nome || "Variação").trim() || "Variação",
+          tipo: eixo.tipo === "cor" ? "cor" : "texto",
+          opcoes: (Array.isArray(eixo.opcoes) ? eixo.opcoes : []).map(function (opcao, indiceOpcao) {
+            return {
+              id: opcao.id || ("opc-" + indiceEixo + "-" + indiceOpcao),
+              nome: String(opcao.nome || "").trim() || ("Opção " + (indiceOpcao + 1)),
+              hex: opcao.hex || "#cccccc"
+            };
+          }).filter(function (opcao) { return opcao.nome; })
+        };
+      }).filter(function (eixo) { return eixo.opcoes.length; });
+      sincronizarLegadoVariacoes(produto);
+      return produto;
+    }
+    var eixos = [];
+    if (Array.isArray(produto.cores) && produto.cores.length) {
+      eixos.push({
+        id: "var-cor",
+        nome: "Cor",
+        tipo: "cor",
+        opcoes: produto.cores.map(function (cor, indice) {
+          return {
+            id: "cor-" + indice,
+            nome: String(cor.nome || "Cor"),
+            hex: cor.hex || "#cccccc"
+          };
+        })
+      });
+    }
+    if (Array.isArray(produto.tamanhos) && produto.tamanhos.length && !soTamanhoUnico(produto.tamanhos)) {
+      eixos.push({
+        id: "var-tam",
+        nome: "Tamanho",
+        tipo: "texto",
+        opcoes: produto.tamanhos.map(function (tamanho, indice) {
+          return { id: "tam-" + indice, nome: String(tamanho) };
+        })
+      });
+    }
+    produto.variacoes = eixos;
+    sincronizarLegadoVariacoes(produto);
+    return produto;
+  }
+
   function cargaInicial() {
     var dados = root.CriaDados;
+    var produtos = clonar(dados.produtos);
+    produtos.forEach(normalizarVariacoesProduto);
     return {
       identidade: clonar(dados.identidade),
       categorias: clonar(dados.categorias),
@@ -15,7 +91,7 @@
       configuracao: clonar(dados.configuracao),
       depoimentos: clonar(dados.depoimentos),
       parceiros: clonar(dados.parceiros),
-      produtos: clonar(dados.produtos),
+      produtos: produtos,
       cliente: clonar(dados.cliente),
       enderecos: clonar(dados.enderecos),
       pedidos: clonar(dados.pedidos),
@@ -82,6 +158,7 @@
             else if (produto.categoria === "pecas-sob-encomenda" || Number(produto.estoque) === 0) produto.modalidade = "sob-demanda";
             else produto.modalidade = "pronta-entrega";
           }
+          normalizarVariacoesProduto(produto);
         });
         estado.avaliacoes = estado.avaliacoes || [];
         var avaliacoesNovas = (root.CriaDados.avaliacoes || []).filter(function (item) {
@@ -159,5 +236,7 @@
   root.Cria.gravar = gravar;
   root.Cria.alterar = alterar;
   root.Cria.restaurar = restaurar;
+  root.Cria.normalizarVariacoesProduto = normalizarVariacoesProduto;
+  root.Cria.sincronizarLegadoVariacoes = sincronizarLegadoVariacoes;
   root.Cria.estado = ler();
 })(window);

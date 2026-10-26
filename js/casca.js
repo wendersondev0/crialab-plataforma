@@ -242,19 +242,37 @@
     topo.classList.toggle("topo-admin", admin);
     document.body.classList.add("text-tinta", "font-cria", "antialiased");
     if (admin) {
-      var menuAdmin = [
-        link("paginas/admin/index.html", "Painel", "admin"),
-        link("paginas/admin/produtos.html", "Produtos", "admin"),
-        link("paginas/admin/marketing.html", "Marketing", "admin"),
-        link("paginas/admin/contato.html", "Atendimento", "admin"),
-        link("paginas/admin/patrimonio.html", "Patrimônio", "admin"),
-        link("paginas/admin/financeiro.html", "Financeiro", "admin"),
-        link("paginas/admin/fiscal.html", "Fiscal", "admin"),
-        link("paginas/admin/configuracao.html", "Sistema", "admin"),
-        link("paginas/admin/impressao.html", "Impressão", "admin")
-      ].join("");
+      var itensAdmin = [
+        ["paginas/admin/index.html", "Painel"],
+        ["paginas/admin/produtos.html", "Produtos"],
+        ["paginas/admin/marketing.html", "Marketing"],
+        ["paginas/admin/contato.html", "Atendimento"],
+        ["paginas/admin/patrimonio.html", "Patrimônio"],
+        ["paginas/admin/financeiro.html", "Financeiro"],
+        ["paginas/admin/fiscal.html", "Fiscal"],
+        ["paginas/admin/configuracao.html", "Sistema"],
+        ["paginas/admin/impressao.html", "Impressão"]
+      ];
+      var menuAdmin = itensAdmin.map(function (item) {
+        return link(item[0], item[1], "admin");
+      }).join("");
+      var menuGavetaAdmin = itensAdmin.map(function (item) {
+        return link(item[0], item[1], "");
+      }).join("") + link("index.html", "Ver loja", "ver-loja");
       topo.className = "topo-admin sticky top-0 z-20 border-b border-linha bg-white shadow-cria";
-      topo.innerHTML = '<div class="barra barra-admin mx-auto flex min-h-[68px] w-[min(1120px,calc(100%-32px))] items-center justify-between gap-4"><a class="marca" href="' + url("paginas/admin/index.html") + '"><img class="h-11 rounded-xl bg-creme p-1" src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a><div class="admin-acoes">' + link("index.html", "Ver loja", "ver-loja") + '</div></div><nav class="menu menu-admin mx-auto flex w-[min(1120px,calc(100%-32px))] flex-wrap gap-1.5 overflow-visible pb-3.5">' + menuAdmin + "</nav>";
+      topo.innerHTML = '<div class="admin-faixa"><div class="barra barra-admin mx-auto flex min-h-[68px] w-[min(1120px,calc(100%-32px))] items-center gap-3">' +
+        '<button class="botao-hamburguer botao-hamburguer-admin" type="button" id="abrir-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-gaveta"><span class="ico">' + icones.menu + "</span></button>" +
+        '<a class="marca" href="' + url("paginas/admin/index.html") + '"><img class="h-11 rounded-xl bg-creme p-1" src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a>' +
+        '<div class="admin-acoes ml-auto">' + link("index.html", "Ver loja", "ver-loja") + "</div></div>" +
+        '<nav class="menu menu-admin mx-auto flex w-[min(1120px,calc(100%-32px))] flex-wrap gap-1.5 overflow-visible pb-3.5">' + menuAdmin + "</nav></div>";
+      var gavetaAdminAntiga = document.getElementById("menu-gaveta");
+      if (gavetaAdminAntiga) gavetaAdminAntiga.remove();
+      var gavetaAdmin = document.createElement("div");
+      gavetaAdmin.className = "menu-gaveta menu-gaveta-admin";
+      gavetaAdmin.id = "menu-gaveta";
+      gavetaAdmin.innerHTML = '<button class="menu-gaveta-fundo" type="button" aria-label="Fechar menu"></button><aside class="menu-gaveta-painel" role="dialog" aria-modal="true" aria-label="Menu da administração"><div class="menu-gaveta-topo"><strong>Administração</strong><button class="botao-fechar-menu" type="button" id="fechar-menu" aria-label="Fechar menu"><span class="ico">' + icones.fechar + '</span></button></div><nav class="menu-gaveta-lista">' + menuGavetaAdmin + "</nav></aside>";
+      document.body.appendChild(gavetaAdmin);
+      ligarMenus(topo);
     } else {
       var modalidades = estado.modalidades || [];
       function dicaModalidade(id) {
@@ -271,7 +289,9 @@
       ].join("");
       var util = utilitariosLoja(estado);
       var qtd = quantidadeCarrinho();
-      var menuGaveta = [
+      var perfilVazio = estado.perfil === "vazia";
+      var podeAdmin = !perfilVazio && estado.cliente && estado.cliente.admin;
+      var menuGavetaItens = [
         link("index.html", "Início", "", ajuda.inicio),
         link("paginas/pronta-entrega.html", "Pronta Entrega", "", dicaModalidade("pronta-entrega")),
         link("paginas/sob-demanda.html", "Sob Demanda", "", dicaModalidade("sob-demanda")),
@@ -280,7 +300,11 @@
         link("paginas/contato.html", "Ajuda / Contato", "", ajuda.contato),
         link("paginas/conta.html", "Minha conta", "", ajuda.conta),
         link("paginas/carrinho.html", "Carrinho (" + qtd + ")", "", ajuda.carrinho)
-      ].join("");
+      ];
+      if (podeAdmin) {
+        menuGavetaItens.push(link("paginas/admin/index.html", "Administração", ""));
+      }
+      var menuGaveta = menuGavetaItens.join("");
       topo.className = "topo-loja sticky top-0 z-20 bg-laranja";
       topo.innerHTML = faixaLoja(estado)
         + '<div class="loja-faixa"><div class="barra loja-barra mx-auto flex min-h-[76px] w-[min(1120px,calc(100%-32px))] items-center gap-3">'
