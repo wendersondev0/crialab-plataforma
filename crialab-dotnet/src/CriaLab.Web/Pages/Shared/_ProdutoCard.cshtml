@@ -1,5 +1,6 @@
 @model CriaLab.Web.Data.Entities.Produto
 @using CriaLab.Web.Services
+@inject FavoritosService FavoritosSvc
 @{
     var foto = Model.Fotos.OrderBy(f => f.Ordem).FirstOrDefault();
     var mod = Model.Modalidade?.Nome ?? Model.ModalidadeId;
@@ -11,8 +12,7 @@
         anterior = Math.Round(Model.Preco * 1.18m, 2);
     var temDesconto = !personalizado && anterior > Model.Preco;
     var entrega = LojaVitrineHelper.TextoEntrega(Model, freteGratis);
-    var favIds = ViewData["FavoritosIds"] as HashSet<string> ?? new HashSet<string>();
-    var ehFav = favIds.Contains(Model.Id);
+    var ehFav = (await FavoritosSvc.ObterIdsAsync()).Contains(Model.Id, StringComparer.OrdinalIgnoreCase);
     var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
 }
 <article class="produto revela visivel">
@@ -20,7 +20,7 @@
         @Html.AntiForgeryToken()
         <input type="hidden" name="id" value="@Model.Id" />
         <input type="hidden" name="returnUrl" value="@returnUrl" />
-        <button class="btn-favorito-card@(ehFav ? " ativo" : "")" type="submit" aria-label="@(ehFav ? "Remover dos favoritos" : "Salvar nos favoritos")" aria-pressed="@(ehFav ? "true" : "false")">♥</button>
+        <button class="btn-favorito-card@(ehFav ? " ativo" : "")" type="submit" aria-label="@(ehFav ? "Remover dos favoritos" : "Salvar nos favoritos")" aria-pressed="@(ehFav ? "true" : "false")"><span class="ico"><partial name="_SvgIcon" model="@("coracao")" /></span></button>
     </form>
     <a class="produto-link" asp-page="/Produto" asp-route-id="@Model.Id">
         <span class="produto-foto">

@@ -44,6 +44,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddScoped<CarrinhoService>();
+builder.Services.AddScoped<FavoritosService>();
 builder.Services.AddScoped<FreteService>();
 builder.Services.AddRazorPages();
 
@@ -71,3 +72,4 @@ app.MapRazorPages();
 await DbSeeder.SeedAsync(app.Services);
 
 app.Run();
+

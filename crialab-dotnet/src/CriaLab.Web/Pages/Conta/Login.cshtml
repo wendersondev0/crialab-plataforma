@@ -8,6 +8,7 @@
         <h1 class="mt-0 text-3xl font-extrabold text-tinta">Entrar</h1>
         <p class="intro-pagina text-tinta/75 m-0 mb-4">Acesse pedidos, orçamentos e favoritos.</p>
         <form method="post" class="formulario">
+            <input type="hidden" asp-for="ReturnUrl" />
             <div asp-validation-summary="All"></div>
             <label>E-mail<input asp-for="Email" type="email" required autocomplete="username" /></label>
             <label>Senha<input asp-for="Senha" type="password" required autocomplete="current-password" /></label>

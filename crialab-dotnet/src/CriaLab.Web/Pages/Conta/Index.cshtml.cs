@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using CriaLab.Web.Data;
 using CriaLab.Web.Data.Entities;
+using CriaLab.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,13 @@ public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _db;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly FavoritosService _favoritos;
 
-    public IndexModel(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
+    public IndexModel(ApplicationDbContext db, UserManager<ApplicationUser> userManager, FavoritosService favoritos)
     {
         _db = db;
         _userManager = userManager;
+        _favoritos = favoritos;
     }
 
     public ApplicationUser? Usuario { get; private set; }
@@ -197,12 +200,9 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostRemoverFavoritoAsync(string id, string? aba)
     {
-        var userId = UserId();
-        var fav = await _db.Favoritos.FirstOrDefaultAsync(x => x.UsuarioId == userId && x.ProdutoId == id);
-        if (fav != null)
+        if (!string.IsNullOrWhiteSpace(id))
         {
-            _db.Favoritos.Remove(fav);
-            await _db.SaveChangesAsync();
+            await _favoritos.RemoverAsync(id);
             TempData["Ok"] = "Removido dos favoritos.";
         }
         return RedirectToPage(new { aba = "favoritos" });
@@ -223,7 +223,7 @@ public class IndexModel : PageModel
             .OrderByDescending(x => x.CriadoEm)
             .ToListAsync();
         Enderecos = await _db.EnderecosCliente.AsNoTracking().Where(x => x.UsuarioId == userId).ToListAsync();
-        var favIds = await _db.Favoritos.AsNoTracking().Where(x => x.UsuarioId == userId).Select(x => x.ProdutoId).ToListAsync();
+        var favIds = (await _favoritos.ObterIdsAsync()).ToList();
         Favoritos = await _db.Produtos.AsNoTracking()
             .Include(x => x.Fotos)
             .Where(x => favIds.Contains(x.Id))

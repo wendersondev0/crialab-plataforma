@@ -12,12 +12,14 @@ public class ProdutoModel : PageModel
 {
     private readonly ApplicationDbContext _db;
     private readonly CarrinhoService _carrinho;
+    private readonly FavoritosService _favoritos;
     private readonly FreteService _frete;
 
-    public ProdutoModel(ApplicationDbContext db, CarrinhoService carrinho, FreteService frete)
+    public ProdutoModel(ApplicationDbContext db, CarrinhoService carrinho, FavoritosService favoritos, FreteService frete)
     {
         _db = db;
         _carrinho = carrinho;
+        _favoritos = favoritos;
         _frete = frete;
     }
 
@@ -70,20 +72,8 @@ public class ProdutoModel : PageModel
 
     public async Task<IActionResult> OnPostFavoritoAsync(string id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrWhiteSpace(userId))
-            return RedirectToPage("/Conta/Login", new { returnUrl = Url.Page("/Produto", new { id }) });
-
-        var fav = await _db.Favoritos.FirstOrDefaultAsync(x => x.UsuarioId == userId && x.ProdutoId == id);
-        if (fav == null)
-        {
-            _db.Favoritos.Add(new Favorito { UsuarioId = userId, ProdutoId = id, CriadoEm = DateTime.UtcNow });
-        }
-        else
-        {
-            _db.Favoritos.Remove(fav);
-        }
-        await _db.SaveChangesAsync();
+        if (!string.IsNullOrWhiteSpace(id))
+            await _favoritos.AlternarAsync(id);
         return RedirectToPage(new { id });
     }
 
@@ -172,8 +162,6 @@ public class ProdutoModel : PageModel
         Config = await _db.ConfiguracoesLoja.AsNoTracking().FirstOrDefaultAsync();
         ViewData["FreteGratisAPartir"] = Config?.FreteGratisAPartir ?? 200m;
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (!string.IsNullOrWhiteSpace(userId))
-            Favorito = await _db.Favoritos.AsNoTracking().AnyAsync(x => x.UsuarioId == userId && x.ProdutoId == id);
+        Favorito = await _favoritos.EstaFavoritoAsync(id);
     }
 }

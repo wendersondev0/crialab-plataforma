@@ -167,13 +167,19 @@ else if (Model.Aba == "favoritos")
         @foreach (var prod in Model.Favoritos)
         {
             var foto = prod.Fotos.OrderBy(f => f.Ordem).FirstOrDefault();
-            <a class="cta-fav" asp-page="/Produto" asp-route-id="@prod.Id">
-                <img src="~/@((foto?.Arquivo) ?? "marca/mascote.png")" alt="@prod.Titulo" />
-                <div>
-                    <strong>@prod.Titulo</strong>
-                    <span>R$ @prod.Preco.ToString("N2")</span>
-                </div>
-            </a>
+            <article class="cta-fav">
+                <a asp-page="/Produto" asp-route-id="@prod.Id">
+                    <img src="~/@((foto?.Arquivo) ?? "marca/mascote.png")" alt="@prod.Titulo" />
+                    <div>
+                        <strong>@prod.Titulo</strong>
+                        <span>R$ @prod.Preco.ToString("N2")</span>
+                    </div>
+                </a>
+                <form method="post" asp-page-handler="RemoverFavorito">
+                    <input type="hidden" name="id" value="@prod.Id" />
+                    <button class="botao-linha" type="submit">Remover</button>
+                </form>
+            </article>
         }
         </div>
     }

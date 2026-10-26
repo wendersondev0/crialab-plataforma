@@ -1,37 +1,31 @@
-using System.Security.Claims;
-using CriaLab.Web.Data;
-using CriaLab.Web.Data.Entities;
+using CriaLab.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace CriaLab.Web.Pages;
 
 public class FavoritoModel : PageModel
 {
-    private readonly ApplicationDbContext _db;
+    private readonly FavoritosService _favoritos;
 
-    public FavoritoModel(ApplicationDbContext db) => _db = db;
+    public FavoritoModel(FavoritosService favoritos) => _favoritos = favoritos;
 
     public IActionResult OnGet(string? returnUrl) =>
-        Redirect(string.IsNullOrWhiteSpace(returnUrl) ? "/" : returnUrl);
+        RedirectLocal(returnUrl, null);
 
     public async Task<IActionResult> OnPostAsync(string id, string? returnUrl)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrWhiteSpace(userId))
-            return RedirectToPage("/Conta/Login", new { returnUrl = returnUrl ?? Url.Page("/Produto", new { id }) });
+        if (!string.IsNullOrWhiteSpace(id))
+            await _favoritos.AlternarAsync(id.Trim());
+        return RedirectLocal(returnUrl, id);
+    }
 
-        if (string.IsNullOrWhiteSpace(id))
-            return Redirect(returnUrl ?? "/");
-
-        var fav = await _db.Favoritos.FirstOrDefaultAsync(x => x.UsuarioId == userId && x.ProdutoId == id);
-        if (fav == null)
-            _db.Favoritos.Add(new Favorito { UsuarioId = userId, ProdutoId = id, CriadoEm = DateTime.UtcNow });
-        else
-            _db.Favoritos.Remove(fav);
-
-        await _db.SaveChangesAsync();
-        return LocalRedirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Page("/Produto", new { id })! : returnUrl);
+    private IActionResult RedirectLocal(string? returnUrl, string? id)
+    {
+        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return LocalRedirect(returnUrl);
+        if (!string.IsNullOrWhiteSpace(id))
+            return RedirectToPage("/Produto", new { id });
+        return RedirectToPage("/Index");
     }
 }

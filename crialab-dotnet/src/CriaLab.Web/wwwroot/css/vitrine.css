@@ -1080,13 +1080,18 @@
   background: #fff;
   border: 1px solid var(--linha);
   box-shadow: var(--sombra);
-  text-decoration: none;
   color: inherit;
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
 .cta-fav:hover {
   transform: translateY(-2px);
   border-color: var(--laranja);
+}
+.cta-fav > a {
+  display: grid;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
 }
 .cta-fav img {
   width: 100%;
@@ -1106,6 +1111,12 @@
   margin-top: 4px;
   font-weight: 800;
   color: var(--laranja-escuro);
+}
+.cta-fav form {
+  margin: 0;
+}
+.cta-fav .botao-linha {
+  width: 100%;
 }
 .cta-endereco-layout {
   display: grid;

@@ -2,6 +2,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject CarrinhoService Carrinho
+@inject FavoritosService Favoritos
 @inject ApplicationDbContext Db
 @{
     var path = Context.Request.Path.Value ?? "";
@@ -27,7 +28,7 @@
     var ajudaCarrinho = (await Db.MenusAjuda.AsNoTracking().FirstOrDefaultAsync(x => x.Id == "carrinho"))?.Texto;
 
     var nomeConta = "Conta";
-    var favoritosIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    var favoritosIds = await Favoritos.ObterIdsAsync();
     var notificacoes = new List<string>();
     if (SignInManager.IsSignedIn(User))
     {
@@ -37,7 +38,6 @@
             nomeConta = nomeConta.Split(' ')[0];
         if (user != null)
         {
-            favoritosIds = (await Db.Favoritos.AsNoTracking().Where(x => x.UsuarioId == user.Id).Select(x => x.ProdutoId).ToListAsync()).ToHashSet(StringComparer.OrdinalIgnoreCase);
             var orcs = await Db.OrcamentosCliente.AsNoTracking()
                 .Where(x => x.UsuarioId == user.Id && x.Status == "respondido")
                 .OrderByDescending(x => x.CriadoEm)

@@ -176,6 +176,7 @@ else
                     <form method="post" asp-page-handler="Favorito">
                         <input type="hidden" name="id" value="@produto.Id" />
                         <button class="btn-favorito-ficha@(Model.Favorito ? " ativo" : "")" type="submit" aria-pressed="@(Model.Favorito ? "true" : "false")">
+                            <span class="ico"><partial name="_SvgIcon" model="@("coracao")" /></span>
                             <span id="favorito-rotulo">@(Model.Favorito ? "Nos favoritos" : "Salvar nos favoritos")</span>
                         </button>
                     </form>

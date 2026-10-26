@@ -1,5 +1,6 @@
 using CriaLab.Web.Constants;
 using CriaLab.Web.Data;
+using CriaLab.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,11 +11,13 @@ public class RegisterModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly FavoritosService _favoritos;
 
-    public RegisterModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    public RegisterModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, FavoritosService favoritos)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _favoritos = favoritos;
     }
 
     [BindProperty]
@@ -64,6 +67,7 @@ public class RegisterModel : PageModel
 
         await _userManager.AddToRoleAsync(user, RoleNames.Usuario);
         await _signInManager.SignInAsync(user, isPersistent: false);
+        await _favoritos.SincronizarSessaoNoUsuarioAsync(user.Id);
         return RedirectToPage("/Conta/Index");
     }
 }
