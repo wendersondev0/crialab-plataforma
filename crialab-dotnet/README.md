@@ -52,6 +52,8 @@ dotnet ef database update
 
 Catálogo (produtos, fotos, etapas, variações), identidade da loja, categorias, modalidades, cupons, faixas de CEP, depoimentos, parceiros, pedidos, orçamentos do cliente, perguntas, avaliações, mensagens, favoritos, endereços, máquinas, insumos, impressões, lançamentos financeiros, metas, energia, parâmetros de custo/orçamento interno — além das tabelas do Identity.
 
+Tabelas e colunas usam **snake_case** no PostgreSQL (`produtos`, `preco_comparativo`, `asp_net_users`, `categoria_id`, etc.), via `UseSnakeCaseNamingConvention()` no EF Core e mapeamento explícito das tabelas do Identity.
+
 ## Estrutura
 
 - `src/CriaLab.Web` — app Razor Pages (loja + `/Admin`)

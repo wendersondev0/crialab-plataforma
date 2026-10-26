@@ -25,69 +25,89 @@ namespace CriaLab.Web.Data.Migrations
             modelBuilder.Entity("CriaLab.Web.Data.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("access_failed_count");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("concurrency_stamp");
 
                     b.Property<DateTime>("CriadoEm")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("criado_em");
 
                     b.Property<string>("Documento")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("documento");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("email");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("email_confirmed");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("lockout_enabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("lockout_end");
 
                     b.Property<string>("NomeCompleto")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome_completo");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalized_email");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalized_user_name");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("password_hash");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("phone_number");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("phone_number_confirmed");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("security_stamp");
 
                     b.Property<string>("TelefoneContato")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("telefone_contato");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("two_factor_enabled");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("user_name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_asp_net_users");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -96,1648 +116,2057 @@ namespace CriaLab.Web.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("asp_net_users", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Avaliacao", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Autor")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("autor");
 
                     b.Property<bool>("FotoDoProduto")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("foto_do_produto");
 
                     b.Property<int>("Nota")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("nota");
 
                     b.Property<string>("PedidoId")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("pedido_id");
 
                     b.Property<string>("ProdutoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("produto_id");
 
                     b.Property<string>("Texto")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("texto");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_avaliacoes");
 
-                    b.HasIndex("ProdutoId");
+                    b.HasIndex("ProdutoId")
+                        .HasDatabaseName("ix_avaliacoes_produto_id");
 
-                    b.ToTable("Avaliacoes");
+                    b.ToTable("avaliacoes", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Categoria", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_categorias");
 
-                    b.ToTable("Categorias");
+                    b.ToTable("categorias", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.ConfiguracaoLoja", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<decimal>("DescontoAVista")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("desconto_a_vista");
 
                     b.Property<decimal>("FreteCanal")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("frete_canal");
 
                     b.Property<decimal>("FreteGratisAPartir")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("frete_gratis_a_partir");
 
                     b.Property<int>("Parcelas")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("parcelas");
 
                     b.Property<decimal>("PrecoKwhAtual")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("preco_kwh_atual");
 
                     b.Property<bool>("RepassarFrete")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("repassar_frete");
 
                     b.Property<decimal>("TaxaFalha")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("taxa_falha");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_configuracoes_loja");
 
-                    b.ToTable("ConfiguracoesLoja");
+                    b.ToTable("configuracoes_loja", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.ContaFinanceira", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<bool>("Baixada")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("baixada");
 
                     b.Property<string>("Comprovante")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("comprovante");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("descricao");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tipo");
 
                     b.Property<decimal>("Valor")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("valor");
 
                     b.Property<DateOnly>("Vencimento")
-                        .HasColumnType("date");
+                        .HasColumnType("date")
+                        .HasColumnName("vencimento");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_contas_financeiras");
 
-                    b.ToTable("ContasFinanceiras");
+                    b.ToTable("contas_financeiras", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Cupom", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<bool>("Ativo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("ativo");
 
                     b.Property<string>("Codigo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("codigo");
 
                     b.Property<decimal>("Percentual")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("percentual");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_cupons");
 
                     b.HasIndex("Codigo")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_cupons_codigo");
 
-                    b.ToTable("Cupons");
+                    b.ToTable("cupons", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Depoimento", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Autor")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("autor");
 
                     b.Property<bool>("PodeAparecer")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("pode_aparecer");
 
                     b.Property<string>("Texto")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("texto");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_depoimentos");
 
-                    b.ToTable("Depoimentos");
+                    b.ToTable("depoimentos", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.DescontoOrcamento", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<decimal>("Recorrente")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("recorrente");
 
                     b.Property<decimal>("Volume")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("volume");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_descontos_orcamento");
 
-                    b.ToTable("DescontosOrcamento");
+                    b.ToTable("descontos_orcamento", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.EnderecoCliente", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Cep")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("cep");
 
                     b.Property<string>("Linha")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("linha");
 
                     b.Property<string>("Rotulo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("rotulo");
 
                     b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("usuario_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_enderecos_cliente");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("UsuarioId")
+                        .HasDatabaseName("ix_enderecos_cliente_usuario_id");
 
-                    b.ToTable("EnderecosCliente");
+                    b.ToTable("enderecos_cliente", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.EstoqueInsumo", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<DateOnly?>("AdquiridoEm")
-                        .HasColumnType("date");
+                        .HasColumnType("date")
+                        .HasColumnName("adquirido_em");
 
                     b.Property<string>("Categoria")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("categoria");
 
                     b.Property<string>("Fornecedor")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("fornecedor");
 
                     b.Property<string>("Imagem")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("imagem");
 
                     b.Property<decimal>("Minimo")
                         .HasPrecision(18, 3)
-                        .HasColumnType("numeric(18,3)");
+                        .HasColumnType("numeric(18,3)")
+                        .HasColumnName("minimo");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<string>("OrigemPlanilha")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("origem_planilha");
 
                     b.Property<decimal>("Saldo")
                         .HasPrecision(18, 3)
-                        .HasColumnType("numeric(18,3)");
+                        .HasColumnType("numeric(18,3)")
+                        .HasColumnName("saldo");
 
                     b.Property<string>("Unidade")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("unidade");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_estoque_insumos");
 
-                    b.ToTable("EstoqueInsumos");
+                    b.ToTable("estoque_insumos", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.FaixaCep", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Ate")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("ate");
 
                     b.Property<int>("De")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("de");
 
                     b.Property<decimal>("Pac")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("pac");
 
                     b.Property<int>("PacDias")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("pac_dias");
 
                     b.Property<decimal>("Sedex")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("sedex");
 
                     b.Property<int>("SedexDias")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("sedex_dias");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_faixas_cep");
 
-                    b.ToTable("FaixasCep");
+                    b.ToTable("faixas_cep", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.FaixaMarketplace", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Ate")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("ate");
 
                     b.Property<string>("Canal")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("canal");
 
                     b.Property<decimal>("De")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("de");
 
                     b.Property<decimal>("Fixo")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("fixo");
 
                     b.Property<decimal>("Percentual")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("percentual");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_faixas_marketplace");
 
-                    b.HasIndex("Canal");
+                    b.HasIndex("Canal")
+                        .HasDatabaseName("ix_faixas_marketplace_canal");
 
-                    b.ToTable("FaixasMarketplace");
+                    b.ToTable("faixas_marketplace", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Favorito", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CriadoEm")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("criado_em");
 
                     b.Property<string>("ProdutoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("produto_id");
 
                     b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("usuario_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_favoritos");
 
-                    b.HasIndex("ProdutoId");
+                    b.HasIndex("ProdutoId")
+                        .HasDatabaseName("ix_favoritos_produto_id");
 
                     b.HasIndex("UsuarioId", "ProdutoId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_favoritos_usuario_id_produto_id");
 
-                    b.ToTable("Favoritos");
+                    b.ToTable("favoritos", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.FechamentoEnergia", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Competencia")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("competencia");
 
                     b.Property<decimal>("KwhTotal")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("kwh_total");
 
                     b.Property<string>("Notas")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("notas");
 
                     b.Property<decimal>("Tarifa")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("tarifa");
 
                     b.Property<decimal>("Valor")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("valor");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_fechamentos_energia");
 
-                    b.ToTable("FechamentosEnergia");
+                    b.ToTable("fechamentos_energia", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.ImpressaoJob", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<DateTime?>("Fim")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fim");
 
                     b.Property<DateTime?>("Inicio")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("inicio");
 
                     b.Property<decimal>("Kwh")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("kwh");
 
                     b.Property<string>("MaquinaId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("maquina_id");
 
                     b.Property<string>("Motivo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("motivo");
 
                     b.Property<decimal>("PesoPrevisto")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("peso_previsto");
 
                     b.Property<decimal>("PesoReal")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("peso_real");
 
                     b.Property<string>("ProdutoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("produto_id");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("status");
 
                     b.Property<bool?>("Sucesso")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("sucesso");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("titulo");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_impressao_jobs");
 
-                    b.HasIndex("MaquinaId");
+                    b.HasIndex("MaquinaId")
+                        .HasDatabaseName("ix_impressao_jobs_maquina_id");
 
-                    b.ToTable("ImpressaoJobs");
+                    b.ToTable("impressao_jobs", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.InsumoCor", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<int>("Bobinas")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("bobinas");
 
                     b.Property<string>("EstoqueInsumoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("estoque_insumo_id");
 
                     b.Property<string>("Hex")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("hex");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<decimal>("Saldo")
                         .HasPrecision(18, 3)
-                        .HasColumnType("numeric(18,3)");
+                        .HasColumnType("numeric(18,3)")
+                        .HasColumnName("saldo");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_insumo_cores");
 
-                    b.HasIndex("EstoqueInsumoId");
+                    b.HasIndex("EstoqueInsumoId")
+                        .HasDatabaseName("ix_insumo_cores_estoque_insumo_id");
 
-                    b.ToTable("InsumoCores");
+                    b.ToTable("insumo_cores", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.InsumoVariante", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("EstoqueInsumoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("estoque_insumo_id");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<decimal>("Saldo")
                         .HasPrecision(18, 3)
-                        .HasColumnType("numeric(18,3)");
+                        .HasColumnType("numeric(18,3)")
+                        .HasColumnName("saldo");
 
                     b.Property<string>("Unidade")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("unidade");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_insumo_variantes");
 
-                    b.HasIndex("EstoqueInsumoId");
+                    b.HasIndex("EstoqueInsumoId")
+                        .HasDatabaseName("ix_insumo_variantes_estoque_insumo_id");
 
-                    b.ToTable("InsumoVariantes");
+                    b.ToTable("insumo_variantes", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.LancamentoFinanceiro", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Categoria")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("categoria");
 
                     b.Property<string>("Competencia")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("competencia");
 
                     b.Property<string>("Comprovante")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("comprovante");
 
                     b.Property<DateOnly?>("Data")
-                        .HasColumnType("date");
+                        .HasColumnType("date")
+                        .HasColumnName("data");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("descricao");
 
                     b.Property<bool>("Estornado")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("estornado");
 
                     b.Property<decimal?>("Kwh")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("kwh");
 
                     b.Property<string>("Link")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("link");
 
                     b.Property<string>("Origem")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("origem");
 
                     b.Property<decimal>("Quantidade")
                         .HasPrecision(18, 3)
-                        .HasColumnType("numeric(18,3)");
+                        .HasColumnType("numeric(18,3)")
+                        .HasColumnName("quantidade");
 
                     b.Property<decimal?>("Tarifa")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("tarifa");
 
                     b.Property<string>("TipoInsumo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tipo_insumo");
 
                     b.Property<decimal>("Valor")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("valor");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_lancamentos_financeiros");
 
-                    b.HasIndex("Competencia");
+                    b.HasIndex("Competencia")
+                        .HasDatabaseName("ix_lancamentos_financeiros_competencia");
 
-                    b.ToTable("LancamentosFinanceiros");
+                    b.ToTable("lancamentos_financeiros", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.LojaIdentidade", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Cnpj")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("cnpj");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("email");
 
                     b.Property<string>("Endereco")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("endereco");
 
                     b.Property<string>("Horario")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("horario");
 
                     b.Property<string>("Instagram")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("instagram");
 
                     b.Property<string>("MercadoLivre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("mercado_livre");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<string>("Shopee")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("shopee");
 
                     b.Property<string>("Site")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("site");
 
                     b.Property<string>("Telefone")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("telefone");
 
                     b.Property<string>("Tiktok")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tiktok");
 
                     b.Property<string>("Whatsapp")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("whatsapp");
 
                     b.Property<string>("Youtube")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("youtube");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_loja_identidades");
 
-                    b.ToTable("LojaIdentidades");
+                    b.ToTable("loja_identidades", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Maquina", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<DateOnly?>("AdquiridoEm")
-                        .HasColumnType("date");
+                        .HasColumnType("date")
+                        .HasColumnName("adquirido_em");
 
                     b.Property<string>("Categoria")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("categoria");
 
                     b.Property<string>("CompraCompetencia")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("compra_competencia");
 
                     b.Property<decimal>("CompraValor")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("compra_valor");
 
                     b.Property<bool>("ControlaHora")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("controla_hora");
 
                     b.Property<decimal>("DepreciacaoPorMinuto")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("depreciacao_por_minuto");
 
                     b.Property<decimal>("EnergiaPorMinuto")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("energia_por_minuto");
 
                     b.Property<string>("Imagem")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("imagem");
 
                     b.Property<string>("Local")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("local");
 
                     b.Property<decimal>("ManutencaoPorMinuto")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("manutencao_por_minuto");
 
                     b.Property<string>("Marca")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("marca");
 
                     b.Property<string>("Modelo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("modelo");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<string>("Notas")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("notas");
 
                     b.Property<string>("Serial")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("serial");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("status");
 
                     b.Property<decimal>("Watts")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("watts");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_maquinas");
 
-                    b.ToTable("Maquinas");
+                    b.ToTable("maquinas", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.MargemCanal", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<bool>("Ativo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("ativo");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<decimal>("Percentual")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("percentual");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_margens_canal");
 
-                    b.ToTable("MargensCanal");
+                    b.ToTable("margens_canal", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.MensagemContato", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("CriadoEm")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("criado_em");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("email");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("status");
 
                     b.Property<string>("Texto")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("texto");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tipo");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_mensagens_contato");
 
-                    b.HasIndex("Status");
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_mensagens_contato_status");
 
-                    b.ToTable("MensagensContato");
+                    b.ToTable("mensagens_contato", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.MenuAjuda", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Texto")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("texto");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_menus_ajuda");
 
-                    b.ToTable("MenusAjuda");
+                    b.ToTable("menus_ajuda", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.MetaFinanceira", b =>
                 {
                     b.Property<string>("Chave")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("chave");
 
                     b.Property<string>("ValorJson")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("valor_json");
 
-                    b.HasKey("Chave");
+                    b.HasKey("Chave")
+                        .HasName("pk_metas_financeiras");
 
-                    b.ToTable("MetasFinanceiras");
+                    b.ToTable("metas_financeiras", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Modalidade", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Explicacao")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("explicacao");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<string>("Resumo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("resumo");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_modalidades");
 
-                    b.ToTable("Modalidades");
+                    b.ToTable("modalidades", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.NivelPintura", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Acabamento")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("acabamento");
 
                     b.Property<string>("Cores")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("cores");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<decimal>("Percentual")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("percentual");
 
                     b.Property<string>("Tempo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tempo");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_niveis_pintura");
 
-                    b.ToTable("NiveisPintura");
+                    b.ToTable("niveis_pintura", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.OrcamentoCliente", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("ArquivoNome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("arquivo_nome");
 
                     b.Property<DateTime>("CriadoEm")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("criado_em");
 
                     b.Property<string>("Detalhes")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("detalhes");
 
                     b.Property<string>("ProdutoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("produto_id");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("status");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("titulo");
 
                     b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("usuario_id");
 
                     b.Property<decimal?>("Valor")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("valor");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_orcamentos_cliente");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("UsuarioId")
+                        .HasDatabaseName("ix_orcamentos_cliente_usuario_id");
 
-                    b.ToTable("OrcamentosCliente");
+                    b.ToTable("orcamentos_cliente", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.OrcamentoInterno", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<decimal>("Depreciacao")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("depreciacao");
 
                     b.Property<string>("DescontosMarcadosJson")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("descontos_marcados_json");
 
                     b.Property<decimal>("EnergiaPorMinuto")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("energia_por_minuto");
 
                     b.Property<bool>("Enviado")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("enviado");
 
                     b.Property<decimal>("FreteCanal")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("frete_canal");
 
                     b.Property<decimal>("LixoG")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("lixo_g");
 
                     b.Property<decimal>("Manutencao")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("manutencao");
 
                     b.Property<string>("MaquinaId")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("maquina_id");
 
                     b.Property<decimal>("MargemSite")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("margem_site");
 
                     b.Property<string>("Material")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("material");
 
                     b.Property<int>("Minutos")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("minutos");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<decimal>("PesoG")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("peso_g");
 
                     b.Property<string>("PinturaJson")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("pintura_json");
 
                     b.Property<decimal>("PrecoKg")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("preco_kg");
 
                     b.Property<string>("PrecoKgOrigem")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("preco_kg_origem");
 
                     b.Property<string>("RealizadoJson")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("realizado_json");
 
                     b.Property<decimal>("Servico")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("servico");
 
                     b.Property<decimal>("TaxaFalha")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("taxa_falha");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_orcamentos_internos");
 
-                    b.HasIndex("MaquinaId");
+                    b.HasIndex("MaquinaId")
+                        .HasDatabaseName("ix_orcamentos_internos_maquina_id");
 
-                    b.ToTable("OrcamentosInternos");
+                    b.ToTable("orcamentos_internos", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.OrcamentoItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<string>("OrcamentoInternoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("orcamento_interno_id");
 
                     b.Property<decimal>("Preco")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("preco");
 
                     b.Property<decimal>("Quantidade")
                         .HasPrecision(18, 3)
-                        .HasColumnType("numeric(18,3)");
+                        .HasColumnType("numeric(18,3)")
+                        .HasColumnName("quantidade");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_orcamento_itens");
 
-                    b.HasIndex("OrcamentoInternoId");
+                    b.HasIndex("OrcamentoInternoId")
+                        .HasDatabaseName("ix_orcamento_itens_orcamento_interno_id");
 
-                    b.ToTable("OrcamentoItens");
+                    b.ToTable("orcamento_itens", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.ParametroCusto", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<decimal>("Preco")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("preco");
 
                     b.Property<bool>("Travado")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("travado");
 
                     b.Property<string>("Unidade")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("unidade");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_parametros_custo");
 
-                    b.ToTable("ParametrosCusto");
+                    b.ToTable("parametros_custo", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Parceiro", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Logo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("logo");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<bool>("PodeAparecer")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("pode_aparecer");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_parceiros");
 
-                    b.ToTable("Parceiros");
+                    b.ToTable("parceiros", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Pedido", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Cep")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("cep");
 
                     b.Property<DateTime>("CriadoEm")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("criado_em");
 
                     b.Property<string>("Cupom")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("cupom");
 
                     b.Property<decimal>("DescontoAVista")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("desconto_a_vista");
 
                     b.Property<decimal>("DescontoCupom")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("desconto_cupom");
 
                     b.Property<string>("Endereco")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("endereco");
 
                     b.Property<string>("Forma")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("forma");
 
                     b.Property<decimal>("FreteCobrado")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("frete_cobrado");
 
                     b.Property<string>("FreteNome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("frete_nome");
 
                     b.Property<string>("Nota")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nota");
 
                     b.Property<bool>("RepassarFrete")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("repassar_frete");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("status");
 
                     b.Property<decimal>("Subtotal")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("subtotal");
 
                     b.Property<decimal>("Total")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total");
 
                     b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("usuario_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_pedidos");
 
-                    b.HasIndex("Status");
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_pedidos_status");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("UsuarioId")
+                        .HasDatabaseName("ix_pedidos_usuario_id");
 
-                    b.ToTable("Pedidos");
+                    b.ToTable("pedidos", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.PedidoItem", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<bool>("Arquivo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("arquivo");
 
                     b.Property<string>("CorEscolhida")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("cor_escolhida");
 
                     b.Property<bool>("Fisico")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("fisico");
 
                     b.Property<string>("PedidoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("pedido_id");
 
                     b.Property<decimal>("PrecoUnitario")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("preco_unitario");
 
                     b.Property<string>("ProdutoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("produto_id");
 
                     b.Property<int>("Quantidade")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("quantidade");
 
                     b.Property<string>("TamanhoEscolhido")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tamanho_escolhido");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tipo");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("titulo");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_pedido_itens");
 
-                    b.HasIndex("PedidoId");
+                    b.HasIndex("PedidoId")
+                        .HasDatabaseName("ix_pedido_itens_pedido_id");
 
-                    b.ToTable("PedidoItens");
+                    b.ToTable("pedido_itens", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.PedidoOs", b =>
                 {
                     b.Property<string>("PedidoId")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("pedido_id");
 
                     b.Property<bool>("InsumoBaixado")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("insumo_baixado");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("status");
 
-                    b.HasKey("PedidoId");
+                    b.HasKey("PedidoId")
+                        .HasName("pk_pedido_ordens_servico");
 
-                    b.ToTable("PedidoOrdensServico");
+                    b.ToTable("pedido_ordens_servico", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.PerguntaProduto", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Autor")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("autor");
 
                     b.Property<DateTime>("CriadoEm")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("criado_em");
 
                     b.Property<string>("ProdutoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("produto_id");
 
                     b.Property<string>("Resposta")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("resposta");
 
                     b.Property<string>("Texto")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("texto");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_perguntas_produto");
 
-                    b.HasIndex("ProdutoId");
+                    b.HasIndex("ProdutoId")
+                        .HasDatabaseName("ix_perguntas_produto_produto_id");
 
-                    b.ToTable("PerguntasProduto");
+                    b.ToTable("perguntas_produto", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Produto", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<bool>("AVista")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("a_vista");
 
                     b.Property<string>("Arquivo")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("arquivo");
 
                     b.Property<string>("CategoriaId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("categoria_id");
 
                     b.Property<bool>("ComArquivo")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("com_arquivo");
 
                     b.Property<DateOnly>("CriadoEm")
-                        .HasColumnType("date");
+                        .HasColumnType("date")
+                        .HasColumnName("criado_em");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("descricao");
 
                     b.Property<int>("Estoque")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("estoque");
 
                     b.Property<bool>("MaisVendido")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("mais_vendido");
 
                     b.Property<string>("Material")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("material");
 
                     b.Property<string>("Medidas")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("medidas");
 
                     b.Property<int>("Minimo")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("minimo");
 
                     b.Property<string>("ModalidadeId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("modalidade_id");
 
                     b.Property<decimal>("Nota")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("nota");
 
                     b.Property<bool>("Oferta")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("oferta");
 
                     b.Property<bool>("Personalizavel")
-                        .HasColumnType("boolean");
+                        .HasColumnType("boolean")
+                        .HasColumnName("personalizavel");
 
                     b.Property<decimal>("Peso")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("peso");
 
                     b.Property<int>("PrazoDias")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("prazo_dias");
 
                     b.Property<decimal>("Preco")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("preco");
 
                     b.Property<decimal>("PrecoArquivo")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("preco_arquivo");
 
                     b.Property<decimal>("PrecoComparativo")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("preco_comparativo");
 
                     b.Property<string>("Sessao")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("sessao");
 
                     b.Property<string>("Situacao")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("situacao");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tipo");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("titulo");
 
                     b.Property<int>("Vendas")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("vendas");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_produtos");
 
-                    b.HasIndex("CategoriaId");
+                    b.HasIndex("CategoriaId")
+                        .HasDatabaseName("ix_produtos_categoria_id");
 
-                    b.HasIndex("ModalidadeId");
+                    b.HasIndex("ModalidadeId")
+                        .HasDatabaseName("ix_produtos_modalidade_id");
 
-                    b.HasIndex("Situacao");
+                    b.HasIndex("Situacao")
+                        .HasDatabaseName("ix_produtos_situacao");
 
-                    b.ToTable("Produtos");
+                    b.ToTable("produtos", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.ProdutoCorLegado", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Hex")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("hex");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<string>("ProdutoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("produto_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_produto_cores_legado");
 
-                    b.HasIndex("ProdutoId");
+                    b.HasIndex("ProdutoId")
+                        .HasDatabaseName("ix_produto_cores_legado_produto_id");
 
-                    b.ToTable("ProdutoCoresLegado");
+                    b.ToTable("produto_cores_legado", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.ProdutoEtapaPersonalizacao", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<decimal>("Acresce")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("acresce");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<string>("ProdutoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("produto_id");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tipo");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_produto_etapas");
 
-                    b.HasIndex("ProdutoId");
+                    b.HasIndex("ProdutoId")
+                        .HasDatabaseName("ix_produto_etapas_produto_id");
 
-                    b.ToTable("ProdutoEtapas");
+                    b.ToTable("produto_etapas", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.ProdutoFoto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Arquivo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("arquivo");
 
                     b.Property<string>("Legenda")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("legenda");
 
                     b.Property<int>("Ordem")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("ordem");
 
                     b.Property<string>("ProdutoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("produto_id");
 
                     b.Property<string>("Sessao")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("sessao");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_produto_fotos");
 
-                    b.HasIndex("ProdutoId");
+                    b.HasIndex("ProdutoId")
+                        .HasDatabaseName("ix_produto_fotos_produto_id");
 
-                    b.ToTable("ProdutoFotos");
+                    b.ToTable("produto_fotos", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.ProdutoTamanhoLegado", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<string>("ProdutoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("produto_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_produto_tamanhos_legado");
 
-                    b.HasIndex("ProdutoId");
+                    b.HasIndex("ProdutoId")
+                        .HasDatabaseName("ix_produto_tamanhos_legado_produto_id");
 
-                    b.ToTable("ProdutoTamanhosLegado");
+                    b.ToTable("produto_tamanhos_legado", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.ReferenciaMaquina", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<decimal>("Depreciacao")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("depreciacao");
 
                     b.Property<decimal>("EnergiaPorMinuto")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("energia_por_minuto");
 
                     b.Property<decimal>("Manutencao")
                         .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("manutencao");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_referencias_maquina");
 
-                    b.ToTable("ReferenciasMaquina");
+                    b.ToTable("referencias_maquina", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.TipoInsumoConfig", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<int>("Ordem")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("ordem");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_tipos_insumo_config");
 
-                    b.ToTable("TiposInsumoConfig");
+                    b.ToTable("tipos_insumo_config", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.VariacaoEixo", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<int>("Ordem")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("ordem");
 
                     b.Property<string>("ProdutoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("produto_id");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("tipo");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_variacao_eixos");
 
-                    b.HasIndex("ProdutoId");
+                    b.HasIndex("ProdutoId")
+                        .HasDatabaseName("ix_variacao_eixos_produto_id");
 
-                    b.ToTable("VariacaoEixos");
+                    b.ToTable("variacao_eixos", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.VariacaoOpcao", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Hex")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("hex");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<int>("Ordem")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("ordem");
 
                     b.Property<string>("VariacaoEixoId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("variacao_eixo_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_variacao_opcoes");
 
-                    b.HasIndex("VariacaoEixoId");
+                    b.HasIndex("VariacaoEixoId")
+                        .HasDatabaseName("ix_variacao_opcoes_variacao_eixo_id");
 
-                    b.ToTable("VariacaoOpcoes");
+                    b.ToTable("variacao_opcoes", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("concurrency_stamp");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("name");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalized_name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_asp_net_roles");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("asp_net_roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("claim_type");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("claim_value");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("role_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_asp_net_role_claims");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_asp_net_role_claims_role_id");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("asp_net_role_claims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("claim_type");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("claim_value");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_asp_net_user_claims");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_asp_net_user_claims_user_id");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("asp_net_user_claims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("login_provider");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("provider_key");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("provider_display_name");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("user_id");
 
-                    b.HasKey("LoginProvider", "ProviderKey");
+                    b.HasKey("LoginProvider", "ProviderKey")
+                        .HasName("pk_asp_net_user_logins");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_asp_net_user_logins_user_id");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("asp_net_user_logins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("user_id");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("role_id");
 
-                    b.HasKey("UserId", "RoleId");
+                    b.HasKey("UserId", "RoleId")
+                        .HasName("pk_asp_net_user_roles");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_asp_net_user_roles_role_id");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("asp_net_user_roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("user_id");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("login_provider");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
                     b.Property<string>("Value")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("value");
 
-                    b.HasKey("UserId", "LoginProvider", "Name");
+                    b.HasKey("UserId", "LoginProvider", "Name")
+                        .HasName("pk_asp_net_user_tokens");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("asp_net_user_tokens", (string)null);
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Avaliacao", b =>
@@ -1746,7 +2175,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_avaliacoes_produtos_produto_id");
 
                     b.Navigation("Produto");
                 });
@@ -1757,7 +2187,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_favoritos_produtos_produto_id");
 
                     b.Navigation("Produto");
                 });
@@ -1768,7 +2199,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany()
                         .HasForeignKey("MaquinaId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_impressao_jobs_maquinas_maquina_id");
 
                     b.Navigation("Maquina");
                 });
@@ -1779,7 +2211,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany("Cores")
                         .HasForeignKey("EstoqueInsumoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_insumo_cores_estoque_insumos_estoque_insumo_id");
 
                     b.Navigation("EstoqueInsumo");
                 });
@@ -1790,7 +2223,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany("Variantes")
                         .HasForeignKey("EstoqueInsumoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_insumo_variantes_estoque_insumos_estoque_insumo_id");
 
                     b.Navigation("EstoqueInsumo");
                 });
@@ -1800,7 +2234,8 @@ namespace CriaLab.Web.Data.Migrations
                     b.HasOne("CriaLab.Web.Data.Entities.Maquina", "Maquina")
                         .WithMany()
                         .HasForeignKey("MaquinaId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_orcamentos_internos_maquinas_maquina_id");
 
                     b.Navigation("Maquina");
                 });
@@ -1811,7 +2246,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany("Itens")
                         .HasForeignKey("OrcamentoInternoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_orcamento_itens_orcamentos_internos_orcamento_interno_id");
 
                     b.Navigation("OrcamentoInterno");
                 });
@@ -1822,7 +2258,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany("Itens")
                         .HasForeignKey("PedidoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_pedido_itens_pedidos_pedido_id");
 
                     b.Navigation("Pedido");
                 });
@@ -1833,7 +2270,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithOne("Os")
                         .HasForeignKey("CriaLab.Web.Data.Entities.PedidoOs", "PedidoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_pedido_ordens_servico_pedidos_pedido_id");
 
                     b.Navigation("Pedido");
                 });
@@ -1844,7 +2282,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_perguntas_produto_produtos_produto_id");
 
                     b.Navigation("Produto");
                 });
@@ -1855,13 +2294,15 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany("Produtos")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_produtos_categorias_categoria_id");
 
                     b.HasOne("CriaLab.Web.Data.Entities.Modalidade", "Modalidade")
                         .WithMany("Produtos")
                         .HasForeignKey("ModalidadeId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_produtos_modalidades_modalidade_id");
 
                     b.Navigation("Categoria");
 
@@ -1874,7 +2315,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany("CoresLegado")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_produto_cores_legado_produtos_produto_id");
 
                     b.Navigation("Produto");
                 });
@@ -1885,7 +2327,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany("EtapasPersonalizacao")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_produto_etapas_produtos_produto_id");
 
                     b.Navigation("Produto");
                 });
@@ -1896,7 +2339,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany("Fotos")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_produto_fotos_produtos_produto_id");
 
                     b.Navigation("Produto");
                 });
@@ -1907,7 +2351,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany("TamanhosLegado")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_produto_tamanhos_legado_produtos_produto_id");
 
                     b.Navigation("Produto");
                 });
@@ -1918,7 +2363,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany("Variacoes")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_variacao_eixos_produtos_produto_id");
 
                     b.Navigation("Produto");
                 });
@@ -1929,7 +2375,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany("Opcoes")
                         .HasForeignKey("VariacaoEixoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_variacao_opcoes_variacao_eixos_variacao_eixo_id");
 
                     b.Navigation("VariacaoEixo");
                 });
@@ -1940,7 +2387,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_asp_net_role_claims_asp_net_roles_role_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -1949,7 +2397,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_asp_net_user_claims_asp_net_users_user_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -1958,7 +2407,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_asp_net_user_logins_asp_net_users_user_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -1967,13 +2417,15 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_asp_net_user_roles_asp_net_roles_role_id");
 
                     b.HasOne("CriaLab.Web.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_asp_net_user_roles_asp_net_users_user_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -1982,7 +2434,8 @@ namespace CriaLab.Web.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_asp_net_user_tokens_asp_net_users_user_id");
                 });
 
             modelBuilder.Entity("CriaLab.Web.Data.Entities.Categoria", b =>
