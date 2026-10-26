@@ -2,19 +2,25 @@
 @model CriaLab.Web.Pages.Admin.FinanceiroModel
 @using CriaLab.Web.Services
 @{
-    ViewData["Title"] = "Financeiro";
+    ViewData["Title"] = "Financeiro · Administração";
     string AbaCls(string a) => "fin-aba" + (Model.Aba == a ? " ativo" : "");
-    var maxReceita = Math.Max(1m, Model.Historico.Max(x => Math.Abs(x.Receita)));
+    string PeriodoCls(string p) => "fin-periodo-btn" + (Model.Periodo == p ? " ativo" : "");
+    string Rota(string? aba = null, string? periodo = null, string? ano = null, string? mes = null, string? categoria = null, string? q = null, string? ordem = null) =>
+        Url.Page("/Admin/Financeiro", new
+        {
+            aba = aba ?? Model.Aba,
+            periodo = periodo ?? Model.Periodo,
+            ano = ano ?? Model.Ano,
+            mes = mes ?? Model.Mes,
+            categoria = categoria ?? Model.Categoria,
+            q = q ?? Model.Texto,
+            ordem = ordem ?? (Model.Ordem == "data" ? null : Model.Ordem)
+        })!;
 }
 <div class="admin-prod-cab">
     <div>
-        <h1 class="m-0">Gestão financeira</h1>
-        <p class="admin-prod-intro m-0 mt-1">Resumo, contas, caderno do mês, energia e conciliação.</p>
-    </div>
-    <div class="flex flex-wrap gap-2">
-        <a class="botao-linha" asp-page="/Admin/Mes" asp-route-mes="@Model.Mes">Caderno do mês</a>
-        <a class="botao-linha" asp-page="/Admin/Energia">Energia</a>
-        <a class="botao-linha" asp-page="/Admin/Conciliacao">Conciliação</a>
+        <h1 class="m-0">Financeiro</h1>
+        <p class="admin-prod-intro m-0 mt-1">Escolha Geral, Ano ou Mês para focar o período. No Caderno você organiza por bloco da planilha, busca e estorna.</p>
     </div>
 </div>
 
@@ -23,121 +29,423 @@
     <p class="cta-ok">@ok</p>
 }
 
-<div class="fin-meses-chips mb-3">
-@foreach (var c in Model.Competencias)
-{
-    <a class="fin-chip@(c == Model.Mes ? " ativo" : "")" asp-page="/Admin/Financeiro" asp-route-aba="@Model.Aba" asp-route-mes="@c">@c</a>
-}
+<div class="fin-filtros">
+    <div class="fin-periodo-escopo" role="group" aria-label="Período">
+        <a class="@PeriodoCls("geral")" href="@Rota(periodo: "geral")">Geral</a>
+        <a class="@PeriodoCls("ano")" href="@Rota(periodo: "ano")">Ano</a>
+        <a class="@PeriodoCls("mes")" href="@Rota(periodo: "mes")">Mês</a>
+    </div>
+
+    @if (Model.Periodo is "ano" or "mes")
+    {
+        <form method="get" class="fin-periodo-form">
+            <input type="hidden" name="aba" value="@Model.Aba" />
+            <input type="hidden" name="periodo" value="@Model.Periodo" />
+            @if (!string.IsNullOrEmpty(Model.Categoria)) { <input type="hidden" name="categoria" value="@Model.Categoria" /> }
+            @if (!string.IsNullOrEmpty(Model.Texto)) { <input type="hidden" name="q" value="@Model.Texto" /> }
+            <label class="fin-campo"><span>Ano</span>
+                <select name="ano" onchange="this.form.submit()">
+                    @foreach (var a in Model.Anos)
+                    {
+                        if (a == Model.Ano) { <option value="@a" selected>@a</option> }
+                        else { <option value="@a">@a</option> }
+                    }
+                </select>
+            </label>
+            @if (Model.Periodo == "mes")
+            {
+                <label class="fin-campo"><span>Mês</span>
+                    <select name="mes" onchange="this.form.submit()">
+                        @foreach (var c in Model.MesesAno)
+                        {
+                            if (c == Model.Mes) { <option value="@c" selected>@FinanceiroResumo.CompetenciaBr(c)</option> }
+                            else { <option value="@c">@FinanceiroResumo.CompetenciaBr(c)</option> }
+                        }
+                    </select>
+                </label>
+                <div class="fin-nav-mes">
+                    @if (Model.MesAnterior != null)
+                    {
+                        <a class="botao-linha" href="@Rota(periodo: "mes", ano: Model.MesAnterior[..4], mes: Model.MesAnterior)"><span>‹ Anterior</span></a>
+                    }
+                    else
+                    {
+                        <button class="botao-linha" type="button" disabled><span>‹ Anterior</span></button>
+                    }
+                    @if (Model.MesProximo != null)
+                    {
+                        <a class="botao-linha" href="@Rota(periodo: "mes", ano: Model.MesProximo[..4], mes: Model.MesProximo)"><span>Próximo ›</span></a>
+                    }
+                    else
+                    {
+                        <button class="botao-linha" type="button" disabled><span>Próximo ›</span></button>
+                    }
+                </div>
+            }
+            else
+            {
+                <input type="hidden" name="mes" value="@Model.Mes" />
+            }
+        </form>
+    }
+
+    @if (Model.Periodo == "mes")
+    {
+        <div class="fin-meses-chips">
+            @foreach (var c in Model.MesesAno)
+            {
+                var r = Model.HistoricoBarras.FirstOrDefault(x => x.Competencia == c);
+                var tem = r != null && (r.Receita != 0 || r.DespesaOperacional != 0 || r.GastosFixos != 0 || r.Energia != 0 || r.Investimento != 0);
+                <a class="fin-chip@(c == Model.Mes ? " ativo" : "")@(tem ? "" : " vazio")" href="@Rota(periodo: "mes", ano: c[..4], mes: c)" title="@FinanceiroResumo.CompetenciaBr(c)">@c[5..]</a>
+            }
+        </div>
+    }
+
+    <p class="fin-periodo-rotulo m-0"><strong>@Model.RotuloPeriodo</strong> · @Model.LancamentosPeriodo.Count lançamento@(Model.LancamentosPeriodo.Count == 1 ? "" : "s")</p>
 </div>
 
-<div class="fin-abas mb-3">
-    <a class="@AbaCls("resumo")" asp-page="/Admin/Financeiro" asp-route-aba="resumo" asp-route-mes="@Model.Mes">Resumo</a>
-    <a class="@AbaCls("contas")" asp-page="/Admin/Financeiro" asp-route-aba="contas" asp-route-mes="@Model.Mes">Contas</a>
-    <a class="@AbaCls("lancamentos")" asp-page="/Admin/Financeiro" asp-route-aba="lancamentos" asp-route-mes="@Model.Mes">Lançamentos</a>
-    <a class="@AbaCls("metas")" asp-page="/Admin/Financeiro" asp-route-aba="metas" asp-route-mes="@Model.Mes">Metas</a>
+<div class="fin-kpis">
+    <a class="fin-kpi no-underline" href="@Rota(aba: "caderno", categoria: "receita")"><span>Receita</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Receita)</strong><small>@Model.RotuloPeriodo</small></a>
+    <a class="fin-kpi no-underline" href="@Rota(aba: "caderno", categoria: "")"><span>Operacional</span><strong class="@(Model.Resumo.ResultadoOperacional < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoOperacional)</strong><small>Receita − operação</small></a>
+    <a class="fin-kpi no-underline" href="@Rota(aba: "caderno", categoria: "investimento")"><span>Caixa</span><strong class="@(Model.Resumo.ResultadoCaixa < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoCaixa)</strong><small>Com investimentos</small></a>
+    <a class="fin-kpi no-underline" href="@Rota(aba: "resumo")"><span>Lucro</span><strong class="@(Model.Resumo.Lucro < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.Lucro)</strong><small>Receita − operação − fixos</small></a>
+</div>
+
+<div class="fin-detalhe-grid">
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "gastoFixo")"><span>Gastos fixos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.GastosFixos)</strong></a>
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "filamento")"><span>Filamentos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Filamentos)</strong></a>
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "energia")"><span>Energia</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Energia)</strong></a>
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "investimento")"><span>Investimento</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Investimento)</strong></a>
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "receita")"><span>Qtd. vendida</span><strong>@Model.Resumo.Quantidade.ToString("0.##").Replace('.', ',')</strong></a>
+    <a class="fin-mini no-underline" href="@Rota(aba: "caderno", categoria: "outroInsumo")"><span>Outros insumos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Outros)</strong></a>
+</div>
+
+<div class="admin-prod-fluxo">
+    <a class="botao-linha admin-fluxo" asp-page="/Admin/Energia"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span>Fechamento de energia</span></a>
+    <a class="botao-linha admin-fluxo" asp-page="/Admin/Conciliacao"><span class="ico"><partial name="_SvgIcon" model="@("estoque")" /></span><span>Conciliação</span></a>
+</div>
+
+<div class="fin-abas">
+    <a class="@AbaCls("resumo")" href="@Rota(aba: "resumo")">Resumo</a>
+    <a class="@AbaCls("caderno")" href="@Rota(aba: "caderno")">Caderno@(Model.Periodo == "mes" ? " do mês" : "")</a>
+    <a class="@AbaCls("lancar")" href="@Rota(aba: "lancar")">Lançar</a>
+    <a class="@AbaCls("contas")" href="@Rota(aba: "contas")">Contas</a>
 </div>
 
 @if (Model.Aba == "resumo")
 {
-    <div class="fin-kpis">
-        <div class="fin-kpi"><span>Receita @Model.Mes</span><strong>R$ @Model.ResumoMes.Receita.ToString("N2")</strong>@if (Model.MetaMes > 0){<small>meta R$ @Model.MetaMes.ToString("N2")</small>}</div>
-        <div class="fin-kpi"><span>Despesa operacional</span><strong>R$ @Model.ResumoMes.DespesaOperacional.ToString("N2")</strong></div>
-        <div class="fin-kpi"><span>Resultado</span><strong class="@(Model.ResumoMes.Resultado < 0 ? "neg" : "")">R$ @Model.ResumoMes.Resultado.ToString("N2")</strong></div>
-        <div class="fin-kpi"><span>A pagar / a receber</span><strong>R$ @Model.APagar.ToString("N2") / R$ @Model.AReceber.ToString("N2")</strong></div>
-    </div>
-
-    <div class="fin-detalhe-grid mt-3">
-        <div class="fin-mini"><span>Fixos</span><strong>R$ @Model.ResumoMes.GastoFixo.ToString("N2")</strong></div>
-        <div class="fin-mini"><span>Filamento</span><strong>R$ @Model.ResumoMes.Filamento.ToString("N2")</strong></div>
-        <div class="fin-mini"><span>Outros insumos</span><strong>R$ @Model.ResumoMes.OutroInsumo.ToString("N2")</strong></div>
-        <div class="fin-mini"><span>Energia</span><strong>R$ @Model.ResumoMes.Energia.ToString("N2")</strong></div>
-        <div class="fin-mini"><span>Investimento</span><strong>R$ @Model.ResumoMes.Investimento.ToString("N2")</strong></div>
-        <div class="fin-mini"><span>Qtd vendas</span><strong>@Model.ResumoMes.Quantidade.ToString("0.##")</strong></div>
-    </div>
-
-    <section class="fin-card mt-4">
-        <div class="fin-card-topo"><h2 class="fin-titulo">Receita por mês</h2></div>
-        <div class="barras fin-barras">
-        @foreach (var h in Model.Historico)
-        {
-            var altura = Math.Max(4, (int)Math.Round(Math.Abs(h.Receita) / maxReceita * 120));
-            <div class="barra-mes@(h.Receita < 0 ? " neg" : "")">
-                <span style="height:@(altura)px;background:var(--teal)"></span>
-                <small>@h.Competencia[5..]</small>
-                <small>R$ @h.Receita.ToString("N0")</small>
+    @if (Model.Periodo == "mes")
+    {
+        var metaPct = (int)Math.Min(100, Math.Round(Model.PercentualMeta));
+        <section class="fin-card">
+            <div class="fin-card-topo">
+                <h2 class="fin-titulo">Meta do mês</h2>
+                <span class="fin-selo@(Model.MetaBatida ? " ok" : "")">@(Model.MetaBatida ? "Batida" : (Model.MetaMes > 0 ? Math.Round(Model.PercentualMeta) + "%" : "Sem meta"))</span>
             </div>
-        }
+            <div class="fin-meta-barra"><span style="width:@(metaPct)%"></span></div>
+            <p class="fin-meta-txt">Meta @FinanceiroModel.FormatarReal(Model.MetaMes) · realizado @FinanceiroModel.FormatarReal(Model.Resumo.Receita) · projeção @FinanceiroModel.FormatarReal(Model.Projecao)</p>
+            @if (Model.ResumoAnterior != null && Model.MesAnterior != null)
+            {
+                <p class="fin-meta-ant">Mês anterior (@FinanceiroResumo.CompetenciaBr(Model.MesAnterior)): meta @FinanceiroModel.FormatarReal(Model.MetaAnterior) · receita @FinanceiroModel.FormatarReal(Model.ResumoAnterior.Receita) · @(Model.ResumoAnterior.Receita >= Model.MetaAnterior && Model.MetaAnterior > 0 ? "batida" : "não batida")</p>
+            }
+            <form method="post" asp-page-handler="Meta" class="fin-meta-form">
+                <input type="hidden" name="competencia" value="@Model.Mes" />
+                <input type="hidden" name="periodo" value="@Model.Periodo" />
+                <input type="hidden" name="ano" value="@Model.Ano" />
+                <input type="hidden" name="mes" value="@Model.Mes" />
+                <label class="fin-campo"><span>Nova meta</span><input name="valor" type="number" step="0.01" value="@Model.MetaMes" /></label>
+                <button class="botao" type="submit"><span class="ico"><partial name="_SvgIcon" model="@("documento")" /></span><span>Salvar meta</span></button>
+            </form>
+        </section>
+    }
+
+    <section class="fin-card">
+        <h2 class="fin-titulo">@(Model.Periodo == "geral" ? "Todos os anos" : "Ano " + Model.Ano)</h2>
+        <div class="fin-graficos">
+            @foreach (var graf in new (string Titulo, string Cor, string Campo)[] {
+                ("Receita", "#e8772a", "receita"),
+                ("Energia (R$)", "#e8772a", "energia"),
+                ("Energia (kWh)", "#148f93", "kwh"),
+                ("Resultado operacional", "#148f93", "operacional"),
+                ("Resultado de caixa", "#1b2430", "caixa")
+            })
+            {
+                decimal ValorDe(MesResumo h) => graf.Campo switch
+                {
+                    "energia" => h.Energia,
+                    "kwh" => h.Kwh,
+                    "operacional" => h.ResultadoOperacional,
+                    "caixa" => h.ResultadoCaixa,
+                    _ => h.Receita
+                };
+                var vals = Model.HistoricoBarras.Select(ValorDe).ToList();
+                var max = Math.Max(1m, vals.Select(Math.Abs).DefaultIfEmpty(1).Max());
+                <div class="fin-graf">
+                    <h3>@graf.Titulo</h3>
+                    <div class="barras fin-barras">
+                    @foreach (var h in Model.HistoricoBarras)
+                    {
+                        var valor = ValorDe(h);
+                        var altura = Math.Max(4, (int)Math.Round(Math.Abs(valor) / max * 120));
+                        var rotulo = Model.Periodo == "geral" ? h.Competencia : (h.Competencia.Length >= 7 ? h.Competencia[5..] : h.Competencia);
+                        <div class="barra-mes@(valor < 0 ? " neg" : "")">
+                            <span style="height:@(altura)px;background:@graf.Cor"></span>
+                            <small>@rotulo</small>
+                            <small>@(graf.Campo == "kwh" ? valor.ToString("N1", new System.Globalization.CultureInfo("pt-BR")) : FinanceiroModel.FormatarReal(valor))</small>
+                        </div>
+                    }
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="fin-card fin-refs">
+        <h2 class="fin-titulo">Referência de filamento</h2>
+        <div class="fin-ref-grade">
+            <article><span>PLA</span><strong>@FinanceiroModel.FormatarReal(Model.MediaPla)/kg</strong><small>média ponderada</small></article>
+            <article><span>PLA mediana</span><strong>@FinanceiroModel.FormatarReal(Model.MedianaPla)/kg</strong><small>mensal no período</small></article>
+            <article><span>PETG</span><strong>@FinanceiroModel.FormatarReal(Model.MediaPetg)/kg</strong><small>média ponderada</small></article>
+            <article><span>PETG mediana</span><strong>@FinanceiroModel.FormatarReal(Model.MedianaPetg)/kg</strong><small>mensal no período</small></article>
         </div>
     </section>
 }
-else if (Model.Aba == "contas")
+else if (Model.Aba == "caderno")
 {
-    <form method="post" asp-page-handler="NovaConta" class="cartao formulario p-4 mb-4">
+    <div class="fin-caderno-cab">
+        <div>
+            <h2 class="fin-titulo m-0">Caderno · @Model.RotuloPeriodo</h2>
+            <p class="fin-meta-txt m-0">Blocos no formato da planilha: filtre por categoria e busque no período selecionado.</p>
+        </div>
+        <span class="fin-selo">@Model.LancamentosCaderno.Count lançamentos</span>
+    </div>
+
+    <div class="fin-cat-chips">
+        <a class="fin-cat@(string.IsNullOrEmpty(Model.Categoria) ? " ativo" : "")" href="@Rota(aba: "caderno", categoria: "")">Todos</a>
+        @foreach (var bloco in FinanceiroResumo.BlocosCaderno)
+        {
+            <a class="fin-cat@(Model.Categoria == bloco.Id ? " ativo" : "")" href="@Rota(aba: "caderno", categoria: bloco.Id)">@bloco.Titulo</a>
+        }
+    </div>
+
+    <form method="get" class="fin-ferramentas">
+        <input type="hidden" name="aba" value="caderno" />
+        <input type="hidden" name="periodo" value="@Model.Periodo" />
+        <input type="hidden" name="ano" value="@Model.Ano" />
         <input type="hidden" name="mes" value="@Model.Mes" />
-        <h2 class="mt-0">Nova conta</h2>
-        <div class="grade grid grid-cols-1 gap-3 md:grid-cols-4">
-            <label>Tipo
+        @if (!string.IsNullOrEmpty(Model.Categoria)) { <input type="hidden" name="categoria" value="@Model.Categoria" /> }
+        <label class="fin-campo fin-busca"><span>Buscar no período</span><input name="q" type="search" value="@Model.Texto" placeholder="Descrição, tipo ou link" /></label>
+        <label class="fin-campo"><span>Ordenar</span>
+            <select name="ordem" onchange="this.form.submit()">
+                <option value="data" selected="@(Model.Ordem == "data" ? "selected" : null)">Data (mais recente)</option>
+                <option value="dataAsc" selected="@(Model.Ordem == "dataAsc" ? "selected" : null)">Data (mais antiga)</option>
+                <option value="valor" selected="@(Model.Ordem == "valor" ? "selected" : null)">Maior valor</option>
+            </select>
+        </label>
+        <button class="botao-linha" type="submit"><span class="ico"><partial name="_SvgIcon" model="@("busca")" /></span><span>Filtrar</span></button>
+    </form>
+
+    <div class="fin-detalhe-grid fin-caderno-totais">
+        <article class="fin-mini"><span>Receita</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Receita)</strong></article>
+        <article class="fin-mini"><span>Operação</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.DespesaOperacional)</strong></article>
+        <article class="fin-mini"><span>Gastos fixos</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.GastosFixos)</strong></article>
+        <article class="fin-mini"><span>Investimento</span><strong>@FinanceiroModel.FormatarReal(Model.Resumo.Investimento)</strong></article>
+        <article class="fin-mini"><span>Operacional</span><strong class="@(Model.Resumo.ResultadoOperacional < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoOperacional)</strong></article>
+        <article class="fin-mini"><span>Caixa</span><strong class="@(Model.Resumo.ResultadoCaixa < 0 ? "neg" : "")">@FinanceiroModel.FormatarReal(Model.Resumo.ResultadoCaixa)</strong></article>
+    </div>
+
+    <div class="fin-caderno">
+    @foreach (var bloco in FinanceiroResumo.BlocosCaderno.Where(b => string.IsNullOrEmpty(Model.Categoria) || Model.Categoria == b.Id))
+    {
+        var itens = Model.LancamentosCaderno.Where(x => x.Categoria == bloco.Id).ToList();
+        if (!string.IsNullOrEmpty(Model.Texto) && itens.Count == 0 && Model.Categoria != bloco.Id) { continue; }
+        var total = itens.Sum(x => x.Valor);
+        <section class="fin-card fin-bloco" id="bloco-@bloco.Id">
+            <div class="fin-card-topo">
+                <h2 class="fin-titulo">@bloco.Titulo</h2>
+                <span class="fin-selo">@itens.Count · @FinanceiroModel.FormatarReal(total)</span>
+            </div>
+            @if (bloco.Id == "filamento" && Model.Periodo == "mes")
+            {
+                <div class="fin-fil-medias">
+                @foreach (var tipo in new[] { "PLA", "PETG", "TPU" })
+                {
+                    var m = FinanceiroResumo.MediaFilamento(Model.LancamentosPeriodo, Model.Mes, tipo);
+                    <span><strong>@tipo</strong> @FinanceiroModel.FormatarReal(m.Media) / kg · @FinanceiroModel.FormatarReal(m.Valor) em @m.Quantidade.ToString("0.##").Replace('.', ',') kg</span>
+                }
+                </div>
+            }
+            <div class="tabela-rolagem">
+                <table class="fin-tabela">
+                    <thead><tr><th>Data</th><th>Descrição</th><th>Tipo</th><th>Qtd</th><th>Valor</th><th></th></tr></thead>
+                    <tbody>
+                    @if (itens.Count == 0)
+                    {
+                        <tr><td colspan="6" class="fin-vazio">Nenhum lançamento neste bloco.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in itens)
+                        {
+                            <tr>
+                                <td>@(item.Data?.ToString("dd/MM/yyyy") ?? "—")</td>
+                                <td>
+                                    @item.Descricao
+                                    @if (item.Kwh is decimal kwh)
+                                    {
+                                        <text> · @kwh.ToString("0.##") kWh × @item.Tarifa</text>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(item.Link))
+                                    {
+                                        <a class="fin-link-ext" href="@item.Link" target="_blank" rel="noopener">link</a>
+                                    }
+                                </td>
+                                <td>@(string.IsNullOrWhiteSpace(item.TipoInsumo) ? "—" : item.TipoInsumo)</td>
+                                <td>@item.Quantidade.ToString("0.##").Replace('.', ',')</td>
+                                <td>@FinanceiroModel.FormatarReal(item.Valor)</td>
+                                <td>
+                                    <form method="post" asp-page-handler="Estornar" onsubmit="return confirm('Estornar este lançamento?');">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <input type="hidden" name="periodo" value="@Model.Periodo" />
+                                        <input type="hidden" name="ano" value="@Model.Ano" />
+                                        <input type="hidden" name="mes" value="@Model.Mes" />
+                                        <input type="hidden" name="categoria" value="@Model.Categoria" />
+                                        <input type="hidden" name="q" value="@Model.Texto" />
+                                        <button class="botao-linha fin-estorno" type="submit">Estornar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    }
+    </div>
+
+    @if (Model.Periodo == "mes")
+    {
+        <section class="fin-card" id="compra-rapida">
+            <h2 class="fin-titulo">Compra rápida de insumo</h2>
+            <form method="post" asp-page-handler="Compra" class="fin-meta-form fin-compra-form">
+                <input type="hidden" name="periodo" value="mes" />
+                <input type="hidden" name="ano" value="@Model.Ano" />
+                <input type="hidden" name="mes" value="@Model.Mes" />
+                <label class="fin-campo"><span>Descrição</span><input name="CompraDescricao" required /></label>
+                <label class="fin-campo"><span>Tipo</span><input name="CompraTipo" list="fin-tipos" /></label>
+                <datalist id="fin-tipos">
+                    @foreach (var t in Model.TiposInsumo) { <option value="@t.Nome"></option> }
+                </datalist>
+                <label class="fin-campo"><span>Quantidade</span><input name="CompraQuantidade" type="number" step="0.01" value="1" /></label>
+                <label class="fin-campo"><span>Valor</span><input name="CompraValor" type="number" step="0.01" required /></label>
+                <button class="botao" type="submit"><span class="ico"><partial name="_SvgIcon" model="@("carrinho")" /></span><span>Confirmar compra</span></button>
+            </form>
+        </section>
+    }
+}
+else if (Model.Aba == "lancar")
+{
+    <section class="fin-card" id="lancar">
+        <div class="fin-lancar-grade">
+            <form method="post" asp-page-handler="Balcao" class="fin-form">
+                <h2 class="fin-titulo">Venda de balcão</h2>
+                <input type="hidden" name="periodo" value="@Model.Periodo" />
+                <input type="hidden" name="ano" value="@Model.Ano" />
+                <input type="hidden" name="mes" value="@Model.Mes" />
+                <label class="fin-campo"><span>Data</span><input asp-for="LanData" type="date" /></label>
+                <label class="fin-campo"><span>Item</span><input name="LanItemBalcao" required /></label>
+                <label class="fin-campo"><span>Quantidade</span><input asp-for="LanQuantidade" type="number" step="0.01" /></label>
+                <label class="fin-campo"><span>Valor</span><input asp-for="LanValor" type="number" step="0.01" required /></label>
+                <label class="fin-campo"><span>Competência</span>
+                    <select name="LanCompetencia">
+                        @foreach (var c in Model.TodasCompetencias)
+                        {
+                            if (c == Model.Mes) { <option value="@c" selected>@FinanceiroResumo.CompetenciaBr(c)</option> }
+                            else { <option value="@c">@FinanceiroResumo.CompetenciaBr(c)</option> }
+                        }
+                    </select>
+                </label>
+                <button class="botao" type="submit"><span class="ico"><partial name="_SvgIcon" model="@("carrinho")" /></span><span>Lançar receita</span></button>
+            </form>
+
+            <form method="post" asp-page-handler="Lancamento" class="fin-form">
+                <h2 class="fin-titulo">Novo lançamento</h2>
+                <input type="hidden" name="periodo" value="@Model.Periodo" />
+                <input type="hidden" name="ano" value="@Model.Ano" />
+                <input type="hidden" name="mes" value="@Model.Mes" />
+                <label class="fin-campo"><span>Data</span><input asp-for="LanData" type="date" /></label>
+                <label class="fin-campo"><span>Descrição</span><input asp-for="LanDescricao" required /></label>
+                <label class="fin-campo"><span>Categoria</span>
+                    <select asp-for="LanCategoria">
+                        @foreach (var cat in FinanceiroResumo.Categorias)
+                        {
+                            <option value="@cat">@FinanceiroResumo.NomeCategoria(cat)</option>
+                        }
+                    </select>
+                </label>
+                <label class="fin-campo"><span>Tipo de insumo</span>
+                    <select asp-for="LanTipoInsumo">
+                        <option value=""></option>
+                        @foreach (var t in Model.TiposInsumo) { <option value="@t.Nome">@t.Nome</option> }
+                    </select>
+                </label>
+                <label class="fin-campo"><span>Tipo novo</span><input asp-for="LanTipoNovo" placeholder="Se faltar na lista" /></label>
+                <label class="fin-campo"><span>Quantidade</span><input asp-for="LanQuantidade" type="number" step="0.01" /></label>
+                <label class="fin-campo"><span>Valor</span><input name="LanValor" type="number" step="0.01" required /></label>
+                <label class="fin-campo"><span>Link</span><input asp-for="LanLink" /></label>
+                <label class="fin-campo"><span>Competência</span><input asp-for="LanCompetencia" /></label>
+                <button class="botao-teal" type="submit"><span class="ico"><partial name="_SvgIcon" model="@("documento")" /></span><span>Salvar lançamento</span></button>
+            </form>
+        </div>
+    </section>
+}
+else
+{
+    <section class="fin-card">
+        <h2 class="fin-titulo">Contas a pagar / receber</h2>
+        <p class="fin-meta-txt">Em aberto: a pagar @FinanceiroModel.FormatarReal(Model.APagar) · a receber @FinanceiroModel.FormatarReal(Model.AReceber)</p>
+        <form method="post" asp-page-handler="NovaConta" class="fin-meta-form fin-compra-form mb-4">
+            <input type="hidden" name="periodo" value="@Model.Periodo" />
+            <input type="hidden" name="ano" value="@Model.Ano" />
+            <input type="hidden" name="mes" value="@Model.Mes" />
+            <label class="fin-campo"><span>Tipo</span>
                 <select asp-for="ContaTipo">
                     <option value="pagar">A pagar</option>
                     <option value="receber">A receber</option>
                 </select>
             </label>
-            <label>Descrição<input asp-for="ContaDescricao" required /></label>
-            <label>Valor<input asp-for="ContaValor" type="number" step="0.01" min="0.01" /></label>
-            <label>Vencimento<input asp-for="ContaVencimento" type="date" /></label>
-        </div>
-        <button class="botao mt-2" type="submit">Salvar</button>
-    </form>
-    <div class="grade grid grid-cols-1 gap-3">
-    @foreach (var c in Model.Contas)
-    {
-        <article class="fin-card p-4 flex flex-wrap items-center justify-between gap-3">
-            <div>
-                <strong>@c.Descricao</strong>
-                <p class="discreto m-0">@c.Tipo · vence @c.Vencimento.ToString("dd/MM/yyyy") · @(c.Baixada ? "baixada" : "aberta")</p>
-            </div>
-            <strong>R$ @c.Valor.ToString("N2")</strong>
-            @if (!c.Baixada)
-            {
-                <form method="post" asp-page-handler="BaixarConta">
-                    <input type="hidden" name="id" value="@c.Id" />
-                    <input type="hidden" name="aba" value="contas" />
-                    <input type="hidden" name="mes" value="@Model.Mes" />
-                    <button class="botao-linha" type="submit">Baixar</button>
-                </form>
-            }
-        </article>
-    }
-    </div>
-}
-else if (Model.Aba == "lancamentos")
-{
-    <div class="fin-caderno">
-    @foreach (var l in Model.Lancamentos.Where(x => x.Competencia == Model.Mes).Take(50))
-    {
-        <article class="fin-card p-3 @(l.Estornado ? "fin-estorno" : "")">
-            <div class="flex flex-wrap justify-between gap-2">
+            <label class="fin-campo"><span>Descrição</span><input asp-for="ContaDescricao" required /></label>
+            <label class="fin-campo"><span>Valor</span><input asp-for="ContaValor" type="number" step="0.01" min="0.01" /></label>
+            <label class="fin-campo"><span>Vencimento</span><input asp-for="ContaVencimento" type="date" /></label>
+            <button class="botao" type="submit">Salvar conta</button>
+        </form>
+        <div class="fin-contas">
+        @foreach (var c in Model.Contas)
+        {
+            <article class="fin-conta@(c.Baixada ? " baixa" : "")">
                 <div>
-                    <strong>@l.Descricao</strong>
-                    <p class="discreto m-0">@FinanceiroResumo.NomeCategoria(l.Categoria) · @(l.Data?.ToString("dd/MM") ?? "—") · @l.Origem</p>
+                    <strong>@c.Descricao</strong>
+                    <span>@c.Tipo · venc. @c.Vencimento.ToString("dd/MM/yyyy") · @(c.Baixada ? "baixada" : "aberta")</span>
                 </div>
-                <strong class="@(l.Categoria == "receita" ? "" : "neg")">@(l.Categoria == "receita" ? "" : "−")R$ @l.Valor.ToString("N2")</strong>
-            </div>
-        </article>
-    }
-    @if (!Model.Lancamentos.Any(x => x.Competencia == Model.Mes))
-    {
-        <div class="fin-vazio cartao"><p>Sem lançamentos neste mês. Use o caderno para registrar.</p></div>
-    }
-    <a class="botao mt-2 inline-flex" asp-page="/Admin/Mes" asp-route-mes="@Model.Mes">Abrir caderno</a>
-    </div>
-}
-else
-{
-    <form method="post" asp-page-handler="Meta" class="cartao formulario p-4">
-        <h2 class="mt-0">Meta de receita — @Model.Mes</h2>
-        <input type="hidden" name="competencia" value="@Model.Mes" />
-        <label>Valor (R$)<input name="valor" type="number" step="0.01" min="0" value="@Model.MetaMes" /></label>
-        <button class="botao" type="submit">Salvar meta</button>
-    </form>
+                <strong>@FinanceiroModel.FormatarReal(c.Valor)</strong>
+                @if (!c.Baixada)
+                {
+                    <form method="post" asp-page-handler="BaixarConta">
+                        <input type="hidden" name="id" value="@c.Id" />
+                        <input type="hidden" name="aba" value="contas" />
+                        <input type="hidden" name="periodo" value="@Model.Periodo" />
+                        <input type="hidden" name="ano" value="@Model.Ano" />
+                        <input type="hidden" name="mes" value="@Model.Mes" />
+                        <button class="botao-linha" type="submit">Dar baixa</button>
+                    </form>
+                }
+            </article>
+        }
+        @if (!Model.Contas.Any())
+        {
+            <div class="fin-vazio"><p>Nenhuma conta cadastrada.</p></div>
+        }
+        </div>
+    </section>
 }

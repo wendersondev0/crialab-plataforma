@@ -52,7 +52,7 @@
 <div class="fin-kpis fin-caderno-totais">
     <div class="fin-kpi"><span>Receita</span><strong>R$ @Model.Resumo.Receita.ToString("N2")</strong></div>
     <div class="fin-kpi"><span>Despesa</span><strong>R$ @Model.Resumo.DespesaOperacional.ToString("N2")</strong></div>
-    <div class="fin-kpi"><span>Resultado</span><strong class="@(Model.Resumo.Resultado < 0 ? "neg" : "")">R$ @Model.Resumo.Resultado.ToString("N2")</strong></div>
+    <div class="fin-kpi"><span>Resultado</span><strong class="@(Model.Resumo.ResultadoOperacional < 0 ? "neg" : "")">R$ @Model.Resumo.ResultadoOperacional.ToString("N2")</strong></div>
 </div>
 
 <div class="fin-cat-chips mb-3">

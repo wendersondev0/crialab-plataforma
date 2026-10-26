@@ -663,6 +663,52 @@
   border: 1px solid var(--linha);
   box-shadow: var(--sombra);
 }
+.fin-periodo-escopo {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(27, 36, 48, 0.06);
+  border: 1px solid var(--linha);
+}
+.fin-periodo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: rgba(27, 36, 48, 0.7);
+  text-decoration: none;
+  border: 0;
+  background: transparent;
+}
+.fin-periodo-btn:hover { color: var(--tinta); }
+.fin-periodo-btn.ativo {
+  background: #fff;
+  color: var(--laranja);
+  box-shadow: 0 4px 12px rgba(232, 119, 42, 0.18);
+}
+.fin-periodo-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  align-items: end;
+}
+.fin-periodo-rotulo {
+  width: 100%;
+  font-size: 0.9rem;
+  color: rgba(27, 36, 48, 0.65);
+}
+.fin-periodo-rotulo strong { color: var(--tinta); }
+.fin-kpis a.fin-kpi,
+.fin-detalhe-grid a.fin-mini {
+  color: inherit;
+  cursor: pointer;
+}
+.fin-chip.vazio { opacity: 0.45; }
 .fin-campo {
   display: grid;
   gap: 4px;
