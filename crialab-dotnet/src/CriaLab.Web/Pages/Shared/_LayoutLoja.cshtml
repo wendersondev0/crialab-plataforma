@@ -225,35 +225,30 @@
         }
         <div class="rodape-grade">
             <div class="rodape-marca">
-                <img src="~/marca/logo-colorida.png" alt="Cria Lab DM" />
-                <strong class="rodape-nome">@(identidade?.Nome ?? "Cria Lab DM")</strong>
-                <p class="rodape-meta">Oficina de impressão 3D · peças prontas, sob demanda e personalizadas.</p>
-                @if (!string.IsNullOrWhiteSpace(identidade?.Endereco))
-                {
-                    <p class="rodape-meta">@identidade!.Endereco</p>
-                }
-                @if (!string.IsNullOrWhiteSpace(identidade?.Horario))
-                {
-                    <p class="rodape-meta">@identidade!.Horario</p>
-                }
+                <img class="logo-rodape" src="~/marca/logo-colorida.png" alt="Cria Lab" />
+                <div>
+                    <strong class="rodape-nome">@(identidade?.Nome ?? "Cria Lab DM")</strong>
+                    <p class="rodape-meta m-0">Impressão 3D com cara de oficina</p>
+                    @if (!string.IsNullOrWhiteSpace(identidade?.Endereco))
+                    {
+                        <p class="rodape-meta m-0">@identidade!.Endereco</p>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(identidade?.Horario))
+                    {
+                        <p class="rodape-meta m-0">@identidade!.Horario</p>
+                    }
+                </div>
             </div>
             <div class="rodape-bloco">
-                <h2 class="rodape-titulo">Loja</h2>
-                <nav class="rodape-nav">
-                    <a class="rodape-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="pronta-entrega">Pronta Entrega</a>
-                    <a class="rodape-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="sob-demanda">Sob Demanda</a>
-                    <a class="rodape-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado">Personalizados</a>
-                    <a class="rodape-link" asp-page="/Sobre">Sobre a Cria Lab</a>
-                    <a class="rodape-link" asp-page="/Contato">Contato</a>
-                </nav>
-            </div>
-            <div class="rodape-bloco">
-                <h2 class="rodape-titulo">Conta</h2>
-                <nav class="rodape-nav">
-                    <a class="rodape-link" asp-page="/Conta/Index">Minha conta</a>
-                    <a class="rodape-link" asp-page="/Carrinho">Carrinho</a>
-                    <a class="rodape-link" asp-page="/Busca">Busca</a>
-                </nav>
+                <p class="rodape-titulo">Contato</p>
+                @if (!string.IsNullOrWhiteSpace(identidade?.Email))
+                {
+                    <a class="rodape-link" href="mailto:@identidade!.Email"><span class="ico"><partial name="_SvgIcon" model="@("email")" /></span><span>@identidade.Email</span></a>
+                }
+                @if (!string.IsNullOrWhiteSpace(identidade?.Telefone))
+                {
+                    <a class="rodape-link" href="tel:+5527996530954"><span class="ico"><partial name="_SvgIcon" model="@("telefone")" /></span><span>@identidade!.Telefone</span></a>
+                }
                 <div class="rodape-redes">
                     @if (!string.IsNullOrWhiteSpace(identidade?.Whatsapp))
                     {
@@ -263,11 +258,33 @@
                     {
                         <a class="rodape-rede" href="@identidade!.Instagram" target="_blank" rel="noopener" aria-label="Instagram"><partial name="_SvgIcon" model="@("instagram")" /></a>
                     }
+                    @if (!string.IsNullOrWhiteSpace(identidade?.Tiktok))
+                    {
+                        <a class="rodape-rede" href="@identidade!.Tiktok" target="_blank" rel="noopener" aria-label="TikTok"><partial name="_SvgIcon" model="@("tiktok")" /></a>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(identidade?.Youtube))
+                    {
+                        <a class="rodape-rede" href="@identidade!.Youtube" target="_blank" rel="noopener" aria-label="YouTube"><partial name="_SvgIcon" model="@("youtube")" /></a>
+                    }
                     @if (!string.IsNullOrWhiteSpace(identidade?.Shopee))
                     {
                         <a class="rodape-rede" href="@identidade!.Shopee" target="_blank" rel="noopener" aria-label="Shopee"><partial name="_SvgIcon" model="@("shopee")" /></a>
                     }
+                    @if (!string.IsNullOrWhiteSpace(identidade?.MercadoLivre))
+                    {
+                        <a class="rodape-rede" href="@identidade!.MercadoLivre" target="_blank" rel="noopener" aria-label="Mercado Livre"><partial name="_SvgIcon" model="@("mercadolivre")" /></a>
+                    }
                 </div>
+            </div>
+            <div class="rodape-bloco">
+                <p class="rodape-titulo">Loja</p>
+                <nav class="rodape-nav">
+                    <a class="rodape-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="pronta-entrega"><span class="ico"><partial name="_SvgIcon" model="@("caixa")" /></span><span>Pronta Entrega</span></a>
+                    <a class="rodape-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="sob-demanda"><span class="ico"><partial name="_SvgIcon" model="@("caminhao")" /></span><span>Sob Demanda</span></a>
+                    <a class="rodape-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span>Personalizados</span></a>
+                    <a class="rodape-link" asp-page="/Sobre"><span class="ico"><partial name="_SvgIcon" model="@("sobre")" /></span><span>Sobre a Cria Lab</span></a>
+                    <a class="rodape-link" asp-page="/Contato"><span class="ico"><partial name="_SvgIcon" model="@("contato")" /></span><span>Contato</span></a>
+                </nav>
             </div>
         </div>
         <div class="rodape-base">
