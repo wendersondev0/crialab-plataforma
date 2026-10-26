@@ -1,7 +1,163 @@
 @page
 @model CriaLab.Web.Pages.Admin.ImpressaoModel
-@{ ViewData["Title"] = "Impressão"; }
-<h1>Fila de impressão</h1>
-@foreach (var j in Model.Jobs) {
-<article>@j.Titulo · @j.Maquina?.Nome · @j.Status · @j.PesoPrevisto g</article>
+@{
+    ViewData["Title"] = "Impressão";
+    string AbaCls(string a) => "cta-aba" + (Model.Aba == a ? " ativo" : "");
 }
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Gestão de impressão 3D</h1>
+        <p class="admin-prod-intro m-0 mt-1">Mesa, fila, qualidade e histórico das impressoras.</p>
+    </div>
+    <a class="botao-linha" asp-page="/Admin/Patrimonio" asp-route-aba="maquinas">Patrimônio</a>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+<div class="pat-kpis mb-3">
+    <div class="painel-kpi"><strong>@Model.Imprimindo</strong><span>Imprimindo</span></div>
+    <div class="painel-kpi"><strong>@Model.NaFila</strong><span>Na fila</span></div>
+    <div class="painel-kpi"><strong>@Model.Concluidas</strong><span>Concluídas</span></div>
+    <div class="painel-kpi @(Model.Falhas > 0 ? "pat-kpi-alerta" : "")"><strong>@Model.Falhas</strong><span>Falhas</span></div>
+</div>
+
+<div class="cta-abas mb-3">
+    <a class="@AbaCls("mesa")" asp-page="/Admin/Impressao" asp-route-aba="mesa">Mesa</a>
+    <a class="@AbaCls("fila")" asp-page="/Admin/Impressao" asp-route-aba="fila">Fila</a>
+    <a class="@AbaCls("qualidade")" asp-page="/Admin/Impressao" asp-route-aba="qualidade">Qualidade</a>
+    <a class="@AbaCls("historico")" asp-page="/Admin/Impressao" asp-route-aba="historico">Histórico</a>
+    <a class="@AbaCls("manutencao")" asp-page="/Admin/Impressao" asp-route-aba="manutencao">Manutenção</a>
+</div>
+
+<form method="get" class="mb-4 flex flex-wrap gap-2 items-end">
+    <input type="hidden" name="aba" value="@Model.Aba" />
+    <label class="m-0">Máquina
+        <select name="maquina">
+            <option value="">Todas</option>
+            @foreach (var m in Model.Maquinas)
+            {
+                if (Model.MaquinaFiltro == m.Id) { <option value="@m.Id" selected>@m.Nome</option> }
+                else { <option value="@m.Id">@m.Nome</option> }
+            }
+        </select>
+    </label>
+    <label class="m-0">Status
+        <select name="status">
+            <option value="">Todos</option>
+            @foreach (var s in new[] { "na fila", "imprimindo", "pausada", "erro", "concluida", "cancelada" })
+            {
+                if (Model.StatusFiltro == s) { <option value="@s" selected>@s</option> }
+                else { <option value="@s">@s</option> }
+            }
+        </select>
+    </label>
+    <label class="m-0">Busca<input type="search" name="q" value="@Model.Q" /></label>
+    <button class="botao" type="submit">Filtrar</button>
+</form>
+
+@if (Model.Aba == "mesa")
+{
+    <div class="pat-grade mb-4">
+    @foreach (var m in Model.Maquinas)
+    {
+        var rotulo = Model.RotuloMaquina(m.Id);
+        <article class="pat-card p-4">
+            <div class="flex flex-wrap justify-between gap-2">
+                <strong>@m.Nome</strong>
+                <span class="@Model.ClasseRotulo(rotulo)">@rotulo</span>
+            </div>
+            <p class="discreto m-0">@m.Local · @m.Watts W · @m.Status</p>
+            <a class="botao-linha mt-2 inline-flex" asp-page="/Admin/Impressao" asp-route-aba="fila" asp-route-maquina="@m.Id">Ver fila</a>
+        </article>
+    }
+    </div>
+}
+
+@if (Model.Aba is "fila" or "mesa")
+{
+    <form method="post" asp-page-handler="Novo" class="cartao formulario p-4 mb-4">
+        <h2 class="mt-0">Novo trabalho</h2>
+        <div class="grade grid grid-cols-1 gap-3 md:grid-cols-2">
+            <label>Título<input asp-for="NovoTitulo" required /></label>
+            <label>Máquina<select asp-for="NovoMaquinaId" asp-items="Model.MaquinasSelect" required></select></label>
+            <label>Produto ID<input asp-for="NovoProdutoId" placeholder="opcional" /></label>
+            <label>Peso previsto (g)<input asp-for="NovoPeso" type="number" step="0.1" min="0" /></label>
+            <label>Duração (min)<input asp-for="NovoMinutos" type="number" min="30" /></label>
+        </div>
+        <button class="botao mt-2" type="submit">Colocar na fila</button>
+    </form>
+}
+
+<div class="grade grid grid-cols-1 gap-3">
+@foreach (var j in Model.Jobs)
+{
+    <article class="cartao p-4">
+        <div class="flex flex-wrap items-start justify-between gap-2">
+            <div>
+                <strong>@j.Titulo</strong>
+                <p class="discreto m-0">@(j.Maquina?.Nome ?? j.MaquinaId) · @j.PesoPrevisto g previsto
+                    @if (j.Inicio.HasValue)
+                    {
+                        <text> · @j.Inicio.Value.ToLocalTime().ToString("dd/MM HH:mm")</text>
+                    }
+                    @if (j.Fim.HasValue)
+                    {
+                        <text> → @j.Fim.Value.ToLocalTime().ToString("dd/MM HH:mm")</text>
+                    }
+                </p>
+            </div>
+            <span class="imp-selo">@j.Status@(j.Sucesso == false ? " · falha" : (j.Sucesso == true ? " · ok" : ""))</span>
+        </div>
+
+        @if (j.Status is "na fila" or "pausada")
+        {
+            <form method="post" asp-page-handler="Status" class="inline mt-2">
+                <input type="hidden" name="id" value="@j.Id" />
+                <input type="hidden" name="status" value="imprimindo" />
+                <input type="hidden" name="aba" value="@Model.Aba" />
+                <input type="hidden" name="maquina" value="@Model.MaquinaFiltro" />
+                <button class="botao" type="submit">Iniciar</button>
+            </form>
+        }
+        @if (j.Status == "imprimindo")
+        {
+            <form method="post" asp-page-handler="Status" class="inline mt-2">
+                <input type="hidden" name="id" value="@j.Id" />
+                <input type="hidden" name="status" value="pausada" />
+                <input type="hidden" name="aba" value="@Model.Aba" />
+                <button class="botao-linha" type="submit">Pausar</button>
+            </form>
+            <a class="botao-linha" asp-page="/Admin/Impressao" asp-route-aba="@Model.Aba" asp-route-concluir="@j.Id">Concluir…</a>
+        }
+
+        @if (Model.ConcluirId == j.Id || (Model.Aba == "qualidade" && j.Status != "concluida"))
+        {
+            <form method="post" asp-page-handler="Concluir" class="formulario mt-3 border-t border-linha pt-3">
+                <input type="hidden" name="id" value="@j.Id" />
+                <input type="hidden" name="aba" value="historico" />
+                <div class="grade grid grid-cols-1 gap-3 md:grid-cols-3">
+                    <label>Peso real (g)<input name="pesoReal" type="number" step="0.1" min="0" value="@j.PesoPrevisto" /></label>
+                    <label>kWh<input name="kwh" type="number" step="0.01" min="0" value="@(j.Kwh > 0 ? j.Kwh : 0.4m)" /></label>
+                    <label>Motivo (se falha)<input name="motivo" placeholder="falta de filamento…" /></label>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    <button class="botao" type="submit" name="sucesso" value="true">Sucesso</button>
+                    <button class="botao-linha" type="submit" name="sucesso" value="false">Registrar falha</button>
+                </div>
+            </form>
+        }
+
+        @if (j.Status == "concluida")
+        {
+            <p class="discreto m-0 mt-2">Peso real @j.PesoReal g · @j.Kwh kWh@(string.IsNullOrWhiteSpace(j.Motivo) ? "" : " · " + j.Motivo)</p>
+        }
+    </article>
+}
+@if (!Model.Jobs.Any() && Model.Aba != "mesa")
+{
+    <div class="vazio cartao"><p>Nenhum trabalho nesta visão.</p></div>
+}
+</div>

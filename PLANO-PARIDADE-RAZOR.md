@@ -159,9 +159,9 @@ Página opcional **Personalizados** = atalho filtrado da lista (KPI já filtra).
 - [x] O que o `marketing()` do estático gerencia (revisar e portar 1:1)
 
 ### C6. Patrimônio + Estoque + Impressão
-- [ ] Máquinas / patrimônio (`oficina.js` patrimônio)
-- [ ] Estoque insumos, cores, variantes
-- [ ] Jobs impressão + lista impressões
+- [x] Máquinas / patrimônio (`oficina.js` patrimônio)
+- [x] Estoque insumos, cores, variantes
+- [x] Jobs impressão + lista impressões
 
 ### C7. Financeiro
 - [ ] Painel financeiro (contas, lançamentos, metas)
@@ -248,9 +248,9 @@ Inventário de páginas estáticas a bater:
 
 ## 9. Próximo passo imediato
 
-**Concluído:** S0–S4 — loja comercial + atendimento/marketing + busca/polish.
+**Concluído:** S0–S5 — inclui patrimônio, estoque e impressão (C6).
 
-**Seguir com (S5):**
-1. Patrimônio / Estoque / Impressão (C6)
+**Seguir com (S6):**
+1. Financeiro (C7): contas, mês, energia, conciliação
 2. Preview card no ProdutoEdit (restante C2)
-3. Financeiro (C7) na sequência
+3. Fiscal (C8) e Sistema (C9) em seguida
