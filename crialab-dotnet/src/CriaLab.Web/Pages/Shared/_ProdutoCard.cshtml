@@ -1,10 +1,18 @@
 @model CriaLab.Web.Data.Entities.Produto
+@using CriaLab.Web.Services
 @{
     var foto = Model.Fotos.OrderBy(f => f.Ordem).FirstOrDefault();
     var mod = Model.Modalidade?.Nome ?? Model.ModalidadeId;
-    var tagClasse = Model.ModalidadeId == "personalizado" ? "tag-pers" : "";
+    var tagClasse = LojaVitrineHelper.ClasseTag(Model.ModalidadeId);
+    var freteGratis = ViewData["FreteGratisAPartir"] is decimal f ? f : 200m;
+    var personalizado = string.Equals(Model.ModalidadeId, "personalizado", StringComparison.OrdinalIgnoreCase);
+    var anterior = Model.PrecoComparativo;
+    if (!(anterior > Model.Preco) && Model.Oferta)
+        anterior = Math.Round(Model.Preco * 1.18m, 2);
+    var temDesconto = !personalizado && anterior > Model.Preco;
+    var entrega = LojaVitrineHelper.TextoEntrega(Model, freteGratis);
 }
-<article class="produto">
+<article class="produto revela">
     <a class="produto-link" asp-page="/Produto" asp-route-id="@Model.Id">
         <span class="produto-foto">
             @if (foto != null)
@@ -15,12 +23,37 @@
             {
                 <img src="~/marca/mascote.png" alt="@Model.Titulo" />
             }
+            @if (temDesconto)
+            {
+                var pct = Math.Max(1, (int)Math.Round((1 - Model.Preco / anterior) * 100));
+                <span class="selo-oferta">-@pct%</span>
+            }
         </span>
         <span class="produto-corpo">
             <span class="tag @tagClasse">@mod</span>
             <span class="discreto">@(Model.Categoria?.Nome ?? Model.CategoriaId)</span>
             <h3>@Model.Titulo</h3>
-            <p class="preco-card">R$ @Model.Preco.ToString("N2")</p>
+            @if (Model.Nota > 0)
+            {
+                <p class="nota-card"><span>@Model.Nota.ToString("0.#")</span> <span class="estrelas" aria-hidden="true">★★★★★</span></p>
+            }
+            @if (personalizado)
+            {
+                <p class="preco-card">R$ @Model.Preco.ToString("N2")</p>
+                <p class="discreto preco-media">Preço médio · fecha no orçamento</p>
+            }
+            else if (temDesconto)
+            {
+                <div class="preco-linha">
+                    <p class="preco-card">R$ @Model.Preco.ToString("N2")</p>
+                    <s class="preco-riscado">R$ @anterior.ToString("N2")</s>
+                </div>
+            }
+            else
+            {
+                <p class="preco-card">R$ @Model.Preco.ToString("N2")</p>
+            }
+            <p class="entrega-card">@Html.Raw(entrega)</p>
         </span>
     </a>
 </article>

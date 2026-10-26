@@ -9,15 +9,23 @@
         Buscar peça
         <input type="search" name="q" value="@Model.Termo" placeholder="Nome, material ou categoria" />
     </label>
+    @if (!string.IsNullOrWhiteSpace(Model.Categoria))
+    {
+        <input type="hidden" name="categoria" value="@Model.Categoria" />
+    }
     <button class="botao" type="submit">Buscar</button>
 </form>
-@if (!string.IsNullOrWhiteSpace(Model.Termo) && !Model.Resultados.Any())
+@if (!string.IsNullOrWhiteSpace(Model.Categoria))
 {
-    <div class="vazio cartao"><p>Nada encontrado para “@Model.Termo”.</p></div>
+    <p class="discreto">Filtro de tema: <strong>@Model.Categoria</strong></p>
+}
+@if (( !string.IsNullOrWhiteSpace(Model.Termo) || !string.IsNullOrWhiteSpace(Model.Categoria) ) && !Model.Resultados.Any())
+{
+    <div class="vazio cartao"><p>Nada encontrado@(string.IsNullOrWhiteSpace(Model.Termo) ? "." : $" para “{Model.Termo}”.")</p></div>
 }
 else if (Model.Resultados.Any())
 {
-    <div class="grade vitrine">
+    <div class="grade vitrine grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         @foreach (var p in Model.Resultados)
         {
             <partial name="_ProdutoCard" model="p" />

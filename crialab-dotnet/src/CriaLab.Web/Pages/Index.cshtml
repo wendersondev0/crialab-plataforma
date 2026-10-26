@@ -1,39 +1,72 @@
 @page
 @model CriaLab.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = "Início";
+    ViewData["Title"] = "Cria Lab DM";
+    ViewData["FreteGratisAPartir"] = Model.FreteGratisAPartir;
+    var freteTxt = Model.FreteGratisAPartir.ToString("N2");
 }
-<section class="hero cartao">
-    <div>
-        <p class="discreto m-0">Oficina de impressão 3D</p>
-        <h1>Peças prontas, sob demanda e do seu jeito</h1>
-        <p>A Cria Lab DM imprime decoração, chaveiros, utilidades e personalizados a partir da sua ideia.</p>
-        <div class="linha" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px">
-            <a class="botao" asp-page="/Produtos" asp-route-ModalidadeFiltro="pronta-entrega">Ver pronta entrega</a>
-            <a class="botao-teal" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado">Personalizados</a>
-        </div>
+<section class="carrossel revela" id="carrossel">
+    <div class="carrossel-trilho">
+        <article class="slide fundo-laranja">
+            <div class="slide-texto">
+                <p class="selo">Cria Lab DM</p>
+                <h2>Pronta entrega na oficina</h2>
+                <p>Peças já impressas, prontas para envio ou retirada.</p>
+            </div>
+            <img class="slide-mascote" src="~/marca/mascote.png" alt="" />
+        </article>
+        <article class="slide fundo-teal">
+            <div class="slide-texto">
+                <p class="selo">Cria Lab DM</p>
+                <h2>Sob demanda e personalizados</h2>
+                <p>Modelo pronto para imprimir, ou peça sob medida com orçamento.</p>
+            </div>
+            <img class="slide-mascote" src="~/marca/mascote.png" alt="" />
+        </article>
+        <article class="slide fundo-tinta">
+            <div class="slide-texto">
+                <p class="selo">Cria Lab DM</p>
+                <h2>Frete grátis a partir de R$ @freteTxt</h2>
+                <p>Na ficha você simula PAC e SEDEX pelo CEP.</p>
+            </div>
+            <img class="slide-mascote" src="~/marca/mascote.png" alt="" />
+        </article>
     </div>
-    <img class="mascote" src="~/marca/mascote.png" alt="Mascote Cria Lab" />
+    <button class="carrossel-seta anterior" type="button" data-passo="-1" aria-label="Anterior">‹</button>
+    <button class="carrossel-seta proxima" type="button" data-passo="1" aria-label="Próximo">›</button>
+    <div class="carrossel-pontos">
+        <button type="button" data-slide="0" class="ativo" aria-label="Slide 1"></button>
+        <button type="button" data-slide="1" aria-label="Slide 2"></button>
+        <button type="button" data-slide="2" aria-label="Slide 3"></button>
+    </div>
 </section>
 
-<section class="mt-6">
-    <div class="titulo-secao"><h2>Como comprar</h2></div>
-    <div class="grade grade-3">
+<p class="intro-pagina intro-home mt-4 mb-2 max-w-3xl text-tinta/75" title="@Model.IntroHome">@Model.IntroHome</p>
+
+<section class="faixa-categorias faixa-modalidades my-3">
+    <p class="discreto m-0 mb-2 font-bold text-tinta/70">Modalidades</p>
+    <div class="chips flex flex-wrap gap-2">
         @foreach (var m in Model.Modalidades)
         {
-            <article class="cartao bloco">
-                <h3>@m.Nome</h3>
-                <p>@m.Resumo</p>
-                <p class="discreto">@m.Explicacao</p>
-                <a class="botao-linha" asp-page="/Produtos" asp-route-ModalidadeFiltro="@m.Id">Ver peças</a>
-            </article>
+            <a class="chip revela" asp-page="/Produtos" asp-route-ModalidadeFiltro="@m.Id" title="@m.Resumo">@m.Nome</a>
         }
     </div>
 </section>
 
-<section class="mt-6">
-    <div class="titulo-secao"><h2>Destaques</h2></div>
-    <div class="grade vitrine">
+<section class="faixa-categorias my-3">
+    <p class="discreto m-0 mb-2 font-bold text-tinta/70">Temas</p>
+    <div class="chips chips-temas flex flex-nowrap gap-2 overflow-x-auto pb-1">
+        @foreach (var c in Model.Categorias)
+        {
+            <a class="chip revela" asp-page="/Busca" asp-route-categoria="@c.Id" title="Filtrar a busca por @c.Nome">@c.Nome</a>
+        }
+    </div>
+</section>
+
+<section class="mt-2">
+    <div class="titulo-secao linha"><h2>Na loja</h2></div>
+    <p class="discreto intro-grade mb-4 max-w-3xl">Cards sem botão: toque na peça para ver preço, frete, Shopee e Mercado Livre na ficha.</p>
+    <div class="grade vitrine grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         @foreach (var p in Model.Produtos)
         {
             <partial name="_ProdutoCard" model="p" />

@@ -2,7 +2,6 @@ using CriaLab.Web.Data;
 using CriaLab.Web.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CriaLab.Web.Pages;
@@ -17,12 +16,19 @@ public class ProdutosModel : PageModel
     public string? ModalidadeFiltro { get; set; }
 
     public IList<Produto> Produtos { get; private set; } = new List<Produto>();
-    public SelectList ModalidadeOpcoes { get; private set; } = null!;
+    public Modalidade? Modalidade { get; private set; }
+    public decimal FreteGratisAPartir { get; private set; } = 200;
 
     public async Task OnGetAsync()
     {
-        var modalidades = await _db.Modalidades.AsNoTracking().OrderBy(x => x.Nome).ToListAsync();
-        ModalidadeOpcoes = new SelectList(modalidades, "Id", "Nome", ModalidadeFiltro);
+        var cfg = await _db.ConfiguracoesLoja.AsNoTracking().FirstOrDefaultAsync();
+        if (cfg != null)
+            FreteGratisAPartir = cfg.FreteGratisAPartir;
+        ViewData["FreteGratisAPartir"] = FreteGratisAPartir;
+
+        if (!string.IsNullOrWhiteSpace(ModalidadeFiltro))
+            Modalidade = await _db.Modalidades.AsNoTracking().FirstOrDefaultAsync(x => x.Id == ModalidadeFiltro);
+
         var q = _db.Produtos.AsNoTracking()
             .Include(x => x.Fotos)
             .Include(x => x.Modalidade)

@@ -15,6 +15,10 @@
   text-decoration: none;
 }
 .produto .produto-corpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
   padding: 16px;
 }
 .produto .preco-card {
@@ -23,7 +27,53 @@
   font-weight: 800;
   line-height: 1.1;
 }
+.produto .preco-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px;
+  margin-top: 4px;
+}
+.produto .preco-riscado {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(27, 36, 48, 0.45);
+}
+.produto .preco-media { margin: 4px 0 0; }
+.produto .nota-card {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.875rem;
+  color: rgba(27, 36, 48, 0.75);
+}
+.produto .nota-card .estrelas { color: var(--laranja); }
+.produto .entrega-card {
+  margin: auto 0 0;
+  padding-top: 8px;
+  font-size: 0.875rem;
+}
+.produto .selo-oferta {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  background: var(--laranja);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 4px 10px;
+}
 .produto .tag-pers { background: var(--laranja); }
+.produto .tag-demanda { background: var(--tinta); }
+.produto .tag-pronta { background: var(--teal); }
+.popup-topo .item-popup-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .formulario.cartao,
 .cartao.formulario {
   display: grid;
