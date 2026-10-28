@@ -2285,3 +2285,96 @@ a.imp-kpi { text-decoration: none; }
   font-weight: 600;
   background: #fff;
 }
+.cta-ok {
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(20, 143, 147, 0.12);
+  color: var(--teal-escuro);
+  font-weight: 800;
+}
+.cta-erro {
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(204, 12, 57, 0.12);
+  color: #a40a2e;
+  font-weight: 800;
+}
+.papeis-grade {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.papeis-painel h2,
+.papeis-pessoas h2 { margin-bottom: 12px; }
+.papeis-criar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.papeis-criar .fin-campo { flex: 1 1 160px; }
+.papeis-criar .botao { min-height: 42px; }
+.papeis-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.papeis-lista li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 2px solid var(--linha);
+  border-radius: 14px;
+  background: var(--creme);
+}
+.papeis-lista strong { display: block; }
+.papeis-lista p {
+  margin: 2px 0 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(27, 36, 48, 0.6);
+}
+.papeis-selo {
+  display: inline-flex;
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(232, 119, 42, 0.16);
+  color: var(--laranja-escuro);
+  font-size: 0.72rem;
+  font-weight: 800;
+  vertical-align: middle;
+}
+.papeis-lista .botao-linha {
+  min-height: 36px;
+  padding: 0 12px;
+  color: var(--tinta);
+  background: #fff;
+}
+.papeis-pessoas { display: grid; gap: 10px; }
+.papeis-pessoa .botao { justify-self: start; min-height: 40px; }
+.papeis-pessoa-topo { display: grid; gap: 2px; }
+.papeis-pessoa-topo span {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: rgba(27, 36, 48, 0.62);
+}
+.papeis-checks { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.papeis-check { min-height: 32px; }
+.papeis-check input {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  accent-color: var(--laranja);
+}
+@media (max-width: 800px) {
+  .papeis-grade { grid-template-columns: 1fr; }
+}

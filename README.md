@@ -14,7 +14,7 @@ Loja estática de referência e app Razor no mesmo repositório.
 - Destino operacional: app **Razor** em `src/CriaLab.Web` (paridade com `estatico/`).
 - Busca da loja (`/Busca`): painel de filtros, sugestões, chips para remover filtro e vitrine completa quando não há filtro.
 - Contato da loja (`/Contato`): WhatsApp, e-mail e telefone clicáveis, e formulário com validação e confirmação.
-- Admin: menu na mesma barra laranja da loja, com ícone, item ativo e gaveta no celular. Pedidos segue unificado com Fiscal (abas); Financeiro com KPIs e tooltips.
+- Admin: menu na mesma barra laranja da loja. Papéis de acesso em `/Admin/Papeis`. Pedidos segue unificado com Fiscal (abas); Financeiro com KPIs e tooltips.
 - Favoritos: cookie anônimo + banco para usuário autenticado.
 - Parceiros (Vila Verde, GoFit) com URL de Instagram no rodapé/Sobre.
 - Seed aplica migrations e carga demo (planilha financeira, catálogo, oficina).
@@ -118,7 +118,7 @@ O seed financeiro/orçamentos carrega `src/CriaLab.Web/Data/Seeding/planilha/*.j
 | `/Admin/Patrimonio` · `/Admin/Estoque` · `/Admin/Impressao` | Oficina |
 | `/Admin/Financeiro` · `/Admin/Mes` · `/Admin/Energia` · `/Admin/Conciliacao` | Financeiro |
 | `/Admin/Fiscal` | Recibos / revisão de nota / CSV |
-| `/Admin/Sistema` | Identidade, vendas, CEP, publicação, avançado |
+| `/Admin/Sistema` · `/Admin/Papeis` | Loja, frete, site · papéis de acesso |
 
 ### Restaurar carga inicial (Development)
 

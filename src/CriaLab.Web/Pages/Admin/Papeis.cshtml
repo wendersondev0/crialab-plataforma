@@ -1,0 +1,80 @@
+@page
+@model CriaLab.Web.Pages.Admin.PapeisModel
+@{
+    ViewData["Title"] = "Papéis";
+}
+
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Papéis</h1>
+        <p class="admin-prod-intro m-0 mt-1">Quem compra na loja e quem administra a oficina. Só o papel Administrador abre esta área.</p>
+    </div>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+@if (TempData["Erro"] is string erro)
+{
+    <p class="cta-erro">@erro</p>
+}
+
+<div class="papeis-grade">
+    <section class="cartao papeis-painel">
+        <h2 class="mt-0">Lista</h2>
+        <form method="post" asp-page-handler="Criar" class="papeis-criar">
+            <label class="fin-campo">
+                <span>Novo papel</span>
+                <input name="novoNome" maxlength="40" autocomplete="off" placeholder="Ex.: Oficina" />
+            </label>
+            <button class="botao" type="submit">Criar papel</button>
+        </form>
+        <ul class="papeis-lista">
+            @foreach (var papel in Model.Papeis)
+            {
+                <li>
+                    <div>
+                        <strong>@papel.Rotulo</strong>
+                        @if (papel.Sistema)
+                        {
+                            <span class="papeis-selo">Do sistema</span>
+                        }
+                        <p>@papel.Pessoas @(papel.Pessoas == 1 ? "pessoa" : "pessoas")</p>
+                    </div>
+                    @if (!papel.Sistema)
+                    {
+                        <form method="post" asp-page-handler="Excluir" onsubmit="return confirm('Apagar este papel?');">
+                            <input type="hidden" name="nome" value="@papel.Nome" />
+                            <button class="botao-linha" type="submit">Apagar</button>
+                        </form>
+                    }
+                </li>
+            }
+        </ul>
+    </section>
+
+    <section class="papeis-pessoas">
+        <h2 class="mt-0">Pessoas</h2>
+        @foreach (var pessoa in Model.Pessoas)
+        {
+            <form method="post" asp-page-handler="Pessoa" class="cartao papeis-pessoa">
+                <input type="hidden" name="userId" value="@pessoa.Id" />
+                <div class="papeis-pessoa-topo">
+                    <strong>@pessoa.Nome</strong>
+                    <span>@pessoa.Email</span>
+                </div>
+                <div class="papeis-checks">
+                    @foreach (var papel in Model.Papeis)
+                    {
+                        <label class="sys-check papeis-check">
+                            <input type="checkbox" name="papeis" value="@papel.Nome" checked="@(PapeisModel.Tem(pessoa.Papeis, papel.Nome) ? "checked" : null)" />
+                            <span>@papel.Rotulo</span>
+                        </label>
+                    }
+                </div>
+                <button class="botao" type="submit">Salvar</button>
+            </form>
+        }
+    </section>
+</div>
