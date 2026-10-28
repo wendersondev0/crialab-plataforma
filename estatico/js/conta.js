@@ -343,25 +343,94 @@
     pintar();
   }
 
+  function telHref(telefone) {
+    var digitos = String(telefone || "").replace(/\D/g, "");
+    if (digitos.length < 8) return "";
+    if (digitos.indexOf("55") !== 0 && digitos.length <= 11) digitos = "55" + digitos;
+    return "tel:+" + digitos;
+  }
   function contato() {
     document.title = "Contato · Cria Lab DM";
-    var ajuda = (estado().menusAjuda || {}).contato || "";
-    raiz.innerHTML = '<h1 title="' + ui.esc(ajuda) + '">Contato</h1><p class="intro-pagina mb-3 max-w-3xl text-tinta/75">' + ui.esc(ajuda) + '</p><form id="contato" class="cartao formulario"><label>Nome<input name="nome" required value="' + ui.esc(estado().cliente.nome) + '"></label><label>E-mail<input name="email" type="email" required value="' + ui.esc(estado().cliente.email) + '"></label><label>Tipo<select name="tipo"><option>dúvida</option><option>sugestão</option><option>elogio</option><option>reclamação</option><option>orçamento</option><option>outro</option></select></label><label>Mensagem<textarea name="texto" required></textarea></label><button class="botao" type="submit">Enviar</button><p id="confirma"></p></form>';
+    var id = estado().identidade || {};
+    var cliente = estado().cliente || {};
+    var opcoes = [
+      ["duvida", "Dúvida"],
+      ["sugestao", "Sugestão"],
+      ["elogio", "Elogio"],
+      ["reclamacao", "Reclamação"],
+      ["orcamento", "Orçamento"],
+      ["outro", "Outro"]
+    ];
+    var canais = [];
+    if (id.whatsapp) canais.push('<a class="contato-canal contato-canal-whats" href="' + ui.esc(id.whatsapp) + '" target="_blank" rel="noopener"><span class="ico">' + (ui.icone ? ui.icone("whatsapp") : "") + '</span><span><strong>WhatsApp</strong><small>Resposta mais rápida</small></span></a>');
+    if (id.email) canais.push('<a class="contato-canal" href="mailto:' + ui.esc(id.email) + '"><span class="ico">' + (ui.icone ? ui.icone("email") : "") + '</span><span><strong>E-mail</strong><small>' + ui.esc(id.email) + "</small></span></a>");
+    var fone = telHref(id.telefone);
+    if (fone) canais.push('<a class="contato-canal" href="' + fone + '"><span class="ico">' + (ui.icone ? ui.icone("telefone") : "") + '</span><span><strong>Telefone</strong><small>' + ui.esc(id.telefone) + "</small></span></a>");
+    var local = "";
+    if (id.endereco || id.horario) {
+      local = '<p class="contato-local">' + (id.endereco ? "<span>" + ui.esc(id.endereco) + "</span>" : "") + (id.horario ? "<span>" + ui.esc(id.horario) + "</span>" : "") + "</p>";
+    }
+    var selects = opcoes.map(function (item) {
+      return '<option value="' + item[0] + '">' + ui.esc(item[1]) + "</option>";
+    }).join("");
+    raiz.innerHTML = [
+      '<section class="contato-pagina">',
+      '<header class="contato-cab"><h1 class="mt-0">Contato</h1><p class="intro-pagina m-0 max-w-3xl text-tinta/75">Manda uma mensagem para a oficina. Se for mais rápido, chama no WhatsApp.</p></header>',
+      '<div class="contato-layout">',
+      '<aside class="contato-canais cartao"><h2>Fale direto</h2>' + canais.join("") + local + "</aside>",
+      '<form id="contato" class="contato-form cartao">',
+      "<h2>Escreva para a oficina</h2>",
+      '<p class="contato-ok" id="contato-ok" hidden>Mensagem enviada. A oficina responde no e-mail que você informou.</p>',
+      '<p class="contato-aviso" id="contato-aviso" hidden role="alert"></p>',
+      '<label>Nome<input name="nome" required minlength="2" maxlength="120" autocomplete="name" value="' + ui.esc(cliente.nome || "") + '"></label>',
+      '<label>E-mail<input name="email" type="email" required maxlength="180" autocomplete="email" value="' + ui.esc(cliente.email || "") + '"></label>',
+      '<label>Tipo<select name="tipo" id="tipo-contato" required>' + selects + "</select></label>",
+      '<p class="contato-dica" id="dica-orcamento" hidden>Conte o que quer imprimir, a quantidade e se já tem foto ou arquivo.</p>',
+      '<label>Mensagem<textarea name="texto" required minlength="8" maxlength="4000" rows="6"></textarea></label>',
+      '<button class="botao" type="submit">Enviar mensagem</button>',
+      "</form></div></section>"
+    ].join("");
+    var tipo = document.getElementById("tipo-contato");
+    var dica = document.getElementById("dica-orcamento");
+    if (tipo && dica) {
+      tipo.addEventListener("change", function () {
+        dica.hidden = tipo.value !== "orcamento";
+      });
+    }
     document.getElementById("contato").addEventListener("submit", function (evento) {
       evento.preventDefault();
       var dados = new FormData(evento.target);
+      var nome = String(dados.get("nome") || "").trim();
+      var email = String(dados.get("email") || "").trim();
+      var texto = String(dados.get("texto") || "").trim();
+      var valorTipo = String(dados.get("tipo") || "");
+      var rotulo = (opcoes.find(function (item) { return item[0] === valorTipo; }) || ["", ""])[1];
+      var aviso = document.getElementById("contato-aviso");
+      var ok = document.getElementById("contato-ok");
+      var falhas = [];
+      if (nome.length < 2) falhas.push("Diga como podemos te chamar.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) falhas.push("Informe um e-mail válido.");
+      if (!rotulo) falhas.push("Escolha o tipo da mensagem.");
+      if (texto.length < 8) falhas.push("Escreva a mensagem com um pouco mais de detalhe.");
+      if (falhas.length) {
+        ok.hidden = true;
+        aviso.hidden = false;
+        aviso.textContent = falhas[0];
+        return;
+      }
       Cria.alterar(function (atual) {
         atual.mensagens.push({
           id: CriaCarrinho.novoId("msg"),
-          tipo: String(dados.get("tipo")),
-          nome: String(dados.get("nome")),
-          email: String(dados.get("email")),
-          texto: String(dados.get("texto")),
+          tipo: rotulo,
+          nome: nome,
+          email: email,
+          texto: texto,
           status: "aberto",
           criadoEm: dinheiro.agoraSP()
         });
       });
-      document.getElementById("confirma").innerHTML = '<span class="ok">Mensagem registrada. Vamos responder por aqui.</span>';
+      aviso.hidden = true;
+      ok.hidden = false;
       evento.target.texto.value = "";
     });
   }

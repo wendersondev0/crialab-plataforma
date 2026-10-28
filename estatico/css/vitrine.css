@@ -1391,3 +1391,125 @@
   .busca-grade { grid-template-columns: 1fr; }
   .busca-acoes .botao { flex: 1 1 auto; }
 }
+
+.contato-pagina { display: grid; gap: 16px; }
+.contato-cab h1 { margin-bottom: 6px; }
+.contato-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.contato-canais,
+.contato-form {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 20px;
+}
+.contato-canais h2,
+.contato-form h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+.contato-canal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 2px solid var(--linha);
+  background: var(--creme);
+  color: var(--tinta);
+  text-decoration: none;
+}
+.contato-canal:hover {
+  border-color: var(--laranja);
+  background: #fff;
+  transform: none;
+}
+.contato-canal .ico {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--laranja);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--linha);
+}
+.contato-canal .ico svg { width: 22px; height: 22px; }
+.contato-canal strong,
+.contato-canal small { display: block; }
+.contato-canal strong { font-size: 1rem; line-height: 1.2; }
+.contato-canal small {
+  margin-top: 2px;
+  font-weight: 700;
+  color: rgba(27, 36, 48, 0.62);
+  overflow-wrap: anywhere;
+}
+.contato-canal-whats .ico {
+  background: #fff4ea;
+  border-color: transparent;
+  color: var(--laranja-escuro);
+}
+.contato-local {
+  display: grid;
+  gap: 4px;
+  margin: 4px 0 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: rgba(27, 36, 48, 0.72);
+}
+.contato-form label {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(27, 36, 48, 0.62);
+}
+.contato-form input,
+.contato-form select,
+.contato-form textarea {
+  width: 100%;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 700;
+}
+.contato-erro,
+.contato-dica,
+.contato-ok,
+.contato-aviso {
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 700;
+}
+.contato-erro {
+  color: #8d2a22;
+  font-size: 0.85rem;
+}
+.contato-dica,
+.contato-aviso {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fff6e8;
+  font-size: 0.92rem;
+}
+.contato-ok {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #e7f6f2;
+  color: #0e6d70;
+}
+.contato-form .botao { justify-self: start; }
+@media (max-width: 800px) {
+  .contato-layout { grid-template-columns: 1fr; }
+  .contato-form .botao { width: 100%; }
+}

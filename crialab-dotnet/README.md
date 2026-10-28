@@ -66,7 +66,7 @@ O seed financeiro/orçamentos carrega `Data/Seeding/planilha/*.json` (exportados
 | `/Recibo/{id}` | Recibo do pedido |
 | `/Conta` | Conta (abas) |
 | `/Conta/Login` · `/Conta/Register` · `/Conta/Logout` | Auth |
-| `/Contato` · `/Sobre` | Institucionais |
+| `/Contato` · `/Sobre` | Contato com canais e formulário · Sobre |
 | `/Favorito` | Toggle favorito |
 
 ### Admin (`[Authorize(Policy = "AdminOnly")]`)

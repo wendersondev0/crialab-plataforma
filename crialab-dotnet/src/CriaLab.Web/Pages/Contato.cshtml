@@ -4,42 +4,120 @@
     ViewData["Title"] = "Contato";
 }
 <section class="contato-pagina">
-    <h1 class="mt-0 text-3xl font-extrabold text-tinta">Contato</h1>
-    <p class="intro-pagina max-w-3xl text-tinta/75">Fale com a oficina. Dúvida, elogio, reclamação ou orçamento.</p>
-    @if (!string.IsNullOrWhiteSpace(Model.Identidade?.Telefone) || !string.IsNullOrWhiteSpace(Model.Identidade?.Email) || !string.IsNullOrWhiteSpace(Model.Identidade?.Whatsapp))
-    {
-        <div class="contato-linha my-4 flex flex-wrap gap-3">
-            @if (!string.IsNullOrWhiteSpace(Model.Identidade?.Whatsapp))
+    <header class="contato-cab">
+        <h1 class="mt-0">Contato</h1>
+        <p class="intro-pagina m-0 max-w-3xl text-tinta/75">Manda uma mensagem para a oficina. Se for mais rápido, chama no WhatsApp.</p>
+    </header>
+    <div class="contato-layout">
+        <aside class="contato-canais cartao">
+            <h2>Fale direto</h2>
+            @if (!string.IsNullOrWhiteSpace(Model.WhatsappHref))
             {
-                <a class="botao" href="@Model.Identidade!.Whatsapp" target="_blank" rel="noopener"><span class="ico"><partial name="_SvgIcon" model="@("whatsapp")" /></span>WhatsApp</a>
+                <a class="contato-canal contato-canal-whats" href="@Model.WhatsappHref" target="_blank" rel="noopener">
+                    <span class="ico" aria-hidden="true"><partial name="_SvgIcon" model="@("whatsapp")" /></span>
+                    <span><strong>WhatsApp</strong><small>Resposta mais rápida</small></span>
+                </a>
             }
             @if (!string.IsNullOrWhiteSpace(Model.Identidade?.Email))
             {
-                <a class="botao-linha" href="mailto:@Model.Identidade!.Email">@Model.Identidade.Email</a>
+                <a class="contato-canal" href="mailto:@Model.Identidade!.Email">
+                    <span class="ico" aria-hidden="true"><partial name="_SvgIcon" model="@("email")" /></span>
+                    <span><strong>E-mail</strong><small>@Model.Identidade.Email</small></span>
+                </a>
             }
-            @if (!string.IsNullOrWhiteSpace(Model.Identidade?.Telefone))
+            @if (!string.IsNullOrWhiteSpace(Model.TelefoneHref))
             {
-                <span class="discreto self-center">@Model.Identidade!.Telefone</span>
+                <a class="contato-canal" href="@Model.TelefoneHref">
+                    <span class="ico" aria-hidden="true"><partial name="_SvgIcon" model="@("telefone")" /></span>
+                    <span><strong>Telefone</strong><small>@Model.Identidade!.Telefone</small></span>
+                </a>
             }
-        </div>
-    }
-    <form method="post" class="cartao formulario w-[min(720px,100%)] p-5">
-        <div asp-validation-summary="ModelOnly"></div>
-        <label>Nome<input asp-for="Nome" required /></label>
-        <label>E-mail<input asp-for="Email" type="email" required /></label>
-        <label>Tipo
-            <select asp-for="Tipo">
-                <option value="duvida">Dúvida</option>
-                <option value="elogio">Elogio</option>
-                <option value="reclamacao">Reclamação</option>
-                <option value="orcamento">Orçamento</option>
-            </select>
-        </label>
-        <label>Mensagem<textarea asp-for="Texto" rows="5" required></textarea></label>
-        <button class="botao" type="submit">Enviar</button>
-    </form>
-    @if (Model.Enviado)
-    {
-        <p class="cta-ok mt-3 font-bold text-teal-escuro">Mensagem enviada. Obrigado!</p>
-    }
+            @if (!string.IsNullOrWhiteSpace(Model.Identidade?.Endereco) || !string.IsNullOrWhiteSpace(Model.Identidade?.Horario))
+            {
+                <p class="contato-local">
+                    @if (!string.IsNullOrWhiteSpace(Model.Identidade?.Endereco))
+                    {
+                        <span>@Model.Identidade!.Endereco</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Identidade?.Horario))
+                    {
+                        <span>@Model.Identidade!.Horario</span>
+                    }
+                </p>
+            }
+        </aside>
+        <form method="post" class="contato-form cartao" id="contato">
+            <h2>Escreva para a oficina</h2>
+            @if (Model.Enviado)
+            {
+                <p class="contato-ok" role="status">Mensagem enviada. A oficina responde no e-mail que você informou.</p>
+            }
+            else if (!ViewData.ModelState.IsValid)
+            {
+                <p class="contato-aviso" role="alert">Confira os campos antes de enviar.</p>
+            }
+            <label>
+                Nome
+                <input asp-for="Nome" required maxlength="120" minlength="2" autocomplete="name" />
+                @if (Model.Erro("Nome") is string erroNome)
+                {
+                    <span class="contato-erro">@erroNome</span>
+                }
+            </label>
+            <label>
+                E-mail
+                <input asp-for="Email" type="email" required maxlength="180" autocomplete="email" />
+                @if (Model.Erro("Email") is string erroEmail)
+                {
+                    <span class="contato-erro">@erroEmail</span>
+                }
+            </label>
+            <label>
+                Tipo
+                <select asp-for="Tipo" id="Tipo" required>
+                    @foreach (var opcao in ContatoModel.Opcoes)
+                    {
+                        <option value="@opcao.Valor" selected="@(Model.Tipo == opcao.Valor ? "selected" : null)">@opcao.Rotulo</option>
+                    }
+                </select>
+                @if (Model.Erro("Tipo") is string erroTipo)
+                {
+                    <span class="contato-erro">@erroTipo</span>
+                }
+            </label>
+            <p class="contato-dica" id="dica-orcamento" hidden="@(Model.Tipo == "orcamento" ? null : "hidden")">Conte o que quer imprimir, a quantidade e se já tem foto ou arquivo.</p>
+            <label>
+                Mensagem
+                <textarea asp-for="Texto" rows="6" required minlength="8" maxlength="4000"></textarea>
+                @if (Model.Erro("Texto") is string erroTexto)
+                {
+                    <span class="contato-erro">@erroTexto</span>
+                }
+            </label>
+            <button class="botao" type="submit">Enviar mensagem</button>
+        </form>
+    </div>
 </section>
+
+@section Scripts {
+<script>
+(function () {
+  var form = document.getElementById("contato");
+  var tipo = document.getElementById("Tipo");
+  var dica = document.getElementById("dica-orcamento");
+  if (tipo && dica) {
+    tipo.addEventListener("change", function () {
+      dica.hidden = tipo.value !== "orcamento";
+    });
+  }
+  if (!form) return;
+  form.addEventListener("submit", function () {
+    if (!form.checkValidity()) return;
+    var botao = form.querySelector("button[type='submit']");
+    if (!botao) return;
+    botao.disabled = true;
+    botao.textContent = "Enviando…";
+  });
+})();
+</script>
+}
