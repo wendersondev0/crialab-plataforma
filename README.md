@@ -1,44 +1,31 @@
 # Cria Lab DM — plataforma
 
-Loja estática de referência e app Razor no mesmo repositório.
+Loja e administração em ASP.NET Core Razor, com PostgreSQL.
 
 | Pasta | Conteúdo |
 | --- | --- |
-| [`estatico/`](estatico/) | Loja HTML/CSS/JS (paridade; Cloudflare / `localStorage`) |
 | [`src/CriaLab.Web`](src/CriaLab.Web) | ASP.NET Core 10 Razor Pages + PostgreSQL + Identity (loja + `/Admin`) |
 | [`tests/CriaLab.Web.Tests`](tests/CriaLab.Web.Tests) | Testes do cálculo de orçamento |
 | [`docs/historico/`](docs/historico/) | Histórico versionado de atividades (skill Cursor) |
 
 ## Estado atual
 
-- Destino operacional: app **Razor** em `src/CriaLab.Web` (paridade com `estatico/`).
+- App operacional em `src/CriaLab.Web`. A loja HTML/JS de referência saiu deste repositório.
 - Busca da loja (`/Busca`): painel de filtros, sugestões, chips para remover filtro e vitrine completa quando não há filtro.
 - Contato da loja (`/Contato`): WhatsApp, e-mail e telefone clicáveis, e formulário com validação e confirmação.
 - Admin: menu na mesma barra laranja da loja. Papéis em `/Admin/Papeis` e usuários em `/Admin/Usuarios`. Pedidos segue unificado com Fiscal (abas); Financeiro com KPIs e tooltips.
 - Favoritos: cookie anônimo + banco para usuário autenticado.
 - Parceiros (Vila Verde, GoFit) com URL de Instagram no rodapé/Sobre.
 - Seed aplica migrations e carga demo (planilha financeira, catálogo, oficina).
-- Orçamento no admin calcula o preço da Shopee. O cartão de Mercado Livre do estático ainda não tem faixa no seed (a lista estática também está vazia) e não foi portado.
+- Orçamento no admin calcula o preço da Shopee. O cartão de Mercado Livre não foi portado: não há faixas desse canal no seed.
 
 ## Stack
 
 | Camada | Tecnologia |
 | --- | --- |
-| Estático | HTML, CSS (Tailwind build), JS vanilla |
-| Backend / UI | ASP.NET Core 10, Razor Pages |
+| UI | ASP.NET Core 10, Razor Pages |
 | Dados | PostgreSQL, EF Core (snake_case), Identity |
 | Auth | Papéis `Usuario` e `Administrador` |
-
-## Estático
-
-```powershell
-cd estatico
-npm install
-npm run build
-python -m http.server 8080
-```
-
-Abra `http://localhost:8080`. Deploy Cloudflare: `estatico/wrangler.toml` e [`estatico/README.md`](estatico/README.md).
 
 ## ASP.NET (Razor + Postgres)
 
@@ -146,13 +133,10 @@ Tabelas e colunas usam **snake_case** no PostgreSQL via `UseSnakeCaseNamingConve
 
 ### Checklist manual (aceite)
 
-Para cada tela do estático vs Razor:
-
-1. Mesmos blocos/seções e ações principais
-2. Empty state não quebra layout
-3. Mobile: menu gaveta / scroll de menus ok
-4. Dados persistem após F5 (Postgres)
-5. Sem regressão de `.revela` invisível / CSS não carregado
+1. Empty state não quebra layout
+2. Mobile: menu gaveta / scroll de menus ok
+3. Dados persistem após F5 (Postgres)
+4. Sem regressão de `.revela` invisível / CSS não carregado
 
 Smoke sugerido após `dotnet watch run`:
 

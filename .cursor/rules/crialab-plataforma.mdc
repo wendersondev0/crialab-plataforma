@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Skill crialab-plataforma
 
-Sempre que a tarefa tocar este repositório (`estatico`, `src/CriaLab.Web`, CriaLab.Web, Financeiro, Patrimônio, Pedidos, Fiscal, favoritos, seed ou paridade Razor↔estático):
+Sempre que a tarefa tocar este repositório (`src/CriaLab.Web`, CriaLab.Web, Financeiro, Patrimônio, Pedidos, Fiscal, favoritos ou seed):
 
 1. Ler `.cursor/skills/crialab-plataforma/SKILL.md` e seguir o fluxo obrigatório.
 2. **Antes de implementar**, ler `README.md` na raiz (contexto principal).

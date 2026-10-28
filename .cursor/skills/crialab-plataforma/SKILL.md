@@ -1,10 +1,10 @@
 ---
 name: crialab-plataforma
 description: >-
-  Contexto e fluxo de trabalho do monorepo Cria Lab (crialab-plataforma):
-  loja estática HTML/JS e app ASP.NET Core Razor + PostgreSQL. Use always when
+  Contexto e fluxo de trabalho do app Cria Lab (crialab-plataforma):
+  ASP.NET Core Razor + PostgreSQL. Use always when
   the user asks to change, create, fix, review, document, or work on anything in
-  crialab-plataforma, estatico, CriaLab.Web, Financeiro,
+  crialab-plataforma, CriaLab.Web, Financeiro,
   Patrimonio, Pedidos, Fiscal, favoritos, seed, or Cria Lab DM.
 ---
 
@@ -37,7 +37,6 @@ Raiz: `crialab-plataforma/` (raiz deste repositório)
 
 | Pasta | Papel |
 | --- | --- |
-| `estatico/` | Loja HTML/CSS/JS (referência de paridade / Cloudflare) |
 | `src/CriaLab.Web/` | ASP.NET Core 10 Razor Pages + EF Core + Identity + PostgreSQL |
 | `tests/CriaLab.Web.Tests/` | Testes do cálculo de orçamento |
 | `docs/historico/` | Histórico versionado de atividades |
@@ -51,10 +50,10 @@ Arquivo: `README.md` (raiz do repositório).
 
 Manter sempre atualizado com:
 
-- Visão do monorepo e pastas
-- Stack e como rodar (estático + Razor)
+- Visão do app e pastas
+- Stack e como rodar o Razor
 - Links para README detalhado e para `docs/historico/`
-- Estado atual relevante (migração estático → Razor, módulos prontos, avisos operacionais)
+- Estado atual relevante (módulos prontos, avisos operacionais)
 
 O mapa de rotas, seed e checklist ficam no `README.md` da raiz.
 
@@ -119,7 +118,7 @@ Manter `docs/historico/INDEX.md` com lista do mais recente para o mais antigo:
 
 - Commits locais em pt-BR (Conventional Commits); não fazer push a menos que o usuário peça.
 - Preferir `dotnet watch run` em `src/CriaLab.Web`; matar `CriaLab.Web` se MSB3026 travar o build.
-- Paridade com `estatico/` quando a tarefa for UI/loja/admin espelhada.
+- A loja e a administração vivem no Razor. Não recriar um site HTML paralelo neste repositório.
 - Fiscal fica sob o fluxo de Pedidos (abas); não recriar item Fiscal separado no menu topo.
 - Favoritos: cookie anônimo + DB autenticado (`FavoritosService`).
 - Parceiros podem ter `Url` (Instagram/site) clicável no rodapé/Sobre.
