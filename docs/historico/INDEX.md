@@ -4,6 +4,7 @@ Registros gerados pela skill `crialab-plataforma`. Mais recente primeiro.
 
 | Versão | Data | Título | Arquivo |
 | --- | --- | --- | --- |
+| v009 | 2026-10-28 18:52 | Minha conta separada dos pedidos | [v009-2026-10-28-1852-separa-conta-e-pedidos.md](./v009-2026-10-28-1852-separa-conta-e-pedidos.md) |
 | v008 | 2026-10-28 17:39 | Site estático saiu da plataforma | [v008-2026-10-28-1739-remove-estatico.md](./v008-2026-10-28-1739-remove-estatico.md) |
 | v007 | 2026-10-28 17:25 | Página para gerenciar usuários | [v007-2026-10-28-1725-usuarios.md](./v007-2026-10-28-1725-usuarios.md) |
 | v006 | 2026-10-28 17:10 | Página para gerenciar papéis de acesso | [v006-2026-10-28-1710-papeis.md](./v006-2026-10-28-1710-papeis.md) |
