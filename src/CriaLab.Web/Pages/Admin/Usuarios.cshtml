@@ -1,0 +1,169 @@
+@page
+@model CriaLab.Web.Pages.Admin.UsuariosModel
+@{
+    ViewData["Title"] = "Usuários";
+}
+
+<div class="admin-prod-cab">
+    <div>
+        <h1 class="m-0">Usuários</h1>
+        <p class="admin-prod-intro m-0 mt-1">Contas da loja e da oficina. Quem administra entra em Papéis.</p>
+    </div>
+</div>
+
+<nav class="acesso-abas" aria-label="Acesso">
+    <a asp-page="/Admin/Papeis">Papéis</a>
+    <a class="ativo" asp-page="/Admin/Usuarios">Usuários</a>
+</nav>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+@if (TempData["Erro"] is string erro)
+{
+    <p class="cta-erro">@erro</p>
+}
+
+<div class="papeis-grade">
+    <section class="cartao papeis-painel">
+        @if (Model.Editando is UsuariosModel.UsuarioEdicao edicao)
+        {
+            <h2 class="mt-0">Editar</h2>
+            <form method="post" asp-page-handler="Salvar" class="usuarios-form">
+                <input type="hidden" name="userId" value="@edicao.Id" />
+                <input type="hidden" name="q" value="@Model.Busca" />
+                <label class="fin-campo">
+                    <span>Nome</span>
+                    <input name="nome" maxlength="80" value="@edicao.Nome" autocomplete="name" required />
+                </label>
+                <label class="fin-campo">
+                    <span>E-mail</span>
+                    <input name="email" type="email" maxlength="120" value="@edicao.Email" autocomplete="off" required />
+                </label>
+                <label class="fin-campo">
+                    <span>Telefone</span>
+                    <input name="telefone" maxlength="20" value="@edicao.Telefone" autocomplete="tel" />
+                </label>
+                <label class="fin-campo">
+                    <span>Documento</span>
+                    <input name="documento" maxlength="20" value="@edicao.Documento" autocomplete="off" />
+                </label>
+                <label class="fin-campo">
+                    <span>Nova senha</span>
+                    <input name="senha" type="password" autocomplete="new-password" />
+                </label>
+                <label class="fin-campo">
+                    <span>Confirmar senha</span>
+                    <input name="confirmar" type="password" autocomplete="new-password" />
+                </label>
+                <small class="sys-meta">Deixe a senha em branco para manter a atual.</small>
+                <div class="usuarios-form-acoes">
+                    <button class="botao" type="submit">Salvar</button>
+                    <a class="botao-linha" asp-page="/Admin/Usuarios" asp-route-q="@Model.Busca">Cancelar</a>
+                </div>
+            </form>
+        }
+        else
+        {
+            <h2 class="mt-0">Nova conta</h2>
+            <form method="post" asp-page-handler="Criar" class="usuarios-form">
+                <input type="hidden" name="q" value="@Model.Busca" />
+                <label class="fin-campo">
+                    <span>Nome</span>
+                    <input name="nome" maxlength="80" autocomplete="off" required />
+                </label>
+                <label class="fin-campo">
+                    <span>E-mail</span>
+                    <input name="email" type="email" maxlength="120" autocomplete="off" required />
+                </label>
+                <label class="fin-campo">
+                    <span>Telefone</span>
+                    <input name="telefone" maxlength="20" autocomplete="off" />
+                </label>
+                <label class="fin-campo">
+                    <span>Documento</span>
+                    <input name="documento" maxlength="20" autocomplete="off" />
+                </label>
+                <label class="fin-campo">
+                    <span>Senha</span>
+                    <input name="senha" type="password" autocomplete="new-password" required />
+                </label>
+                <label class="fin-campo">
+                    <span>Confirmar senha</span>
+                    <input name="confirmar" type="password" autocomplete="new-password" required />
+                </label>
+                <label class="sys-check papeis-check">
+                    <input type="checkbox" name="administrador" value="true" />
+                    <span>Também administra a oficina</span>
+                </label>
+                <button class="botao" type="submit">Criar conta</button>
+            </form>
+        }
+    </section>
+
+    <section class="usuarios-lista-bloco">
+        <h2 class="mt-0">Contas</h2>
+        <form method="get" class="usuarios-busca">
+            <label class="fin-campo">
+                <span>Buscar</span>
+                <input name="q" value="@Model.Busca" placeholder="Nome, e-mail ou telefone" />
+            </label>
+            <button class="botao" type="submit">Buscar</button>
+        </form>
+        @if (Model.Pessoas.Count == 0)
+        {
+            <p class="usuarios-vazio">Nenhuma conta com esse filtro.</p>
+        }
+        else
+        {
+            <ul class="papeis-lista usuarios-lista">
+                @foreach (var pessoa in Model.Pessoas)
+                {
+                    <li>
+                        <div>
+                            <strong>@pessoa.Nome</strong>
+                            @if (pessoa.Eu)
+                            {
+                                <span class="papeis-selo">Você</span>
+                            }
+                            @if (pessoa.Bloqueado)
+                            {
+                                <span class="papeis-selo usuarios-selo-off">Bloqueado</span>
+                            }
+                            <p>@pessoa.Email</p>
+                            @if (!string.IsNullOrWhiteSpace(pessoa.Telefone))
+                            {
+                                <p>@pessoa.Telefone</p>
+                            }
+                            <p>@(string.Join(" · ", pessoa.Papeis)) · desde @pessoa.Desde</p>
+                            @if (pessoa.TemHistorico)
+                            {
+                                <p>Tem pedidos ou orçamentos</p>
+                            }
+                        </div>
+                        <div class="usuarios-acoes">
+                            <a class="botao-linha" asp-page="/Admin/Usuarios" asp-route-id="@pessoa.Id" asp-route-q="@Model.Busca">Editar</a>
+                            @if (!pessoa.Eu)
+                            {
+                                <form method="post" asp-page-handler="Bloquear">
+                                    <input type="hidden" name="userId" value="@pessoa.Id" />
+                                    <input type="hidden" name="q" value="@Model.Busca" />
+                                    <button class="botao-linha" type="submit">@(pessoa.Bloqueado ? "Desbloquear" : "Bloquear")</button>
+                                </form>
+                                @if (!pessoa.TemHistorico)
+                                {
+                                    <form method="post" asp-page-handler="Apagar" onsubmit="return confirm('Apagar esta conta?');">
+                                        <input type="hidden" name="userId" value="@pessoa.Id" />
+                                        <input type="hidden" name="q" value="@Model.Busca" />
+                                        <button class="botao-linha" type="submit">Apagar</button>
+                                    </form>
+                                }
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+</div>

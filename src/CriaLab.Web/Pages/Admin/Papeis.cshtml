@@ -11,6 +11,11 @@
     </div>
 </div>
 
+<nav class="acesso-abas" aria-label="Acesso">
+    <a class="ativo" asp-page="/Admin/Papeis">Papéis</a>
+    <a asp-page="/Admin/Usuarios">Usuários</a>
+</nav>
+
 @if (TempData["Ok"] is string ok)
 {
     <p class="cta-ok">@ok</p>
