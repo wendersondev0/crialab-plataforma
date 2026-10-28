@@ -97,7 +97,7 @@ public class ProdutoModel : PageModel
             CriadoEm = DateTime.UtcNow
         });
         await _db.SaveChangesAsync();
-        return RedirectToPage("/Conta/Index");
+        return RedirectToPage("/Conta/Index", new { aba = "orcamentos" });
     }
 
     public async Task<IActionResult> OnPostPerguntaAsync(string id, string texto)

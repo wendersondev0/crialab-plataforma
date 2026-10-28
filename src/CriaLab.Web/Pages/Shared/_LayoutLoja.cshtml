@@ -9,6 +9,10 @@
     var qModalidade = Context.Request.Query["ModalidadeFiltro"].ToString();
     string Ativo(string trecho) => path.Contains(trecho, StringComparison.OrdinalIgnoreCase) ? " ativo" : "";
     string AtivoInicio() => path is "/" or "/Index" ? " ativo" : "";
+    bool EhMinhaConta() =>
+        path.Equals("/Conta", StringComparison.OrdinalIgnoreCase)
+        || path.StartsWith("/Conta/Index", StringComparison.OrdinalIgnoreCase);
+    bool EhMeusPedidos() => path.StartsWith("/Conta/Pedidos", StringComparison.OrdinalIgnoreCase);
     string AtivoModalidade(string id)
     {
         if (string.Equals(qModalidade, id, StringComparison.OrdinalIgnoreCase)) return " ativo";
@@ -29,7 +33,7 @@
 
     var nomeConta = "Conta";
     var favoritosIds = await Favoritos.ObterIdsAsync();
-    var notificacoes = new List<string>();
+    var notificacoes = new List<(string Texto, string Pagina, string? Aba)>();
     if (SignInManager.IsSignedIn(User))
     {
         var user = await UserManager.GetUserAsync(User);
@@ -44,14 +48,14 @@
                 .Take(4)
                 .ToListAsync();
             foreach (var o in orcs)
-                notificacoes.Add("Orçamento respondido: " + o.Titulo);
+                notificacoes.Add(("Orçamento respondido: " + o.Titulo, "/Conta/Index", "orcamentos"));
             var peds = await Db.Pedidos.AsNoTracking()
                 .Where(x => x.UsuarioId == user.Id && (x.Status == "aguardando pagamento" || x.Status == "pago"))
                 .OrderByDescending(x => x.CriadoEm)
                 .Take(4)
                 .ToListAsync();
             foreach (var p in peds)
-                notificacoes.Add(p.Status == "pago" ? "Pedido pago" : "Pedido aguardando pagamento");
+                notificacoes.Add((p.Status == "pago" ? "Pedido pago" : "Pedido aguardando pagamento", "/Conta/Pedidos", null));
             var autor = user.NomeCompleto;
             if (!string.IsNullOrWhiteSpace(autor))
             {
@@ -61,7 +65,7 @@
                     .Take(3)
                     .ToListAsync();
                 foreach (var _ in pens)
-                    notificacoes.Add("Sua pergunta foi respondida");
+                    notificacoes.Add(("Sua pergunta foi respondida", "/Conta/Index", "perguntas"));
             }
             notificacoes = notificacoes.Take(6).ToList();
         }
@@ -154,7 +158,7 @@
                             {
                                 @foreach (var aviso in notificacoes)
                                 {
-                                    <a class="item-popup-topo" asp-page="/Conta/Index"><span class="ico"><partial name="_SvgIcon" model="@("sino")" /></span><span>@aviso</span></a>
+                                    <a class="item-popup-topo" asp-page="@aviso.Pagina" asp-route-aba="@aviso.Aba"><span class="ico"><partial name="_SvgIcon" model="@("sino")" /></span><span>@aviso.Texto</span></a>
                                 }
                             }
                         </div>
@@ -172,7 +176,7 @@
                             @if (SignInManager.IsSignedIn(User))
                             {
                                 <a class="item-popup-topo" asp-page="/Conta/Index"><span class="ico"><partial name="_SvgIcon" model="@("conta")" /></span><span>Minha conta</span></a>
-                                <a class="item-popup-topo" asp-page="/Conta/Index"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span><span>Meus pedidos</span></a>
+                                <a class="item-popup-topo" asp-page="/Conta/Pedidos"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span><span>Meus pedidos</span></a>
                                 @if (ehAdmin)
                                 {
                                     <a class="item-popup-topo" asp-page="/Admin/Index"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span>Administração</span></a>
@@ -239,7 +243,8 @@
             <a class="nav-link" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span class="nav-texto">Personalizados</span></a>
             <a class="nav-link" asp-page="/Sobre"><span class="ico"><partial name="_SvgIcon" model="@("sobre")" /></span><span class="nav-texto nav-texto-longo">Sobre a Cria Lab</span><span class="nav-texto nav-texto-curto">Sobre</span></a>
             <a class="nav-link" asp-page="/Contato"><span class="ico"><partial name="_SvgIcon" model="@("contato")" /></span><span class="nav-texto">Ajuda / Contato</span></a>
-            <a class="nav-link" asp-page="/Conta/Index"><span class="ico"><partial name="_SvgIcon" model="@("conta")" /></span><span class="nav-texto">Minha conta</span></a>
+            <a class="nav-link@(EhMinhaConta() ? " ativo" : "")" asp-page="/Conta/Index"><span class="ico"><partial name="_SvgIcon" model="@("conta")" /></span><span class="nav-texto">Minha conta</span></a>
+            <a class="nav-link@(EhMeusPedidos() ? " ativo" : "")" asp-page="/Conta/Pedidos"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span><span class="nav-texto">Meus pedidos</span></a>
             <a class="nav-link" asp-page="/Carrinho"><span class="ico"><partial name="_SvgIcon" model="@("carrinho")" /></span><span class="nav-texto nav-texto-carrinho">Carrinho</span>@if (qtd > 0){<span class="selo-qtd">@qtd</span>}</a>
             @if (ehAdmin)
             {

@@ -25,12 +25,12 @@ public class IndexModel : PageModel
     }
 
     public ApplicationUser? Usuario { get; private set; }
-    public IList<Pedido> Pedidos { get; private set; } = new List<Pedido>();
+    public int TotalPedidos { get; private set; }
     public IList<OrcamentoCliente> Orcamentos { get; private set; } = new List<OrcamentoCliente>();
     public IList<Produto> Favoritos { get; private set; } = new List<Produto>();
     public IList<EnderecoCliente> Enderecos { get; private set; } = new List<EnderecoCliente>();
     public IList<PerguntaProduto> Perguntas { get; private set; } = new List<PerguntaProduto>();
-    public string Aba { get; private set; } = "pedidos";
+    public string Aba { get; private set; } = "dados";
 
     [BindProperty]
     public string NomeCompleto { get; set; } = "";
@@ -50,8 +50,11 @@ public class IndexModel : PageModel
     [BindProperty]
     public string Cep { get; set; } = "";
 
-    public async Task OnGetAsync(string? aba)
+    public async Task<IActionResult> OnGetAsync(string? aba)
     {
+        if (string.Equals(aba, "pedidos", StringComparison.OrdinalIgnoreCase))
+            return RedirectToPage("Pedidos");
+
         Aba = NormalizarAba(aba);
         await CarregarAsync();
         if (Usuario != null)
@@ -60,45 +63,8 @@ public class IndexModel : PageModel
             TelefoneContato = Usuario.TelefoneContato;
             Documento = Usuario.Documento;
         }
-    }
 
-    public async Task<IActionResult> OnPostPagarAsync(string id, string? aba)
-    {
-        var userId = UserId();
-        var pedido = await _db.Pedidos.FirstOrDefaultAsync(x => x.Id == id && x.UsuarioId == userId);
-        if (pedido != null && (pedido.Status == "aguardando pagamento" || pedido.Status == "novo"))
-        {
-            pedido.Status = "pago";
-            await _db.SaveChangesAsync();
-            TempData["Ok"] = "Pagamento simulado. Pedido marcado como pago.";
-        }
-        return RedirectToPage(new { aba = NormalizarAba(aba) });
-    }
-
-    public async Task<IActionResult> OnPostCancelarAsync(string id, string? aba)
-    {
-        var userId = UserId();
-        var pedido = await _db.Pedidos.FirstOrDefaultAsync(x => x.Id == id && x.UsuarioId == userId);
-        if (pedido != null && (pedido.Status == "aguardando pagamento" || pedido.Status == "novo"))
-        {
-            pedido.Status = "cancelado";
-            await _db.SaveChangesAsync();
-            TempData["Ok"] = "Pedido cancelado.";
-        }
-        return RedirectToPage(new { aba = NormalizarAba(aba) });
-    }
-
-    public async Task<IActionResult> OnPostDevolverAsync(string id, string? aba)
-    {
-        var userId = UserId();
-        var pedido = await _db.Pedidos.FirstOrDefaultAsync(x => x.Id == id && x.UsuarioId == userId);
-        if (pedido != null && pedido.Status == "entregue")
-        {
-            pedido.Status = "devolvido";
-            await _db.SaveChangesAsync();
-            TempData["Ok"] = "Pedido de devolução registrado.";
-        }
-        return RedirectToPage(new { aba = NormalizarAba(aba) });
+        return Page();
     }
 
     public async Task<IActionResult> OnPostAceitarOrcamentoAsync(string id, string? aba)
@@ -136,7 +102,7 @@ public class IndexModel : PageModel
             });
             await _db.SaveChangesAsync();
             TempData["Ok"] = "Orçamento aceito. Pedido criado.";
-            return RedirectToPage(new { aba = "pedidos" });
+            return RedirectToPage("Pedidos");
         }
         return RedirectToPage(new { aba = NormalizarAba(aba) });
     }
@@ -213,11 +179,7 @@ public class IndexModel : PageModel
         var userId = UserId();
         if (userId == null) return;
         Usuario = await _userManager.FindByIdAsync(userId);
-        Pedidos = await _db.Pedidos.AsNoTracking()
-            .Include(x => x.Itens)
-            .Where(x => x.UsuarioId == userId)
-            .OrderByDescending(x => x.CriadoEm)
-            .ToListAsync();
+        TotalPedidos = await _db.Pedidos.CountAsync(x => x.UsuarioId == userId);
         Orcamentos = await _db.OrcamentosCliente.AsNoTracking()
             .Where(x => x.UsuarioId == userId)
             .OrderByDescending(x => x.CriadoEm)
@@ -238,7 +200,7 @@ public class IndexModel : PageModel
     private string? UserId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
 
     private static string NormalizarAba(string? aba) =>
-        aba is "pedidos" or "orcamentos" or "favoritos" or "enderecos" or "perguntas" or "dados"
+        aba is "orcamentos" or "favoritos" or "enderecos" or "perguntas" or "dados"
             ? aba
-            : "pedidos";
+            : "dados";
 }

@@ -16,43 +16,36 @@
     <div class="cta-cab-txt">
         <p class="cta-eyebrow">Minha conta</p>
         <h1 class="cta-nome">@(Model.Usuario?.NomeCompleto ?? "Cliente")</h1>
-        <p class="cta-intro">Pedidos, orçamentos, favoritos e endereços em um só lugar.</p>
+        <p class="cta-intro">Dados, endereços, favoritos, perguntas e orçamentos da sua conta.</p>
     </div>
-    <a class="botao-linha" asp-page="/Conta/Logout">Sair</a>
+    <div class="cta-acoes">
+        <a class="botao" asp-page="/Conta/Pedidos">Meus pedidos (@Model.TotalPedidos)</a>
+        <a class="botao-linha" asp-page="/Conta/Logout">Sair</a>
+    </div>
 </div>
 
 <div class="cta-kpis">
-    <a class="@ClasseKpi("pedidos")" asp-page="/Conta/Index" asp-route-aba="pedidos"><strong>@Model.Pedidos.Count</strong><span>Pedidos</span></a>
-    <a class="@ClasseKpi("orcamentos")" asp-page="/Conta/Index" asp-route-aba="orcamentos"><strong>@Model.Orcamentos.Count</strong><span>Orçamentos</span></a>
-    <a class="@ClasseKpi("favoritos")" asp-page="/Conta/Index" asp-route-aba="favoritos"><strong>@Model.Favoritos.Count</strong><span>Favoritos</span></a>
     <a class="@ClasseKpi("enderecos")" asp-page="/Conta/Index" asp-route-aba="enderecos"><strong>@Model.Enderecos.Count</strong><span>Endereços</span></a>
+    <a class="@ClasseKpi("favoritos")" asp-page="/Conta/Index" asp-route-aba="favoritos"><strong>@Model.Favoritos.Count</strong><span>Favoritos</span></a>
     <a class="@ClasseKpi("perguntas")" asp-page="/Conta/Index" asp-route-aba="perguntas"><strong>@Model.Perguntas.Count</strong><span>Perguntas</span></a>
+    <a class="@ClasseKpi("orcamentos")" asp-page="/Conta/Index" asp-route-aba="orcamentos"><strong>@Model.Orcamentos.Count</strong><span>Orçamentos</span></a>
 </div>
 
 <div class="cta-abas">
-    <a class="@ClasseAba("pedidos")" asp-page="/Conta/Index" asp-route-aba="pedidos">Pedidos</a>
-    <a class="@ClasseAba("orcamentos")" asp-page="/Conta/Index" asp-route-aba="orcamentos">Orçamentos</a>
-    <a class="@ClasseAba("favoritos")" asp-page="/Conta/Index" asp-route-aba="favoritos">Favoritos</a>
-    <a class="@ClasseAba("enderecos")" asp-page="/Conta/Index" asp-route-aba="enderecos">Endereços</a>
-    <a class="@ClasseAba("perguntas")" asp-page="/Conta/Index" asp-route-aba="perguntas">Perguntas</a>
     <a class="@ClasseAba("dados")" asp-page="/Conta/Index" asp-route-aba="dados">Meus dados</a>
+    <a class="@ClasseAba("enderecos")" asp-page="/Conta/Index" asp-route-aba="enderecos">Endereços</a>
+    <a class="@ClasseAba("favoritos")" asp-page="/Conta/Index" asp-route-aba="favoritos">Favoritos</a>
+    <a class="@ClasseAba("perguntas")" asp-page="/Conta/Index" asp-route-aba="perguntas">Perguntas</a>
+    <a class="@ClasseAba("orcamentos")" asp-page="/Conta/Index" asp-route-aba="orcamentos">Orçamentos</a>
 </div>
 
 @{
-    var aguardando = Model.Pedidos.Count(p => p.Status is "aguardando pagamento" or "novo");
     var orcPend = Model.Orcamentos.Count(o => o.Status is "respondido" or "aguardando");
 }
-@if (aguardando > 0 || orcPend > 0)
+@if (orcPend > 0)
 {
     <div class="cta-alertas">
-        @if (aguardando > 0)
-        {
-            <a class="cta-alerta" asp-page="/Conta/Index" asp-route-aba="pedidos">@aguardando pedido(s) aguardando pagamento</a>
-        }
-        @if (orcPend > 0)
-        {
-            <a class="cta-alerta" asp-page="/Conta/Index" asp-route-aba="orcamentos">@orcPend orçamento(s) para olhar</a>
-        }
+        <a class="cta-alerta" asp-page="/Conta/Index" asp-route-aba="orcamentos">@orcPend orçamento(s) para olhar</a>
     </div>
 }
 
@@ -62,57 +55,7 @@
 }
 
 <div class="cta-corpo">
-@if (Model.Aba == "pedidos")
-{
-    <div class="cta-lista">
-    @if (!Model.Pedidos.Any())
-    {
-        <div class="vazio cartao"><p>Nenhum pedido por aqui.</p><a class="botao" asp-page="/Produtos">Ver produtos</a></div>
-    }
-    @foreach (var p in Model.Pedidos)
-    {
-        <article class="cta-card">
-            <div class="cta-card-topo">
-                <div>
-                    <strong class="cta-id">@p.Id</strong>
-                    <p class="cta-meta">@p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")@(string.IsNullOrWhiteSpace(p.Forma) ? "" : " · " + p.Forma)</p>
-                </div>
-                <span class="@Selo(p.Status)">@p.Status</span>
-            </div>
-            <p class="cta-itens">@(p.Itens.Any() ? string.Join(", ", p.Itens.Select(i => $"{i.Titulo} × {i.Quantidade}")) : "Sem itens")</p>
-            <div class="cta-total"><span>Total</span><strong>R$ @p.Total.ToString("N2")</strong></div>
-            <div class="cta-acoes">
-                @if (p.Status is "aguardando pagamento" or "novo")
-                {
-                    <form method="post" asp-page-handler="Pagar" class="inline">
-                        <input type="hidden" name="id" value="@p.Id" />
-                        <input type="hidden" name="aba" value="pedidos" />
-                        <button class="botao" type="submit">Simular pagamento</button>
-                    </form>
-                    <form method="post" asp-page-handler="Cancelar" class="inline">
-                        <input type="hidden" name="id" value="@p.Id" />
-                        <input type="hidden" name="aba" value="pedidos" />
-                        <button class="botao-linha" type="submit">Cancelar</button>
-                    </form>
-                }
-                @if (p.Status == "entregue")
-                {
-                    <form method="post" asp-page-handler="Devolver" class="inline">
-                        <input type="hidden" name="id" value="@p.Id" />
-                        <input type="hidden" name="aba" value="pedidos" />
-                        <button class="botao-linha" type="submit">Pedir devolução</button>
-                    </form>
-                }
-                @if (p.Status is not ("aguardando pagamento" or "novo" or "cancelado"))
-                {
-                    <a class="botao-linha" asp-page="/Recibo" asp-route-id="@p.Id">Recibo</a>
-                }
-            </div>
-        </article>
-    }
-    </div>
-}
-else if (Model.Aba == "orcamentos")
+@if (Model.Aba == "orcamentos")
 {
     <div class="cta-lista">
     @if (!Model.Orcamentos.Any())

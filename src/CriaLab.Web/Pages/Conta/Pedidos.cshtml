@@ -1,0 +1,116 @@
+@page
+@model CriaLab.Web.Pages.Conta.PedidosModel
+@{
+    ViewData["Title"] = "Meus pedidos";
+    string Classe(string nome) => "cta-aba" + (Model.Filtro == nome ? " ativo" : "");
+    string Selo(string status) => status switch
+    {
+        "aguardando pagamento" or "novo" => "cta-selo alerta",
+        "pago" or "enviado" or "entregue" => "cta-selo ok",
+        "cancelado" or "devolvido" => "cta-selo mute",
+        _ => "cta-selo"
+    };
+}
+<div class="cta-cab">
+    <div class="cta-cab-txt">
+        <p class="cta-eyebrow">Compras</p>
+        <h1 class="cta-nome">Meus pedidos</h1>
+        <p class="cta-intro">Acompanhe o status, pague, cancele, peça devolução ou abra o recibo.</p>
+    </div>
+    <a class="botao-linha" asp-page="/Conta/Index">Minha conta</a>
+</div>
+
+<div class="cta-kpis">
+    <a class="cta-kpi@(Model.Filtro == "todos" ? " ativo" : "")" asp-page="/Conta/Pedidos" asp-route-filtro="todos"><strong>@Model.Total</strong><span>Todos</span></a>
+    <a class="cta-kpi@(Model.Filtro == "abertos" ? " ativo" : "")" asp-page="/Conta/Pedidos" asp-route-filtro="abertos"><strong>@Model.Abertos</strong><span>Aguardando</span></a>
+    <a class="cta-kpi@(Model.Filtro == "andamento" ? " ativo" : "")" asp-page="/Conta/Pedidos" asp-route-filtro="andamento"><strong>@Model.Andamento</strong><span>Em andamento</span></a>
+    <a class="cta-kpi@(Model.Filtro == "entregues" ? " ativo" : "")" asp-page="/Conta/Pedidos" asp-route-filtro="entregues"><strong>@Model.Entregues</strong><span>Entregues</span></a>
+    <a class="cta-kpi@(Model.Filtro == "encerrados" ? " ativo" : "")" asp-page="/Conta/Pedidos" asp-route-filtro="encerrados"><strong>@Model.Encerrados</strong><span>Encerrados</span></a>
+</div>
+
+<div class="cta-abas">
+    <a class="@Classe("todos")" asp-page="/Conta/Pedidos" asp-route-filtro="todos">Todos</a>
+    <a class="@Classe("abertos")" asp-page="/Conta/Pedidos" asp-route-filtro="abertos">Aguardando</a>
+    <a class="@Classe("andamento")" asp-page="/Conta/Pedidos" asp-route-filtro="andamento">Em andamento</a>
+    <a class="@Classe("entregues")" asp-page="/Conta/Pedidos" asp-route-filtro="entregues">Entregues</a>
+    <a class="@Classe("encerrados")" asp-page="/Conta/Pedidos" asp-route-filtro="encerrados">Encerrados</a>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+<div class="cta-lista">
+@if (!Model.Pedidos.Any())
+{
+    <div class="vazio cartao">
+        <p>@(Model.Total == 0 ? "Nenhum pedido por aqui." : "Nenhum pedido nesse filtro.")</p>
+        <a class="botao" asp-page="/Produtos">Ver produtos</a>
+    </div>
+}
+@foreach (var p in Model.Pedidos)
+{
+    <article class="cta-card">
+        <div class="cta-card-topo">
+            <div>
+                <strong class="cta-id">@p.Id</strong>
+                <p class="cta-meta">@p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy HH:mm")@(string.IsNullOrWhiteSpace(p.Forma) ? "" : " · " + p.Forma)</p>
+            </div>
+            <span class="@Selo(p.Status)">@p.Status</span>
+        </div>
+        @if (p.Itens.Any())
+        {
+            <ul class="cta-pedido-itens">
+            @foreach (var item in p.Itens)
+            {
+                <li>
+                    <span>@item.Titulo × @item.Quantidade</span>
+                    <strong>R$ @((item.PrecoUnitario * item.Quantidade).ToString("N2"))</strong>
+                </li>
+            }
+            </ul>
+        }
+        else
+        {
+            <p class="cta-itens">Sem itens</p>
+        }
+        @if (!string.IsNullOrWhiteSpace(p.Endereco))
+        {
+            <p class="cta-meta">Entrega: @p.Endereco@(string.IsNullOrWhiteSpace(p.Cep) ? "" : " · CEP " + p.Cep)</p>
+        }
+        @if (p.FreteCobrado > 0 || !string.IsNullOrWhiteSpace(p.FreteNome))
+        {
+            <p class="cta-meta">@(string.IsNullOrWhiteSpace(p.FreteNome) ? "Frete" : p.FreteNome) · R$ @p.FreteCobrado.ToString("N2")</p>
+        }
+        <div class="cta-total"><span>Total</span><strong>R$ @p.Total.ToString("N2")</strong></div>
+        <div class="cta-acoes">
+            @if (p.Status is "aguardando pagamento" or "novo")
+            {
+                <form method="post" asp-page-handler="Pagar">
+                    <input type="hidden" name="id" value="@p.Id" />
+                    <input type="hidden" name="filtro" value="@Model.Filtro" />
+                    <button class="botao" type="submit">Simular pagamento</button>
+                </form>
+                <form method="post" asp-page-handler="Cancelar">
+                    <input type="hidden" name="id" value="@p.Id" />
+                    <input type="hidden" name="filtro" value="@Model.Filtro" />
+                    <button class="botao-linha" type="submit">Cancelar</button>
+                </form>
+            }
+            @if (p.Status == "entregue")
+            {
+                <form method="post" asp-page-handler="Devolver">
+                    <input type="hidden" name="id" value="@p.Id" />
+                    <input type="hidden" name="filtro" value="@Model.Filtro" />
+                    <button class="botao-linha" type="submit">Pedir devolução</button>
+                </form>
+            }
+            @if (p.Status is not ("aguardando pagamento" or "novo" or "cancelado"))
+            {
+                <a class="botao-linha" asp-page="/Recibo" asp-route-id="@p.Id">Recibo</a>
+            }
+        </div>
+    </article>
+}
+</div>

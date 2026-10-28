@@ -41,6 +41,7 @@ else
         <p class="numero-grande">Total R$ @p.Total.ToString("N2")</p>
         <p>Nota fiscal: pendente de transmissão</p>
         <button class="botao no-print" type="button" onclick="print()">Imprimir</button>
+        <a class="botao-linha no-print" asp-page="/Conta/Pedidos">Meus pedidos</a>
         <a class="botao-linha no-print" asp-page="/Conta/Index">Minha conta</a>
     </article>
 }

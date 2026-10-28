@@ -14,7 +14,7 @@ Loja e administração em ASP.NET Core Razor, com PostgreSQL.
 - Busca da loja (`/Busca`): painel de filtros, sugestões, chips para remover filtro e vitrine completa quando não há filtro.
 - Contato da loja (`/Contato`): WhatsApp, e-mail e telefone clicáveis, e formulário com validação e confirmação.
 - Admin: menu na mesma barra laranja da loja. Papéis em `/Admin/Papeis` e usuários em `/Admin/Usuarios`. Pedidos segue unificado com Fiscal (abas); Financeiro com KPIs e tooltips.
-- Favoritos: cookie anônimo + banco para usuário autenticado.
+- Conta do cliente em `/Conta` (dados e gestão da conta) e pedidos em `/Conta/Pedidos`.
 - Parceiros (Vila Verde, GoFit) com URL de Instagram no rodapé/Sobre.
 - Seed aplica migrations e carga demo (planilha financeira, catálogo, oficina).
 - Orçamento no admin calcula o preço da Shopee. O cartão de Mercado Livre não foi portado: não há faixas desse canal no seed.
@@ -85,7 +85,8 @@ O seed financeiro/orçamentos carrega `src/CriaLab.Web/Data/Seeding/planilha/*.j
 | `/Carrinho` | Carrinho + CEP/cupom |
 | `/Checkout` | Checkout |
 | `/Recibo/{id}` | Recibo do pedido |
-| `/Conta` | Conta (abas) |
+| `/Conta` | Minha conta: dados, endereços, favoritos, perguntas e orçamentos |
+| `/Conta/Pedidos` | Pedidos do cliente |
 | `/Conta/Login` · `/Conta/Register` · `/Conta/Logout` | Auth |
 | `/Contato` · `/Sobre` | Contato com canais e formulário · Sobre |
 | `/Favorito` | Toggle favorito |
