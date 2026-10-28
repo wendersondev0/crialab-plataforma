@@ -19,20 +19,22 @@
 @if (Model.Pedido == null)
 {
     <div class="grade grid grid-cols-1 gap-3">
-    @foreach (var p in Model.Lista)
-    {
-        <article class="cartao p-4 flex flex-wrap items-center justify-between gap-3">
-            <div>
-                <strong>@p.Id</strong>
-                <p class="discreto m-0">@p.Status · OS @(p.Os?.Status ?? "sem OS")</p>
+        @foreach (var p in Model.Lista)
+        {
+            <article class="cartao p-4 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <strong>@p.Id</strong>
+                    <p class="discreto m-0">@p.Status · OS @(p.Os?.Status ?? "sem OS")</p>
+                </div>
+                <a class="botao-linha" asp-page="/Admin/Os" asp-route-id="@p.Id">Abrir</a>
+            </article>
+        }
+        @if (!Model.Lista.Any())
+        {
+            <div class="vazio cartao">
+                <p>Nenhuma OS pendente.</p>
             </div>
-            <a class="botao-linha" asp-page="/Admin/Os" asp-route-id="@p.Id">Abrir</a>
-        </article>
-    }
-    @if (!Model.Lista.Any())
-    {
-        <div class="vazio cartao"><p>Nenhuma OS pendente.</p></div>
-    }
+        }
     </div>
 }
 else
@@ -43,11 +45,14 @@ else
         <p>
             @foreach (var item in p.Itens)
             {
-                @($"{item.Titulo} · R$ {item.PrecoUnitario:N2} × {item.Quantidade}")<br />
+                @($"{item.Titulo} · R$ {item.PrecoUnitario:N2} × {item.Quantidade}")
+        
+                <br />
             }
         </p>
         <p>Status do pedido: @p.Status</p>
-        <p>Status da OS: @(p.Os?.Status ?? "não aberta") · insumo @(p.Os?.InsumoBaixado == true ? "baixado" : "pendente")</p>
+        <p>Status da OS: @(p.Os?.Status ?? "não aberta") · insumo @(p.Os?.InsumoBaixado == true ? "baixado" : "pendente")
+        </p>
         <div class="linha flex flex-wrap gap-2">
             @if (p.Os == null)
             {
