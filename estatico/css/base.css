@@ -128,12 +128,61 @@ textarea { min-height: 88px; }
 #topo.topo-loja .menu-loja .nav-link { color: #fff; background: transparent; }
 #topo.topo-loja .menu-loja .nav-link:hover { background: rgba(255, 255, 255, 0.18); color: #fff; }
 #topo.topo-loja .menu-loja .nav-link.ativo { background: #fff; color: var(--laranja); }
-#topo.topo-admin .menu-admin .nav-link { background: var(--creme); border: 1px solid var(--linha); min-height: 38px; padding: 0 11px; font-size: 0.88rem; }
-#topo.topo-admin .menu-admin .nav-link.ativo { background: var(--tinta); color: #fff; border-color: var(--tinta); }
-#topo.topo-admin .menu-admin .nav-link .ico { display: none; }
+#topo.topo-admin {
+  background: linear-gradient(180deg, #f08a3d 0%, var(--laranja) 55%, #de6d1f 100%);
+  border-bottom: none;
+  box-shadow: 0 10px 28px rgba(200, 94, 22, 0.28);
+}
+#topo.topo-admin .marca img { height: 44px; background: #fff; border-radius: 12px; padding: 4px; }
+#topo.topo-admin .menu-admin {
+  flex-wrap: nowrap;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.45) transparent;
+}
+#topo.topo-admin .menu-admin::-webkit-scrollbar { height: 6px; }
+#topo.topo-admin .menu-admin::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.45); border-radius: 999px; }
+#topo.topo-admin .menu-admin .nav-link {
+  background: transparent;
+  border-color: transparent;
+  color: #fff;
+  min-height: 40px;
+  padding: 0 11px;
+  font-size: 0.92rem;
+}
+#topo.topo-admin .menu-admin .nav-link .ico { display: inline-flex; color: inherit; }
+#topo.topo-admin .menu-admin .nav-link:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+#topo.topo-admin .menu-admin .nav-link.ativo,
+#topo.topo-admin .menu-admin .nav-link.ativo:hover {
+  background: #fff;
+  color: var(--laranja);
+  border-color: transparent;
+}
 .admin-faixa { display: grid; }
 .barra-admin { gap: 12px; }
+.admin-selo {
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 .admin-acoes { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+#topo.topo-admin .admin-ver-loja {
+  background: #fff;
+  color: var(--laranja);
+  border-color: transparent;
+  min-height: 40px;
+}
+#topo.topo-admin .admin-ver-loja:hover {
+  background: var(--creme);
+  color: var(--laranja-escuro);
+  transform: translateY(-2px);
+}
 .menu-gaveta-admin .menu-gaveta-lista .nav-link {
   min-height: 48px;
   font-size: 0.95rem;
@@ -187,16 +236,15 @@ textarea { min-height: 88px; }
 .botao-hamburguer:hover { background: rgba(255, 255, 255, 0.28); }
 #topo.topo-admin .botao-hamburguer,
 .botao-hamburguer.botao-hamburguer-admin {
-  background: #fff;
-  color: var(--tinta);
-  border: 2px solid var(--tinta);
-  box-shadow: 0 2px 8px rgba(27, 36, 48, 0.08);
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  border: 0;
+  box-shadow: none;
 }
 #topo.topo-admin .botao-hamburguer:hover,
 .botao-hamburguer.botao-hamburguer-admin:hover {
-  background: var(--tinta);
+  background: rgba(255, 255, 255, 0.28);
   color: #fff;
-  border-color: var(--tinta);
 }
 .menu-gaveta {
   display: none;
@@ -269,14 +317,14 @@ textarea { min-height: 88px; }
   padding: 0 14px;
   font-size: 1rem;
 }
-.menu-gaveta-lista .nav-link[href*="admin/"] {
+.menu-gaveta:not(.menu-gaveta-admin) .menu-gaveta-lista .nav-link[href*="admin/"] {
   margin-top: 8px;
   border-color: var(--tinta);
   background: var(--tinta);
   color: #fff;
 }
-.menu-gaveta-lista .nav-link[href*="admin/"]:hover,
-.menu-gaveta-lista .nav-link[href*="admin/"].ativo {
+.menu-gaveta:not(.menu-gaveta-admin) .menu-gaveta-lista .nav-link[href*="admin/"]:hover,
+.menu-gaveta:not(.menu-gaveta-admin) .menu-gaveta-lista .nav-link[href*="admin/"].ativo {
   background: #121820;
   border-color: #121820;
   color: #fff;
@@ -634,7 +682,7 @@ th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--lin
   .hero, .ficha, .checkout, .rodape-grade, .grade, .grade-3, .cartoes-preco { grid-template-columns: 1fr; }
   .resumo { position: static; }
 }
-@media (max-width: 980px) {
+@media (max-width: 760px) {
   #topo.topo-admin .botao-hamburguer { display: inline-flex !important; }
   #topo.topo-admin .menu-admin { display: none !important; }
   #topo.topo-admin .barra-admin {
@@ -670,6 +718,7 @@ th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--lin
     gap: 8px;
   }
   .faixa-fina { display: none !important; }
+  .admin-selo { display: none; }
   .botao-hamburguer { display: inline-flex !important; }
   .menu-loja,
   .acoes-util,

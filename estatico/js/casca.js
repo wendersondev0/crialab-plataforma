@@ -57,6 +57,7 @@
     documento: svg('<path' + traco + ' d="M7 3h7l5 5v13H7z"/><path' + traco + ' d="M14 3v5h5"/><path' + traco + ' d="M10 13h6M10 17h6"/>'),
     caixa: svg('<path' + traco + ' d="M4 8 12 4l8 4-8 4-8-4z"/><path' + traco + ' d="M4 8v8l8 4 8-4V8"/><path' + traco + ' d="M12 12v8"/>'),
     estoque: svg('<path' + traco + ' d="M4 7h16M4 12h16M4 17h16"/><path' + traco + ' d="M8 7v10M16 7v10"/>'),
+    impressora: svg('<path' + traco + ' d="M7 8V3h10v5"/><path' + traco + ' d="M6 17H4a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><path' + traco + ' d="M6 13h12v8H6z"/>'),
     menu: svg('<path' + traco + ' d="M4 7h16M4 12h16M4 17h16"/>'),
     fechar: svg('<path' + traco + ' d="M6 6l12 12M18 6 6 18"/>'),
     sair: svg('<path' + traco + ' d="M10 5H6a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4"/><path' + traco + ' d="M14 12H8"/><path' + traco + ' d="m16 8 4 4-4 4"/>'),
@@ -82,7 +83,7 @@
       if (Number(carrinho[1]) > 0) qtd = '<span class="selo-qtd ml-1 inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-laranja px-1.5 text-[0.75rem] font-extrabold text-white">' + carrinho[1] + "</span>";
     }
     var chave = carrinho ? "carrinho" : texto;
-    var mapa = { "Início": "casa", "Produtos": "caixa", "Pronta Entrega": "caixa", "Sob Demanda": "caminhao", "Personalizados": "admin", "carrinho": "carrinho", "Conta": "conta", "Contato": "contato", "Sobre": "sobre", "Sobre a Cria Lab": "sobre", "Administração": "admin", "Painel": "casa", "Painel Gerencial": "casa", "Gestão Produtos": "caixa", "Gestão Personalizados": "admin", "Marketing": "tiktok", "Atendimento": "contato", "Patrimônio": "estoque", "Patrimônio e Estoque": "estoque", "Financeiro": "carrinho", "Gestão Financeira": "carrinho", "Fiscal": "email", "Gestão Fiscal": "email", "Sistema": "admin", "Impressão": "admin", "Impressão 3D": "admin", "Ver loja": "casa" };
+    var mapa = { "Início": "casa", "Produtos": "caixa", "Pronta Entrega": "caixa", "Sob Demanda": "caminhao", "Personalizados": "admin", "carrinho": "carrinho", "Conta": "conta", "Contato": "contato", "Sobre": "sobre", "Sobre a Cria Lab": "sobre", "Administração": "admin", "Painel": "casa", "Painel Gerencial": "casa", "Gestão Produtos": "caixa", "Gestão Personalizados": "admin", "Marketing": "sino", "Atendimento": "contato", "Patrimônio": "estoque", "Patrimônio e Estoque": "estoque", "Financeiro": "documento", "Gestão Financeira": "documento", "Fiscal": "email", "Gestão Fiscal": "email", "Sistema": "admin", "Impressão": "impressora", "Impressão 3D": "impressora", "Ver loja": "casa" };
     var desenho = icones[mapa[chave]] ? '<span class="ico inline-flex h-5 w-5 shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full">' + icones[mapa[chave]] + "</span>" : "";
     var base = "nav-link inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-bold no-underline transition";
     var title = dica ? ' title="' + esc(dica) + '"' : "";
@@ -93,14 +94,11 @@
     if (carrinho) {
       rotuloHtml = '<span class="nav-texto nav-texto-carrinho">' + esc(rotulo) + "</span>";
     }
-    if (texto === "Ver loja" || variante === "ver-loja") {
-      return '<a class="' + base + ' bg-laranja text-white hover:bg-laranja-escuro" href="' + url(href) + '"' + title + ">" + desenho + rotuloHtml + qtd + "</a>";
-    }
     var estadoClasse;
-    if (variante === "loja") {
+    if (variante === "loja" || variante === "admin") {
       estadoClasse = ativo(href) ? " ativo bg-white text-laranja" : " text-white hover:bg-white/20";
-    } else if (variante === "admin") {
-      estadoClasse = ativo(href) ? " ativo border border-tinta bg-tinta text-white" : " border border-linha bg-creme text-tinta hover:bg-teal/15";
+    } else if (variante === "ver-loja") {
+      return '<a class="' + base + ' admin-ver-loja" href="' + url(href) + '"' + title + ">" + desenho + rotuloHtml + qtd + "</a>";
     } else {
       estadoClasse = ativo(href) ? " ativo bg-tinta text-white" : " text-tinta hover:bg-teal/15";
     }
@@ -258,13 +256,14 @@
       }).join("");
       var menuGavetaAdmin = itensAdmin.map(function (item) {
         return link(item[0], item[1], "");
-      }).join("") + link("index.html", "Ver loja", "ver-loja");
-      topo.className = "topo-admin sticky top-0 z-20 border-b border-linha bg-white shadow-cria";
+      }).join("") + link("index.html", "Ver loja", "");
+      topo.className = "topo-admin sticky top-0 z-20";
       topo.innerHTML = '<div class="admin-faixa"><div class="barra barra-admin mx-auto flex min-h-[68px] w-[min(1120px,calc(100%-32px))] items-center gap-3">' +
         '<button class="botao-hamburguer botao-hamburguer-admin" type="button" id="abrir-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-gaveta"><span class="ico">' + icones.menu + "</span></button>" +
-        '<a class="marca" href="' + url("paginas/admin/index.html") + '"><img class="h-11 rounded-xl bg-creme p-1" src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a>' +
+        '<a class="marca" href="' + url("paginas/admin/index.html") + '"><img class="h-11 rounded-xl bg-white p-1" src="' + url("marca/logo-colorida.png") + '" alt="Cria Lab DM"></a>' +
+        '<span class="admin-selo">Administração</span>' +
         '<div class="admin-acoes ml-auto">' + link("index.html", "Ver loja", "ver-loja") + "</div></div>" +
-        '<nav class="menu menu-admin mx-auto flex w-[min(1120px,calc(100%-32px))] flex-wrap gap-1.5 overflow-visible pb-3.5">' + menuAdmin + "</nav></div>";
+        '<nav class="menu menu-admin mx-auto flex w-[min(1120px,calc(100%-32px))] flex-nowrap gap-1 overflow-x-auto pb-2.5">' + menuAdmin + "</nav></div>";
       var gavetaAdminAntiga = document.getElementById("menu-gaveta");
       if (gavetaAdminAntiga) gavetaAdminAntiga.remove();
       var gavetaAdmin = document.createElement("div");
