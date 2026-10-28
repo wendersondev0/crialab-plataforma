@@ -57,7 +57,7 @@ O seed financeiro/orçamentos carrega `Data/Seeding/planilha/*.json` (exportados
 | Rota | Página |
 | --- | --- |
 | `/` | Home |
-| `/Busca` | Busca com filtros |
+| `/Busca` | Busca com filtros, sugestões e ordenação |
 | `/Produtos?ModalidadeFiltro=…` | Listas por modalidade |
 | `/pronta-entrega` · `/sob-demanda` · `/personalizados` | Redirects amigáveis → Produtos |
 | `/Produto/{id}` | Ficha |

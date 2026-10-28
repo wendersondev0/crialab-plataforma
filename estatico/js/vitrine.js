@@ -153,19 +153,42 @@
   function buscaCampo(valor) {
     return '<form class="formulario" id="form-busca" action="' + ui.url("paginas/busca.html") + '"><label>Buscar peça<input type="search" name="q" id="q" value="' + ui.esc(valor || "") + '" placeholder="Nome, material ou categoria"></label><div id="sugestoes"></div></form>';
   }
+  function semAcento(texto) {
+    return String(texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+  function textoProduto(produto) {
+    return semAcento([produto.titulo, produto.descricao, produto.material, ui.nomeCategoria(produto.categoria)].join(" "));
+  }
   function ligarSugestoes() {
     var campo = document.getElementById("q");
     var caixa = document.getElementById("sugestoes");
-    if (!campo || !caixa) return;
+    if (!campo || !caixa || campo.dataset.ligado) return;
+    campo.dataset.ligado = "1";
+    function fechar() {
+      caixa.hidden = true;
+      caixa.innerHTML = "";
+      campo.setAttribute("aria-expanded", "false");
+    }
     campo.addEventListener("input", function () {
-      var texto = campo.value.trim().toLowerCase();
-      if (texto.length < 2) { caixa.innerHTML = ""; return; }
+      var texto = semAcento(campo.value.trim());
+      if (texto.length < 2) { fechar(); return; }
       var lista = produtosVisiveis().filter(function (produto) {
-        return (produto.titulo + " " + produto.descricao).toLowerCase().indexOf(texto) >= 0;
+        return textoProduto(produto).indexOf(texto) >= 0;
       }).slice(0, 6);
-      caixa.innerHTML = lista.length ? '<div class="sugestoes">' + lista.map(function (produto) {
-        return '<a href="' + ui.url("paginas/produto.html?id=" + encodeURIComponent(produto.id)) + '">' + ui.esc(produto.titulo) + "</a>";
-      }).join("") + "</div>" : "";
+      if (!lista.length) { fechar(); return; }
+      caixa.hidden = false;
+      campo.setAttribute("aria-expanded", "true");
+      caixa.innerHTML = lista.map(function (produto) {
+        var foto = produto.fotos && produto.fotos[0] ? produto.fotos[0].arquivo : "marca/mascote.png";
+        return '<a href="' + fichaUrl(produto) + '"><img src="' + ui.url(foto) + '" alt=""><span><strong>' + ui.esc(produto.titulo) + "</strong><em>" + ui.esc(dinheiro.real(produto.preco)) + " · " + ui.esc(ui.nomeCategoria(produto.categoria)) + "</em></span></a>";
+      }).join("");
+    });
+    campo.addEventListener("keydown", function (evento) {
+      if (evento.key === "Escape") fechar();
+    });
+    document.addEventListener("click", function (evento) {
+      if (evento.target === campo || caixa.contains(evento.target)) return;
+      fechar();
     });
   }
   function introModalidade(id) {
@@ -245,28 +268,91 @@
     ligarFavoritosCards();
     ui.revelar(raiz);
   }
+  function flagConsulta(valor) {
+    return ["1", "true", "on", "sim"].indexOf(String(valor || "").trim().toLowerCase()) >= 0;
+  }
+  function numeroPreco(valor) {
+    if (valor == null || String(valor).trim() === "") return null;
+    var t = String(valor).trim().replace(/\s/g, "").replace(/R\$/ig, "");
+    if (t.indexOf(",") >= 0 && t.indexOf(".") >= 0) t = t.replace(/\./g, "").replace(",", ".");
+    else t = t.replace(",", ".");
+    var n = Number(t);
+    return isFinite(n) && n >= 0 ? n : null;
+  }
+  function campoPreco(valor) {
+    if (valor == null || valor === "") return "";
+    return Number(valor).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
   function lerConsulta() {
     var q = new URLSearchParams(location.search);
+    var aviso = "";
+    var catId = (q.get("categoria") || "").trim();
+    var categorias = estado().categorias || [];
+    var cat = categorias.find(function (item) { return String(item.id).toLowerCase() === catId.toLowerCase(); });
+    if (catId && !cat) {
+      aviso = "A categoria desse link não existe mais. Mostrando todas.";
+      catId = "";
+    } else if (cat) catId = cat.id;
+    var min = numeroPreco(q.get("precoMin"));
+    var max = numeroPreco(q.get("precoMax"));
+    if ((q.get("precoMin") && min == null) || (q.get("precoMax") && max == null))
+      aviso = "Use apenas números no preço. Exemplo: 25 ou 25,90.";
+    if (min != null && max != null && min > max) {
+      var troca = min;
+      min = max;
+      max = troca;
+      aviso = "O preço mínimo estava acima do máximo. A faixa foi invertida.";
+    }
+    var ordem = (q.get("ordem") || "relevancia").trim().toLowerCase();
+    if (["preco", "preco-desc", "vendas", "novidade"].indexOf(ordem) < 0) ordem = "relevancia";
+    var nota = (q.get("nota") || "").trim().replace(",", ".");
+    nota = nota === "4" || nota === "4.0" ? "4" : (nota === "5" || nota === "5.0" ? "5" : "");
     return {
-      q: q.get("q") || "",
-      categoria: q.get("categoria") || "",
-      precoMin: q.get("precoMin") || "",
-      precoMax: q.get("precoMax") || "",
-      freteGratis: q.get("freteGratis") === "1",
-      aVista: q.get("aVista") === "1",
-      personalizavel: q.get("personalizavel") === "1",
-      nota: q.get("nota") || "",
-      ordem: q.get("ordem") || "relevancia"
+      q: (q.get("q") || "").trim(),
+      categoria: catId,
+      precoMin: min == null ? "" : min.toFixed(2),
+      precoMax: max == null ? "" : max.toFixed(2),
+      freteGratis: flagConsulta(q.get("freteGratis")),
+      aVista: flagConsulta(q.get("aVista")),
+      personalizavel: flagConsulta(q.get("personalizavel")),
+      nota: nota,
+      ordem: ordem,
+      aviso: aviso
     };
+  }
+  function temFiltro(consulta) {
+    return !!(consulta.q || consulta.categoria || consulta.precoMin || consulta.precoMax || consulta.freteGratis || consulta.aVista || consulta.personalizavel || consulta.nota || consulta.ordem !== "relevancia");
+  }
+  function hrefBusca(consulta, sem) {
+    var params = new URLSearchParams();
+    function por(nome, valor) {
+      if (!valor || sem === "*" || sem === nome) return;
+      if (sem === "preco" && (nome === "precoMin" || nome === "precoMax")) return;
+      if (nome === "ordem" && valor === "relevancia") return;
+      params.set(nome, valor);
+    }
+    por("q", consulta.q);
+    por("categoria", consulta.categoria);
+    por("precoMin", consulta.precoMin);
+    por("precoMax", consulta.precoMax);
+    por("ordem", consulta.ordem);
+    por("nota", consulta.nota);
+    if (consulta.freteGratis) por("freteGratis", "1");
+    if (consulta.aVista) por("aVista", "1");
+    if (consulta.personalizavel) por("personalizavel", "1");
+    var s = params.toString();
+    return ui.url("paginas/busca.html" + (s ? "?" + s : ""));
   }
   function filtrar(consulta) {
     var limite = config().freteGratisAPartir;
-    var texto = consulta.q.trim().toLowerCase();
+    var texto = semAcento(consulta.q);
+    var min = consulta.precoMin === "" ? null : Number(consulta.precoMin);
+    var max = consulta.precoMax === "" ? null : Number(consulta.precoMax);
     var lista = produtosVisiveis().filter(function (produto) {
-      if (texto && (produto.titulo + " " + produto.descricao + " " + produto.material).toLowerCase().indexOf(texto) < 0) return false;
-      if (consulta.categoria && produto.categoria !== consulta.categoria) return false;
-      if (consulta.precoMin && produto.preco < Number(consulta.precoMin)) return false;
-      if (consulta.precoMax && produto.preco > Number(consulta.precoMax)) return false;
+      if (texto && textoProduto(produto).indexOf(texto) < 0) return false;
+      if (consulta.categoria && String(produto.categoria).toLowerCase() !== consulta.categoria.toLowerCase()) return false;
+      if (min != null && produto.preco < min) return false;
+      if (max != null && produto.preco > max) return false;
       if (consulta.freteGratis && produto.preco < limite) return false;
       if (consulta.aVista && !produto.aVista) return false;
       if (consulta.personalizavel && !produto.personalizavel) return false;
@@ -275,46 +361,102 @@
     });
     var ordem = consulta.ordem;
     lista.sort(function (a, b) {
-      if (ordem === "preco") return a.preco - b.preco;
-      if (ordem === "vendas") return b.vendas - a.vendas;
-      if (ordem === "novidade") return String(b.criadoEm).localeCompare(String(a.criadoEm));
-      var pa = texto && a.titulo.toLowerCase().indexOf(texto) >= 0 ? 2 : 1;
-      var pb = texto && b.titulo.toLowerCase().indexOf(texto) >= 0 ? 2 : 1;
-      return pb - pa || b.vendas - a.vendas;
+      var titulo = String(a.titulo).localeCompare(String(b.titulo), "pt");
+      if (ordem === "preco") return a.preco - b.preco || titulo;
+      if (ordem === "preco-desc") return b.preco - a.preco || titulo;
+      if (ordem === "vendas") return b.vendas - a.vendas || titulo;
+      if (ordem === "novidade") return String(b.criadoEm).localeCompare(String(a.criadoEm)) || titulo;
+      var pa = texto && semAcento(a.titulo).indexOf(texto) >= 0 ? 2 : 1;
+      var pb = texto && semAcento(b.titulo).indexOf(texto) >= 0 ? 2 : 1;
+      return pb - pa || b.vendas - a.vendas || titulo;
     });
     return lista;
   }
   function htmlFiltros(consulta) {
     function marcado(nome) { return consulta[nome] ? " checked" : ""; }
-    var categorias = '<option value="">Todas</option>' + estado().categorias.map(function (categoria) {
+    function sel(valor) { return consulta.ordem === valor ? " selected" : ""; }
+    var categorias = '<option value="">Todas</option>' + (estado().categorias || []).map(function (categoria) {
       return '<option value="' + ui.esc(categoria.id) + '"' + (consulta.categoria === categoria.id ? " selected" : "") + ">" + ui.esc(categoria.nome) + "</option>";
     }).join("");
-    return '<form id="filtros" class="cartao filtros"><label>Texto<input name="q" value="' + ui.esc(consulta.q) + '"></label><label>Categoria<select name="categoria">' + categorias + '</select></label><div class="grade-3"><label>Preço mínimo<input name="precoMin" type="number" min="0" step="0.01" value="' + ui.esc(consulta.precoMin) + '"></label><label>Preço máximo<input name="precoMax" type="number" min="0" step="0.01" value="' + ui.esc(consulta.precoMax) + '"></label><label>Ordenar<select name="ordem"><option value="relevancia">Relevância</option><option value="preco"' + (consulta.ordem === "preco" ? " selected" : "") + '>Preço</option><option value="vendas"' + (consulta.ordem === "vendas" ? " selected" : "") + '>Vendas</option><option value="novidade"' + (consulta.ordem === "novidade" ? " selected" : "") + '>Novidade</option></select></label></div><div class="linha"><label><input type="checkbox" name="freteGratis"' + marcado("freteGratis") + "> Frete grátis</label><label><input type=\"checkbox\" name=\"aVista\"" + marcado("aVista") + "> À vista</label><label><input type=\"checkbox\" name=\"personalizavel\"" + marcado("personalizavel") + "> Personalizável</label><label>Nota mínima<select name=\"nota\"><option value=\"\">Qualquer</option><option value=\"4\"" + (consulta.nota === "4" ? " selected" : "") + ">4 ou mais</option><option value=\"5\"" + (consulta.nota === "5" ? " selected" : "") + ">5</option></select></label></div><button class=\"botao\" type=\"submit\">Aplicar filtros</button></form>";
+    var aviso = consulta.aviso ? '<p class="busca-aviso" role="status">' + ui.esc(consulta.aviso) + "</p>" : "";
+    var limpar = temFiltro(consulta) ? '<a class="botao botao-linha" href="' + hrefBusca(consulta, "*") + '">Limpar</a>' : "";
+    return [
+      '<form id="filtros" class="busca-painel" autocomplete="off">',
+      aviso,
+      '<label class="busca-rotulo busca-texto">Texto<span class="busca-caixa">' + ico("busca") + '<input type="search" name="q" id="q" value="' + ui.esc(consulta.q) + '" placeholder="Nome, material ou categoria" autocomplete="off" enterkeyhint="search" aria-autocomplete="list" aria-controls="sugestoes" aria-expanded="false"><div id="sugestoes" class="busca-sugestoes" hidden></div></span></label>',
+      '<div class="busca-grade">',
+      '<label class="busca-rotulo">Categoria<select name="categoria">' + categorias + "</select></label>",
+      '<label class="busca-rotulo">Preço mínimo<input name="precoMin" type="text" inputmode="decimal" value="' + ui.esc(campoPreco(consulta.precoMin)) + '" placeholder="0,00"></label>',
+      '<label class="busca-rotulo">Preço máximo<input name="precoMax" type="text" inputmode="decimal" value="' + ui.esc(campoPreco(consulta.precoMax)) + '" placeholder="0,00"></label>',
+      '<label class="busca-rotulo">Nota mínima<select name="nota"><option value="">Qualquer</option><option value="4"' + (consulta.nota === "4" ? " selected" : "") + '>4 ou mais</option><option value="5"' + (consulta.nota === "5" ? " selected" : "") + ">5</option></select></label>",
+      '<label class="busca-rotulo">Ordenar<select name="ordem"><option value="relevancia"' + sel("relevancia") + '>Relevância</option><option value="preco"' + sel("preco") + '>Menor preço</option><option value="preco-desc"' + sel("preco-desc") + '>Maior preço</option><option value="vendas"' + sel("vendas") + '>Mais vendidos</option><option value="novidade"' + sel("novidade") + ">Novidades</option></select></label>",
+      "</div>",
+      '<div class="busca-opcoes" role="group" aria-labelledby="busca-opcoes-titulo"><p id="busca-opcoes-titulo" class="busca-kicker">Opções</p>',
+      '<label class="busca-check"><input type="checkbox" name="freteGratis" value="1"' + marcado("freteGratis") + "><span>Frete grátis</span></label>",
+      '<label class="busca-check"><input type="checkbox" name="aVista" value="1"' + marcado("aVista") + "><span>À vista</span></label>",
+      '<label class="busca-check"><input type="checkbox" name="personalizavel" value="1"' + marcado("personalizavel") + "><span>Personalizável</span></label>",
+      "</div>",
+      '<p class="busca-dica">Frete grátis vale para peças a partir de ' + ui.esc(dinheiro.real(config().freteGratisAPartir)) + ".</p>",
+      '<div class="busca-acoes">' + limpar + '<button class="botao" type="submit">Aplicar filtros</button></div>',
+      "</form>"
+    ].join("");
+  }
+  function htmlAtivos(consulta) {
+    if (!temFiltro(consulta)) return "";
+    var chips = [];
+    function chip(rotulo, sem) {
+      chips.push('<a class="busca-chip" href="' + hrefBusca(consulta, sem) + '" aria-label="Remover filtro ' + ui.esc(rotulo) + '">' + ui.esc(rotulo) + ' <span aria-hidden="true">×</span></a>');
+    }
+    if (consulta.q) chip("Texto: " + consulta.q, "q");
+    if (consulta.categoria) chip(ui.nomeCategoria(consulta.categoria), "categoria");
+    if (consulta.precoMin && consulta.precoMax) chip(dinheiro.real(consulta.precoMin) + " – " + dinheiro.real(consulta.precoMax), "preco");
+    else if (consulta.precoMin) chip("A partir de " + dinheiro.real(consulta.precoMin), "precoMin");
+    else if (consulta.precoMax) chip("Até " + dinheiro.real(consulta.precoMax), "precoMax");
+    if (consulta.freteGratis) chip("Frete grátis", "freteGratis");
+    if (consulta.aVista) chip("À vista", "aVista");
+    if (consulta.personalizavel) chip("Personalizável", "personalizavel");
+    if (consulta.nota === "4") chip("Nota 4 ou mais", "nota");
+    if (consulta.nota === "5") chip("Nota 5", "nota");
+    var ordens = { preco: "Menor preço", "preco-desc": "Maior preço", vendas: "Mais vendidos", novidade: "Novidades" };
+    if (ordens[consulta.ordem]) chip(ordens[consulta.ordem], "ordem");
+    chips.push('<a class="busca-chip busca-chip-limpar" href="' + hrefBusca(consulta, "*") + '">Limpar tudo</a>');
+    return '<div class="busca-ativos" aria-label="Filtros aplicados">' + chips.join("") + "</div>";
   }
   function busca() {
     document.title = "Busca · Cria Lab DM";
     var consulta = lerConsulta();
     var ajuda = (estado().menusAjuda || {}).busca || "Filtre peças por texto, tema e preço.";
-    raiz.innerHTML = "<h1>Busca</h1><p class=\"intro-pagina max-w-3xl text-tinta/75\" title=\"" + ui.esc(ajuda) + "\">" + ui.esc(ajuda) + "</p>" + ui.vazio("Olhando a mesa da oficina...") ;
+    raiz.innerHTML = '<header class="busca-cab"><div><h1 class="mt-0">Busca</h1><p class="intro-pagina m-0 max-w-3xl text-tinta/75">' + ui.esc(ajuda) + "</p></div></header>" + ui.vazio("Olhando a mesa da oficina...");
     raiz.querySelector(".vazio").classList.add("carregando");
     window.setTimeout(function () {
       var lista = filtrar(consulta);
-      var grade = lista.length ? '<div class="grade">' + lista.map(card).join("") + "</div>" : ui.vazio("Nenhuma peça com esses filtros.");
-      var ajuda = (estado().menusAjuda || {}).busca || "Filtre peças por texto, tema e preço.";
-      raiz.innerHTML = "<h1>Busca</h1><p class=\"intro-pagina mb-3 max-w-3xl text-tinta/75\" title=\"" + ui.esc(ajuda) + "\">" + ui.esc(ajuda) + "</p>" + htmlFiltros(consulta) + grade;
+      var n = lista.length;
+      var resumo = (n === 1 ? "1 peça" : n + " peças");
+      var grade = lista.length
+        ? '<div class="grade">' + lista.map(card).join("") + "</div>"
+        : '<div class="busca-vazio cartao"><img src="' + ui.url("marca/mascote.png") + '" alt="" width="120" height="120"><p>' + (temFiltro(consulta) ? "Nenhuma peça com esses filtros." : "A vitrine ainda não tem peças publicadas.") + "</p>" + (temFiltro(consulta) ? '<a class="botao botao-linha" href="' + hrefBusca(consulta, "*") + '">Limpar filtros</a>' : "") + "</div>";
+      if (consulta.q) document.title = "Busca: " + consulta.q + " · Cria Lab DM";
+      raiz.innerHTML = '<header class="busca-cab"><div><h1 class="mt-0">Busca</h1><p class="intro-pagina m-0 max-w-3xl text-tinta/75">' + ui.esc(ajuda) + '</p></div><p class="busca-contagem">' + resumo + "</p></header>" + htmlFiltros(consulta) + htmlAtivos(consulta) + grade;
       document.getElementById("filtros").addEventListener("submit", function (evento) {
         evento.preventDefault();
         var dados = new FormData(evento.target);
         var params = new URLSearchParams();
         ["q", "categoria", "precoMin", "precoMax", "ordem", "nota"].forEach(function (nome) {
-          var valor = String(dados.get(nome) || "");
-          if (valor) params.set(nome, valor);
+          var valor = String(dados.get(nome) || "").trim();
+          if (nome === "precoMin" || nome === "precoMax") {
+            valor = valor.replace(/\s/g, "").replace(/R\$/ig, "");
+            if (valor.indexOf(",") >= 0 && valor.indexOf(".") >= 0) valor = valor.replace(/\./g, "").replace(",", ".");
+            else valor = valor.replace(",", ".");
+          }
+          if (!valor || (nome === "ordem" && valor === "relevancia")) return;
+          params.set(nome, valor);
         });
         ["freteGratis", "aVista", "personalizavel"].forEach(function (nome) {
           if (dados.get(nome)) params.set(nome, "1");
         });
         location.href = ui.url("paginas/busca.html" + (params.toString() ? "?" + params.toString() : ""));
       });
+      ligarSugestoes();
       ligarFavoritosCards();
       ui.revelar(raiz);
     }, 350);

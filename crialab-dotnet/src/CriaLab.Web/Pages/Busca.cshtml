@@ -1,97 +1,107 @@
 @page
 @model CriaLab.Web.Pages.BuscaModel
-@{
-    ViewData["Title"] = "Busca";
-}
-<h1 class="mt-0">Busca</h1>
-<p class="intro-pagina mb-3 max-w-3xl text-tinta/75">@Model.Ajuda</p>
+<header class="busca-cab">
+    <div>
+        <h1 class="mt-0">Busca</h1>
+        <p class="intro-pagina m-0 max-w-3xl text-tinta/75">@Model.Ajuda</p>
+    </div>
+    <p class="busca-contagem">@Model.Resumo</p>
+</header>
 
-<form method="get" id="filtros" class="cartao filtros formulario mb-4" autocomplete="off">
-    <label>Texto
-        <input type="search" name="q" id="q" value="@Model.Termo" placeholder="Nome, material ou categoria" />
+<form method="get" id="filtros" class="busca-painel" autocomplete="off" novalidate>
+    @if (!string.IsNullOrWhiteSpace(Model.Mensagem))
+    {
+        <p class="busca-aviso" role="status">@Model.Mensagem</p>
+    }
+    <label class="busca-rotulo busca-texto">
+        Texto
+        <span class="busca-caixa">
+            <span class="ico" aria-hidden="true"><partial name="_SvgIcon" model="@("busca")" /></span>
+            <input type="search" name="q" id="q" value="@Model.Termo" placeholder="Nome, material ou categoria" autocomplete="off" enterkeyhint="search" aria-autocomplete="list" aria-controls="sugestoes" aria-expanded="false" />
+            <div id="sugestoes" class="busca-sugestoes" hidden></div>
+        </span>
     </label>
-    <div id="sugestoes"></div>
-    <label>Categoria
-        <select name="categoria" asp-items="Model.Categorias">
-            <option value="">Todas</option>
-        </select>
-    </label>
-    <div class="grade-3">
-        <label>Preço mínimo<input name="precoMin" type="number" min="0" step="0.01" value="@Model.PrecoMin" /></label>
-        <label>Preço máximo<input name="precoMax" type="number" min="0" step="0.01" value="@Model.PrecoMax" /></label>
-        <label>Ordenar
-            <select name="ordem">
-                <option value="relevancia" selected="@(Model.Ordem is null or "relevancia" ? "selected" : null)">Relevância</option>
-                <option value="preco" selected="@(Model.Ordem == "preco" ? "selected" : null)">Preço</option>
-                <option value="vendas" selected="@(Model.Ordem == "vendas" ? "selected" : null)">Vendas</option>
-                <option value="novidade" selected="@(Model.Ordem == "novidade" ? "selected" : null)">Novidade</option>
+    <div class="busca-grade">
+        <label class="busca-rotulo">Categoria
+            <select name="categoria">
+                <option value="">Todas</option>
+                @foreach (var cat in Model.ListaCategorias)
+                {
+                    <option value="@cat.Id" selected="@(Model.Categoria == cat.Id ? "selected" : null)">@cat.Nome</option>
+                }
             </select>
         </label>
-    </div>
-    <div class="linha flex flex-wrap gap-4">
-        <label class="flex items-center gap-2 font-semibold">
-            @if (Model.FreteGratis == "1")
-            {
-                <input type="checkbox" name="freteGratis" value="1" checked style="width:auto;min-height:auto" />
-            }
-            else
-            {
-                <input type="checkbox" name="freteGratis" value="1" style="width:auto;min-height:auto" />
-            }
-            Frete grátis
+        <label class="busca-rotulo">Preço mínimo
+            <input name="precoMin" type="text" inputmode="decimal" value="@Model.PrecoMinCampo" placeholder="0,00" />
         </label>
-        <label class="flex items-center gap-2 font-semibold">
-            @if (Model.AVista == "1")
-            {
-                <input type="checkbox" name="aVista" value="1" checked style="width:auto;min-height:auto" />
-            }
-            else
-            {
-                <input type="checkbox" name="aVista" value="1" style="width:auto;min-height:auto" />
-            }
-            À vista
+        <label class="busca-rotulo">Preço máximo
+            <input name="precoMax" type="text" inputmode="decimal" value="@Model.PrecoMaxCampo" placeholder="0,00" />
         </label>
-        <label class="flex items-center gap-2 font-semibold">
-            @if (Model.Personalizavel == "1")
-            {
-                <input type="checkbox" name="personalizavel" value="1" checked style="width:auto;min-height:auto" />
-            }
-            else
-            {
-                <input type="checkbox" name="personalizavel" value="1" style="width:auto;min-height:auto" />
-            }
-            Personalizável
-        </label>
-        <label>Nota mínima
+        <label class="busca-rotulo">Nota mínima
             <select name="nota">
                 <option value="">Qualquer</option>
-                @if (Model.Nota == "4")
-                {
-                    <option value="4" selected>4 ou mais</option>
-                }
-                else
-                {
-                    <option value="4">4 ou mais</option>
-                }
-                @if (Model.Nota == "5")
-                {
-                    <option value="5" selected>5</option>
-                }
-                else
-                {
-                    <option value="5">5</option>
-                }
+                <option value="4" selected="@(Model.Nota == "4" ? "selected" : null)">4 ou mais</option>
+                <option value="5" selected="@(Model.Nota == "5" ? "selected" : null)">5</option>
+            </select>
+        </label>
+        <label class="busca-rotulo">Ordenar
+            <select name="ordem">
+                <option value="relevancia" selected="@(Model.Ordem is null or "relevancia" ? "selected" : null)">Relevância</option>
+                <option value="preco" selected="@(Model.Ordem == "preco" ? "selected" : null)">Menor preço</option>
+                <option value="preco-desc" selected="@(Model.Ordem == "preco-desc" ? "selected" : null)">Maior preço</option>
+                <option value="vendas" selected="@(Model.Ordem == "vendas" ? "selected" : null)">Mais vendidos</option>
+                <option value="novidade" selected="@(Model.Ordem == "novidade" ? "selected" : null)">Novidades</option>
             </select>
         </label>
     </div>
-    <button class="botao" type="submit">Aplicar filtros</button>
+    <div class="busca-opcoes" role="group" aria-labelledby="busca-opcoes-titulo">
+        <p id="busca-opcoes-titulo" class="busca-kicker">Opções</p>
+        <label class="busca-check">
+            <input type="checkbox" name="freteGratis" value="1" checked="@(Model.FreteGratis == "1" ? "checked" : null)" />
+            <span>Frete grátis</span>
+        </label>
+        <label class="busca-check">
+            <input type="checkbox" name="aVista" value="1" checked="@(Model.AVista == "1" ? "checked" : null)" />
+            <span>À vista</span>
+        </label>
+        <label class="busca-check">
+            <input type="checkbox" name="personalizavel" value="1" checked="@(Model.Personalizavel == "1" ? "checked" : null)" />
+            <span>Personalizável</span>
+        </label>
+    </div>
+    <p class="busca-dica">Frete grátis vale para peças a partir de @Model.FreteGratisTexto.</p>
+    <div class="busca-acoes">
+        @if (Model.TemFiltro)
+        {
+            <a class="botao botao-linha" asp-page="/Busca">Limpar</a>
+        }
+        <button class="botao" type="submit">Aplicar filtros</button>
+    </div>
 </form>
 
-@if (Model.TemFiltro && !Model.Resultados.Any())
+@if (Model.Ativos.Count > 0)
 {
-    <div class="vazio cartao"><p>Nenhuma peça com esses filtros.</p></div>
+    <div class="busca-ativos" aria-label="Filtros aplicados">
+        @foreach (var ativo in Model.Ativos)
+        {
+            <a class="busca-chip" href="@ativo.Href" aria-label="Remover filtro @ativo.Rotulo">@ativo.Rotulo <span aria-hidden="true">×</span></a>
+        }
+        <a class="busca-chip busca-chip-limpar" asp-page="/Busca">Limpar tudo</a>
+    </div>
 }
-else if (Model.Resultados.Any())
+
+@if (!Model.Resultados.Any())
+{
+    <div class="busca-vazio cartao">
+        <img src="~/marca/mascote.png" alt="" width="120" height="120" />
+        <p>@(Model.TemFiltro ? "Nenhuma peça com esses filtros." : "A vitrine ainda não tem peças publicadas.")</p>
+        @if (Model.TemFiltro)
+        {
+            <a class="botao botao-linha" asp-page="/Busca">Limpar filtros</a>
+        }
+    </div>
+}
+else
 {
     <div class="grade vitrine grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         @foreach (var p in Model.Resultados)
@@ -104,27 +114,105 @@ else if (Model.Resultados.Any())
 @section Scripts {
 <script>
 (function () {
+  var form = document.getElementById("filtros");
   var campo = document.getElementById("q");
   var caixa = document.getElementById("sugestoes");
-  var timer;
-  if (!campo || !caixa) return;
+  var timer = 0;
+  var controle = null;
+  if (!form || !campo || !caixa) return;
+
+  function moeda(n) {
+    var v = Number(n);
+    if (!isFinite(v)) return "";
+    return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+  function fotoUrl(f) {
+    var s = String(f || "");
+    if (/^https?:\/\//i.test(s)) return s;
+    return "/" + s.replace(/^\/+/, "");
+  }
+  function fechar() {
+    caixa.hidden = true;
+    caixa.replaceChildren();
+    campo.setAttribute("aria-expanded", "false");
+  }
+  function abrir(lista) {
+    caixa.replaceChildren();
+    lista.forEach(function (p) {
+      var a = document.createElement("a");
+      a.href = "/Produto/" + encodeURIComponent(p.id);
+      if (p.foto) {
+        var img = document.createElement("img");
+        img.alt = "";
+        img.src = fotoUrl(p.foto);
+        a.appendChild(img);
+      }
+      var span = document.createElement("span");
+      var strong = document.createElement("strong");
+      strong.textContent = p.titulo || "";
+      var em = document.createElement("em");
+      var partes = [moeda(p.preco)];
+      if (p.categoria) partes.push(p.categoria);
+      em.textContent = partes.join(" · ");
+      span.appendChild(strong);
+      span.appendChild(em);
+      a.appendChild(span);
+      caixa.appendChild(a);
+    });
+    caixa.hidden = false;
+    campo.setAttribute("aria-expanded", "true");
+  }
+
   campo.addEventListener("input", function () {
     window.clearTimeout(timer);
     var valor = campo.value.trim();
-    if (valor.length < 2) { caixa.innerHTML = ""; return; }
+    if (valor.length < 2) { fechar(); return; }
     timer = window.setTimeout(function () {
-      fetch("?handler=Sugestoes&q=" + encodeURIComponent(valor))
+      if (controle) controle.abort();
+      controle = new AbortController();
+      var url = new URL(window.location.href);
+      var dados = new FormData(form);
+      url.search = "";
+      url.searchParams.set("handler", "Sugestoes");
+      dados.forEach(function (item, nome) {
+        if (nome === "ordem") return;
+        var texto = String(item || "").trim();
+        if (!texto) return;
+        url.searchParams.append(nome, texto);
+      });
+      fetch(url, { signal: controle.signal, headers: { "Accept": "application/json" } })
         .then(function (r) { return r.json(); })
         .then(function (lista) {
-          if (!lista.length) { caixa.innerHTML = ""; return; }
-          caixa.innerHTML = '<div class="sugestoes">' + lista.map(function (p) {
-            return '<a class="sugestao" href="/Produto/' + encodeURIComponent(p.id) + '">' +
-              (p.foto ? '<img src="/' + p.foto + '" alt="">' : "") +
-              '<span><strong>' + p.titulo + '</strong><em>R$ ' + Number(p.preco).toFixed(2).replace(".", ",") + '</em></span></a>';
-          }).join("") + "</div>";
+          if (!Array.isArray(lista) || !lista.length) { fechar(); return; }
+          abrir(lista);
         })
-        .catch(function () { caixa.innerHTML = ""; });
+        .catch(function (erro) {
+          if (erro && erro.name === "AbortError") return;
+          fechar();
+        });
     }, 220);
+  });
+
+  document.addEventListener("click", function (evento) {
+    if (caixa.contains(evento.target) || evento.target === campo) return;
+    fechar();
+  });
+  campo.addEventListener("keydown", function (evento) {
+    if (evento.key === "Escape") fechar();
+  });
+
+  form.addEventListener("submit", function () {
+    form.querySelectorAll("input, select").forEach(function (el) {
+      if (!el.name || el.type === "checkbox") return;
+      if (el.name === "precoMin" || el.name === "precoMax") {
+        var preco = el.value.trim().replace(/\s/g, "").replace(/R\$/ig, "");
+        if (preco.indexOf(",") >= 0 && preco.indexOf(".") >= 0) preco = preco.replace(/\./g, "").replace(",", ".");
+        else preco = preco.replace(",", ".");
+        el.value = preco;
+      }
+      var v = (el.value || "").trim();
+      if (!v || (el.name === "ordem" && v === "relevancia")) el.disabled = true;
+    });
   });
 })();
 </script>

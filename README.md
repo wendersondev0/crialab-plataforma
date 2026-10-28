@@ -11,6 +11,7 @@ Monorepo da Cria Lab com duas pastas principais e documentação de continuidade
 ## Estado atual
 
 - Destino operacional: app **Razor** em `crialab-dotnet` (paridade progressiva com `estatico/`).
+- Busca da loja (`/Busca`): painel de filtros, sugestões, chips para remover filtro e vitrine completa quando não há filtro.
 - Admin: Pedidos unificado com Fiscal (abas); Financeiro com KPIs e tooltips (Receita, Operacional, Caixa, Lucro…).
 - Favoritos: cookie anônimo + banco para usuário autenticado.
 - Parceiros (Vila Verde, GoFit) com URL de Instagram no rodapé/Sobre.
