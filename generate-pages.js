@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const base = path.join("d:", "projetos", "ctgi", "crialab-dotnet", "src", "CriaLab.Web", "Pages");
+const base = path.join("d:", "projetos", "ctgi", "crialab-plataforma", "src", "CriaLab.Web", "Pages");
 
 function w(rel, content) {
   const full = path.join(base, rel);

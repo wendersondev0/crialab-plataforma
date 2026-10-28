@@ -4,7 +4,7 @@ description: >-
   Contexto e fluxo de trabalho do monorepo Cria Lab (crialab-plataforma):
   loja estática HTML/JS e app ASP.NET Core Razor + PostgreSQL. Use always when
   the user asks to change, create, fix, review, document, or work on anything in
-  crialab-plataforma, crialab-dotnet, estatico, CriaLab.Web, Financeiro,
+  crialab-plataforma, estatico, CriaLab.Web, Financeiro,
   Patrimonio, Pedidos, Fiscal, favoritos, seed, or Cria Lab DM.
 ---
 
@@ -21,7 +21,7 @@ Copiar e acompanhar:
 ```
 Crialab task:
 - [ ] 1. Ler crialab-plataforma/README.md (contexto principal)
-- [ ] 2. Se a tarefa for no Razor/Postgres, ler também crialab-dotnet/README.md
+- [ ] 2. Se a tarefa for no Razor/Postgres, ler a seção ASP.NET do README.md
 - [ ] 3. Consultar docs/historico/INDEX.md se precisar de histórico recente
 - [ ] 4. Implementar a tarefa
 - [ ] 5. Atualizar README.md se arquitetura, stack, estrutura ou estado mudou
@@ -38,11 +38,12 @@ Raiz: `crialab-plataforma/` (raiz deste repositório)
 | Pasta | Papel |
 | --- | --- |
 | `estatico/` | Loja HTML/CSS/JS (referência de paridade / Cloudflare) |
-| `crialab-dotnet/` | ASP.NET Core 10 Razor Pages + EF Core + Identity + PostgreSQL |
+| `src/CriaLab.Web/` | ASP.NET Core 10 Razor Pages + EF Core + Identity + PostgreSQL |
+| `tests/CriaLab.Web.Tests/` | Testes do cálculo de orçamento |
 | `docs/historico/` | Histórico versionado de atividades |
 | `.cursor/skills/crialab-plataforma/` | Esta skill |
 
-Detalhes de execução, seed, rotas e checklist: `crialab-dotnet/README.md`.
+Detalhes de execução, seed, rotas e checklist: seção ASP.NET de `README.md`.
 
 ## Manutenção do README
 
@@ -55,7 +56,7 @@ Manter sempre atualizado com:
 - Links para README detalhado e para `docs/historico/`
 - Estado atual relevante (migração estático → Razor, módulos prontos, avisos operacionais)
 
-Não duplicar o mapa completo de rotas no README raiz se já estiver em `crialab-dotnet/README.md` — apontar o link. Atualizar o README filho quando a mudança for só do app Dotnet.
+O mapa de rotas, seed e checklist ficam no `README.md` da raiz.
 
 ## Histórico de atividades
 
@@ -99,7 +100,6 @@ Exemplo: `v001-2026-10-28-1609-cria-skill-e-historico.md`
 
 ## README
 - [ ] README raiz atualizado / sem mudança necessária
-- [ ] README crialab-dotnet atualizado / sem mudança necessária
 
 ## Commits (se houver)
 - `hash` mensagem
@@ -118,7 +118,7 @@ Manter `docs/historico/INDEX.md` com lista do mais recente para o mais antigo:
 ## Convenções do projeto
 
 - Commits locais em pt-BR (Conventional Commits); não fazer push a menos que o usuário peça.
-- Preferir `dotnet watch run` em `crialab-dotnet/src/CriaLab.Web`; matar `CriaLab.Web` se MSB3026 travar o build.
+- Preferir `dotnet watch run` em `src/CriaLab.Web`; matar `CriaLab.Web` se MSB3026 travar o build.
 - Paridade com `estatico/` quando a tarefa for UI/loja/admin espelhada.
 - Fiscal fica sob o fluxo de Pedidos (abas); não recriar item Fiscal separado no menu topo.
 - Favoritos: cookie anônimo + DB autenticado (`FavoritosService`).

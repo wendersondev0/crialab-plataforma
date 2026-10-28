@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const admin = path.join("d:", "projetos", "ctgi", "crialab-dotnet", "src", "CriaLab.Web", "Pages", "Admin");
+const admin = path.join("d:", "projetos", "ctgi", "crialab-plataforma", "src", "CriaLab.Web", "Pages", "Admin");
 
 function w(name, cshtml, cs) {
   fs.writeFileSync(path.join(admin, name + ".cshtml"), cshtml.replace(/\n/g, "\r\n"));

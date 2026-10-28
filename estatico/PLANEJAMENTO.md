@@ -77,7 +77,7 @@ crialab-plataforma/
     paginas/admin/
     marca/
     fotos/
-  crialab-dotnet/
+  src/CriaLab.Web/
 ```
 
 `dados/*.js` é a carga inicial. O que o usuário muda na tela vai para `localStorage`. Recarregar mantém a alteração. Na home da administração, um botão discreto “Restaurar carga inicial” apaga essa memória e volta aos arquivos.

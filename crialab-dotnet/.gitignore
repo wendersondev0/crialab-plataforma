@@ -1,8 +1,0 @@
-bin/
-obj/
-.vs/
-*.user
-*.suo
-.idea/
-*.DotSettings.user
-appsettings.*.local.json
