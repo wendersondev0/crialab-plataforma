@@ -34,4 +34,4 @@ Criada a skill Cursor `crialab-plataforma` para obrigar leitura do README antes 
 
 ## Commits (se houver)
 
-- `f7fa205` docs: skill Cursor, README e histórico versionado
+- `4d98c9d` docs: skill Cursor, README e histórico versionado
