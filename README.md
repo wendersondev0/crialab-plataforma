@@ -13,7 +13,7 @@ Loja e administração em ASP.NET Core Razor, com PostgreSQL.
 - App operacional em `src/CriaLab.Web`. A loja HTML/JS de referência saiu deste repositório.
 - Busca da loja (`/Busca`): painel de filtros, sugestões, chips para remover filtro e vitrine completa quando não há filtro.
 - Contato da loja (`/Contato`): WhatsApp, e-mail e telefone clicáveis, e formulário com validação e confirmação.
-- Admin: menu na mesma barra laranja da loja. Papéis em `/Admin/Papeis` e usuários em `/Admin/Usuarios`. Pedidos segue unificado com Fiscal (abas); Financeiro com KPIs e tooltips.
+- Admin: menu na mesma barra laranja da loja. Usuários em `/Admin/Usuarios`; papéis em `/Admin/Papeis`, pela aba dessa tela. Pedidos segue unificado com Fiscal (abas); Financeiro com KPIs e tooltips.
 - Conta do cliente em `/Conta` (dados e endereços). Pedidos, favoritos, orçamentos e perguntas têm página própria.
 - Parceiros (Vila Verde, GoFit) com URL de Instagram no rodapé/Sobre.
 - Seed aplica migrations e carga demo (planilha financeira, catálogo, oficina).
@@ -109,7 +109,7 @@ O seed financeiro/orçamentos carrega `src/CriaLab.Web/Data/Seeding/planilha/*.j
 | `/Admin/Patrimonio` · `/Admin/Estoque` · `/Admin/Impressao` | Oficina |
 | `/Admin/Financeiro` · `/Admin/Mes` · `/Admin/Energia` · `/Admin/Conciliacao` | Financeiro |
 | `/Admin/Fiscal` | Recibos / revisão de nota / CSV |
-| `/Admin/Sistema` · `/Admin/Papeis` · `/Admin/Usuarios` | Loja, frete, site · papéis · contas |
+| `/Admin/Sistema` · `/Admin/Usuarios` · `/Admin/Papeis` | Loja, frete, site · contas · papéis (aba de Usuários) |
 
 ### Restaurar carga inicial (Development)
 
