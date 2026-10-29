@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CriaLab.Web.Services;
 
-public record FreteOpcao(string Id, string Nome, decimal Preco, int Dias);
+public record FreteOpcao(string Id, string Nome, decimal Preco, int Dias, string? Descricao = null);
 
 public class FreteService
 {
@@ -20,24 +20,45 @@ public class FreteService
         if (digitos.Length < 8)
             return ("Informe um CEP válido com 8 dígitos.", new List<FreteOpcao>(), freteGratis);
 
-        if (!int.TryParse(digitos[..8], out var n))
+        var prefixo = Prefixo(digitos);
+        if (prefixo < 0)
             return ("CEP inválido.", new List<FreteOpcao>(), freteGratis);
 
-        var faixa = await _db.FaixasCep.AsNoTracking()
-            .Where(x => x.De <= n && x.Ate >= n)
+        var faixas = await _db.FaixasCep.AsNoTracking()
+            .Where(x => x.De <= prefixo && x.Ate >= prefixo)
             .OrderBy(x => x.Ate - x.De)
-            .FirstOrDefaultAsync();
+            .ToListAsync();
 
-        if (faixa == null)
+        if (faixas.Count == 0)
             return ("Não entregamos neste CEP ainda.", new List<FreteOpcao>(), freteGratis);
 
+        var faixa = faixas[0];
         var gratis = subtotal >= freteGratis;
         var opcoes = new List<FreteOpcao>
         {
             new("pac", "PAC", gratis ? 0 : faixa.Pac, faixa.PacDias),
             new("sedex", "SEDEX", gratis ? 0 : faixa.Sedex, faixa.SedexDias)
         };
+
+        var local = faixas.FirstOrDefault(x => x.EntregaLocal);
+        if (local != null)
+        {
+            opcoes.Add(new FreteOpcao(
+                "entrega-local",
+                "Entrega Local",
+                gratis ? 0 : local.EntregaLocalPreco,
+                local.EntregaLocalDias <= 0 ? 1 : local.EntregaLocalDias,
+                string.IsNullOrWhiteSpace(local.EntregaLocalDescricao) ? null : local.EntregaLocalDescricao.Trim()));
+        }
+
         return (null, opcoes, freteGratis);
+    }
+
+    public static int Prefixo(string digitos)
+    {
+        if (!int.TryParse(digitos.Length > 8 ? digitos[..8] : digitos, out var n))
+            return -1;
+        return n >= 1_000_000 ? n / 1000 : n;
     }
 
     public async Task<Cupom?> CupomPorCodigoAsync(string? codigo)

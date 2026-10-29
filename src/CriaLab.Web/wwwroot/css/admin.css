@@ -1748,6 +1748,19 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
+.sys-faixa-desc { grid-column: 1 / -1; }
+.sys-faixa-desc textarea {
+  width: 100%;
+  min-height: 72px;
+  resize: vertical;
+  border: 2px solid var(--linha);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  color: var(--tinta);
+  font: inherit;
+  font-weight: 600;
+}
 .sys-pub-grade {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

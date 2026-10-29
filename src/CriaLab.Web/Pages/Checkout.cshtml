@@ -70,9 +70,16 @@ else
                     @foreach (var op in Model.OpcoesFrete)
                     {
                         var preco = Model.Subtotal >= Model.FreteGratisAPartir ? 0 : op.Preco;
-                        <label class="flex items-center gap-2 font-semibold">
-                            <input type="radio" asp-for="FreteId" value="@op.Id" style="width:auto;min-height:auto" />
-                            @op.Nome · @(preco == 0 ? "grátis" : $"R$ {preco:N2}") · @op.Dias dias úteis
+                        var prazo = op.Dias == 1 ? "1 dia útil" : $"{op.Dias} dias úteis";
+                        <label class="grid gap-1 font-semibold">
+                            <span class="flex items-center gap-2">
+                                <input type="radio" asp-for="FreteId" value="@op.Id" style="width:auto;min-height:auto" />
+                                @op.Nome · @(preco == 0 ? "grátis" : $"R$ {preco:N2}") · @prazo
+                            </span>
+                            @if (!string.IsNullOrWhiteSpace(op.Descricao))
+                            {
+                                <span class="discreto font-normal">@op.Descricao</span>
+                            }
                         </label>
                     }
                 </fieldset>

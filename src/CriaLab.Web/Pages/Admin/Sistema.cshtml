@@ -118,7 +118,7 @@ else if (Model.Aba == "frete")
             }
             else
             {
-                <p class="sys-meta">PAC e SEDEX por intervalo de CEP. Pedidos novos usam a tabela salva.</p>
+                <p class="sys-meta">PAC, SEDEX e Entrega Local por intervalo. Use os 5 primeiros dígitos do CEP: 29260 cobre 29260-000.</p>
             }
         </div>
         <form method="post" asp-page-handler="Frete" class="sys-faixas" id="sys-frete">
@@ -262,11 +262,38 @@ else
   var lista = document.getElementById("sys-faixas-lista");
   if (!campo || !lista) return;
   var faixas = [];
-  try { faixas = JSON.parse(campo.value || "[]") || []; } catch (e) { faixas = []; }
+  function num(v) { return Number(v) || 0; }
+  function normalizar(f) {
+    function p(a, b) { return f[a] != null ? f[a] : f[b]; }
+    return {
+      de: num(p("de", "De")),
+      ate: num(p("ate", "Ate")),
+      pac: num(p("pac", "Pac")),
+      pacDias: num(p("pacDias", "PacDias")),
+      sedex: num(p("sedex", "Sedex")),
+      sedexDias: num(p("sedexDias", "SedexDias")),
+      entregaLocal: !!p("entregaLocal", "EntregaLocal"),
+      entregaLocalPreco: num(p("entregaLocalPreco", "EntregaLocalPreco")),
+      entregaLocalDias: num(p("entregaLocalDias", "EntregaLocalDias")) || 1,
+      entregaLocalDescricao: p("entregaLocalDescricao", "EntregaLocalDescricao") || ""
+    };
+  }
+  try { faixas = (JSON.parse(campo.value || "[]") || []).map(normalizar); } catch (e) { faixas = []; }
   var digitos = "@(new string((Model.Cep ?? "").Where(char.IsDigit).ToArray()))";
-  var cepN = digitos ? Number(digitos) : 0;
+  function prefixo(n) {
+    n = Number(n) || 0;
+    if (n >= 1000000) return Math.floor(n / 1000);
+    return n;
+  }
+  var cepN = digitos ? prefixo(digitos) : 0;
 
   function sync() { campo.value = JSON.stringify(faixas); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  }
+  function cobre(f) {
+    return cepN >= prefixo(f.de) && cepN <= prefixo(f.ate);
+  }
 
   function pintar() {
     if (!faixas.length) {
@@ -275,18 +302,22 @@ else
       return;
     }
     lista.innerHTML = faixas.map(function (f, i) {
-      var destaque = cepN && cepN >= f.de && cepN <= f.ate ? " destaque" : "";
-      if (digitos && !(cepN >= f.de && cepN <= f.ate)) return "";
+      var destaque = cepN && cobre(f) ? " destaque" : "";
+      if (digitos && !cobre(f)) return "";
       return '<article class="sys-faixa' + destaque + '" data-i="' + i + '">' +
         '<div class="sys-faixa-cab"><strong>Faixa ' + (i + 1) + '</strong>' +
         '<button class="botao-linha" type="button" data-rm="' + i + '"' + (faixas.length <= 1 ? " disabled" : "") + '>Remover</button></div>' +
         '<div class="sys-faixa-grade">' +
-        '<label class="fin-campo"><span>CEP de</span><input data-campo="de" type="number" value="' + f.de + '"></label>' +
-        '<label class="fin-campo"><span>CEP até</span><input data-campo="ate" type="number" value="' + f.ate + '"></label>' +
-        '<label class="fin-campo"><span>PAC (R$)</span><input data-campo="pac" type="number" step="0.01" value="' + f.pac + '"></label>' +
-        '<label class="fin-campo"><span>Dias PAC</span><input data-campo="pacDias" type="number" value="' + f.pacDias + '"></label>' +
-        '<label class="fin-campo"><span>SEDEX (R$)</span><input data-campo="sedex" type="number" step="0.01" value="' + f.sedex + '"></label>' +
-        '<label class="fin-campo"><span>Dias SEDEX</span><input data-campo="sedexDias" type="number" value="' + f.sedexDias + '"></label>' +
+        '<label class="fin-campo"><span>CEP de</span><input data-campo="de" type="number" value="' + (f.de ?? "") + '"></label>' +
+        '<label class="fin-campo"><span>CEP até</span><input data-campo="ate" type="number" value="' + (f.ate ?? "") + '"></label>' +
+        '<label class="fin-campo"><span>PAC (R$)</span><input data-campo="pac" type="number" step="0.01" value="' + (f.pac ?? "") + '"></label>' +
+        '<label class="fin-campo"><span>Dias PAC</span><input data-campo="pacDias" type="number" value="' + (f.pacDias ?? "") + '"></label>' +
+        '<label class="fin-campo"><span>SEDEX (R$)</span><input data-campo="sedex" type="number" step="0.01" value="' + (f.sedex ?? "") + '"></label>' +
+        '<label class="fin-campo"><span>Dias SEDEX</span><input data-campo="sedexDias" type="number" value="' + (f.sedexDias ?? "") + '"></label>' +
+        '<label class="sys-check"><input data-campo="entregaLocal" type="checkbox"' + (f.entregaLocal ? " checked" : "") + '><span>Entrega Local nesta faixa</span></label>' +
+        '<label class="fin-campo"><span>Entrega Local (R$)</span><input data-campo="entregaLocalPreco" type="number" step="0.01" min="0" value="' + (f.entregaLocalPreco ?? "") + '"></label>' +
+        '<label class="fin-campo"><span>Dias da Entrega Local</span><input data-campo="entregaLocalDias" type="number" min="1" value="' + (f.entregaLocalDias || 1) + '"></label>' +
+        '<label class="fin-campo sys-faixa-desc"><span>Descrição para o cliente</span><textarea data-campo="entregaLocalDescricao" rows="3">' + esc(f.entregaLocalDescricao) + '</textarea></label>' +
         '</div></article>';
     }).join("") || '<p class="sys-meta">Nenhuma faixa para mostrar com esse CEP.</p>';
 
@@ -295,7 +326,9 @@ else
         var art = inp.closest("[data-i]");
         var i = Number(art.getAttribute("data-i"));
         var k = inp.getAttribute("data-campo");
-        faixas[i][k] = Number(inp.value) || 0;
+        if (inp.type === "checkbox") faixas[i][k] = inp.checked;
+        else if (inp.type === "number") faixas[i][k] = Number(inp.value) || 0;
+        else faixas[i][k] = inp.value;
         sync();
       });
     });
@@ -313,7 +346,7 @@ else
   if (add) add.addEventListener("click", function () {
     var ultimo = faixas[faixas.length - 1];
     var de = ultimo ? Number(ultimo.ate) + 1 : 1000;
-    faixas.push({ de: de, ate: de + 999, pac: 29.9, pacDias: 8, sedex: 49.9, sedexDias: 3 });
+    faixas.push({ de: de, ate: de + 999, pac: 29.9, pacDias: 8, sedex: 49.9, sedexDias: 3, entregaLocal: false, entregaLocalPreco: 0, entregaLocalDias: 1, entregaLocalDescricao: "" });
     pintar();
   });
 

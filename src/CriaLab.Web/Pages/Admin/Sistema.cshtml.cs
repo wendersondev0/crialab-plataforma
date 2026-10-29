@@ -2,6 +2,7 @@ using System.Text.Json;
 using CriaLab.Web.Data;
 using CriaLab.Web.Data.Entities;
 using CriaLab.Web.Data.Seeding;
+using CriaLab.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -15,7 +16,11 @@ public class SistemaModel : PageModel
     private readonly ApplicationDbContext _db;
     private readonly IWebHostEnvironment _env;
     private readonly IServiceProvider _services;
-    private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
+    private static readonly JsonSerializerOptions JsonOpts = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
     public SistemaModel(ApplicationDbContext db, IWebHostEnvironment env, IServiceProvider services)
     {
@@ -59,6 +64,10 @@ public class SistemaModel : PageModel
         public int PacDias { get; set; } = 5;
         public decimal Sedex { get; set; }
         public int SedexDias { get; set; } = 2;
+        public bool EntregaLocal { get; set; }
+        public decimal EntregaLocalPreco { get; set; }
+        public int EntregaLocalDias { get; set; } = 1;
+        public string EntregaLocalDescricao { get; set; } = "";
     }
 
     public async Task OnGetAsync(string? aba, string? cep)
@@ -143,7 +152,11 @@ public class SistemaModel : PageModel
                 Pac = f.Pac,
                 PacDias = f.PacDias <= 0 ? 5 : f.PacDias,
                 Sedex = f.Sedex,
-                SedexDias = f.SedexDias <= 0 ? 2 : f.SedexDias
+                SedexDias = f.SedexDias <= 0 ? 2 : f.SedexDias,
+                EntregaLocal = f.EntregaLocal,
+                EntregaLocalPreco = f.EntregaLocalPreco < 0 ? 0 : f.EntregaLocalPreco,
+                EntregaLocalDias = f.EntregaLocalDias <= 0 ? 1 : f.EntregaLocalDias,
+                EntregaLocalDescricao = f.EntregaLocal ? (f.EntregaLocalDescricao ?? "").Trim() : ""
             });
         }
         await _db.SaveChangesAsync();
@@ -253,12 +266,19 @@ public class SistemaModel : PageModel
             Pac = f.Pac,
             PacDias = f.PacDias,
             Sedex = f.Sedex,
-            SedexDias = f.SedexDias
+            SedexDias = f.SedexDias,
+            EntregaLocal = f.EntregaLocal,
+            EntregaLocalPreco = f.EntregaLocalPreco,
+            EntregaLocalDias = f.EntregaLocalDias <= 0 ? 1 : f.EntregaLocalDias,
+            EntregaLocalDescricao = f.EntregaLocalDescricao
         }));
 
         var digitos = new string((Cep ?? "").Where(char.IsDigit).ToArray());
-        if (digitos.Length > 0 && int.TryParse(digitos.Length > 8 ? digitos[..8] : digitos, out var n) && n > 0)
-            FaixasVisiveis = Faixas.Where(f => n >= f.De && n <= f.Ate).ToList();
+        if (digitos.Length > 0)
+        {
+            var n = FreteService.Prefixo(digitos);
+            FaixasVisiveis = n < 0 ? new List<FaixaCep>() : Faixas.Where(f => n >= f.De && n <= f.Ate).ToList();
+        }
         else
             FaixasVisiveis = Faixas;
 

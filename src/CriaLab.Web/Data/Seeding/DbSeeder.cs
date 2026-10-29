@@ -48,6 +48,7 @@ public static class DbSeeder
             await EnsureMaquinasPlanilhaAsync(context);
             await EnsureImpressoesPlanilhaAsync(context);
             await EnsureParceirosLinksAsync(context);
+            await EnsureEntregaLocalAsync(context);
             return;
         }
 
@@ -194,7 +195,7 @@ public static class DbSeeder
             new MenuAjuda { Id = "inicio", Texto = "A home mostra o carrossel, os atalhos das três modalidades e a grade de peças. Clique no card para abrir a ficha completa." },
             new MenuAjuda { Id = "busca", Texto = "Filtre por texto, categoria temática, preço e ordenação. O link da busca pode ser compartilhado com os mesmos filtros." },
             new MenuAjuda { Id = "carrinho", Texto = "Revise quantidades e remova itens. O cupom e o frete entram no fechamento do pedido." },
-            new MenuAjuda { Id = "checkout", Texto = "Informe CEP, escolha PAC ou SEDEX, use cupom se tiver e confirme o pagamento simulado." },
+            new MenuAjuda { Id = "checkout", Texto = "Informe CEP, escolha PAC, SEDEX ou Entrega Local, use cupom se tiver e confirme o pagamento simulado." },
             new MenuAjuda { Id = "conta", Texto = "Pedidos, orçamentos, favoritos e dados do cliente." },
             new MenuAjuda { Id = "contato", Texto = "Envie dúvida, sugestão, elogio, reclamação ou orçamento. A mensagem aparece na lista do admin." },
             new MenuAjuda { Id = "sobre", Texto = "Somos uma oficina de impressão 3D: peças prontas, sob demanda e personalizadas do seu jeito." },
@@ -221,6 +222,7 @@ public static class DbSeeder
             new FaixaCep { De = 1000, Ate = 19999, Pac = 28.9m, PacDias = 8, Sedex = 46.5m, SedexDias = 3 },
             new FaixaCep { De = 20000, Ate = 28999, Pac = 24.5m, PacDias = 6, Sedex = 39.9m, SedexDias = 2 },
             new FaixaCep { De = 29000, Ate = 29999, Pac = 18.9m, PacDias = 5, Sedex = 32.4m, SedexDias = 2 },
+            FaixaEntregaLocal(),
             new FaixaCep { De = 30000, Ate = 39999, Pac = 22.4m, PacDias = 7, Sedex = 36.8m, SedexDias = 3 },
             new FaixaCep { De = 40000, Ate = 69999, Pac = 31.2m, PacDias = 9, Sedex = 49.7m, SedexDias = 4 },
             new FaixaCep { De = 70000, Ate = 79999, Pac = 34.8m, PacDias = 8, Sedex = 55.3m, SedexDias = 3 },
@@ -563,6 +565,55 @@ public static class DbSeeder
         }
         if (mudou)
             await context.SaveChangesAsync();
+    }
+
+    private const string EntregaLocalDescricao =
+        "Entrega realizada diretamente por nós na região atendida, com prazo reduzido e frete mais econômico em comparação aos Correios.";
+
+    private static FaixaCep FaixaEntregaLocal() => new()
+    {
+        De = 29260,
+        Ate = 29279,
+        Pac = 18.9m,
+        PacDias = 5,
+        Sedex = 32.4m,
+        SedexDias = 2,
+        EntregaLocal = true,
+        EntregaLocalPreco = 5m,
+        EntregaLocalDias = 1,
+        EntregaLocalDescricao = EntregaLocalDescricao
+    };
+
+    private static async Task EnsureEntregaLocalAsync(ApplicationDbContext context)
+    {
+        var faixa = await context.FaixasCep.FirstOrDefaultAsync(x => x.De == 29260 && x.Ate == 29279);
+        if (faixa == null)
+        {
+            context.FaixasCep.Add(FaixaEntregaLocal());
+            await context.SaveChangesAsync();
+            return;
+        }
+
+        if (faixa.EntregaLocal && faixa.EntregaLocalPreco == 5m && !string.IsNullOrWhiteSpace(faixa.EntregaLocalDescricao))
+            return;
+
+        faixa.EntregaLocal = true;
+        faixa.EntregaLocalPreco = 5m;
+        if (faixa.EntregaLocalDias <= 0)
+            faixa.EntregaLocalDias = 1;
+        if (string.IsNullOrWhiteSpace(faixa.EntregaLocalDescricao))
+            faixa.EntregaLocalDescricao = EntregaLocalDescricao;
+        if (faixa.Pac <= 0)
+        {
+            faixa.Pac = 18.9m;
+            faixa.PacDias = 5;
+        }
+        if (faixa.Sedex <= 0)
+        {
+            faixa.Sedex = 32.4m;
+            faixa.SedexDias = 2;
+        }
+        await context.SaveChangesAsync();
     }
 
     private static List<Maquina> CriarMaquinasPlanilha() =>

@@ -449,6 +449,24 @@ namespace CriaLab.Web.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("de");
 
+                    b.Property<bool>("EntregaLocal")
+                        .HasColumnType("boolean")
+                        .HasColumnName("entrega_local");
+
+                    b.Property<string>("EntregaLocalDescricao")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("entrega_local_descricao");
+
+                    b.Property<int>("EntregaLocalDias")
+                        .HasColumnType("integer")
+                        .HasColumnName("entrega_local_dias");
+
+                    b.Property<decimal>("EntregaLocalPreco")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("entrega_local_preco");
+
                     b.Property<decimal>("Pac")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)")

@@ -89,6 +89,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<FaixaCep>().HasKey(x => x.Id);
         builder.Entity<FaixaCep>().Property(x => x.Pac).HasPrecision(18, 2);
         builder.Entity<FaixaCep>().Property(x => x.Sedex).HasPrecision(18, 2);
+        builder.Entity<FaixaCep>().Property(x => x.EntregaLocalPreco).HasPrecision(18, 2);
 
         builder.Entity<TipoInsumoConfig>().HasKey(x => x.Id);
 

@@ -134,6 +134,7 @@ public class ProdutoModel : PageModel
                 o.Nome,
                 preco = gratis ? 0m : o.Preco,
                 o.Dias,
+                o.Descricao,
                 gratis
             })
         });

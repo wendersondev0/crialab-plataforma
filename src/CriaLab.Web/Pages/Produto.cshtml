@@ -412,7 +412,10 @@ else
         .then(function (data) {
           if (data.erro) { caixaRes.innerHTML = '<p class="erro">' + data.erro + "</p>"; return; }
           caixaRes.innerHTML = (data.opcoes || []).map(function (op) {
-            return "<p><strong>" + op.nome + "</strong> · " + (op.gratis || op.preco === 0 ? "grátis" : ("R$ " + Number(op.preco).toFixed(2).replace(".", ","))) + " · " + op.dias + " dias úteis</p>";
+            var preco = op.gratis || op.preco === 0 ? "grátis" : ("R$ " + Number(op.preco).toFixed(2).replace(".", ","));
+            var prazo = Number(op.dias) === 1 ? "1 dia útil" : (op.dias + " dias úteis");
+            var desc = op.descricao ? '<span class="discreto">' + String(op.descricao).replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</span>" : "";
+            return "<p><strong>" + op.nome + "</strong> · " + preco + " · " + prazo + (desc ? "<br>" + desc : "") + "</p>";
           }).join("");
         })
         .catch(function () { caixaRes.innerHTML = '<p class="erro">Não foi possível cotar agora.</p>'; });

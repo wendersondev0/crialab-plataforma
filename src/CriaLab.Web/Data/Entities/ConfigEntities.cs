@@ -29,6 +29,10 @@ public class FaixaCep
     public int PacDias { get; set; }
     public decimal Sedex { get; set; }
     public int SedexDias { get; set; }
+    public bool EntregaLocal { get; set; }
+    public decimal EntregaLocalPreco { get; set; }
+    public int EntregaLocalDias { get; set; }
+    public string EntregaLocalDescricao { get; set; } = string.Empty;
 }
 
 public class TipoInsumoConfig

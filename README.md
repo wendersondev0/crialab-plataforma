@@ -13,7 +13,7 @@ Loja e administração em ASP.NET Core Razor, com PostgreSQL.
 - App operacional em `src/CriaLab.Web`. A loja HTML/JS de referência saiu deste repositório.
 - Busca da loja (`/Busca`): painel de filtros, sugestões, chips para remover filtro e vitrine completa quando não há filtro.
 - Contato da loja (`/Contato`): WhatsApp, e-mail e telefone clicáveis, e formulário com validação e confirmação.
-- Admin: menu na mesma barra laranja da loja. Usuários em `/Admin/Usuarios`; papéis em `/Admin/Papeis`, pela aba dessa tela. Pedidos segue unificado com Fiscal (abas); Financeiro com KPIs e tooltips.
+- Admin: menu na mesma barra laranja da loja. Usuários em `/Admin/Usuarios`; papéis em `/Admin/Papeis`, pela aba dessa tela. Pedidos segue unificado com Fiscal (abas); Financeiro com KPIs e tooltips. Frete em Sistema usa faixas de CEP, com Entrega Local na faixa 29260–29279 a R$ 5.
 - Conta do cliente em `/Conta` (dados e endereços). Pedidos, favoritos, orçamentos e perguntas têm página própria.
 - Parceiros (Vila Verde, GoFit) com URL de Instagram no rodapé/Sobre.
 - Seed aplica migrations e carga demo (planilha financeira, catálogo, oficina).
