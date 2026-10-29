@@ -1,0 +1,51 @@
+@page
+@model CriaLab.Web.Pages.Conta.PerguntasModel
+@{
+    ViewData["Title"] = "Perguntas";
+    string Classe(string nome) => "cta-aba" + (Model.Filtro == nome ? " ativo" : "");
+}
+<div class="cta-cab">
+    <div class="cta-cab-txt">
+        <p class="cta-eyebrow">Conta</p>
+        <h1 class="cta-nome">Perguntas</h1>
+        <p class="cta-intro">O que você perguntou nos anúncios e o que a oficina respondeu.</p>
+    </div>
+    <a class="botao-linha" asp-page="/Conta/Index">Minha conta</a>
+</div>
+
+<div class="cta-kpis cta-kpis-3">
+    <a class="cta-kpi@(Model.Filtro == "todas" ? " ativo" : "")" asp-page="/Conta/Perguntas" asp-route-filtro="todas"><strong>@Model.Total</strong><span>Todas</span></a>
+    <a class="cta-kpi@(Model.Filtro == "aguardando" ? " ativo" : "")" asp-page="/Conta/Perguntas" asp-route-filtro="aguardando"><strong>@Model.Aguardando</strong><span>Aguardando</span></a>
+    <a class="cta-kpi@(Model.Filtro == "respondidas" ? " ativo" : "")" asp-page="/Conta/Perguntas" asp-route-filtro="respondidas"><strong>@Model.Respondidas</strong><span>Respondidas</span></a>
+</div>
+
+<div class="cta-abas">
+    <a class="@Classe("todas")" asp-page="/Conta/Perguntas" asp-route-filtro="todas">Todas</a>
+    <a class="@Classe("aguardando")" asp-page="/Conta/Perguntas" asp-route-filtro="aguardando">Aguardando</a>
+    <a class="@Classe("respondidas")" asp-page="/Conta/Perguntas" asp-route-filtro="respondidas">Respondidas</a>
+</div>
+
+<div class="cta-lista">
+@if (!Model.Perguntas.Any())
+{
+    <div class="vazio cartao">
+        <p>@(Model.Total == 0 ? "Você ainda não fez perguntas nos anúncios." : "Nenhuma pergunta nesse filtro.")</p>
+        <a class="botao" asp-page="/Produtos">Ver produtos</a>
+    </div>
+}
+@foreach (var p in Model.Perguntas)
+{
+    <article class="cta-card">
+        <div class="cta-card-topo">
+            <div>
+                <strong class="cta-id">@p.ProdutoId</strong>
+                <p class="cta-meta">@p.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</p>
+            </div>
+            <span class="@(string.IsNullOrWhiteSpace(p.Resposta) ? "cta-selo alerta" : "cta-selo ok")">@(string.IsNullOrWhiteSpace(p.Resposta) ? "Aguardando" : "Respondida")</span>
+        </div>
+        <p class="cta-itens">@p.Texto</p>
+        <p class="cta-meta">@(string.IsNullOrWhiteSpace(p.Resposta) ? "A oficina ainda não respondeu." : p.Resposta)</p>
+        <a class="botao-linha" asp-page="/Produto" asp-route-id="@p.ProdutoId">Ver produto</a>
+    </article>
+}
+</div>

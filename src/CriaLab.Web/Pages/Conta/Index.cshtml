@@ -4,50 +4,25 @@
     ViewData["Title"] = "Minha conta";
     string ClasseAba(string nome) => "cta-aba" + (Model.Aba == nome ? " ativo" : "");
     string ClasseKpi(string nome) => "cta-kpi" + (Model.Aba == nome ? " ativo" : "");
-    string Selo(string status) => status switch
-    {
-        "aguardando pagamento" or "aguardando" or "novo" => "cta-selo alerta",
-        "pago" or "entregue" or "respondido" or "aceito" => "cta-selo ok",
-        "cancelado" or "devolvido" or "recusado" => "cta-selo mute",
-        _ => "cta-selo"
-    };
 }
 <div class="cta-cab">
     <div class="cta-cab-txt">
         <p class="cta-eyebrow">Minha conta</p>
         <h1 class="cta-nome">@(Model.Usuario?.NomeCompleto ?? "Cliente")</h1>
-        <p class="cta-intro">Dados, endereços, favoritos, perguntas e orçamentos da sua conta.</p>
+        <p class="cta-intro">Nome, contato e endereços usados nas compras.</p>
     </div>
-    <div class="cta-acoes">
-        <a class="botao" asp-page="/Conta/Pedidos">Meus pedidos (@Model.TotalPedidos)</a>
-        <a class="botao-linha" asp-page="/Conta/Logout">Sair</a>
-    </div>
+    <a class="botao-linha" asp-page="/Conta/Logout">Sair</a>
 </div>
 
-<div class="cta-kpis">
+<div class="cta-kpis cta-kpis-2">
+    <a class="@ClasseKpi("dados")" asp-page="/Conta/Index" asp-route-aba="dados"><strong>Dados</strong><span>Nome e contato</span></a>
     <a class="@ClasseKpi("enderecos")" asp-page="/Conta/Index" asp-route-aba="enderecos"><strong>@Model.Enderecos.Count</strong><span>Endereços</span></a>
-    <a class="@ClasseKpi("favoritos")" asp-page="/Conta/Index" asp-route-aba="favoritos"><strong>@Model.Favoritos.Count</strong><span>Favoritos</span></a>
-    <a class="@ClasseKpi("perguntas")" asp-page="/Conta/Index" asp-route-aba="perguntas"><strong>@Model.Perguntas.Count</strong><span>Perguntas</span></a>
-    <a class="@ClasseKpi("orcamentos")" asp-page="/Conta/Index" asp-route-aba="orcamentos"><strong>@Model.Orcamentos.Count</strong><span>Orçamentos</span></a>
 </div>
 
 <div class="cta-abas">
     <a class="@ClasseAba("dados")" asp-page="/Conta/Index" asp-route-aba="dados">Meus dados</a>
     <a class="@ClasseAba("enderecos")" asp-page="/Conta/Index" asp-route-aba="enderecos">Endereços</a>
-    <a class="@ClasseAba("favoritos")" asp-page="/Conta/Index" asp-route-aba="favoritos">Favoritos</a>
-    <a class="@ClasseAba("perguntas")" asp-page="/Conta/Index" asp-route-aba="perguntas">Perguntas</a>
-    <a class="@ClasseAba("orcamentos")" asp-page="/Conta/Index" asp-route-aba="orcamentos">Orçamentos</a>
 </div>
-
-@{
-    var orcPend = Model.Orcamentos.Count(o => o.Status is "respondido" or "aguardando");
-}
-@if (orcPend > 0)
-{
-    <div class="cta-alertas">
-        <a class="cta-alerta" asp-page="/Conta/Index" asp-route-aba="orcamentos">@orcPend orçamento(s) para olhar</a>
-    </div>
-}
 
 @if (TempData["Ok"] is string ok)
 {
@@ -55,79 +30,7 @@
 }
 
 <div class="cta-corpo">
-@if (Model.Aba == "orcamentos")
-{
-    <div class="cta-lista">
-    @if (!Model.Orcamentos.Any())
-    {
-        <div class="vazio cartao"><p>Nenhum orçamento.</p></div>
-    }
-    @foreach (var o in Model.Orcamentos)
-    {
-        <article class="cta-card">
-            <div class="cta-card-topo">
-                <div>
-                    <strong class="cta-id">@o.Titulo</strong>
-                    <p class="cta-meta">@o.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</p>
-                </div>
-                <span class="@Selo(o.Status)">@o.Status</span>
-            </div>
-            <p class="cta-itens">@o.Detalhes</p>
-            @if (o.Valor.HasValue)
-            {
-                <div class="cta-total"><span>Valor proposto</span><strong>R$ @o.Valor.Value.ToString("N2")</strong></div>
-            }
-            else
-            {
-                <p class="cta-meta">Aguardando o valor da oficina.</p>
-            }
-            @if (o.Status == "respondido")
-            {
-                <div class="cta-acoes">
-                    <form method="post" asp-page-handler="AceitarOrcamento" class="inline">
-                        <input type="hidden" name="id" value="@o.Id" />
-                        <button class="botao" type="submit">Aceitar R$ @o.Valor!.Value.ToString("N2")</button>
-                    </form>
-                    <form method="post" asp-page-handler="RecusarOrcamento" class="inline">
-                        <input type="hidden" name="id" value="@o.Id" />
-                        <button class="botao-linha" type="submit">Recusar</button>
-                    </form>
-                </div>
-            }
-        </article>
-    }
-    </div>
-}
-else if (Model.Aba == "favoritos")
-{
-    @if (!Model.Favoritos.Any())
-    {
-        <div class="vazio cartao"><p>Nenhum favorito.</p></div>
-    }
-    else
-    {
-        <div class="cta-fav-grade">
-        @foreach (var prod in Model.Favoritos)
-        {
-            var foto = prod.Fotos.OrderBy(f => f.Ordem).FirstOrDefault();
-            <article class="cta-fav">
-                <a asp-page="/Produto" asp-route-id="@prod.Id">
-                    <img src="~/@((foto?.Arquivo) ?? "marca/mascote.png")" alt="@prod.Titulo" />
-                    <div>
-                        <strong>@prod.Titulo</strong>
-                        <span>R$ @prod.Preco.ToString("N2")</span>
-                    </div>
-                </a>
-                <form method="post" asp-page-handler="RemoverFavorito">
-                    <input type="hidden" name="id" value="@prod.Id" />
-                    <button class="botao-linha" type="submit">Remover</button>
-                </form>
-            </article>
-        }
-        </div>
-    }
-}
-else if (Model.Aba == "enderecos")
+@if (Model.Aba == "enderecos")
 {
     <div class="cta-endereco-layout">
         <div class="cta-lista">
@@ -157,27 +60,6 @@ else if (Model.Aba == "enderecos")
             <label class="cta-campo"><span>CEP</span><input asp-for="Cep" required inputmode="numeric" placeholder="29000-000" /></label>
             <button class="botao" type="submit">Guardar endereço</button>
         </form>
-    </div>
-}
-else if (Model.Aba == "perguntas")
-{
-    <div class="cta-lista">
-    @if (!Model.Perguntas.Any())
-    {
-        <div class="vazio cartao"><p>Você ainda não fez perguntas nos anúncios.</p></div>
-    }
-    @foreach (var p in Model.Perguntas)
-    {
-        <article class="cta-card">
-            <div class="cta-card-topo">
-                <strong class="cta-id">@p.ProdutoId</strong>
-                <span class="@(string.IsNullOrWhiteSpace(p.Resposta) ? "cta-selo alerta" : "cta-selo ok")">@(string.IsNullOrWhiteSpace(p.Resposta) ? "Aguardando" : "Respondida")</span>
-            </div>
-            <p class="cta-itens">@p.Texto</p>
-            <p class="cta-meta">@(string.IsNullOrWhiteSpace(p.Resposta) ? "A oficina ainda não respondeu." : p.Resposta)</p>
-            <a class="botao-linha" asp-page="/Produto" asp-route-id="@p.ProdutoId">Ver produto</a>
-        </article>
-    }
     </div>
 }
 else

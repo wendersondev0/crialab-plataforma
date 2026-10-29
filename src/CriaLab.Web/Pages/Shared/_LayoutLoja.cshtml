@@ -13,6 +13,9 @@
         path.Equals("/Conta", StringComparison.OrdinalIgnoreCase)
         || path.StartsWith("/Conta/Index", StringComparison.OrdinalIgnoreCase);
     bool EhMeusPedidos() => path.StartsWith("/Conta/Pedidos", StringComparison.OrdinalIgnoreCase);
+    bool EhFavoritos() => path.StartsWith("/Conta/Favoritos", StringComparison.OrdinalIgnoreCase);
+    bool EhOrcamentos() => path.StartsWith("/Conta/Orcamentos", StringComparison.OrdinalIgnoreCase);
+    bool EhPerguntas() => path.StartsWith("/Conta/Perguntas", StringComparison.OrdinalIgnoreCase);
     string AtivoModalidade(string id)
     {
         if (string.Equals(qModalidade, id, StringComparison.OrdinalIgnoreCase)) return " ativo";
@@ -48,7 +51,7 @@
                 .Take(4)
                 .ToListAsync();
             foreach (var o in orcs)
-                notificacoes.Add(("Orçamento respondido: " + o.Titulo, "/Conta/Index", "orcamentos"));
+                notificacoes.Add(("Orçamento respondido: " + o.Titulo, "/Conta/Orcamentos", null));
             var peds = await Db.Pedidos.AsNoTracking()
                 .Where(x => x.UsuarioId == user.Id && (x.Status == "aguardando pagamento" || x.Status == "pago"))
                 .OrderByDescending(x => x.CriadoEm)
@@ -65,7 +68,7 @@
                     .Take(3)
                     .ToListAsync();
                 foreach (var _ in pens)
-                    notificacoes.Add(("Sua pergunta foi respondida", "/Conta/Index", "perguntas"));
+                    notificacoes.Add(("Sua pergunta foi respondida", "/Conta/Perguntas", null));
             }
             notificacoes = notificacoes.Take(6).ToList();
         }
@@ -177,6 +180,9 @@
                             {
                                 <a class="item-popup-topo" asp-page="/Conta/Index"><span class="ico"><partial name="_SvgIcon" model="@("conta")" /></span><span>Minha conta</span></a>
                                 <a class="item-popup-topo" asp-page="/Conta/Pedidos"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span><span>Meus pedidos</span></a>
+                                <a class="item-popup-topo" asp-page="/Conta/Favoritos"><span class="ico"><partial name="_SvgIcon" model="@("coracao")" /></span><span>Favoritos</span></a>
+                                <a class="item-popup-topo" asp-page="/Conta/Orcamentos"><span class="ico"><partial name="_SvgIcon" model="@("orcamento")" /></span><span>Orçamentos</span></a>
+                                <a class="item-popup-topo" asp-page="/Conta/Perguntas"><span class="ico"><partial name="_SvgIcon" model="@("pergunta")" /></span><span>Perguntas</span></a>
                                 @if (ehAdmin)
                                 {
                                     <a class="item-popup-topo" asp-page="/Admin/Index"><span class="ico"><partial name="_SvgIcon" model="@("admin")" /></span><span>Administração</span></a>
@@ -245,6 +251,9 @@
             <a class="nav-link" asp-page="/Contato"><span class="ico"><partial name="_SvgIcon" model="@("contato")" /></span><span class="nav-texto">Ajuda / Contato</span></a>
             <a class="nav-link@(EhMinhaConta() ? " ativo" : "")" asp-page="/Conta/Index"><span class="ico"><partial name="_SvgIcon" model="@("conta")" /></span><span class="nav-texto">Minha conta</span></a>
             <a class="nav-link@(EhMeusPedidos() ? " ativo" : "")" asp-page="/Conta/Pedidos"><span class="ico"><partial name="_SvgIcon" model="@("pedidos")" /></span><span class="nav-texto">Meus pedidos</span></a>
+            <a class="nav-link@(EhFavoritos() ? " ativo" : "")" asp-page="/Conta/Favoritos"><span class="ico"><partial name="_SvgIcon" model="@("coracao")" /></span><span class="nav-texto">Favoritos</span></a>
+            <a class="nav-link@(EhOrcamentos() ? " ativo" : "")" asp-page="/Conta/Orcamentos"><span class="ico"><partial name="_SvgIcon" model="@("orcamento")" /></span><span class="nav-texto">Orçamentos</span></a>
+            <a class="nav-link@(EhPerguntas() ? " ativo" : "")" asp-page="/Conta/Perguntas"><span class="ico"><partial name="_SvgIcon" model="@("pergunta")" /></span><span class="nav-texto">Perguntas</span></a>
             <a class="nav-link" asp-page="/Carrinho"><span class="ico"><partial name="_SvgIcon" model="@("carrinho")" /></span><span class="nav-texto nav-texto-carrinho">Carrinho</span>@if (qtd > 0){<span class="selo-qtd">@qtd</span>}</a>
             @if (ehAdmin)
             {

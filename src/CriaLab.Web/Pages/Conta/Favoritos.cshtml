@@ -1,0 +1,45 @@
+@page
+@model CriaLab.Web.Pages.Conta.FavoritosModel
+@{
+    ViewData["Title"] = "Favoritos";
+}
+<div class="cta-cab">
+    <div class="cta-cab-txt">
+        <p class="cta-eyebrow">Conta</p>
+        <h1 class="cta-nome">Favoritos</h1>
+        <p class="cta-intro">Peças que você guardou para ver de novo.</p>
+    </div>
+    <a class="botao-linha" asp-page="/Conta/Index">Minha conta</a>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+@if (!Model.Favoritos.Any())
+{
+    <div class="vazio cartao"><p>Nenhum favorito.</p><a class="botao" asp-page="/Produtos">Ver produtos</a></div>
+}
+else
+{
+    <div class="cta-fav-grade">
+    @foreach (var prod in Model.Favoritos)
+    {
+        var foto = prod.Fotos.OrderBy(f => f.Ordem).FirstOrDefault();
+        <article class="cta-fav">
+            <a asp-page="/Produto" asp-route-id="@prod.Id">
+                <img src="~/@((foto?.Arquivo) ?? "marca/mascote.png")" alt="@prod.Titulo" />
+                <div>
+                    <strong>@prod.Titulo</strong>
+                    <span>R$ @prod.Preco.ToString("N2")</span>
+                </div>
+            </a>
+            <form method="post" asp-page-handler="Remover">
+                <input type="hidden" name="id" value="@prod.Id" />
+                <button class="botao-linha" type="submit">Remover</button>
+            </form>
+        </article>
+    }
+    </div>
+}

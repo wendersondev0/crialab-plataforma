@@ -1,0 +1,87 @@
+@page
+@model CriaLab.Web.Pages.Conta.OrcamentosModel
+@{
+    ViewData["Title"] = "Orçamentos";
+    string Classe(string nome) => "cta-aba" + (Model.Filtro == nome ? " ativo" : "");
+    string Selo(string status) => status switch
+    {
+        "aguardando" => "cta-selo alerta",
+        "respondido" or "aceito" => "cta-selo ok",
+        "recusado" => "cta-selo mute",
+        _ => "cta-selo"
+    };
+}
+<div class="cta-cab">
+    <div class="cta-cab-txt">
+        <p class="cta-eyebrow">Conta</p>
+        <h1 class="cta-nome">Orçamentos</h1>
+        <p class="cta-intro">Acompanhe propostas da oficina, aceite ou recuse o valor.</p>
+    </div>
+    <a class="botao-linha" asp-page="/Conta/Index">Minha conta</a>
+</div>
+
+<div class="cta-kpis cta-kpis-4">
+    <a class="cta-kpi@(Model.Filtro == "todos" ? " ativo" : "")" asp-page="/Conta/Orcamentos" asp-route-filtro="todos"><strong>@Model.Total</strong><span>Todos</span></a>
+    <a class="cta-kpi@(Model.Filtro == "abertos" ? " ativo" : "")" asp-page="/Conta/Orcamentos" asp-route-filtro="abertos"><strong>@Model.Abertos</strong><span>Em aberto</span></a>
+    <a class="cta-kpi@(Model.Filtro == "aceitos" ? " ativo" : "")" asp-page="/Conta/Orcamentos" asp-route-filtro="aceitos"><strong>@Model.Aceitos</strong><span>Aceitos</span></a>
+    <a class="cta-kpi@(Model.Filtro == "recusados" ? " ativo" : "")" asp-page="/Conta/Orcamentos" asp-route-filtro="recusados"><strong>@Model.Recusados</strong><span>Recusados</span></a>
+</div>
+
+<div class="cta-abas">
+    <a class="@Classe("todos")" asp-page="/Conta/Orcamentos" asp-route-filtro="todos">Todos</a>
+    <a class="@Classe("abertos")" asp-page="/Conta/Orcamentos" asp-route-filtro="abertos">Em aberto</a>
+    <a class="@Classe("aceitos")" asp-page="/Conta/Orcamentos" asp-route-filtro="aceitos">Aceitos</a>
+    <a class="@Classe("recusados")" asp-page="/Conta/Orcamentos" asp-route-filtro="recusados">Recusados</a>
+</div>
+
+@if (TempData["Ok"] is string ok)
+{
+    <p class="cta-ok">@ok</p>
+}
+
+<div class="cta-lista">
+@if (!Model.Orcamentos.Any())
+{
+    <div class="vazio cartao">
+        <p>@(Model.Total == 0 ? "Nenhum orçamento." : "Nenhum orçamento nesse filtro.")</p>
+        <a class="botao" asp-page="/Produtos" asp-route-ModalidadeFiltro="personalizado">Ver personalizados</a>
+    </div>
+}
+@foreach (var o in Model.Orcamentos)
+{
+    <article class="cta-card">
+        <div class="cta-card-topo">
+            <div>
+                <strong class="cta-id">@o.Titulo</strong>
+                <p class="cta-meta">@o.CriadoEm.ToLocalTime().ToString("dd/MM/yyyy")</p>
+            </div>
+            <span class="@Selo(o.Status)">@o.Status</span>
+        </div>
+        <p class="cta-itens">@o.Detalhes</p>
+        @if (o.Valor.HasValue)
+        {
+            <div class="cta-total"><span>Valor proposto</span><strong>R$ @o.Valor.Value.ToString("N2")</strong></div>
+        }
+        else
+        {
+            <p class="cta-meta">Aguardando o valor da oficina.</p>
+        }
+        <div class="cta-acoes">
+            <a class="botao-linha" asp-page="/Produto" asp-route-id="@o.ProdutoId">Ver produto</a>
+            @if (o.Status == "respondido" && o.Valor.HasValue)
+            {
+                <form method="post" asp-page-handler="Aceitar">
+                    <input type="hidden" name="id" value="@o.Id" />
+                    <input type="hidden" name="filtro" value="@Model.Filtro" />
+                    <button class="botao" type="submit">Aceitar R$ @o.Valor.Value.ToString("N2")</button>
+                </form>
+                <form method="post" asp-page-handler="Recusar">
+                    <input type="hidden" name="id" value="@o.Id" />
+                    <input type="hidden" name="filtro" value="@Model.Filtro" />
+                    <button class="botao-linha" type="submit">Recusar</button>
+                </form>
+            }
+        </div>
+    </article>
+}
+</div>
