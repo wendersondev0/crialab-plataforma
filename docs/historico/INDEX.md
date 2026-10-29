@@ -4,6 +4,7 @@ Registros gerados pela skill `crialab-plataforma`. Mais recente primeiro.
 
 | Versão | Data | Título | Arquivo |
 | --- | --- | --- | --- |
+| v012 | 2026-10-28 21:35 | Entrega local na faixa de CEP da cidade | [v012-2026-10-28-2135-entrega-local-cep.md](./v012-2026-10-28-2135-entrega-local-cep.md) |
 | v011 | 2026-10-28 21:15 | Papéis saiu do menu da administração | [v011-2026-10-28-2115-menu-sem-papeis.md](./v011-2026-10-28-2115-menu-sem-papeis.md) |
 | v010 | 2026-10-28 21:04 | Favoritos, orçamentos e perguntas em páginas próprias | [v010-2026-10-28-2104-favoritos-orcamentos-perguntas.md](./v010-2026-10-28-2104-favoritos-orcamentos-perguntas.md) |
 | v009 | 2026-10-28 18:52 | Minha conta separada dos pedidos | [v009-2026-10-28-1852-separa-conta-e-pedidos.md](./v009-2026-10-28-1852-separa-conta-e-pedidos.md) |
