@@ -12,7 +12,9 @@ description: >-
 
 Skill obrigatória para qualquer tarefa neste projeto. Objetivo: continuidade entre sessões, README como fonte de verdade e histórico consultável.
 
-Cópia canônica versionada neste repositório. O workspace `ctgi` pode espelhar em `.cursor/skills/crialab-plataforma/` e `.cursor/rules/crialab-plataforma.mdc` para descoberta pelo agente.
+Cópia canônica versionada neste repositório. Os caminhos abaixo são relativos à raiz do repositório.
+
+A pasta de trabalho do Cursor é a pasta pai `CriaLab`, que contém este repositório. O espelho ativo fica em `../.cursor/skills/crialab-plataforma/SKILL.md` e `../.cursor/rules/`, fora do Git, com os mesmos caminhos prefixados por `crialab-plataforma/`. O workspace `ctgi` e os projetos Vue não espelham mais este app. Se o espelho divergir desta skill, vale esta skill: atualize o espelho no mesmo trabalho.
 
 ## Fluxo obrigatório
 
@@ -20,7 +22,7 @@ Copiar e acompanhar:
 
 ```
 Crialab task:
-- [ ] 1. Ler crialab-plataforma/README.md (contexto principal)
+- [ ] 1. Ler README.md (contexto principal)
 - [ ] 2. Se a tarefa for no Razor/Postgres, ler a seção ASP.NET do README.md
 - [ ] 3. Consultar docs/historico/INDEX.md se precisar de histórico recente
 - [ ] 4. Implementar a tarefa
@@ -31,9 +33,11 @@ Crialab task:
 
 **Não iniciar implementação sem o passo 1.** Se o README estiver incompleto para a tarefa, completar o README no mesmo trabalho (passo 5).
 
+Na pasta pai `CriaLab`, prefixe cada caminho deste fluxo com `crialab-plataforma/`.
+
 ## Escopo do projeto
 
-Raiz: `crialab-plataforma/` (raiz deste repositório)
+Raiz do repositório: esta pasta (`crialab-plataforma` quando vista da pasta pai).
 
 | Pasta | Papel |
 | --- | --- |
@@ -41,6 +45,8 @@ Raiz: `crialab-plataforma/` (raiz deste repositório)
 | `tests/CriaLab.Web.Tests/` | Testes do cálculo de orçamento |
 | `docs/historico/` | Histórico versionado de atividades |
 | `.cursor/skills/crialab-plataforma/` | Esta skill |
+| `.cursor/rules/` | Regra de fluxo e regra de Razor/EF |
+| `../Arquivos_CriaLabDm/` | Fotos e planilhas de referência. Não é código da loja |
 
 Detalhes de execução, seed, rotas e checklist: seção ASP.NET de `README.md`.
 
@@ -52,7 +58,7 @@ Manter sempre atualizado com:
 
 - Visão do app e pastas
 - Stack e como rodar o Razor
-- Links para README detalhado e para `docs/historico/`
+- Links para a skill, as regras e `docs/historico/`
 - Estado atual relevante (módulos prontos, avisos operacionais)
 
 O mapa de rotas, seed e checklist ficam no `README.md` da raiz.
@@ -122,7 +128,8 @@ Manter `docs/historico/INDEX.md` com lista do mais recente para o mais antigo:
 - Fiscal fica sob o fluxo de Pedidos (abas); não recriar item Fiscal separado no menu topo.
 - Favoritos: cookie anônimo + DB autenticado (`FavoritosService`).
 - Parceiros podem ter `Url` (Instagram/site) clicável no rodapé/Sobre.
+- Forma do código Razor/EF: regra `.cursor/rules/crialab-razor.mdc`.
 
 ## Quando atualizar esta skill
 
-Atualizar `SKILL.md` (e o espelho no workspace `ctgi`, se existir) se mudar: pastas do monorepo, fluxo README/histórico, convenções de nome do histórico, ou regras operacionais listadas acima.
+Atualizar esta `SKILL.md`, a regra de fluxo e o espelho em `../.cursor/` se mudar: pasta de trabalho, pastas do repositório, fluxo README/histórico, convenções de nome do histórico, ou regras operacionais listadas acima.

@@ -10,3 +10,5 @@ Sempre que a tarefa tocar este repositório (`src/CriaLab.Web`, CriaLab.Web, Fin
 1. Ler `.cursor/skills/crialab-plataforma/SKILL.md` e seguir o fluxo obrigatório.
 2. **Antes de implementar**, ler `README.md` na raiz (contexto principal).
 3. **Ao final**, atualizar o README se o estado/arquitetura mudou e registrar a atividade em `docs/historico/` com versão sequencial + atualizar `INDEX.md`.
+
+Os caminhos acima são da raiz deste repositório. Se o Cursor estiver aberto na pasta pai `CriaLab`, use o espelho `../.cursor/` e prefixe os caminhos com `crialab-plataforma/`. Mantenha o espelho alinhado a esta cópia versionada. O workspace `ctgi` não contém mais este projeto.

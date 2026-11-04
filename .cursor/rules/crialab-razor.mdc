@@ -1,0 +1,16 @@
+---
+description: Convenções do app Razor Cria Lab ao editar páginas, serviços ou EF Core.
+globs: src/CriaLab.Web/**/*.{cs,cshtml}
+alwaysApply: false
+---
+
+# Cria Lab — Razor e dados
+
+- UI em Razor Pages. Loja em `Pages/`, admin em `Pages/Admin/`, serviços em `Services/`. Não criar controllers MVC nem um site HTML/JS paralelo.
+- Página admin nova entra no menu de `Pages/Shared/_LayoutAdmin.cshtml`. Fiscal permanece no item Pedidos. Papéis permanecem em Usuários, sem item próprio.
+- Admin usa a política `AdminOnly` (papel `Administrador` em `RoleNames`). Login em `/Conta/Login`.
+- PostgreSQL via EF Core com `UseSnakeCaseNamingConvention()`. Coluna ou tabela nova exige migration em `Data/Migrations`. Não renomear tabela ou coluna direto no banco.
+- Dinheiro e percentuais usam `HasPrecision` em `ApplicationDbContext.OnModelCreating`, no padrão das propriedades já mapeadas.
+- Favorito anônimo: cookie `crialab-favoritos`. Favorito autenticado: tabela `Favoritos`. Os dois modos continuam separados.
+- Upload de imagem: JPG, PNG, WEBP ou GIF, até 5 MB, por `ImageUploadHelper`.
+- Texto visível da loja e do admin em português.

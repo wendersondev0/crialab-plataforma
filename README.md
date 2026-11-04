@@ -151,7 +151,9 @@ Smoke sugerido após `dotnet watch run`:
 
 ## Continuidade (Cursor)
 
-- Skill: [`.cursor/skills/crialab-plataforma/SKILL.md`](.cursor/skills/crialab-plataforma/SKILL.md)
-- Regra: [`.cursor/rules/crialab-plataforma.mdc`](.cursor/rules/crialab-plataforma.mdc) — aciona a skill em qualquer tarefa deste repositório
+- Skill versionada: [`.cursor/skills/crialab-plataforma/SKILL.md`](.cursor/skills/crialab-plataforma/SKILL.md)
+- Regra de fluxo: [`.cursor/rules/crialab-plataforma.mdc`](.cursor/rules/crialab-plataforma.mdc)
+- Regra de Razor/EF: [`.cursor/rules/crialab-razor.mdc`](.cursor/rules/crialab-razor.mdc) — vale ao editar `src/CriaLab.Web`
 - **Sempre ler este README antes de alterar o projeto**
 - Após mudanças relevantes: atualizar este README e registrar em [`docs/historico/`](docs/historico/) (ver `INDEX.md`)
+- A pasta de trabalho do Cursor é a pasta pai `CriaLab`. O espelho ativo fica em `../.cursor/` (fora deste Git) e repete skill e regras com o prefixo `crialab-plataforma/`. A cópia que entra no commit é a desta pasta. O workspace `ctgi` não espelha mais o Cria Lab.
