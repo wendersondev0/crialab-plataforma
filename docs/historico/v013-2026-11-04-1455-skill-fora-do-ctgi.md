@@ -35,3 +35,5 @@ O Cria Lab passou a viver na pasta `CriaLab`, fora dos workspaces Vue e do `ctgi
 - [x] README raiz atualizado
 
 ## Commits (se houver)
+
+- `e8f35c4` docs: alinha skill e regras com a pasta CriaLab
