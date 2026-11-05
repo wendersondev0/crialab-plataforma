@@ -4,6 +4,7 @@ Registros gerados pela skill `crialab-plataforma`. Mais recente primeiro.
 
 | Versão | Data | Título | Arquivo |
 | --- | --- | --- | --- |
+| v014 | 2026-11-05 12:34 | Plano da conversão para API e PWA | [v014-2026-11-05-1234-plano-conversao-vue-api.md](./v014-2026-11-05-1234-plano-conversao-vue-api.md) |
 | v013 | 2026-11-04 14:55 | Skill e regras saem do workspace ctgi | [v013-2026-11-04-1455-skill-fora-do-ctgi.md](./v013-2026-11-04-1455-skill-fora-do-ctgi.md) |
 | v012 | 2026-10-28 21:35 | Entrega local na faixa de CEP da cidade | [v012-2026-10-28-2135-entrega-local-cep.md](./v012-2026-10-28-2135-entrega-local-cep.md) |
 | v011 | 2026-10-28 21:15 | Papéis saiu do menu da administração | [v011-2026-10-28-2115-menu-sem-papeis.md](./v011-2026-10-28-2115-menu-sem-papeis.md) |

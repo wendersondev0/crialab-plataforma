@@ -12,3 +12,5 @@ Sempre que a tarefa tocar este repositório (`src/CriaLab.Web`, CriaLab.Web, Fin
 3. **Ao final**, atualizar o README se o estado/arquitetura mudou e registrar a atividade em `docs/historico/` com versão sequencial + atualizar `INDEX.md`.
 
 Os caminhos acima são da raiz deste repositório. Se o Cursor estiver aberto na pasta pai `CriaLab`, use o espelho `../.cursor/` e prefixe os caminhos com `crialab-plataforma/`. Mantenha o espelho alinhado a esta cópia versionada. O workspace `ctgi` não contém mais este projeto.
+
+A conversão para API e PWA está em `../crialab-docs/planejamento/conversao-razor-para-vue-api.md`. Até o corte desse plano, este Razor continua sendo o app em execução. A referência humana é `../arquivos-crialab-dm/`.

@@ -46,7 +46,10 @@ Raiz do repositório: esta pasta (`crialab-plataforma` quando vista da pasta pai
 | `docs/historico/` | Histórico versionado de atividades |
 | `.cursor/skills/crialab-plataforma/` | Esta skill |
 | `.cursor/rules/` | Regra de fluxo e regra de Razor/EF |
-| `../Arquivos_CriaLabDm/` | Fotos e planilhas de referência. Não é código da loja |
+| `../arquivos-crialab-dm/` | Fotos, planilhas, PDFs e redes sociais de referência. Os projetos não leem esta pasta |
+| `../crialab-docs/` | Plano da conversão para API + PWA, histórico novo e contexto para agentes |
+| `../crialab-frontend/` | PWA reservado. Sem código de produto até a fase de esqueleto do plano |
+| `../crialab-backend/` | API reservada. Sem código de produto até a fase de esqueleto do plano |
 
 Detalhes de execução, seed, rotas e checklist: seção ASP.NET de `README.md`.
 
@@ -124,7 +127,7 @@ Manter `docs/historico/INDEX.md` com lista do mais recente para o mais antigo:
 
 - Commits locais em pt-BR (Conventional Commits); não fazer push a menos que o usuário peça.
 - Preferir `dotnet watch run` em `src/CriaLab.Web`; matar `CriaLab.Web` se MSB3026 travar o build.
-- A loja e a administração vivem no Razor. Não recriar um site HTML paralelo neste repositório.
+- A loja e a administração em execução vivem no Razor. O PWA e a API nascem nas pastas irmãs `../crialab-frontend` e `../crialab-backend`, fora deste repositório. O contrato está em `../crialab-docs/planejamento/conversao-razor-para-vue-api.md`.
 - Fiscal fica sob o fluxo de Pedidos (abas); não recriar item Fiscal separado no menu topo.
 - Favoritos: cookie anônimo + DB autenticado (`FavoritosService`).
 - Parceiros podem ter `Url` (Instagram/site) clicável no rodapé/Sobre.
