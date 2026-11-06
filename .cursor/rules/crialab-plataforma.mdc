@@ -13,4 +13,4 @@ Sempre que a tarefa tocar este repositório (`src/CriaLab.Web`, CriaLab.Web, Fin
 
 Os caminhos acima são da raiz deste repositório. Se o Cursor estiver aberto na pasta pai `CriaLab`, use o espelho `../.cursor/` e prefixe os caminhos com `crialab-plataforma/`. Mantenha o espelho alinhado a esta cópia versionada. O workspace `ctgi` não contém mais este projeto.
 
-A conversão para API e PWA está em `../crialab-docs/planejamento/conversao-razor-para-vue-api.md`. Até o corte desse plano, este Razor continua sendo o app em execução. A referência humana é `../arquivos-crialab-dm/`.
+A conversão para API e PWA está em `../crialab-docs/planejamento/conversao-razor-para-vue-api.md`. Até o corte desse plano, este Razor continua sendo o app em execução. A referência humana é `../arquivos-crialab-dm/`. Tarefa de conversão segue `.cursor/skills/seguir-planejamento-crialab/SKILL.md` (no pai, `../.cursor/skills/seguir-planejamento-crialab/SKILL.md`) e fecha a resposta com a linha de progresso dessa skill.

@@ -151,7 +151,7 @@ Smoke sugerido após `dotnet watch run`:
 
 ## Conversão para API e PWA
 
-O app em execução continua sendo este Razor. A recriação em Vue (PWA) e ASP.NET Core API está contratada em [`../crialab-docs/planejamento/conversao-razor-para-vue-api.md`](../crialab-docs/planejamento/conversao-razor-para-vue-api.md). As pastas `crialab-frontend` e `crialab-backend` ainda não têm código de produto. A referência humana de fotos e planilhas chama-se `arquivos-crialab-dm` e fica fora dos dois projetos.
+O app em execução continua sendo este Razor. A recriação em Vue (PWA) e ASP.NET Core API está contratada em [`../crialab-docs/planejamento/conversao-razor-para-vue-api.md`](../crialab-docs/planejamento/conversao-razor-para-vue-api.md). A execução desse plano segue a skill `seguir-planejamento-crialab`. As pastas `crialab-frontend` e `crialab-backend` ainda não têm código de produto. A referência humana de fotos e planilhas chama-se `arquivos-crialab-dm` e fica fora dos dois projetos.
 
 ## Continuidade (Cursor)
 

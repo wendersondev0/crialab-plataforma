@@ -127,7 +127,7 @@ Manter `docs/historico/INDEX.md` com lista do mais recente para o mais antigo:
 
 - Commits locais em pt-BR (Conventional Commits); não fazer push a menos que o usuário peça.
 - Preferir `dotnet watch run` em `src/CriaLab.Web`; matar `CriaLab.Web` se MSB3026 travar o build.
-- A loja e a administração em execução vivem no Razor. O PWA e a API nascem nas pastas irmãs `../crialab-frontend` e `../crialab-backend`, fora deste repositório. O contrato está em `../crialab-docs/planejamento/conversao-razor-para-vue-api.md`.
+- A loja e a administração em execução vivem no Razor. O PWA e a API nascem nas pastas irmãs `../crialab-frontend` e `../crialab-backend`, fora deste repositório. O contrato está em `../crialab-docs/planejamento/conversao-razor-para-vue-api.md`. Quem for executar esse contrato segue `.cursor/skills/seguir-planejamento-crialab/SKILL.md`.
 - Fiscal fica sob o fluxo de Pedidos (abas); não recriar item Fiscal separado no menu topo.
 - Favoritos: cookie anônimo + DB autenticado (`FavoritosService`).
 - Parceiros podem ter `Url` (Instagram/site) clicável no rodapé/Sobre.
