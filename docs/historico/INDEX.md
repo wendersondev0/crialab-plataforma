@@ -4,6 +4,8 @@ Registros gerados pela skill `crialab-plataforma`. Mais recente primeiro.
 
 | Versão | Data | Título | Arquivo |
 | --- | --- | --- | --- |
+| v017 | 2026-11-06 20:47 | Base da API fora do Razor | [v017-2026-11-06-2047-base-da-api.md](./v017-2026-11-06-2047-base-da-api.md) |
+| v016 | 2026-11-06 20:38 | Esqueleto da API fora do Razor | [v016-2026-11-06-2038-esqueleto-da-api.md](./v016-2026-11-06-2038-esqueleto-da-api.md) |
 | v015 | 2026-11-06 20:14 | Skill seguir-planejamento-crialab | [v015-2026-11-06-2014-skill-seguir-planejamento.md](./v015-2026-11-06-2014-skill-seguir-planejamento.md) |
 | v014 | 2026-11-05 12:34 | Plano da conversão para API e PWA | [v014-2026-11-05-1234-plano-conversao-vue-api.md](./v014-2026-11-05-1234-plano-conversao-vue-api.md) |
 | v013 | 2026-11-04 14:55 | Skill e regras saem do workspace ctgi | [v013-2026-11-04-1455-skill-fora-do-ctgi.md](./v013-2026-11-04-1455-skill-fora-do-ctgi.md) |

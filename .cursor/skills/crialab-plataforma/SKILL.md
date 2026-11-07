@@ -49,7 +49,7 @@ Raiz do repositório: esta pasta (`crialab-plataforma` quando vista da pasta pai
 | `../arquivos-crialab-dm/` | Fotos, planilhas, PDFs e redes sociais de referência. Os projetos não leem esta pasta |
 | `../crialab-docs/` | Plano da conversão para API + PWA, histórico novo e contexto para agentes |
 | `../crialab-frontend/` | PWA reservado. Sem código de produto até a fase de esqueleto do plano |
-| `../crialab-backend/` | API reservada. Sem código de produto até a fase de esqueleto do plano |
+| `../crialab-backend/` | API com Carter, EF Core, Identity, Dapper, FluentValidation, Problem Details e OpenAPI, ainda sem casos de uso |
 
 Detalhes de execução, seed, rotas e checklist: seção ASP.NET de `README.md`.
 
