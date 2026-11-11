@@ -4,6 +4,8 @@ Registros gerados pela skill `crialab-plataforma`. Mais recente primeiro.
 
 | Versão | Data | Título | Arquivo |
 | --- | --- | --- | --- |
+| v021 | 2026-11-11 15:02 | Modelo da API igual ao snapshot | [v021-2026-11-11-1502-modelo-igual-ao-snapshot.md](./v021-2026-11-11-1502-modelo-igual-ao-snapshot.md) |
+| v020 | 2026-11-06 21:57 | Problem Details da API | [v020-2026-11-06-2157-problem-details-portugues.md](./v020-2026-11-06-2157-problem-details-portugues.md) |
 | v019 | 2026-11-06 21:27 | Health check da API | [v019-2026-11-06-2127-health-check-saude.md](./v019-2026-11-06-2127-health-check-saude.md) |
 | v018 | 2026-11-06 21:19 | Banco da API no mesmo PostgreSQL | [v018-2026-11-06-2119-banco-crialab-api.md](./v018-2026-11-06-2119-banco-crialab-api.md) |
 | v017 | 2026-11-06 20:47 | Base da API fora do Razor | [v017-2026-11-06-2047-base-da-api.md](./v017-2026-11-06-2047-base-da-api.md) |
