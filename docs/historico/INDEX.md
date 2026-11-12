@@ -4,6 +4,7 @@ Registros gerados pela skill `crialab-plataforma`. Mais recente primeiro.
 
 | Versão | Data | Título | Arquivo |
 | --- | --- | --- | --- |
+| v023 | 2026-11-12 00:03 | Contagens do seed iguais à API | [v023-2026-11-12-0003-contagens-seed.md](./v023-2026-11-12-0003-contagens-seed.md) |
 | v022 | 2026-11-11 15:11 | Seed da API em crialab_api | [v022-2026-11-11-1511-seed-crialab-api.md](./v022-2026-11-11-1511-seed-crialab-api.md) |
 | v021 | 2026-11-11 15:02 | Modelo da API igual ao snapshot | [v021-2026-11-11-1502-modelo-igual-ao-snapshot.md](./v021-2026-11-11-1502-modelo-igual-ao-snapshot.md) |
 | v020 | 2026-11-06 21:57 | Problem Details da API | [v020-2026-11-06-2157-problem-details-portugues.md](./v020-2026-11-06-2157-problem-details-portugues.md) |
