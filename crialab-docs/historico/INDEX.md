@@ -4,6 +4,7 @@ Mais recente primeiro. Convenção em [../README.md](../README.md).
 
 | Data | Título | Arquivo |
 | --- | --- | --- |
+| 2026-11-24 04:47 | Contato da loja | [2026/11/2026-11-24-0447-contato-loja.md](2026/11/2026-11-24-0447-contato-loja.md) |
 | 2026-11-24 04:39 | Checkout grava o pedido e abre o recibo | [2026/11/2026-11-24-0439-checkout-grava-pedido.md](2026/11/2026-11-24-0439-checkout-grava-pedido.md) |
 | 2026-11-24 04:50 | Cotação do checkout | [2026/11/2026-11-24-0450-cotacao-checkout.md](2026/11/2026-11-24-0450-cotacao-checkout.md) |
 | 2026-11-24 04:25 | Carrinho: listar, somar e remover | [2026/11/2026-11-24-0425-carrinho-listar-somar-remover.md](2026/11/2026-11-24-0425-carrinho-listar-somar-remover.md) |

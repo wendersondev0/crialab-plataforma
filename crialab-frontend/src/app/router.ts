@@ -6,6 +6,7 @@ import ProdutoView from "../features/loja/ProdutoView.vue";
 import CarrinhoView from "../features/loja/CarrinhoView.vue";
 import CheckoutView from "../features/loja/CheckoutView.vue";
 import ReciboView from "../features/loja/ReciboView.vue";
+import ContatoView from "../features/loja/ContatoView.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -17,6 +18,7 @@ export const router = createRouter({
     { path: "/carrinho", name: "carrinho", component: CarrinhoView },
     { path: "/checkout", name: "checkout", component: CheckoutView },
     { path: "/recibo/:id", name: "recibo", component: ReciboView },
+    { path: "/contato", name: "contato", component: ContatoView },
     { path: "/pronta-entrega", redirect: { path: "/produtos", query: { ModalidadeFiltro: "pronta-entrega" } } },
     { path: "/sob-demanda", redirect: { path: "/produtos", query: { ModalidadeFiltro: "sob-demanda" } } },
     { path: "/personalizados", redirect: { path: "/produtos", query: { ModalidadeFiltro: "personalizado" } } },

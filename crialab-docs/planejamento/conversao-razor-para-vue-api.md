@@ -3,7 +3,7 @@
 - **Data do plano:** 2026-11-05 12:34 (America/Sao_Paulo)
 - **Fonte do comportamento:** `crialab-plataforma-old` (ASP.NET Core 10, Razor Pages, EF Core, Identity, PostgreSQL)
 - **Destino:** `crialab-plataforma/crialab-frontend` e `crialab-plataforma/crialab-backend`
-- **Estado:** plano aprovado como contrato de trabalho. O Razor segue como app em execução. Fase 3 começou: home, busca, listagem, ficha, favorito, orçamento, pergunta, frete da ficha, carrinho, a cotação do checkout e a gravação do pedido já abrem no Vue. O recibo abre para o dono e para o administrador.
+- **Estado:** plano aprovado como contrato de trabalho. O Razor segue como app em execução. Fase 3 começou: home, busca, listagem, ficha, favorito, orçamento, pergunta, frete da ficha, carrinho, a cotação do checkout e a gravação do pedido já abrem no Vue. O recibo abre para o dono e para o administrador. O contato mostra WhatsApp, e-mail e telefone clicáveis e grava a mensagem.
 
 Este arquivo é a lista de trabalho. Um item só sai de aberto quando o comportamento correspondente do Razor existe na API e na tela, com a revisão da seção 8 marcada.
 
@@ -210,7 +210,7 @@ Cada item inclui endpoint, tela Vue, estado vazio, loading, erro e celular estre
 - [x] Checkout, só autenticado: cotar, cupom, desconto à vista em pix e boleto sobre (subtotal − cupom), frete grátis, endereço obrigatório, bloqueio se o frete não foi cotado
 - [x] Checkout grava pedido `aguardando pagamento`, itens, OS `aguardando` com insumo não baixado, limpa o carrinho e abre o recibo
 - [x] Recibo só do dono do pedido
-- [ ] Contato: WhatsApp, e-mail e telefone clicáveis; formulário válido grava mensagem `aberto`
+- [x] Contato: WhatsApp, e-mail e telefone clicáveis; formulário válido grava mensagem `aberto`
 - [ ] Sobre e rodapé com parceiros e URL
 - [ ] Privacidade e página de erro
 - [ ] Notificações do topo da loja

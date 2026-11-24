@@ -6,7 +6,9 @@ using CriaLab.Application.Features.Comercio.ConfirmarCheckout;
 using CriaLab.Application.Features.Comercio.CotarCheckout;
 using CriaLab.Application.Features.Comercio.ObterRecibo;
 using CriaLab.Application.Features.Comercio.CotarFreteFicha;
+using CriaLab.Application.Features.Comercio.EnviarContato;
 using CriaLab.Application.Features.Comercio.EnviarPergunta;
+using CriaLab.Application.Features.Comercio.ObterContato;
 using CriaLab.Application.Features.Comercio.PedirOrcamento;
 using CriaLab.Application.Features.Comercio.ResumirCarrinho;
 using CriaLab.Application.Features.Catalogo.ListarProdutos;
@@ -46,6 +48,8 @@ public static class InjecaoAplicacao
         services.AddScoped<CotarCheckoutHandler>();
         services.AddScoped<ConfirmarCheckoutHandler>();
         services.AddScoped<ObterReciboHandler>();
+        services.AddScoped<ObterContatoHandler>();
+        services.AddScoped<EnviarContatoHandler>();
         return services;
     }
 }
