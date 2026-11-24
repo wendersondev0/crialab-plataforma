@@ -3,7 +3,7 @@
 - **Data do plano:** 2026-11-05 12:34 (America/Sao_Paulo)
 - **Fonte do comportamento:** `crialab-plataforma-old` (ASP.NET Core 10, Razor Pages, EF Core, Identity, PostgreSQL)
 - **Destino:** `crialab-plataforma/crialab-frontend` e `crialab-plataforma/crialab-backend`
-- **Estado:** plano aprovado como contrato de trabalho. O Razor segue como app em execução. Fase 3 começou: home, busca, listagem, ficha, carrinho, favorito, orçamento, pergunta e frete da ficha já abrem no Vue.
+- **Estado:** plano aprovado como contrato de trabalho. O Razor segue como app em execução. Fase 3 começou: home, busca, listagem, ficha, favorito, orçamento, pergunta, frete da ficha e a página do carrinho já abrem no Vue.
 
 Este arquivo é a lista de trabalho. Um item só sai de aberto quando o comportamento correspondente do Razor existe na API e na tela, com a revisão da seção 8 marcada.
 
@@ -206,7 +206,7 @@ Cada item inclui endpoint, tela Vue, estado vazio, loading, erro e celular estre
 - [x] Ficha: pedir orçamento (status `aguardando`, detalhes, nome de arquivo)
 - [x] Ficha: enviar pergunta
 - [x] Ficha: cotar frete do produto
-- [ ] Carrinho: listar, somar, remover
+- [x] Carrinho: listar, somar, remover
 - [ ] Checkout, só autenticado: cotar, cupom, desconto à vista em pix e boleto sobre (subtotal − cupom), frete grátis, endereço obrigatório, bloqueio se o frete não foi cotado
 - [ ] Checkout grava pedido `aguardando pagamento`, itens, OS `aguardando` com insumo não baixado, limpa o carrinho e abre o recibo
 - [ ] Recibo só do dono do pedido

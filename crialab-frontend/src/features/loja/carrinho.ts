@@ -49,5 +49,14 @@ export const useCarrinho = defineStore("carrinho", () => {
     salvar();
   }
 
-  return { itens, adicionar };
+  function remover(produtoId: string, cor: string | null, tamanho: string | null) {
+    itens.value = itens.value.filter((x) => !(x.produtoId === produtoId && x.cor === cor && x.tamanho === tamanho));
+    salvar();
+  }
+
+  function subtotal() {
+    return itens.value.reduce((soma, item) => soma + item.precoUnitario * item.quantidade, 0);
+  }
+
+  return { itens, adicionar, remover, subtotal };
 });
