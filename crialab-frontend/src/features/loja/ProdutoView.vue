@@ -159,6 +159,13 @@
               <p v-if="p.respondida" class="resposta"><strong>Cria Lab</strong> {{ p.resposta }}</p>
               <p v-else class="discreto">Aguardando resposta</p>
             </article>
+            <form class="pergunta-form" @submit.prevent="enviarPergunta">
+              <label class="etapa">Sua pergunta
+                <input v-model="textoPergunta" type="text" required placeholder="Escreva sua pergunta" />
+              </label>
+              <button class="comprar" type="submit" :disabled="enviandoPergunta">Enviar</button>
+              <p v-if="erroPergunta" class="erro-compra">{{ erroPergunta }}</p>
+            </form>
           </section>
           <section class="cartao">
             <h2>Avaliações</h2>
@@ -300,6 +307,9 @@ const enviandoFavorito = ref(false);
 const erroFavorito = ref("");
 const enviandoOrcamento = ref(false);
 const erroOrcamento = ref("");
+const textoPergunta = ref("");
+const enviandoPergunta = ref(false);
+const erroPergunta = ref("");
 let toastTimer = 0;
 
 const personalizado = computed(() => dados.value?.modalidadeId.toLowerCase() === "personalizado");
@@ -434,6 +444,36 @@ async function adicionar(destino: "checkout" | "toast") {
   }
 }
 
+async function enviarPergunta() {
+  if (!dados.value || enviandoPergunta.value) return;
+  enviandoPergunta.value = true;
+  erroPergunta.value = "";
+  const produtoId = dados.value.id;
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const token = lerToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
+  try {
+    const resposta = await fetch(`/api/loja/produtos/${encodeURIComponent(produtoId)}/perguntas`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ texto: textoPergunta.value }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (resposta.status === 400) {
+      erroPergunta.value = "Escreva sua pergunta.";
+      return;
+    }
+    if (!resposta.ok) throw new Error("falha");
+    const criada = (await resposta.json()) as Ficha["perguntas"][number];
+    dados.value.perguntas = [criada, ...dados.value.perguntas];
+    textoPergunta.value = "";
+  } catch {
+    erroPergunta.value = "Não foi possível enviar a pergunta.";
+  } finally {
+    enviandoPergunta.value = false;
+  }
+}
+
 async function pedirOrcamento() {
   if (!dados.value || enviandoOrcamento.value) return;
   const produtoId = dados.value.id;
@@ -526,6 +566,7 @@ async function carregar() {
   favorito.value = false;
   erroFavorito.value = "";
   erroOrcamento.value = "";
+  erroPergunta.value = "";
   const id = String(route.params.id ?? "");
   try {
     const resposta = await fetch(`/api/loja/produtos/${encodeURIComponent(id)}`, { signal: AbortSignal.timeout(8000) });
@@ -676,6 +717,21 @@ void carregar();
 
 .orcamento:disabled {
   opacity: 0.55;
+}
+
+.pergunta-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.pergunta-form input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pergunta-form .comprar {
+  width: fit-content;
 }
 
 .amostra {

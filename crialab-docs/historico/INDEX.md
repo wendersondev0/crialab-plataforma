@@ -4,6 +4,7 @@ Mais recente primeiro. Convenção em [../README.md](../README.md).
 
 | Data | Título | Arquivo |
 | --- | --- | --- |
+| 2026-11-24 00:43 | Pergunta da ficha | [2026/11/2026-11-24-0043-enviar-pergunta.md](2026/11/2026-11-24-0043-enviar-pergunta.md) |
 | 2026-11-24 00:36 | Pastas da conversão no repositório | [2026/11/2026-11-24-0036-pastas-no-repositorio.md](2026/11/2026-11-24-0036-pastas-no-repositorio.md) |
 | 2026-11-24 00:20 | Orçamento da ficha | [2026/11/2026-11-24-0020-pedir-orcamento.md](2026/11/2026-11-24-0020-pedir-orcamento.md) |
 | 2026-11-23 04:44 | Favorito da ficha | [2026/11/2026-11-23-0444-favorito-ficha.md](2026/11/2026-11-23-0444-favorito-ficha.md) |
