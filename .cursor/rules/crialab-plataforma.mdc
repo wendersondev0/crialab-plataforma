@@ -1,16 +1,18 @@
 ---
-description: Aciona a skill crialab-plataforma em qualquer tarefa deste repositório.
+description: Aciona a skill crialab-plataforma em qualquer tarefa do app Razor.
 alwaysApply: true
 ---
 
 # Skill crialab-plataforma
 
-Sempre que a tarefa tocar este repositório (`src/CriaLab.Web`, CriaLab.Web, Financeiro, Patrimônio, Pedidos, Fiscal, favoritos ou seed):
+O repositório Git é esta pasta. O app Razor em execução está em `../crialab-plataforma-old/`. Este repositório contém `crialab-frontend/`, `crialab-backend/` e `crialab-docs/`.
+
+Sempre que a tarefa tocar o Razor (`../crialab-plataforma-old/src/CriaLab.Web`, CriaLab.Web, Financeiro, Patrimônio, Pedidos, Fiscal, favoritos ou seed):
 
 1. Ler `.cursor/skills/crialab-plataforma/SKILL.md` e seguir o fluxo obrigatório.
-2. **Antes de implementar**, ler `README.md` na raiz (contexto principal).
-3. **Ao final**, atualizar o README se o estado/arquitetura mudou e registrar a atividade em `docs/historico/` com versão sequencial + atualizar `INDEX.md`.
+2. **Antes de implementar**, ler `../crialab-plataforma-old/README.md` (contexto principal).
+3. **Ao final**, atualizar o README se o estado/arquitetura mudou e registrar a atividade em `../crialab-plataforma-old/docs/historico/` com versão sequencial + atualizar `INDEX.md`.
 
-Os caminhos acima são da raiz deste repositório. Se o Cursor estiver aberto na pasta pai `CriaLab`, use o espelho `../.cursor/` e prefixe os caminhos com `crialab-plataforma/`. Mantenha o espelho alinhado a esta cópia versionada. O workspace `ctgi` não contém mais este projeto.
+Se o Cursor estiver aberto na pasta pai `CriaLab`, use o espelho `../.cursor/` e os caminhos `crialab-plataforma-old/` e `crialab-plataforma/`. Mantenha o espelho alinhado a esta cópia versionada.
 
-A conversão para API e PWA está em `../crialab-docs/planejamento/conversao-razor-para-vue-api.md`. Até o corte desse plano, este Razor continua sendo o app em execução. A referência humana é `../arquivos-crialab-dm/`. Tarefa de conversão segue `.cursor/skills/seguir-planejamento-crialab/SKILL.md` (no pai, `../.cursor/skills/seguir-planejamento-crialab/SKILL.md`) e fecha a resposta com a linha de progresso dessa skill.
+A conversão para API e PWA está em `crialab-docs/planejamento/conversao-razor-para-vue-api.md`. Até o corte desse plano, o Razor continua sendo o app em execução. A referência humana é `../arquivos-crialab-dm/`. Tarefa de conversão segue `.cursor/skills/seguir-planejamento-crialab/SKILL.md` e fecha a resposta com a linha de progresso dessa skill.

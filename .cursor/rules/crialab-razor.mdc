@@ -1,6 +1,6 @@
 ---
 description: Convenções do app Razor Cria Lab ao editar páginas, serviços ou EF Core.
-globs: src/CriaLab.Web/**/*.{cs,cshtml}
+globs: crialab-plataforma-old/src/CriaLab.Web/**/*.{cs,cshtml}
 alwaysApply: false
 ---
 

@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: crialab-api-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "@123Mudar"
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - crialab_api_pgdata:/var/lib/postgresql/data
+      - ./docker/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  criar-crialab-api:
+    image: postgres:16-alpine
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: "@123Mudar"
+    restart: "no"
+    entrypoint:
+      - sh
+      - -c
+      - |
+        existe=$(psql -h db -U postgres -d postgres -v ON_ERROR_STOP=1 -tAc "SELECT 1 FROM pg_database WHERE datname = 'crialab_api'")
+        if [ "$existe" != "1" ]; then
+          psql -h db -U postgres -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE crialab_api"
+        fi
+
+volumes:
+  crialab_api_pgdata:

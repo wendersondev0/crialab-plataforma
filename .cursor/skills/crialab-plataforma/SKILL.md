@@ -1,61 +1,60 @@
 ---
 name: crialab-plataforma
 description: >-
-  Contexto e fluxo de trabalho do app Cria Lab (crialab-plataforma):
+  Contexto e fluxo de trabalho do app Cria Lab (crialab-plataforma-old):
   ASP.NET Core Razor + PostgreSQL. Use always when
   the user asks to change, create, fix, review, document, or work on anything in
-  crialab-plataforma, CriaLab.Web, Financeiro,
+  crialab-plataforma-old, CriaLab.Web, Financeiro,
   Patrimonio, Pedidos, Fiscal, favoritos, seed, or Cria Lab DM.
 ---
 
 # Cria Lab — crialab-plataforma
 
-Skill obrigatória para qualquer tarefa neste projeto. Objetivo: continuidade entre sessões, README como fonte de verdade e histórico consultável.
+Skill obrigatória para qualquer tarefa no app Razor. Objetivo: continuidade entre sessões, README como fonte de verdade e histórico consultável.
 
-Cópia canônica versionada neste repositório. Os caminhos abaixo são relativos à raiz do repositório.
+Cópia canônica versionada neste repositório. O app Razor está em `../crialab-plataforma-old/`. Este repositório contém `crialab-frontend/`, `crialab-backend/` e `crialab-docs/`.
 
-A pasta de trabalho do Cursor é a pasta pai `CriaLab`, que contém este repositório. O espelho ativo fica em `../.cursor/skills/crialab-plataforma/SKILL.md` e `../.cursor/rules/`, fora do Git, com os mesmos caminhos prefixados por `crialab-plataforma/`. O workspace `ctgi` e os projetos Vue não espelham mais este app. Se o espelho divergir desta skill, vale esta skill: atualize o espelho no mesmo trabalho.
+A pasta de trabalho do Cursor é a pasta pai `CriaLab`. O espelho ativo fica em `../.cursor/skills/crialab-plataforma/SKILL.md` e `../.cursor/rules/`. Se o espelho divergir desta skill, vale esta skill: atualize o espelho no mesmo trabalho.
 
 ## Fluxo obrigatório
 
-Copiar e acompanhar:
+Copiar e acompanhar. Os caminhos são a partir deste repositório.
 
 ```
 Crialab task:
-- [ ] 1. Ler README.md (contexto principal)
+- [ ] 1. Ler ../crialab-plataforma-old/README.md (contexto principal)
 - [ ] 2. Se a tarefa for no Razor/Postgres, ler a seção ASP.NET do README.md
-- [ ] 3. Consultar docs/historico/INDEX.md se precisar de histórico recente
+- [ ] 3. Consultar ../crialab-plataforma-old/docs/historico/INDEX.md se precisar de histórico recente
 - [ ] 4. Implementar a tarefa
-- [ ] 5. Atualizar README.md se arquitetura, stack, estrutura ou estado mudou
-- [ ] 6. Registrar entrada em docs/historico/ (ver modelo abaixo)
-- [ ] 7. Atualizar docs/historico/INDEX.md com o link da nova entrada
+- [ ] 5. Atualizar ../crialab-plataforma-old/README.md se arquitetura, stack, estrutura ou estado mudou
+- [ ] 6. Registrar entrada em ../crialab-plataforma-old/docs/historico/ (ver modelo abaixo)
+- [ ] 7. Atualizar ../crialab-plataforma-old/docs/historico/INDEX.md com o link da nova entrada
 ```
 
 **Não iniciar implementação sem o passo 1.** Se o README estiver incompleto para a tarefa, completar o README no mesmo trabalho (passo 5).
 
-Na pasta pai `CriaLab`, prefixe cada caminho deste fluxo com `crialab-plataforma/`.
+Na pasta pai `CriaLab`, troque `../crialab-plataforma-old/` por `crialab-plataforma-old/`.
 
 ## Escopo do projeto
 
-Raiz do repositório: esta pasta (`crialab-plataforma` quando vista da pasta pai).
-
 | Pasta | Papel |
 | --- | --- |
-| `src/CriaLab.Web/` | ASP.NET Core 10 Razor Pages + EF Core + Identity + PostgreSQL |
-| `tests/CriaLab.Web.Tests/` | Testes do cálculo de orçamento |
-| `docs/historico/` | Histórico versionado de atividades |
+| `../crialab-plataforma-old/src/CriaLab.Web/` | ASP.NET Core 10 Razor Pages + EF Core + Identity + PostgreSQL |
+| `../crialab-plataforma-old/tests/CriaLab.Web.Tests/` | Testes do cálculo de orçamento |
+| `../crialab-plataforma-old/docs/historico/` | Histórico versionado de atividades do Razor |
 | `.cursor/skills/crialab-plataforma/` | Esta skill |
 | `.cursor/rules/` | Regra de fluxo e regra de Razor/EF |
+| `../.cursor/skills/crialab-plataforma/` | Espelho da pasta pai |
 | `../arquivos-crialab-dm/` | Fotos, planilhas, PDFs e redes sociais de referência. Os projetos não leem esta pasta |
-| `../crialab-docs/` | Plano da conversão para API + PWA, histórico novo e contexto para agentes |
-| `../crialab-frontend/` | PWA reservado. Sem código de produto até a fase de esqueleto do plano |
-| `../crialab-backend/` | API com Carter, EF Core, Identity, Dapper, FluentValidation, Problem Details e OpenAPI, ainda sem casos de uso |
+| `crialab-docs/` | Plano da conversão para API + PWA, histórico novo e contexto para agentes |
+| `crialab-frontend/` | PWA Vue. Home, busca, listagem e ficha já leem a API |
+| `crialab-backend/` | API com Carter, EF Core, Identity, Dapper, FluentValidation, Problem Details e OpenAPI |
 
-Detalhes de execução, seed, rotas e checklist: seção ASP.NET de `README.md`.
+Detalhes de execução, seed, rotas e checklist: seção ASP.NET de `../crialab-plataforma-old/README.md`.
 
 ## Manutenção do README
 
-Arquivo: `README.md` (raiz do repositório).
+Arquivo: `../crialab-plataforma-old/README.md`.
 
 Manter sempre atualizado com:
 
@@ -64,11 +63,11 @@ Manter sempre atualizado com:
 - Links para a skill, as regras e `docs/historico/`
 - Estado atual relevante (módulos prontos, avisos operacionais)
 
-O mapa de rotas, seed e checklist ficam no `README.md` da raiz.
+O mapa de rotas, seed e checklist ficam no README do Razor.
 
 ## Histórico de atividades
 
-Pasta: `docs/historico/`
+Pasta: `../crialab-plataforma-old/docs/historico/`
 
 ### Nome do arquivo
 
@@ -115,7 +114,7 @@ Exemplo: `v001-2026-10-28-1609-cria-skill-e-historico.md`
 
 ### INDEX.md
 
-Manter `docs/historico/INDEX.md` com lista do mais recente para o mais antigo:
+Manter `../crialab-plataforma-old/docs/historico/INDEX.md` com lista do mais recente para o mais antigo:
 
 ```markdown
 | Versão | Data | Título | Arquivo |
@@ -126,8 +125,8 @@ Manter `docs/historico/INDEX.md` com lista do mais recente para o mais antigo:
 ## Convenções do projeto
 
 - Commits locais em pt-BR (Conventional Commits); não fazer push a menos que o usuário peça.
-- Preferir `dotnet watch run` em `src/CriaLab.Web`; matar `CriaLab.Web` se MSB3026 travar o build.
-- A loja e a administração em execução vivem no Razor. O PWA e a API nascem nas pastas irmãs `../crialab-frontend` e `../crialab-backend`, fora deste repositório. O contrato está em `../crialab-docs/planejamento/conversao-razor-para-vue-api.md`. Quem for executar esse contrato segue `.cursor/skills/seguir-planejamento-crialab/SKILL.md`.
+- Preferir `dotnet watch run` em `../crialab-plataforma-old/src/CriaLab.Web`; matar `CriaLab.Web` se MSB3026 travar o build.
+- A loja e a administração em execução vivem no Razor, em `../crialab-plataforma-old/`. O PWA e a API estão em `crialab-frontend/` e `crialab-backend/`. O contrato está em `crialab-docs/planejamento/conversao-razor-para-vue-api.md`. Quem for executar esse contrato segue `.cursor/skills/seguir-planejamento-crialab/SKILL.md`.
 - Fiscal fica sob o fluxo de Pedidos (abas); não recriar item Fiscal separado no menu topo.
 - Favoritos: cookie anônimo + DB autenticado (`FavoritosService`).
 - Parceiros podem ter `Url` (Instagram/site) clicável no rodapé/Sobre.
@@ -135,4 +134,4 @@ Manter `docs/historico/INDEX.md` com lista do mais recente para o mais antigo:
 
 ## Quando atualizar esta skill
 
-Atualizar esta `SKILL.md`, a regra de fluxo e o espelho em `../.cursor/` se mudar: pasta de trabalho, pastas do repositório, fluxo README/histórico, convenções de nome do histórico, ou regras operacionais listadas acima.
+Atualizar esta `SKILL.md` e o espelho em `../.cursor/skills/crialab-plataforma/SKILL.md` se mudar: pasta de trabalho, pastas do repositório, fluxo README/histórico, convenções de nome do histórico, ou regras operacionais listadas acima.
