@@ -146,6 +146,19 @@
               <a v-if="dados.shopee" :href="dados.shopee" target="_blank" rel="noopener">Shopee</a>
               <a v-if="dados.mercadoLivre" :href="dados.mercadoLivre" target="_blank" rel="noopener">Mercado Livre</a>
             </p>
+
+            <section class="frete">
+              <h2>Calcular frete</h2>
+              <form class="frete-form" @submit.prevent="cotarFrete">
+                <input v-model="cep" type="text" inputmode="numeric" maxlength="9" placeholder="00000-000" aria-label="CEP" />
+                <button class="comprar" type="submit" :disabled="cotando">Cotar</button>
+              </form>
+              <p v-if="erroFrete" class="erro-compra">{{ erroFrete }}</p>
+              <p v-for="op in opcoesFrete" :key="op.id">
+                <strong>{{ op.nome }}</strong> · {{ textoPrecoFrete(op) }} · {{ textoPrazoFrete(op.dias) }}
+                <span v-if="op.descricao" class="frete-desc">{{ op.descricao }}</span>
+              </p>
+            </section>
           </div>
         </div>
 
@@ -247,6 +260,15 @@ interface Relacionado {
   prazoFim: string | null;
 }
 
+interface OpcaoFrete {
+  id: string;
+  nome: string;
+  preco: number;
+  dias: number;
+  descricao: string | null;
+  gratis: boolean;
+}
+
 interface Ficha {
   id: string;
   titulo: string;
@@ -310,6 +332,10 @@ const erroOrcamento = ref("");
 const textoPergunta = ref("");
 const enviandoPergunta = ref(false);
 const erroPergunta = ref("");
+const cep = ref("");
+const cotando = ref(false);
+const erroFrete = ref("");
+const opcoesFrete = ref<OpcaoFrete[]>([]);
 let toastTimer = 0;
 
 const personalizado = computed(() => dados.value?.modalidadeId.toLowerCase() === "personalizado");
@@ -444,6 +470,39 @@ async function adicionar(destino: "checkout" | "toast") {
   }
 }
 
+function textoPrecoFrete(op: OpcaoFrete) {
+  if (op.gratis || op.preco === 0) return "grátis";
+  return `R$ ${op.preco.toFixed(2).replace(".", ",")}`;
+}
+
+function textoPrazoFrete(dias: number) {
+  return dias === 1 ? "1 dia útil" : `${dias} dias úteis`;
+}
+
+async function cotarFrete() {
+  if (!dados.value || cotando.value) return;
+  cotando.value = true;
+  erroFrete.value = "";
+  opcoesFrete.value = [];
+  try {
+    const resposta = await fetch(
+      `/api/loja/produtos/${encodeURIComponent(dados.value.id)}/frete?cep=${encodeURIComponent(cep.value)}`,
+      { signal: AbortSignal.timeout(8000) },
+    );
+    if (!resposta.ok) throw new Error("falha");
+    const corpo = (await resposta.json()) as { erro: string | null; opcoes: OpcaoFrete[] };
+    if (corpo.erro) {
+      erroFrete.value = corpo.erro;
+      return;
+    }
+    opcoesFrete.value = corpo.opcoes ?? [];
+  } catch {
+    erroFrete.value = "Não foi possível cotar agora.";
+  } finally {
+    cotando.value = false;
+  }
+}
+
 async function enviarPergunta() {
   if (!dados.value || enviandoPergunta.value) return;
   enviandoPergunta.value = true;
@@ -567,6 +626,9 @@ async function carregar() {
   erroFavorito.value = "";
   erroOrcamento.value = "";
   erroPergunta.value = "";
+  cep.value = "";
+  erroFrete.value = "";
+  opcoesFrete.value = [];
   const id = String(route.params.id ?? "");
   try {
     const resposta = await fetch(`/api/loja/produtos/${encodeURIComponent(id)}`, { signal: AbortSignal.timeout(8000) });
@@ -732,6 +794,40 @@ void carregar();
 
 .pergunta-form .comprar {
   width: fit-content;
+}
+
+.frete,
+.frete-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.frete {
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+.frete h2,
+.frete p {
+  margin: 0;
+}
+
+.frete-form input {
+  flex: 1 1 8rem;
+  min-width: 0;
+  width: auto;
+  box-sizing: border-box;
+}
+
+.frete-form .comprar {
+  width: fit-content;
+}
+
+.frete-desc {
+  display: block;
+  color: #5c6b7a;
+  font-weight: 400;
 }
 
 .amostra {

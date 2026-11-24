@@ -2,6 +2,7 @@ using CriaLab.Application.Features.Catalogo.Buscar;
 using CriaLab.Application.Features.Comercio.AdicionarItemCarrinho;
 using CriaLab.Application.Features.Comercio.AlternarFavorito;
 using CriaLab.Application.Features.Comercio.ConsultarFavorito;
+using CriaLab.Application.Features.Comercio.CotarFreteFicha;
 using CriaLab.Application.Features.Comercio.EnviarPergunta;
 using CriaLab.Application.Features.Comercio.PedirOrcamento;
 using CriaLab.Application.Features.Catalogo.ListarProdutos;
@@ -36,6 +37,7 @@ public static class InjecaoAplicacao
         services.AddScoped<AlternarFavoritoHandler>();
         services.AddScoped<PedirOrcamentoHandler>();
         services.AddScoped<EnviarPerguntaHandler>();
+        services.AddScoped<CotarFreteFichaHandler>();
         return services;
     }
 }
