@@ -1,0 +1,21 @@
+---
+description: Se um commit sugerido não foi feito, a próxima sugestão cobre o pendente e o trabalho atual numa mensagem só.
+alwaysApply: true
+---
+
+# Sugestão de commit
+
+Não executar `git add`, `git commit` nem `git push`. Continua uma sugestão por repositório, em português, no formato Conventional Commits.
+
+Se o repositório ainda tem alterações de uma sugestão anterior que a pessoa não commitou, não listar duas mensagens. Escrever uma só, que cubra esse pendente e as alterações desta tarefa.
+
+Repositórios diferentes continuam com uma mensagem cada.
+
+Não fazer:
+
+- `feat: lista o carrinho`
+- `feat: cota o checkout`
+
+Fazer, quando os dois ainda estão sem commit:
+
+- `feat: lista o carrinho e cota o checkout`
