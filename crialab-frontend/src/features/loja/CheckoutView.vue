@@ -19,10 +19,10 @@
       </div>
 
       <template v-else>
-        <p v-if="carregando" class="aviso">Carregando o checkout...</p>
+        <p v-if="carregando || enviando" class="aviso">{{ enviando ? "Gravando o pedido..." : "Carregando o checkout..." }}</p>
         <Message v-if="erroRede" severity="error" :closable="false">
           {{ erroRede }}
-          <Button class="tentar" label="Tentar de novo" @click="cotar('cotar')" />
+          <Button class="tentar" label="Tentar de novo" @click="falhaConfirmacao ? confirmar() : cotar('cotar')" />
         </Message>
 
         <div class="grade">
@@ -87,8 +87,8 @@
             <p v-else-if="dados?.erroFrete" class="erro">{{ dados.erroFrete }}</p>
 
             <div class="acoes">
-              <button class="botao-linha" type="button" :disabled="carregando" @click="cotar('cotar')">Atualizar frete / cupom</button>
-              <button class="botao" type="button" :disabled="carregando" @click="cotar('finalizar')">Confirmar pedido</button>
+              <button class="botao-linha" type="button" :disabled="carregando || enviando" @click="cotar('cotar')">Atualizar frete / cupom</button>
+              <button class="botao" type="button" :disabled="carregando || enviando" @click="confirmar">Confirmar pedido</button>
             </div>
           </form>
         </div>
@@ -99,7 +99,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import Button from "primevue/button";
 import Message from "primevue/message";
 import { moeda } from "./home";
@@ -136,11 +136,15 @@ interface Cotacao {
   erros: string[];
   itens: ItemCotacao[];
   opcoes: OpcaoCotacao[];
+  pedidoId?: string | null;
 }
 
 const carrinho = useCarrinho();
+const router = useRouter();
 const token = ref(lerToken());
 const carregando = ref(false);
+const enviando = ref(false);
+const falhaConfirmacao = ref(false);
 const erroRede = ref("");
 const erros = ref<string[]>([]);
 const dados = ref<Cotacao | null>(null);
@@ -172,6 +176,7 @@ function textoPrazoFrete(dias: number) {
 
 async function cotar(acao: "cotar" | "finalizar") {
   erroRede.value = "";
+  falhaConfirmacao.value = false;
   erros.value = [];
   token.value = lerToken();
   if (!token.value || !carrinho.itens.length) return;
@@ -211,6 +216,56 @@ async function cotar(acao: "cotar" | "finalizar") {
     erroRede.value = "Não foi possível carregar o checkout.";
   } finally {
     carregando.value = false;
+  }
+}
+
+async function confirmar() {
+  erroRede.value = "";
+  falhaConfirmacao.value = false;
+  erros.value = [];
+  token.value = lerToken();
+  if (!token.value || !carrinho.itens.length) return;
+  enviando.value = true;
+  try {
+    const resposta = await fetch("/api/loja/checkout/pedidos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.value}`,
+      },
+      body: JSON.stringify({
+        itens: carrinho.itens,
+        cep: cep.value,
+        cupom: cupom.value,
+        freteId: freteId.value,
+        endereco: endereco.value,
+        forma: forma.value,
+        acao: "finalizar",
+        total: 0,
+      }),
+    });
+    if (resposta.status === 401) {
+      token.value = null;
+      return;
+    }
+    if (resposta.status === 404) {
+      erroRede.value = "Não encontrei essa peça.";
+      return;
+    }
+    if (!resposta.ok) throw new Error("pedido");
+    const corpo = (await resposta.json()) as Cotacao;
+    dados.value = corpo;
+    freteId.value = corpo.freteId || freteId.value;
+    erros.value = corpo.erros ?? [];
+    if (corpo.pedidoId && erros.value.length === 0) {
+      carrinho.limpar();
+      await router.push(`/recibo/${corpo.pedidoId}`);
+    }
+  } catch {
+    falhaConfirmacao.value = true;
+    erroRede.value = "Não foi possível confirmar o pedido.";
+  } finally {
+    enviando.value = false;
   }
 }
 

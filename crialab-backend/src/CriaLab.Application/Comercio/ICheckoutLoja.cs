@@ -1,3 +1,4 @@
+using CriaLab.Domain.Calculos;
 using CriaLab.Domain.Entidades;
 
 namespace CriaLab.Application.Comercio;
@@ -15,4 +16,6 @@ public interface ICheckoutLoja
     Task<IReadOnlyList<PecaCheckout>> PecasAsync(IReadOnlyCollection<string> ids, CancellationToken cancelamento = default);
 
     Task<LojaCheckout> ContextoAsync(CancellationToken cancelamento = default);
+
+    Task GravarPedidoAsync(PedidoCheckout.Gravado pedido, CancellationToken cancelamento = default);
 }

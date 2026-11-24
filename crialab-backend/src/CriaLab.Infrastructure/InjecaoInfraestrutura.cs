@@ -66,6 +66,7 @@ public static class InjecaoInfraestrutura
         services.AddScoped<IPerguntasProduto, PerguntasProduto>();
         services.AddScoped<IFreteProduto, FreteProduto>();
         services.AddScoped<ICheckoutLoja, CheckoutLoja>();
+        services.AddScoped<IRecibos, Recibos>();
         services.AddScoped<GravadorImagem>();
         return services;
     }

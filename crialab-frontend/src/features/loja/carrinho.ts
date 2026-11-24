@@ -58,5 +58,10 @@ export const useCarrinho = defineStore("carrinho", () => {
     return itens.value.reduce((soma, item) => soma + item.precoUnitario * item.quantidade, 0);
   }
 
-  return { itens, adicionar, remover, subtotal };
+  function limpar() {
+    itens.value = [];
+    salvar();
+  }
+
+  return { itens, adicionar, remover, subtotal, limpar };
 });
